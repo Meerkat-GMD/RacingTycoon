@@ -29,6 +29,8 @@ for name,entry in manifest['assets'].items():
     meshes=[o for o in bpy.context.scene.objects if o.type=='MESH']
     assert meshes and {m.name for o in meshes for m in o.data.materials},name
     assert len(meshes)>=len(entry['objects']),name
+    if name=='Puff':
+        assert all(p.use_smooth for o in meshes for p in o.data.polygons), 'Puff FBX normals must be smooth'
     if name=='Kart':
         by_name={o.name:o for o in meshes}
         for side in ('L','R'):

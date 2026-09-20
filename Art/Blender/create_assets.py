@@ -146,7 +146,9 @@ sphere(spinner,'StickTip',(0,0,6.5),(.09,.09,.09),'Cream',12,6)
 
 puff=collection('Puff')
 for i,(x,y,z,s) in enumerate([(-.2,0,0,.33),(.2,.05,.02,.32),(0,-.17,.13,.34),(0,.19,-.1,.3),(-.06,0,-.23,.27)]):
-    sphere(puff,'Lobe%02d'%i,(x,y,z),(s,s*.9,s*.87),'White',12,6)
+    lobe=sphere(puff,'Lobe%02d'%i,(x,y,z),(s,s*.9,s*.87),'White',12,6)
+    for polygon in lobe.data.polygons:
+        polygon.use_smooth=True
 
 customer=collection('Customer')
 for x,side in [(-.17,'L'),(.17,'R')]:
