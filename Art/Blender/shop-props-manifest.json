@@ -1,0 +1,144 @@
+{
+  "coordinate_system": {
+    "units": "meters",
+    "blender_forward": "-Y",
+    "unity_forward": "+Z",
+    "fbx_axis_forward": "-Z",
+    "fbx_axis_up": "Y",
+    "origin": "ground center"
+  },
+  "materials": {
+    "Strawberry": "#F48DAB",
+    "Cream": "#FFF1D4",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "White": "#FFF9ED",
+    "Gold": "#DBAE61"
+  },
+  "assets": {
+    "DisplayRack": {
+      "file": "DisplayRack.fbx",
+      "objects": [
+        "BaseRail",
+        "FrameLBack",
+        "FrameLFront",
+        "FrameRBack",
+        "FrameRFront",
+        "Header",
+        "HeaderFrontBand",
+        "Shelf0",
+        "Shelf1",
+        "ShelfBackStop0",
+        "ShelfBackStop1",
+        "ShelfFrontLip0",
+        "ShelfFrontLip1"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -1.2,
+          -0.45,
+          0.0
+        ],
+        "max": [
+          1.2,
+          0.45,
+          1.9
+        ]
+      },
+      "dimensions_blender_xyz": [
+        2.4,
+        0.9,
+        1.9
+      ],
+      "triangles": 1404,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Soda",
+        "Strawberry",
+        "White"
+      ]
+    },
+    "OrderBoard": {
+      "file": "OrderBoard.fbx",
+      "objects": [
+        "BerryBadge",
+        "BerryLeaf",
+        "BerrySymbol",
+        "BoardFace",
+        "CreamBadge",
+        "CreamSymbol",
+        "FootL",
+        "FootR",
+        "FooterTrim",
+        "HeaderTrim",
+        "LegL",
+        "LegR",
+        "SodaBadge",
+        "SodaSymbol"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.8,
+          -0.115,
+          0.0
+        ],
+        "max": [
+          0.8,
+          0.165,
+          2.0
+        ]
+      },
+      "dimensions_blender_xyz": [
+        1.6,
+        0.28,
+        2.0
+      ],
+      "triangles": 2800,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Soda",
+        "Strawberry",
+        "Vanilla",
+        "White"
+      ]
+    },
+    "QueuePost": {
+      "file": "QueuePost.fbx",
+      "objects": [
+        "Collar",
+        "Stem",
+        "TopCap",
+        "WeightedBase"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.2,
+          -0.2,
+          0.0
+        ],
+        "max": [
+          0.2,
+          0.2,
+          1.0
+        ]
+      },
+      "dimensions_blender_xyz": [
+        0.4,
+        0.4,
+        1.0
+      ],
+      "triangles": 1328,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Strawberry"
+      ]
+    }
+  }
+}
