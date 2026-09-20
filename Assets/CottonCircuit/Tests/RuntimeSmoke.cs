@@ -106,6 +106,10 @@ namespace CottonCircuit.Tests
                   game.Session.Production.Grams == 0 &&
                   game.World.Kart.DriveModel.TotalProgress > 0,
                 "outer neutral lane advances without sugar");
+            // The outer-lane check ends near a bend; reset to a known center
+            // line before measuring drift charge so a wall cannot cancel it.
+            game.World.Kart.ResetPosition();
+            game.Tick(1, 0, false, 1);
             game.Tick(1, .55f, false, .45f, true);
             Check(game.World.Kart.Charge >= .32f, "corner drift charges meter");
             game.Tick(1, 0, false, .02f);
