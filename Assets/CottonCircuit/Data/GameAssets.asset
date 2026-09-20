@@ -24,6 +24,9 @@ MonoBehaviour:
   Chevron: {fileID: 21607105777599117, guid: 1c3e839e9c1631a42ad3c4af91fb2a4f, type: 3}
   Barrier: {fileID: 6777955259046119670, guid: a729403f2e72a0d4f9e4d3d07b646e5c, type: 3}
   ShortcutGate: {fileID: 7869628955472507100, guid: 64992abaf189a0f419e56b5df315bb53, type: 3}
+  DisplayRack: {fileID: 6853714208627052058, guid: 57d8f54a52bea7e41add8eed848d950a, type: 3}
+  OrderBoard: {fileID: 3608375268391685139, guid: a4f30eabec8f7c24a907da596f72b066, type: 3}
+  QueuePost: {fileID: 4788541943601450625, guid: 11ec92eb8208a8441960008d678771e4, type: 3}
   PuffMesh: {fileID: 4300000, guid: 78c03866331930c42a010b3a17194c43, type: 2}
   Flavors:
   - {fileID: 2100000, guid: 3fbb811124995ca48b15ff89e2cd2396, type: 2}

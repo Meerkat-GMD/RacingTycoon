@@ -13,3 +13,6 @@ Plan: docs/superpowers/plans/2026-09-21-cotton-circuit.md
 
 ## Racing feel iteration
 Approved direct arcade steering/drift/boost course replacement implemented. See docs/racing-progress.md and docs/verification.md for current delivery and evidence. The original orbital controls described above are historical and have been replaced.
+
+## Customer orders iteration
+Current iteration replaces automatic sales with customer orders and manual stock handover. See docs/order-progress.md for current work and verification.

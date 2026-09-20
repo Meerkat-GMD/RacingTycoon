@@ -124,6 +124,8 @@ namespace CottonCircuit.Editor
             var assets = game.World.Assets;
             Check(assets.Kart && assets.Kiosk && assets.Spinner && assets.Puff && assets.Customer && assets.Crystal && assets.Arch && assets.Tree && assets.Lamp, "all nine Blender assets used");
             Check(assets.Chevron && assets.Barrier && assets.ShortcutGate, "three new Blender racing props imported");
+            Check(assets.DisplayRack && assets.OrderBoard && assets.QueuePost && game.World.DisplayRacks.Length == 3, "three Blender shop props and expandable racks wired");
+            Check(GameObject.Find("Collection strip") && GameObject.Find("Sugar cut shortcut"), "collection strip and neutral shortcut present");
             Check(GameObject.Find("Sugarway circuit") && GameObject.Find("Racing surface") && GameObject.Find("Sugar cut shortcut"), "main course and shortcut rendered from physics geometry");
             Check(game.World.CandyCamera && game.World.CandyPreview, "live cotton preview camera wired");
             foreach (var part in assets.Kart.GetComponentsInChildren<Transform>())

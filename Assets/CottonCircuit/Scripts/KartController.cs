@@ -7,6 +7,8 @@ namespace CottonCircuit
         public float Speed => DriveModel == null ? 0 : (float)DriveModel.Speed;
         public float Radius => DriveModel == null ? 10 : Mathf.Clamp(10 + (float)DriveModel.Sample.Lateral * .5f, 7.5f, 12.5f);
         public int Flavor => DriveModel == null ? 0 : Mathf.Min(2, (int)(DriveModel.Sample.Progress / DriveModel.Course.Length * 3));
+        public int CollectionFlavor => DriveModel == null ? -1 : SugarCollection.Flavor(DriveModel.Sample.Progress, DriveModel.Sample.Lateral, DriveModel.Sample.IsShortcut, DriveModel.Course.Length);
+        public bool IsCollecting => CollectionFlavor >= 0 && DriveModel.LastRewardDistance > 0;
         public float MaximumSpeed = 18;
         public bool Boosting => DriveModel != null && DriveModel.BoostRemaining > 0;
         public bool Drifting => DriveModel != null && DriveModel.IsDrifting;
@@ -64,7 +66,7 @@ namespace CottonCircuit
             ApplyPose(deltaTime);
             if (wheels != null) foreach (var wheel in wheels) wheel.Rotate(Vector3.right, Speed * deltaTime * 150, Space.Self);
             SetEffects(true);
-            return (DriveModel.LastRewardDistance + .25 * DriveModel.LastBoostedRewardDistance) / DriveModel.Course.Length * System.Math.PI * 2;
+            return IsCollecting ? 5 * (DriveModel.LastRewardDistance + .25 * DriveModel.LastBoostedRewardDistance) / DriveModel.Course.Length * System.Math.PI * 2 : 0;
         }
         public void SetEffects(bool active)
         {

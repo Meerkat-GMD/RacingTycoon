@@ -9,8 +9,9 @@ namespace CottonCircuit.Editor
         public static void Build(WorldView world, Dictionary<string, Material> materials)
         {
             var course = RaceCourse.Shared; var root = new GameObject("Sugarway circuit").transform; root.SetParent(world.transform);
-            Ribbon("Racing surface", course.MainPoints, true, (float)RaceCourse.MainHalfWidth, new[] { materials["InnerLane"], materials["MiddleLane"], materials["OuterLane"] }, root);
-            Ribbon("Sugar cut shortcut", course.ShortcutPoints, false, (float)RaceCourse.ShortcutHalfWidth, new[] { materials["InnerLane"], materials["MiddleLane"], materials["OuterLane"] }, root);
+            Ribbon("Racing surface", course.MainPoints, true, -(float)RaceCourse.MainHalfWidth, (float)RaceCourse.MainHalfWidth, 1.04f, new[] { materials["RoadNeutral"] }, root);
+            Ribbon("Collection strip", course.MainPoints, true, -(float)RaceCourse.MainHalfWidth, (float)SugarCollection.Boundary, 1.052f, new[] { materials["InnerLane"], materials["MiddleLane"], materials["OuterLane"] }, root);
+            Ribbon("Sugar cut shortcut", course.ShortcutPoints, false, -(float)RaceCourse.ShortcutHalfWidth, (float)RaceCourse.ShortcutHalfWidth, 1.06f, new[] { materials["RoadNeutral"] }, root);
             for (double p = 0; p < course.Length; p += 3.5)
             {
                 var s = course.Sample(p); Vector3 tangent = V(s.Tangent, 0), right = new Vector3(tangent.z, 0, -tangent.x);
@@ -24,7 +25,7 @@ namespace CottonCircuit.Editor
                     rail.transform.localScale = new Vector3(1.7f, 1, 1);
                 }
                 // Short dashed line makes speed and the direction of travel readable.
-                var dash = ProjectBuilder.Cube("Center dash", V(s.Position, 1.055f), new Vector3(.12f, .016f, .85f), materials["White"], root);
+                var dash = ProjectBuilder.Cube("Collection boundary", V(s.Position, 1.068f) + right * (float)SugarCollection.Boundary, new Vector3(.12f, .016f, .85f), materials["White"], root);
                 dash.transform.rotation = Quaternion.LookRotation(tangent);
             }
             for (int i = 2; i < course.ShortcutPoints.Length - 2; i += 2)
@@ -56,7 +57,7 @@ namespace CottonCircuit.Editor
             var entrance = course.ShortcutPoints[3]; var toward = V(course.ShortcutPoints[4]) - V(course.ShortcutPoints[2]);
             ProjectBuilder.Place(world.Assets.ShortcutGate, V(entrance), Quaternion.LookRotation(-toward), root);
         }
-        static void Ribbon(string name, RoadPoint[] points, bool closed, float halfWidth, Material[] materials, Transform parent)
+        static void Ribbon(string name, RoadPoint[] points, bool closed, float left, float rightEdge, float height, Material[] materials, Transform parent)
         {
             int segments = closed ? points.Length : points.Length - 1; var vertices = new List<Vector3>(); var uvs = new List<Vector2>();
             var triangles = new List<int>[materials.Length]; for (int i = 0; i < triangles.Length; i++) triangles[i] = new List<int>();
@@ -64,7 +65,7 @@ namespace CottonCircuit.Editor
             {
                 int at = i % points.Length, previous = closed ? (at - 1 + points.Length) % points.Length : Mathf.Max(0, at - 1), next = closed ? (at + 1) % points.Length : Mathf.Min(points.Length - 1, at + 1);
                 Vector3 tangent = (V(points[next]) - V(points[previous])).normalized; Vector3 right = new Vector3(tangent.z, 0, -tangent.x);
-                vertices.Add(V(points[at], closed ? 1.04f : 1.045f) - right * halfWidth); vertices.Add(V(points[at], closed ? 1.04f : 1.045f) + right * halfWidth);
+                vertices.Add(V(points[at], height) + right * left); vertices.Add(V(points[at], height) + right * rightEdge);
                 uvs.Add(new Vector2(0, i)); uvs.Add(new Vector2(1, i));
                 if (i == segments) continue;
                 int n = i * 2;

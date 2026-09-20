@@ -28,6 +28,7 @@ namespace CottonCircuit.Editor
             assets.Puff = Import("Puff"); assets.Customer = Import("Customer"); assets.Crystal = Import("Crystal");
             assets.Arch = Import("Arch"); assets.Tree = Import("Tree"); assets.Lamp = Import("Lamp");
             assets.Chevron = Import("Chevron"); assets.Barrier = Import("Barrier"); assets.ShortcutGate = Import("ShortcutGate");
+            assets.DisplayRack = Import("DisplayRack"); assets.OrderBoard = Import("OrderBoard"); assets.QueuePost = Import("QueuePost");
             assets.Flavors = new[] { materials["Strawberry"], materials["Soda"], materials["Vanilla"] };
             var puff = (GameObject)PrefabUtility.InstantiatePrefab(assets.Puff);
             var combine = new List<CombineInstance>();
@@ -68,8 +69,8 @@ namespace CottonCircuit.Editor
         static void MakeMaterials()
         {
             materials.Clear();
-            string[] names = { "Strawberry", "Cream", "Soda", "Vanilla", "Navy", "Plum", "White", "Mint", "Gold", "Tire", "Wood", "Ground", "InnerLane", "MiddleLane", "OuterLane", "Base" };
-            string[] colors = { "F48DAB", "FFF1D4", "7ACDCE", "F9D27D", "29324D", "6C577F", "FFF9ED", "99C4AE", "DBAE61", "414059", "D59C79", "E7DFDB", "E7B4C3", "B4DADD", "F5DFAD", "9DBBAF" };
+            string[] names = { "Strawberry", "Cream", "Soda", "Vanilla", "Navy", "Plum", "White", "Mint", "Gold", "Tire", "Wood", "Ground", "InnerLane", "MiddleLane", "OuterLane", "Base", "RoadNeutral" };
+            string[] colors = { "F48DAB", "FFF1D4", "7ACDCE", "F9D27D", "29324D", "6C577F", "FFF9ED", "99C4AE", "DBAE61", "414059", "D59C79", "E7DFDB", "E7B4C3", "B4DADD", "F5DFAD", "9DBBAF", "C6CAD1" };
             for (int i = 0; i < names.Length; i++)
             {
                 var path = Root + "/Materials/" + names[i] + ".mat";
@@ -153,6 +154,12 @@ namespace CottonCircuit.Editor
             AddSign("SUGAR CLOUD", new Vector3(-52, 3.8f, 9.64f), .12f, Color.white, root);
             var display = new GameObject("Shop product positions"); display.transform.SetParent(root); display.transform.position = new Vector3(-52, 1.52f, 9.44f); world.DisplayRoot = display.transform;
             world.Customer = Place(world.Assets.Customer, new Vector3(-55, .26f, 15), Quaternion.Euler(0, 180, 0), root).transform;
+            world.DisplayRacks = new Transform[3];
+            for (int i = 0; i < 3; i++)
+                world.DisplayRacks[i] = Place(world.Assets.DisplayRack, new Vector3(-48.2f, .26f, 6.2f + i * 2.7f), Quaternion.Euler(0, 90, 0), root).transform;
+            Place(world.Assets.OrderBoard, new Vector3(-48.9f, .26f, 10.5f), Quaternion.Euler(0, -12, 0), root);
+            Place(world.Assets.QueuePost, new Vector3(-53.5f, .26f, 11.5f), Quaternion.identity, root);
+            Place(world.Assets.QueuePost, new Vector3(-53.5f, .26f, 13.3f), Quaternion.identity, root);
             for (int i = 0; i < 18; i++)
             {
                 float a = i * Mathf.PI * 2 / 18;
@@ -219,8 +226,8 @@ namespace CottonCircuit.Editor
         public static void VerifyAndBuild()
         {
             CreateScene(); IntegrationChecks.Run();
-            Directory.CreateDirectory("Builds/Windows");
-            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { ScenePath }, locationPathName = "Builds/Windows/CottonCircuit.exe", target = BuildTarget.StandaloneWindows64, options = BuildOptions.Development });
+            Directory.CreateDirectory(BuildDirectory);
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { ScenePath }, locationPathName = Path.Combine(BuildDirectory, "CottonCircuit.exe"), target = BuildTarget.StandaloneWindows64, options = BuildOptions.Development });
             if (report.summary.result != BuildResult.Succeeded) throw new Exception("Build failed: " + report.summary.result);
             Debug.Log("COTTON_BUILD_SUCCESS " + report.summary.totalSize);
         }
@@ -229,10 +236,19 @@ namespace CottonCircuit.Editor
         {
             CreateScene();
             IntegrationChecks.Run();
-            Directory.CreateDirectory("Builds/Windows");
-            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { ScenePath }, locationPathName = "Builds/Windows/CottonCircuit.exe", target = BuildTarget.StandaloneWindows64, options = BuildOptions.None });
+            Directory.CreateDirectory(BuildDirectory);
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { ScenePath }, locationPathName = Path.Combine(BuildDirectory, "CottonCircuit.exe"), target = BuildTarget.StandaloneWindows64, options = BuildOptions.None });
             if (report.summary.result != BuildResult.Succeeded) throw new Exception("Release build failed: " + report.summary.result);
             Debug.Log("COTTON_RELEASE_SUCCESS " + report.summary.totalSize);
+        }
+        static string BuildDirectory
+        {
+            get
+            {
+                var args = Environment.GetCommandLineArgs();
+                int index = Array.IndexOf(args, "-cotton-build-output");
+                return index >= 0 && index + 1 < args.Length ? Path.GetFullPath(args[index + 1]) : "Builds/Windows";
+            }
         }
     }
 }
