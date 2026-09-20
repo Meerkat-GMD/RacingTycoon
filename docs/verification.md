@@ -42,4 +42,4 @@ Blender 원본 `Art/Blender/ShopProps.blend`와 FBX 3종은 미터 크기·재�
 
 배포 빌드는 `-Release`로 자동 검증 코드를 제외한다. 전체 플레이와 시각 검증은 개발 플레이어에서 수행했다. 코스는 하나이며 직접 조향·드리프트·지름길·세 맛·두 크기·주문 경영을 제공한다. 추가 맵, 경쟁 AI, 직원 자동화, 가게 자유 배치는 이번 범위에 포함하지 않는다.
 
-최종 배포는 종료 코드 0, COTTON_RELEASE_SUCCESS 97050845, uild-info.json의 Release 구성을 확인했다.
+최종 배포는 종료 코드 0, `COTTON_RELEASE_SUCCESS 97050845`, `build-info.json`의 Release 구성을 확인했다.
