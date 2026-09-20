@@ -95,10 +95,19 @@ def plaque(col, name, points, front_y, thickness, mat):
     count = len(points)
     vertices = [(x, front_y, z) for x, z in points]
     vertices += [(x, front_y + thickness, z) for x, z in points]
-    faces = [tuple(reversed(range(count))), tuple(range(count, 2 * count))]
+    signed_area = sum(
+        points[i][0] * points[(i + 1) % count][1]
+        - points[(i + 1) % count][0] * points[i][1]
+        for i in range(count)
+    )
+    front = list(range(count))
+    if signed_area < 0:
+        front.reverse()
+    faces = [tuple(front), tuple(i + count for i in reversed(front))]
     for i in range(count):
         nxt = (i + 1) % count
-        faces.append((i, nxt, nxt + count, i + count))
+        side = (i, i + count, nxt + count, nxt)
+        faces.append(side if signed_area > 0 else tuple(reversed(side)))
     mesh = bpy.data.meshes.new(name)
     mesh.from_pydata(vertices, [], faces)
     mesh.update()

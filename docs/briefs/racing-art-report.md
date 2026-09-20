@@ -16,4 +16,4 @@ Validation command:
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b -t 4 --python-exit-code 1 -P Art/Blender/validate_racing_props.py
 ```
 
-Validation checks source meshes, finite geometry and normals, material names, ground contact, scale, FBX round-trip dimensions, gate clear width, and preview existence. The render was visually inspected: all three props are wholly visible and their direction, candy pattern, and bolt symbol read from the front. Unity runtime placement and scene appearance are owned by integration task 3.
+Validation checks source meshes, finite geometry and normals, material names, ground contact, scale, FBX round-trip dimensions, gate clear width, and preview existence. It also checks that every directional chevron and the bolt emblem have a solid front cap whose normal points toward Blender -Y; this catches missing fills under Unity's backface culling. The render was visually inspected: all three props are wholly visible and their direction, candy pattern, and bolt symbol read from the front. Unity runtime placement and scene appearance are owned by integration task 3.

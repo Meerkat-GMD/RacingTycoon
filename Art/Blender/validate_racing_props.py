@@ -28,6 +28,20 @@ def bounds(objects):
     return low, high
 
 
+def validate_plaque_fronts(objects, stage):
+    """The large visible cap must face the approaching driver at Blender -Y."""
+    plaques = [obj for obj in objects if obj.name.startswith('DirectionChevron') or obj.name == 'GoldBolt']
+    for obj in plaques:
+        face_centers = [(obj.matrix_world @ face.center).y for face in obj.data.polygons]
+        front_y = min(face_centers)
+        cap = max(
+            (face for face, y in zip(obj.data.polygons, face_centers) if y < front_y + .003),
+            key=lambda face: face.area,
+        )
+        normal = (obj.matrix_world.inverted().transposed().to_3x3() @ cap.normal).normalized()
+        assert normal.y < -.9, (stage, obj.name, round(normal.y, 3))
+
+
 for name, entry in assets.items():
     bpy.ops.wm.open_mainfile(filepath=str(ART / 'RacingProps.blend'))
     assert name in bpy.data.collections
@@ -43,6 +57,7 @@ for name, entry in assets.items():
     source_materials = {mat.name for obj in objects for mat in obj.data.materials}
     assert source_materials == set(entry['materials'])
     assert source_materials <= set(manifest['materials'])
+    validate_plaque_fronts(objects, 'source')
     for obj in objects:
         assert all(math.isfinite(value) for vertex in obj.data.vertices for value in vertex.co)
         assert all(face.area > 1e-8 for face in obj.data.polygons), obj.name
@@ -54,6 +69,7 @@ for name, entry in assets.items():
     bpy.ops.object.delete(use_global=False)
     bpy.ops.import_scene.fbx(filepath=str(filepath), axis_forward='-Z', axis_up='Y')
     imported = [obj for obj in bpy.context.scene.objects if obj.type == 'MESH']
+    validate_plaque_fronts(imported, 'FBX')
     assert len(imported) >= len(objects), (name, len(imported), len(objects))
     imported_materials = {mat.name.split('.')[0] for obj in imported for mat in obj.data.materials}
     assert source_materials <= imported_materials, (name, imported_materials)
