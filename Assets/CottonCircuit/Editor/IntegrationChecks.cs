@@ -24,6 +24,9 @@ namespace CottonCircuit.Editor
             Check(game.World.Assets.PuffMesh && game.World.Assets.PuffMesh.vertexCount > 0, "Blender cotton mesh imported");
             var assets = game.World.Assets;
             Check(assets.Kart && assets.Kiosk && assets.Spinner && assets.Puff && assets.Customer && assets.Crystal && assets.Arch && assets.Tree && assets.Lamp, "all nine Blender assets used");
+            Check(assets.Chevron && assets.Barrier && assets.ShortcutGate, "three new Blender racing props imported");
+            Check(GameObject.Find("Sugarway circuit") && GameObject.Find("Racing surface") && GameObject.Find("Sugar cut shortcut"), "main course and shortcut rendered from physics geometry");
+            Check(game.World.CandyCamera && game.World.CandyPreview, "live cotton preview camera wired");
             foreach (var part in assets.Kart.GetComponentsInChildren<Transform>())
                 if (part.name == "Nose") Check(assets.Kart.transform.InverseTransformPoint(part.position).z > .2f, "kart nose faces gameplay +Z");
             var production = new Production(220); production.Advance(Math.PI, 7.5, 0); production.Advance(Math.PI, 12.5, 2);

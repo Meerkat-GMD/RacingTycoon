@@ -67,24 +67,50 @@ namespace CottonCircuit.Tests
             Check(game.Session.Production.Grams == 0, "stationary cart produces nothing");
             double beforeHitch = game.Session.Remaining; game.Tick(0, 0, false, 2);
             Check(Math.Abs(game.Session.Remaining - (beforeHitch - 2)) < .0001, "slow frame preserves elapsed race time");
-            for (int i = 0; i < 400; i++)
+            game.Tick(1, 0, false, 1);
+            game.Tick(1, .55f, false, .45f, true);
+            Check(game.World.Kart.Charge >= .32f, "corner drift charges meter");
+            game.Tick(1, 0, false, .02f);
+            Check(game.World.Kart.Boosting && game.World.Kart.DriveModel.BoostCount == 1, "releasing Space input produces one boost");
+            game.World.Kart.Recover();
+            bool boostCaptured = false;
+            for (int i = 0; i < 1500; i++)
             {
-                float steer = i >= 100 && i < 125 ? 1 : i >= 220 && i < 247 ? -1 : i >= 330 && i < 343 ? 1 : 0;
-                game.Tick(1, steer, false, .05f);
-                if (i % 8 == 0) yield return null;
+                FollowCourse(.02f);
+                if (i % 4 == 0) yield return null;
+                if (!boostCaptured && game.Session.Production.Grams > 40 && game.World.Kart.DriveModel.BoostRemaining > .7)
+                {
+                    boostCaptured = true;
+                    for (int frame = 0; frame < 18; frame++) { FollowCourse(1f / 60); yield return null; }
+                    Capture("02a-boost.png"); yield return null; yield return null;
+                }
             }
             Check(game.Session.Production.Grams > 50 && game.World.Kart.Speed > 0, "real kart movement creates cotton");
+            Check(game.World.Kart.DriveModel.Laps >= 1 && game.World.Kart.DriveModel.BestLapSeconds > 0, "direct steering completes a timed lap");
+            Check(!game.World.GameCamera.orthographic && game.World.GameCamera.rect.width > .95f, "race uses full-width perspective chase camera");
             var samples = game.Session.Production.Samples;
             var seen = new bool[3]; foreach (var sample in samples) seen[sample.Flavor] = true;
-            Check(seen[0] && seen[1] && seen[2], "lane changes wind all three flavors");
-            int beforeReset = game.Session.Production.Grams; game.World.Kart.ResetPosition(); game.Tick(0, 0, false, .05f);
+            Check(seen[0] && seen[1] && seen[2], "course sectors wind all three flavors");
+            int beforeReset = game.Session.Production.Grams; game.World.Kart.Recover(); game.Tick(0, 0, false, .05f);
             Check(game.Session.Production.Grams == beforeReset, "position reset does not produce sugar");
-            for (int i = 0; i < 30; i++) { game.Tick(1, 0, false, .05f); yield return null; }
+            for (int i = 0; i < 100; i++) { FollowCourse(.02f); yield return null; }
             yield return new WaitForSecondsRealtime(1.0f);
             Capture("02-race.png"); yield return null; yield return null;
+            CheckButtonsVisible();
+            Screen.SetResolution(1280, 960, false); yield return new WaitForSecondsRealtime(.7f);
+            Capture("02b-race-4x3.png"); yield return null; yield return null; CheckButtonsVisible();
+            Screen.SetResolution(1920, 820, false); yield return new WaitForSecondsRealtime(.7f);
+            Capture("02c-race-wide.png"); yield return null; yield return null; CheckButtonsVisible();
+            Screen.SetResolution(1600, 900, false); yield return new WaitForSecondsRealtime(.5f);
+            int wallHits = game.World.Kart.DriveModel.WallHits;
+            for (int i = 0; i < 250 && game.World.Kart.DriveModel.WallHits == wallHits; i++) game.Tick(1, 1, false, .02f, true);
+            Check(game.World.Kart.DriveModel.WallHits > wallHits && !game.World.Kart.Boosting, "wall impact slows and cancels boost");
+            Check(game.Session.Production.Grams >= beforeReset, "wall impact preserves made cotton");
             double remaining = game.Session.Remaining; int grams = game.Session.Production.Grams;
+            var pausedPosition = game.World.Kart.transform.position;
             game.TogglePause(); game.Tick(1, 1, false, .1f);
             Check(game.Session.Remaining == remaining && game.Session.Production.Grams == grams, "pause freezes time and production");
+            Check(game.World.Kart.transform.position == pausedPosition, "pause freezes kart movement");
             Capture("03-help.png"); yield return null; yield return null;
             game.TogglePause(); game.FinishRun(); game.FinishRun();
             Check(game.Session.Mode == GameMode.Results && game.Session.Economy.Inventory.Count == 1, "finish stores exactly one product");
@@ -102,6 +128,35 @@ namespace CottonCircuit.Tests
             for (int i = 0; i < 300; i++) game.Tick(0, 0, false, .2f);
             Check(game.Session.Mode == GameMode.Results && game.Session.Result == null, "five fps still ends a 60 second empty run");
             game.ReturnToShop();
+            game.StartRun();
+            var course = RaceCourse.Shared;
+            for (int i = 0; i < 700 && game.World.Kart.DriveModel.Sample.Progress < 44; i++)
+            {
+                SteerTo(course.Sample(game.World.Kart.DriveModel.Sample.Progress + 8).Position);
+                if (i % 4 == 0) yield return null;
+            }
+            bool enteredShortcut = false, mergedShortcut = false, shortcutCaptured = false;
+            double shortcutExit = course.Project(course.ShortcutPoints[course.ShortcutPoints.Length - 1]).Progress;
+            for (int i = 0; i < 700; i++)
+            {
+                var drive = game.World.Kart.DriveModel; int nearest = 0; double distance = double.MaxValue;
+                for (int j = 0; j < course.ShortcutPoints.Length; j++)
+                {
+                    var difference = drive.Position - course.ShortcutPoints[j]; double candidate = difference.X * difference.X + difference.Z * difference.Z;
+                    if (candidate < distance) { distance = candidate; nearest = j; }
+                }
+                SteerTo(nearest >= course.ShortcutPoints.Length - 5 ? course.Sample(shortcutExit + 7).Position : course.ShortcutPoints[Math.Min(course.ShortcutPoints.Length - 1, nearest + 4)]);
+                enteredShortcut |= drive.Sample.IsShortcut;
+                if (i % 4 == 0) yield return null;
+                if (enteredShortcut && !shortcutCaptured)
+                {
+                    shortcutCaptured = true; yield return new WaitForSecondsRealtime(.4f);
+                    Capture("10-shortcut.png"); yield return null; yield return null;
+                }
+                if (enteredShortcut && !drive.Sample.IsShortcut && drive.Sample.Progress > shortcutExit + 3) { mergedShortcut = true; break; }
+            }
+            Check(enteredShortcut && mergedShortcut && game.World.Kart.DriveModel.WallHits == 0, "actual kart drives through shortcut and rejoins without false walls");
+            game.FinishRun(); game.ReturnToShop();
             Screen.SetResolution(1280, 720, false); yield return new WaitForSecondsRealtime(1.5f);
             Capture("05-shop-1280.png"); yield return null; yield return null;
             Screen.SetResolution(1920, 1080, false); yield return new WaitForSecondsRealtime(.7f);
@@ -116,6 +171,27 @@ namespace CottonCircuit.Tests
             Capture("09-shop-wide.png"); yield return null; yield return null;
             CheckButtonsVisible();
             Check(!failed, "no runtime errors during complete cycle");
+        }
+        // Test-only controller. Production gameplay never steers for the player.
+        void SteerTo(RoadPoint target)
+        {
+            var d = game.World.Kart.DriveModel;
+            double angle = Math.Atan2(target.X - d.Position.X, target.Z - d.Position.Z) - d.Heading;
+            while (angle > Math.PI) angle -= Math.PI * 2;
+            while (angle < -Math.PI) angle += Math.PI * 2;
+            game.Tick(d.Speed < 8 ? .7f : 0, Mathf.Clamp((float)angle * 1.8f, -1, 1), false, .02f);
+        }
+        void FollowCourse(float dt)
+        {
+            var drive = game.World.Kart.DriveModel;
+            var target = drive.Course.Sample(drive.Sample.Progress + 10).Position;
+            double heading = Math.Atan2(target.X - drive.Position.X, target.Z - drive.Position.Z);
+            double difference = heading - drive.Heading;
+            while (difference > Math.PI) difference -= Math.PI * 2;
+            while (difference < -Math.PI) difference += Math.PI * 2;
+            float steer = Mathf.Clamp((float)difference * 1.8f, -1, 1);
+            bool drift = Math.Abs(steer) > .24 && drive.DriftCharge < .5 && drive.BoostRemaining <= 0;
+            game.Tick(1, steer, false, dt, drift);
         }
         void CheckButtonsVisible()
         {

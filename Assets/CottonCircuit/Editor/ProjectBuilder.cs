@@ -27,6 +27,7 @@ namespace CottonCircuit.Editor
             assets.Kart = Import("Kart"); assets.Kiosk = Import("Kiosk"); assets.Spinner = Import("Spinner");
             assets.Puff = Import("Puff"); assets.Customer = Import("Customer"); assets.Crystal = Import("Crystal");
             assets.Arch = Import("Arch"); assets.Tree = Import("Tree"); assets.Lamp = Import("Lamp");
+            assets.Chevron = Import("Chevron"); assets.Barrier = Import("Barrier"); assets.ShortcutGate = Import("ShortcutGate");
             assets.Flavors = new[] { materials["Strawberry"], materials["Soda"], materials["Vanilla"] };
             var puff = (GameObject)PrefabUtility.InstantiatePrefab(assets.Puff);
             var combine = new List<CombineInstance>();
@@ -116,7 +117,7 @@ namespace CottonCircuit.Editor
             var renderers = obj.GetComponentsInChildren<Renderer>(); if (renderers.Length == 0) throw new Exception("No renderers: " + obj.name);
             Bounds bounds = renderers[0].bounds; foreach (var r in renderers) bounds.Encapsulate(r.bounds); return bounds;
         }
-        static void ReplaceAsset(UnityEngine.Object asset, string path)
+        internal static void ReplaceAsset(UnityEngine.Object asset, string path)
         {
             var old = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(path);
             if (old) { EditorUtility.CopySerialized(asset, old); UnityEngine.Object.DestroyImmediate(asset); }
@@ -125,68 +126,66 @@ namespace CottonCircuit.Editor
         static void BuildWorld(WorldView world)
         {
             Transform root = world.transform;
-            Cylinder("Floating garden", new Vector3(-3, -.8f, 1), new Vector3(46, 1, 40), materials["Base"], root);
-            Cylinder("Machine body", new Vector3(0, .05f, 0), new Vector3(31, .7f, 31), materials["Cream"], root);
-            Cylinder("Inner plate", new Vector3(0, .8f, 0), new Vector3(29, .13f, 29), materials["White"], root);
-            Ring("Strawberry track", 6.25f, 8.75f, .99f, 1.03f, materials["InnerLane"], root);
-            Ring("Soda track", 8.75f, 11.25f, .99f, 1.032f, materials["MiddleLane"], root);
-            Ring("Vanilla track", 11.25f, 13.75f, .99f, 1.034f, materials["OuterLane"], root);
-            Ring("Rounded machine rim", 14.0f, 15.1f, .75f, 1.55f, materials["Cream"], root);
-            Ring("Pink rim inlay", 14.55f, 14.82f, 1.55f, 1.57f, materials["Strawberry"], root);
-            Ring("Inner guard", 5.7f, 6.1f, .95f, 1.35f, materials["Cream"], root);
-            Cylinder("Spinner stage", new Vector3(0, 1.0f, 0), new Vector3(9.6f, .18f, 9.6f), materials["Plum"], root);
-            Cylinder("Spinner stage inset", new Vector3(0, 1.2f, 0), new Vector3(8.9f, .06f, 8.9f), materials["Cream"], root);
-            foreach (float radius in new[] { 8.75f, 11.25f })
-                for (int i = 0; i < 80; i++)
-                {
-                    float a = i * Mathf.PI * 2 / 80;
-                    var dash = Cube("Lane dash", new Vector3(Mathf.Cos(a) * radius, 1.044f, Mathf.Sin(a) * radius), new Vector3(.12f, .015f, .48f), materials["White"], root);
-                    dash.transform.rotation = Quaternion.Euler(0, -a * Mathf.Rad2Deg, 0);
-                }
+            Cylinder("Floating garden", new Vector3(-6, -.8f, 1), new Vector3(111, 1, 104), materials["Base"], root);
+            Cylinder("Machine body", new Vector3(0, .05f, 0), new Vector3(94, .7f, 94), materials["Cream"], root);
+            Cylinder("Inner plate", new Vector3(0, .8f, 0), new Vector3(92, .13f, 92), materials["White"], root);
+            Ring("Rounded machine rim", 46, 47, .75f, 2.3f, materials["Cream"], root);
+            Ring("Pink rim inlay", 46.35f, 46.65f, 2.3f, 2.33f, materials["Strawberry"], root);
+            Cylinder("Spinner stage", new Vector3(0, 1, 0), new Vector3(15, .18f, 15), materials["Plum"], root);
+            Cylinder("Spinner stage inset", new Vector3(0, 1.2f, 0), new Vector3(14, .06f, 14), materials["Cream"], root);
+            RaceCourseBuilder.Build(world, materials);
             var spinner = Place(world.Assets.Spinner, new Vector3(0, 1.27f, 0), Quaternion.identity, root);
-            world.Stick = spinner.transform;
+            spinner.transform.localScale = Vector3.one * 2; world.Stick = spinner.transform;
             var cotton = new GameObject("Growing cotton on central stick"); cotton.transform.SetParent(root); cotton.transform.position = new Vector3(0, 1.27f, 0);
-            world.CentralCandy = cotton.AddComponent<CandyView>(); world.CentralCandy.Assets = world.Assets;
-            var kart = Place(world.Assets.Kart, new Vector3(0, 1.05f, 10), Quaternion.Euler(0, -90, 0), root);
+            cotton.transform.localScale = Vector3.one * 2; world.CentralCandy = cotton.AddComponent<CandyView>(); world.CentralCandy.Assets = world.Assets;
+            var kart = Place(world.Assets.Kart, new Vector3(0, 1.05f, -25), Quaternion.Euler(0, -90, 0), root);
             world.Kart = kart.AddComponent<KartController>();
-            Place(world.Assets.Arch, new Vector3(0, 1.04f, 10), Quaternion.Euler(0, 90, 0), root);
+
             for (int i = 0; i < 14; i++)
             {
                 float a = (i + .3f) * Mathf.PI * 2 / 14;
-                var crystal = Place(world.Assets.Crystal, new Vector3(Mathf.Cos(a) * 5.35f, 1.03f, Mathf.Sin(a) * 5.35f), Quaternion.Euler(0, i * 47, 0), root);
+                var crystal = Place(world.Assets.Crystal, new Vector3(Mathf.Cos(a) * 8.35f, 1.03f, Mathf.Sin(a) * 8.35f), Quaternion.Euler(0, i * 47, 0), root);
                 crystal.transform.localScale = Vector3.one * .7f;
             }
-            Cylinder("Shop terrace", new Vector3(-19, -.1f, 8), new Vector3(13, .35f, 13), materials["Cream"], root);
-            Place(world.Assets.Kiosk, new Vector3(-19, .26f, 8), Quaternion.identity, root);
-            var sign = Cube("Shop sign", new Vector3(-19, 3.8f, 9.57f), new Vector3(3.9f, .66f, .1f), materials["Navy"], root);
-            AddSign("SUGAR CLOUD", new Vector3(-19, 3.8f, 9.64f), .12f, Color.white, root);
-            var display = new GameObject("Shop product positions"); display.transform.SetParent(root); display.transform.position = new Vector3(-19, 1.52f, 9.44f); world.DisplayRoot = display.transform;
-            world.Customer = Place(world.Assets.Customer, new Vector3(-22, .26f, 15), Quaternion.Euler(0, 180, 0), root).transform;
+            Cylinder("Shop terrace", new Vector3(-52, -.1f, 8), new Vector3(13, .35f, 13), materials["Cream"], root);
+            Place(world.Assets.Kiosk, new Vector3(-52, .26f, 8), Quaternion.identity, root);
+            var sign = Cube("Shop sign", new Vector3(-52, 3.8f, 9.57f), new Vector3(3.9f, .66f, .1f), materials["Navy"], root);
+            AddSign("SUGAR CLOUD", new Vector3(-52, 3.8f, 9.64f), .12f, Color.white, root);
+            var display = new GameObject("Shop product positions"); display.transform.SetParent(root); display.transform.position = new Vector3(-52, 1.52f, 9.44f); world.DisplayRoot = display.transform;
+            world.Customer = Place(world.Assets.Customer, new Vector3(-55, .26f, 15), Quaternion.Euler(0, 180, 0), root).transform;
             for (int i = 0; i < 18; i++)
             {
                 float a = i * Mathf.PI * 2 / 18;
-                var pos = new Vector3(Mathf.Cos(a) * 18, -.02f, Mathf.Sin(a) * 17);
-                if (pos.x < -10 && pos.z > 0) continue;
+                var pos = new Vector3(Mathf.Cos(a) * 49, -.02f, Mathf.Sin(a) * 49);
+                if (pos.x < -40 && pos.z > 0) continue;
                 var tree = Place(i % 3 == 0 ? world.Assets.Lamp : world.Assets.Tree, pos, Quaternion.Euler(0, i * 51, 0), root);
                 tree.transform.localScale *= i % 2 == 0 ? .85f : 1.1f;
             }
-            Place(world.Assets.Tree, new Vector3(-23, -.02f, 5), Quaternion.identity, root);
-            Place(world.Assets.Lamp, new Vector3(-22, .2f, 11.6f), Quaternion.identity, root);
+            Place(world.Assets.Tree, new Vector3(-56, -.02f, 5), Quaternion.identity, root);
+            Place(world.Assets.Lamp, new Vector3(-55, .2f, 11.6f), Quaternion.identity, root);
             for (int i = 0; i < 9; i++)
-                Cube("Shop walkway", new Vector3(-20 + i * .6f, -.01f, 14.3f + i * .16f), new Vector3(.46f, .04f, 1.4f), materials["White"], root);
+                Cube("Shop walkway", new Vector3(-53 + i * .6f, -.01f, 14.3f + i * .16f), new Vector3(.46f, .04f, 1.4f), materials["White"], root);
             var threadObject = new GameObject("Sugar thread from kart"); threadObject.transform.SetParent(root);
             var thread = threadObject.AddComponent<LineRenderer>(); thread.useWorldSpace = true; thread.startWidth = .065f; thread.endWidth = .04f; thread.numCapVertices = 4;
             var lineMat = AssetDatabase.LoadAssetAtPath<Material>(Root + "/Materials/SugarThread.mat");
             if (!lineMat) { lineMat = new Material(Shader.Find("Sprites/Default")); AssetDatabase.CreateAsset(lineMat, Root + "/Materials/SugarThread.mat"); }
             thread.sharedMaterial = lineMat; thread.enabled = false; world.SugarThread = thread;
+            var preview = new GameObject("Cotton preview camera", typeof(Camera)).GetComponent<Camera>();
+            preview.transform.SetPositionAndRotation(new Vector3(12, 10, 14), Quaternion.LookRotation(new Vector3(-12, -3, -14)));
+            preview.orthographic = true; preview.orthographicSize = 6.8f; preview.clearFlags = CameraClearFlags.SolidColor; preview.backgroundColor = Palette.Cream;
+            preview.nearClipPlane = .1f; preview.farClipPlane = 40; preview.enabled = false; preview.allowHDR = false;
+            var previewPath = Root + "/Data/CandyPreview.renderTexture";
+            var texture = AssetDatabase.LoadAssetAtPath<RenderTexture>(previewPath);
+            if (!texture) { texture = new RenderTexture(256, 256, 16) { name = "Candy preview" }; AssetDatabase.CreateAsset(texture, previewPath); }
+            preview.targetTexture = texture; world.CandyCamera = preview; world.CandyPreview = texture;
             var ground = Cube("Studio ground", new Vector3(0, -2, 0), new Vector3(200, .1f, 200), materials["Ground"], root);
         }
-        static GameObject Place(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
+        internal static GameObject Place(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
         {
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab); instance.transform.SetParent(parent, false);
             instance.transform.SetPositionAndRotation(position, rotation); return instance;
         }
-        static GameObject Cube(string name, Vector3 position, Vector3 scale, Material material, Transform parent) => Primitive(PrimitiveType.Cube, name, position, scale, material, parent);
+        internal static GameObject Cube(string name, Vector3 position, Vector3 scale, Material material, Transform parent) => Primitive(PrimitiveType.Cube, name, position, scale, material, parent);
         static GameObject Cylinder(string name, Vector3 position, Vector3 scale, Material material, Transform parent) => Primitive(PrimitiveType.Cylinder, name, position, scale, material, parent);
         static GameObject Primitive(PrimitiveType type, string name, Vector3 position, Vector3 scale, Material material, Transform parent)
         {

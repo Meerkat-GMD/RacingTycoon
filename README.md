@@ -13,14 +13,17 @@
 | 입력 | 동작 |
 |---|---|
 | W / 위 방향키 | 가속 |
-| A / 왼쪽 방향키 | 안쪽 레인으로 이동 |
-| D / 오른쪽 방향키 | 바깥쪽 레인으로 이동 |
-| S / 아래 방향키 / Space | 제동 |
+| A / 왼쪽 방향키 | 왼쪽 조향 |
+| D / 오른쪽 방향키 | 오른쪽 조향 |
+| Space | 코너에서 누르고 드리프트 → 놓아서 부스트 |
+| S / 아래 방향키 | 제동 |
 | Enter | 출발 / 조기 완성 / 가게 복귀 |
-| R | 주행 중 안전한 출발 위치로 복귀 |
+| R | 현재 위치 근처 코스 중앙으로 복귀 |
 | Esc | 일시정지, 조작 안내, 소리 설정 |
 
-원형 코스를 자동으로 따라가는 주행 보조가 있습니다. 안쪽은 **딸기**, 가운데는 **소다**, 바깥쪽은 **바닐라**입니다. 실제로 이동한 회전량이 솜사탕의 양과 층을 만들고, 레인 선택이 색과 두께를 바꿉니다. 멈추면 생산되지 않습니다.
+직선·연속 코너·긴 코너가 있는 **슈가웨이**를 직접 조향합니다. 중앙 막대 주위를 돌며 **딸기 → 소다 → 바닐라** 구간을 지나고, 새로 전진한 경로가 솜사탕을 만듭니다. 주행 라인이 솜사탕의 두께를 바꿉니다. 멈추거나 역주행하거나 복귀하는 동작으로는 솜사탕을 추가로 얻지 못합니다.
+
+코너에서 W와 Space를 누르면서 조향하면 드리프트가 충전됩니다. 게이지가 노란색이 되면 Space를 놓아 짧은 부스트를 쓰세요. **부스트 중 생성량이 25% 증가**합니다. 벽에 부딪히면 속도와 충전이 줄지만 이미 만든 솜사탕은 유지됩니다. 번개 모양 게이트의 좁은 **Sugar Cut 지름길**로 코너를 단축할 수 있습니다. 미니맵, 현재 랩·최고 랩 기록, 솜사탕 미리보기가 주행 중 표시됩니다.
 
 주행은 최대 60초이며 설탕통이 가득 차면 자동 완성됩니다. 가게로 돌아오면 손님이 진열된 솜사탕을 구매합니다. 모은 코인으로 카트 모터, 설탕통, 가게를 각각 3단계까지 업그레이드합니다. 진열대에는 최대 6개를 보관합니다.
 
@@ -32,13 +35,17 @@
 - `Art/Blender/preview.png`: 에셋 전체 미리보기.
 - `Art/Blender/create_assets.py`: 모델과 FBX를 재생성하는 Blender Python 스크립트.
 - `Art/Blender/validate_assets.py`: 모델 크기, 재질, FBX 재임포트 검증.
-- `Assets/CottonCircuit/Models/`: 카트·판매대·제작기·솜·손님·설탕 결정·아치·나무·가로등의 FBX 9종.
+- `Art/Blender/RacingProps.blend`: 방향 표지·가드레일·지름길 게이트 원본.
+- `Art/Blender/create_racing_props.py`, `validate_racing_props.py`: 새 레이싱 소품 생성과 검증.
+- `Assets/CottonCircuit/Models/`: 기본 FBX 9종과 레이싱 소품 3종, 총 12종.
 
 프로젝트 루트에서 다음과 같이 재생성합니다.
 
 ```powershell
 & 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b -t 4 -P Art/Blender/create_assets.py
 & 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b -t 4 -P Art/Blender/validate_assets.py
+& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b -t 4 -P Art/Blender/create_racing_props.py
+& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b -t 4 --python-exit-code 1 -P Art/Blender/validate_racing_props.py
 ```
 
 Unity의 `Cotton Circuit > Rebuild game scene` 메뉴는 생성된 프리팹·재질과 메인 씬을 다시 만듭니다. 메인 씬에서 직접 편집한 배치는 재생성 시 대체되므로 별도 씬으로 저장해서 보관하세요.

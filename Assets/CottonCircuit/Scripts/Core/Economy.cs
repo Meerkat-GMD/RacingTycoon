@@ -13,7 +13,7 @@ namespace CottonCircuit
         public int TotalSold;
         public int LifetimeRevenue;
         public int Capacity { get { return 220 + Levels[1] * 80; } }
-        public float MaxSpeed { get { return 11f + Levels[0] * 2.5f; } }
+        public float MaxSpeed { get { return 18f + Levels[0] * 2.5f; } }
         public bool CompleteRun(Product product)
         {
             if (product == null || product.Grams <= 0 || string.IsNullOrEmpty(product.Id) ||

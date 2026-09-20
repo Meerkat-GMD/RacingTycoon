@@ -10,12 +10,12 @@ namespace CottonCircuit
         Font font;
         Sprite rounded;
         RectTransform root;
-        GameObject shop, race, result, pause, toast;
+        GameObject shop, race, result, pause, toast, common;
+        Text driftLabel, raceEvent, bestLap; Image driftFill; RaceMapGraphic map;
         Text coins, day, inventory, customer, timer, grams, speed, laps, flavor, resultTitle, resultWeight, resultPrice, resultDetail, notice, status, muteLabel;
         Image productionFill, customerFill;
         Text[] upgradeTexts = new Text[3];
         Button[] upgradeButtons = new Button[3];
-        Image[] flavorCards = new Image[3];
         Button startButton;
         float resetConfirmUntil;
         public void Initialize(GameController controller)
@@ -33,20 +33,21 @@ namespace CottonCircuit
             root.SetParent(canvasObject.transform, false); root.anchorMin = root.anchorMax = root.pivot = new Vector2(.5f, .5f);
             root.sizeDelta = new Vector2(1600, 900); root.anchoredPosition = Vector2.zero;
             if (!FindAnyObjectByType<EventSystem>()) new GameObject("Event System", typeof(EventSystem), typeof(StandaloneInputModule));
-            Box(root, "Shop backdrop", 1208, 0, 392, 900, Palette.Cream, false);
-            Box(root, "Divider", 1208, 0, 2, 900, Palette.Hex("E5DCCC"), false);
-            Label(root, "C O T T O N   C I R C U I T", 44, 31, 660, 30, 15, Palette.Ink, FontStyle.Bold);
-            Label(root, "솜사탕 서킷", 42, 62, 650, 58, 40, Palette.Ink, FontStyle.Bold);
-            Label(root, "한 바퀴씩, 달콤한 꿈을 감아요.", 46, 124, 650, 35, 17, Palette.Muted);
-            var badge = Box(root, "Day badge", 46, 177, 155, 38, Color.white);
+            common = Group(root, "Shop and result chrome"); var c = common.GetComponent<RectTransform>();
+            Box(c, "Shop backdrop", 1208, 0, 392, 900, Palette.Cream, false);
+            Box(c, "Divider", 1208, 0, 2, 900, Palette.Hex("E5DCCC"), false);
+            Label(c, "C O T T O N   C I R C U I T", 44, 31, 660, 30, 15, Palette.Ink, FontStyle.Bold);
+            Label(c, "솜사탕 서킷", 42, 62, 650, 58, 40, Palette.Ink, FontStyle.Bold);
+            Label(c, "한 바퀴씩, 달콤한 꿈을 감아요.", 46, 124, 650, 35, 17, Palette.Muted);
+            var badge = Box(c, "Day badge", 46, 177, 155, 38, Color.white);
             day = Label(badge.rectTransform, "DAY 01", 0, 0, 155, 38, 15, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
-            ButtonAt(root, "도움말  Esc", 1040, 42, 132, 43, Color.white, Palette.Ink, () => game.TogglePause(), 15);
-            var wallet = Box(root, "Wallet", 1236, 30, 335, 78, Palette.Ink);
+            ButtonAt(c, "도움말  Esc", 1040, 42, 132, 43, Color.white, Palette.Ink, () => game.TogglePause(), 15);
+            var wallet = Box(c, "Wallet", 1236, 30, 335, 78, Palette.Ink);
             Label(wallet.rectTransform, "우리 가게의 수익", 20, 11, 190, 24, 13, Palette.Cream);
             coins = Label(wallet.rectTransform, "80", 20, 31, 225, 40, 28, Color.white, FontStyle.Bold);
             Label(wallet.rectTransform, "COINS", 240, 36, 75, 25, 13, Palette.Yellow, FontStyle.Bold, TextAnchor.MiddleRight);
-            var bottom = Box(root, "Controls strip", 38, 840, 1132, 40, new Color(1, .98f, .93f, .95f));
-            Label(bottom.rectTransform, "W / ↑  가속     A D / ← →  레인 이동     S / Space  제동     Enter  진행     R  위치 복귀", 14, 0, 1104, 40, 15, Palette.Ink, FontStyle.Normal, TextAnchor.MiddleCenter);
+            var bottom = Box(c, "Controls strip", 38, 840, 1132, 40, new Color(1, .98f, .93f, .95f));
+            Label(bottom.rectTransform, "W / ↑  가속     A D / ← →  조향     Space 드리프트 · S 제동     Enter  진행     R  위치 복귀", 14, 0, 1104, 40, 15, Palette.Ink, FontStyle.Normal, TextAnchor.MiddleCenter);
             shop = Group(root, "Shop panel"); race = Group(root, "Race panel"); result = Group(root, "Results panel");
             BuildShop(); BuildRace(); BuildResult();
             toast = Box(root, "Toast", 278, 772, 660, 48, Palette.Ink).gameObject;
@@ -82,26 +83,34 @@ namespace CottonCircuit
         void BuildRace()
         {
             var p = race.GetComponent<RectTransform>();
-            Label(p, "02  /  SPIN SOMETHING SWEET", 1240, 137, 320, 25, 12, Palette.Muted, FontStyle.Bold);
-            Label(p, "솜사탕을 감아요", 1240, 169, 320, 48, 29, Palette.Ink, FontStyle.Bold);
-            Label(p, "중앙 막대를 돌수록 풍성해져요.", 1240, 224, 320, 30, 15, Palette.Muted);
-            var clock = Box(p, "Clock", 1240, 277, 320, 112, Palette.Yellow);
-            Label(clock.rectTransform, "남은 시간", 19, 13, 130, 25, 14, Palette.Ink);
-            timer = Label(clock.rectTransform, "60", 17, 35, 180, 66, 49, Palette.Ink, FontStyle.Bold);
-            Label(clock.rectTransform, "SECONDS", 179, 67, 122, 28, 12, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleRight);
-            grams = Label(p, "0 / 220 g", 1240, 413, 320, 37, 24, Palette.Ink, FontStyle.Bold);
-            productionFill = Progress(p, 1240, 463, 320, 10, Palette.Pink);
-            speed = Label(p, "0 km/h", 1240, 493, 150, 30, 19, Palette.Ink, FontStyle.Bold);
-            laps = Label(p, "0.0 바퀴", 1401, 493, 159, 30, 19, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleRight);
-            Label(p, "설탕 레인   A ←  → D", 1240, 550, 320, 27, 14, Palette.Muted);
-            for (int i = 0; i < 3; i++)
-            {
-                flavorCards[i] = Box(p, "Flavor " + i, 1240 + 109 * i, 589, 102, 53, Palette.Flavor(i));
-                Label(flavorCards[i].rectTransform, Palette.FlavorName(i), 0, 0, 102, 53, 17, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
-            }
-            flavor = Label(p, "지금은 소다 맛을 감고 있어요", 1240, 663, 320, 55, 15, Palette.Muted);
-            ButtonAt(p, "이만큼 완성하기", 1240, 745, 320, 63, Palette.Ink, Color.white, () => game.FinishRun(), 20);
-            Label(p, "가득 차면 자동으로 완성돼요", 1240, 829, 320, 30, 13, Palette.Muted, FontStyle.Normal, TextAnchor.MiddleCenter);
+            var mapCard = Box(p, "Course map", 32, 32, 240, 232, new Color(1, .97f, .90f, .93f));
+            Label(mapCard.rectTransform, "SUGARWAY  /  01", 17, 10, 206, 28, 14, Palette.Ink, FontStyle.Bold);
+            var mapRect = Rect(mapCard.rectTransform, "Live course", 12, 47, 216, 173); mapRect.pivot = Vector2.zero; mapRect.anchoredPosition = new Vector2(12, -220);
+            map = mapRect.gameObject.AddComponent<RaceMapGraphic>(); map.raycastTarget = false; map.Kart = game.World.Kart;
+            var lapCard = Box(p, "Lap times", 290, 32, 240, 130, Palette.Ink);
+            laps = Label(lapCard.rectTransform, "LAP 01", 18, 11, 202, 41, 28, Color.white, FontStyle.Bold);
+            bestLap = Label(lapCard.rectTransform, "첫 랩 기록에 도전!", 18, 61, 207, 56, 15, Palette.Cream);
+            var clock = Box(p, "Race clock", 686, 28, 226, 108, Palette.Yellow);
+            Label(clock.rectTransform, "남은 제작 시간", 0, 7, 226, 25, 13, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
+            timer = Label(clock.rectTransform, "60", 0, 31, 226, 68, 48, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
+            var product = Box(p, "Live cotton", 1250, 32, 318, 240, new Color(1, .97f, .90f, .94f));
+            Label(product.rectTransform, "달리는 만큼, 달콤하게", 17, 10, 284, 29, 17, Palette.Ink, FontStyle.Bold);
+            var preview = Rect(product.rectTransform, "Cotton preview", 13, 48, 137, 137).gameObject.AddComponent<RawImage>(); preview.texture = game.World.CandyPreview; preview.raycastTarget = false;
+            grams = Label(product.rectTransform, "0 g", 163, 57, 142, 48, 27, Palette.Ink, FontStyle.Bold);
+            flavor = Label(product.rectTransform, "딸기 구간", 164, 112, 142, 35, 16, Palette.Muted);
+            Label(product.rectTransform, "부스트 중 생성량 +25%", 163, 154, 142, 47, 13, Palette.Muted);
+            productionFill = Progress(product.rectTransform, 17, 213, 284, 8, Palette.Pink);
+            var speedCard = Box(p, "Speedometer", 32, 699, 253, 129, Palette.Ink);
+            Label(speedCard.rectTransform, "SUGAR POWER", 18, 11, 214, 25, 13, Palette.Soda, FontStyle.Bold);
+            speed = Label(speedCard.rectTransform, "0 km/h", 16, 44, 220, 68, 41, Color.white, FontStyle.Bold);
+            var driftCard = Box(p, "Drift meter", 508, 726, 584, 103, new Color(.16f, .20f, .30f, .95f));
+            driftLabel = Label(driftCard.rectTransform, "Space + 조향으로 드리프트", 20, 8, 544, 40, 22, Color.white, FontStyle.Bold, TextAnchor.MiddleCenter);
+            driftFill = Progress(driftCard.rectTransform, 22, 62, 540, 14, Palette.Pink);
+            raceEvent = Label(p, "", 448, 176, 704, 58, 29, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
+            ButtonAt(p, "완성하기  Enter", 1323, 770, 245, 56, Palette.Cream, Palette.Ink, () => game.FinishRun(), 18);
+            ButtonAt(p, "도움말  Esc", 1415, 289, 153, 42, Palette.Cream, Palette.Ink, () => game.TogglePause(), 14);
+            var controls = Box(p, "Driving controls", 310, 848, 980, 35, new Color(1, .97f, .9f, .95f));
+            Label(controls.rectTransform, "W 가속    A / D 조향    Space 누르고 코너 → 놓으면 부스트    S 제동    R 복귀", 10, 0, 960, 35, 15, Palette.Ink, FontStyle.Normal, TextAnchor.MiddleCenter);
         }
         void BuildResult()
         {
@@ -112,7 +121,7 @@ namespace CottonCircuit
             var card = Box(p, "Finished candy stats", 1240, 350, 320, 186, Color.white);
             Label(card.rectTransform, "오늘 만든 솜사탕", 19, 17, 282, 28, 15, Palette.Muted);
             resultWeight = Label(card.rectTransform, "220 g", 18, 53, 280, 55, 38, Palette.Ink, FontStyle.Bold);
-            resultDetail = Label(card.rectTransform, "3가지 맛 · 5.5바퀴", 19, 124, 282, 40, 16, Palette.Muted);
+            resultDetail = Label(card.rectTransform, "3가지 맛 · 5.5바퀴", 19, 124, 282, 49, 15, Palette.Muted);
             Label(p, "예상 판매 금액", 1240, 573, 320, 30, 16, Palette.Muted);
             resultPrice = Label(p, "+ 220 코인", 1240, 615, 320, 66, 35, Palette.Ink, FontStyle.Bold);
             ButtonAt(p, "가게로 돌아가기   →", 1240, 745, 320, 63, Palette.Pink, Palette.Ink, () => game.ReturnToShop(), 20);
@@ -124,7 +133,7 @@ namespace CottonCircuit
             pause.GetComponent<Image>().raycastTarget = true;
             var card = Box(pause.GetComponent<RectTransform>(), "Pause card", 474, 166, 652, 568, Palette.Cream);
             Label(card.rectTransform, "잠깐, 달콤한 휴식", 38, 31, 577, 53, 32, Palette.Ink, FontStyle.Bold);
-            Label(card.rectTransform, "W / ↑         가속해서 중앙 막대 주위를 달려요\nA D / ← →  안쪽 딸기 · 가운데 소다 · 바깥 바닐라\nS / Space   브레이크\nEnter          출발 · 완성 · 가게로 돌아가기\nR                 주행 위치 복귀\nEsc             일시정지 / 계속하기", 40, 113, 576, 218, 18, Palette.Ink);
+            Label(card.rectTransform, "W / ↑         가속해서 중앙 막대 주위를 달려요\nA D / ← →  좌우 조향\nSpace          코너에서 누르고, 놓아서 부스트\nS / ↓            브레이크\nEnter          출발 · 완성 · 가게로 돌아가기\nR                 주행 위치 복귀\nEsc             일시정지 / 계속하기", 40, 113, 576, 234, 17, Palette.Ink);
             ButtonAt(card.rectTransform, "계속하기", 40, 360, 574, 56, Palette.Ink, Color.white, () => game.TogglePause(), 20);
             var mute = ButtonAt(card.rectTransform, "소리 켜짐", 40, 440, 273, 46, Color.white, Palette.Ink, () => game.ToggleMute(), 16);
             muteLabel = mute.GetComponentInChildren<Text>();
@@ -142,8 +151,9 @@ namespace CottonCircuit
             if (!root || game.Session == null) return;
             var s = game.Session; var e = s.Economy;
             coins.text = e.Coins.ToString("N0"); day.text = "DAY " + e.Day.ToString("00");
-            shop.SetActive(s.Mode == GameMode.Shop); race.SetActive(s.Mode == GameMode.Racing); result.SetActive(s.Mode == GameMode.Results);
+            common.SetActive(s.Mode != GameMode.Racing); shop.SetActive(s.Mode == GameMode.Shop); race.SetActive(s.Mode == GameMode.Racing); result.SetActive(s.Mode == GameMode.Results);
             pause.SetActive(s.Paused); toast.SetActive(!string.IsNullOrEmpty(game.Notice)); notice.text = game.Notice ?? "";
+            toast.GetComponent<RectTransform>().anchoredPosition = new Vector2(s.Mode == GameMode.Racing ? 470 : 278, s.Mode == GameMode.Racing ? -570 : -772);
             muteLabel.text = game.Audio.Muted ? "소리 꺼짐" : "소리 켜짐";
             if (s.Mode == GameMode.Shop)
             {
@@ -164,13 +174,19 @@ namespace CottonCircuit
             if (s.Mode == GameMode.Racing)
             {
                 timer.text = Mathf.CeilToInt((float)s.Remaining).ToString("00");
-                grams.text = s.Production.Grams + " / " + e.Capacity + " g";
-                productionFill.rectTransform.sizeDelta = new Vector2(320 * s.Production.Grams / e.Capacity, 10);
-                speed.text = Mathf.RoundToInt(game.World.Kart.Speed * 3.6f) + " km/h";
-                laps.text = s.Production.Turns.ToString("0.0") + " 바퀴";
-                int current = game.World.Kart.Flavor;
-                for (int i = 0; i < 3; i++) flavorCards[i].color = Color.Lerp(Palette.Flavor(i), Palette.Cream, i == current ? 0 : .65f);
-                flavor.text = game.World.Kart.Speed < .2f ? "W를 길게 눌러 출발하세요!" : "지금은 " + Palette.FlavorName(current) + " 맛을 감고 있어요";
+                grams.text = s.Production.Grams + " g";
+                productionFill.rectTransform.sizeDelta = new Vector2(284f * s.Production.Grams / e.Capacity, 8);
+                var kart = game.World.Kart; var drive = kart.DriveModel;
+                speed.text = Mathf.RoundToInt(kart.Speed * 3.6f) + " km/h";
+                laps.text = "LAP " + (drive.Laps + 1).ToString("00");
+                bestLap.text = "현재  " + drive.LapSeconds.ToString("0.00") + "초\n" + (drive.BestLapSeconds > 0 ? "BEST  " + drive.BestLapSeconds.ToString("0.00") + "초" : "첫 랩 기록에 도전!");
+                flavor.text = Palette.FlavorName(kart.Flavor) + " 구간";
+                driftFill.rectTransform.sizeDelta = new Vector2(540 * (kart.Boosting ? Mathf.Clamp01((float)drive.BoostRemaining / .9f) : kart.Charge), 14);
+                driftFill.color = kart.Boosting ? Palette.Soda : kart.Charge >= .32f ? Palette.Yellow : Palette.Pink;
+                driftLabel.text = kart.Boosting ? "SUGAR BOOST!  생성량 +25%" : kart.Charge >= .32f ? "Space를 놓으세요!  부스트 준비" : kart.Drifting ? "코너를 유지해 충전하세요" : "Space + 조향으로 드리프트";
+                bool wrongWay = kart.Speed > 3 && (Math.Sin(drive.Heading) * drive.Sample.Tangent.X + Math.Cos(drive.Heading) * drive.Sample.Tangent.Z) < -.35;
+                raceEvent.text = kart.ImpactFlash > 0 ? "벽 충돌!  속도가 줄었어요" : wrongWay ? "역방향!  R로 코스 방향에 맞춰 복귀" : kart.Boosting ? "달콤한 가속!" : drive.Sample.IsShortcut ? "SUGAR CUT · 좁은 지름길" : "";
+                map.SetVerticesDirty();
             }
             if (s.Mode == GameMode.Results)
             {
@@ -180,7 +196,7 @@ namespace CottonCircuit
                 foreach (bool value in seen) if (value) count++;
                 resultTitle.text = product == null ? "이번에는 연습 주행!" : count == 3 ? "무지개 구름 솜사탕" : count == 2 ? "두 가지 맛 구름 솜사탕" : Palette.FlavorName(seen[0] ? 0 : seen[1] ? 1 : 2) + " 구름 솜사탕";
                 resultWeight.text = (product == null ? 0 : product.Grams) + " g";
-                resultDetail.text = product == null ? "다음에는 W로 달려보세요" : count + "가지 맛 · " + s.Production.Turns.ToString("0.0") + "바퀴";
+                resultDetail.text = product == null ? "다음에는 W로 달려보세요" : count + "가지 맛 · " + game.World.Kart.DriveModel.Laps + "랩\n부스트 " + game.World.Kart.DriveModel.BoostCount + "회";
                 resultPrice.text = "+ " + e.Price(product) + " 코인";
             }
         }

@@ -10,3 +10,6 @@ Plan: docs/superpowers/plans/2026-09-21-cotton-circuit.md
 - Deliverables: Builds/Windows/CottonCircuit.exe; Assets/CottonCircuit/Scenes/CottonCircuit.unity; Art/Blender/CottonCircuit.blend; README.md; docs/verification.md; docs/screenshots.
 - User action completed: closed unused Unity editors to free memory. No other user projects changed or closed by the agent.
 - No remaining implementation or required verification work for this first playable version.
+
+## Racing feel iteration
+Approved direct arcade steering/drift/boost course replacement implemented. See docs/racing-progress.md and docs/verification.md for current delivery and evidence. The original orbital controls described above are historical and have been replaced.

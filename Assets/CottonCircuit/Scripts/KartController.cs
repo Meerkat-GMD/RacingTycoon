@@ -3,40 +3,85 @@ namespace CottonCircuit
 {
     public class KartController : MonoBehaviour
     {
-        public float Speed { get; private set; }
-        public float Radius { get; private set; } = 10;
-        public double Angle { get; private set; }
-        public int Flavor => Radius < 8.75f ? 0 : Radius < 11.25f ? 1 : 2;
-        public float MaximumSpeed = 11;
+        public ArcadeDrive DriveModel { get; private set; }
+        public float Speed => DriveModel == null ? 0 : (float)DriveModel.Speed;
+        public float Radius => DriveModel == null ? 10 : Mathf.Clamp(10 + (float)DriveModel.Sample.Lateral * .5f, 7.5f, 12.5f);
+        public int Flavor => DriveModel == null ? 0 : Mathf.Min(2, (int)(DriveModel.Sample.Progress / DriveModel.Course.Length * 3));
+        public float MaximumSpeed = 18;
+        public bool Boosting => DriveModel != null && DriveModel.BoostRemaining > 0;
+        public bool Drifting => DriveModel != null && DriveModel.IsDrifting;
+        public float Charge => DriveModel == null ? 0 : (float)DriveModel.DriftCharge;
+        public float Steering { get; private set; }
+        public float ImpactFlash { get; private set; }
         Transform[] wheels;
+        Transform visual;
+        TrailRenderer[] skids, jets;
+        Material skidMaterial, jetMaterial;
         void Awake()
         {
-            var all = GetComponentsInChildren<Transform>();
-            wheels = System.Array.FindAll(all, t => t.name.StartsWith("Wheel"));
+            DriveModel = new ArcadeDrive();
+            visual = transform.childCount > 0 ? transform.GetChild(0) : null;
+            wheels = System.Array.FindAll(GetComponentsInChildren<Transform>(), t => t.name.StartsWith("Wheel"));
+            skidMaterial = new Material(Shader.Find("Sprites/Default"));
+            jetMaterial = new Material(Shader.Find("Sprites/Default"));
+            skids = new TrailRenderer[2]; jets = new TrailRenderer[2];
+            for (int i = 0; i < 2; i++)
+            {
+                float side = i == 0 ? -.63f : .63f;
+                skids[i] = Trail("Tire mark", new Vector3(side, .045f, -.65f), skidMaterial, new Color(.20f, .20f, .29f, .65f), .17f, 3);
+                jets[i] = Trail("Sugar boost", new Vector3(side, .5f, -1.1f), jetMaterial, Palette.Soda, .32f, .3f);
+            }
+        }
+        TrailRenderer Trail(string label, Vector3 position, Material material, Color color, float width, float lifetime)
+        {
+            var go = new GameObject(label); go.transform.SetParent(transform, false); go.transform.localPosition = position;
+            var trail = go.AddComponent<TrailRenderer>(); trail.sharedMaterial = material; trail.time = lifetime;
+            trail.startWidth = width; trail.endWidth = width * .15f; trail.minVertexDistance = .12f;
+            trail.startColor = color; trail.endColor = new Color(color.r, color.g, color.b, 0);
+            trail.emitting = false; trail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            return trail;
         }
         public void ResetPosition()
         {
-            Speed = 0; Radius = 10; Angle = Mathf.PI * .5;
-            ApplyPose();
+            if (DriveModel == null) DriveModel = new ArcadeDrive();
+            DriveModel.Reset(); ClearTrails(); ApplyPose(0);
         }
-        public double Drive(float throttle, float steering, bool brake, float deltaTime)
+        public void Recover()
         {
-            float dt = Mathf.Clamp(deltaTime, 0, .1f);
-            float target = brake ? 0 : throttle > .1f ? MaximumSpeed : 0;
-            Speed = Mathf.MoveTowards(Speed, target, dt * (brake ? 14 : throttle > .1f ? 5 : 1.5f));
-            Radius = Mathf.Clamp(Radius + steering * dt * 3.8f, 7.5f, 12.5f);
-            double delta = Speed / Radius * dt;
-            Angle += delta;
-            ApplyPose();
-            if (wheels != null) foreach (var wheel in wheels) wheel.Rotate(Vector3.right, Speed * dt * 100, Space.Self);
-            return delta;
+            DriveModel.Recover(); ImpactFlash = 0; ClearTrails(); ApplyPose(0);
         }
-        public void Stop() { Speed = 0; }
-        void ApplyPose()
+        void ClearTrails()
         {
-            float a = (float)Angle;
-            transform.position = new Vector3(Mathf.Cos(a) * Radius, 1.05f, Mathf.Sin(a) * Radius);
-            transform.rotation = Quaternion.LookRotation(new Vector3(-Mathf.Sin(a), 0, Mathf.Cos(a)));
+            if (skids != null) foreach (var t in skids) { t.emitting = false; t.Clear(); }
+            if (jets != null) foreach (var t in jets) { t.emitting = false; t.Clear(); }
         }
+        public double Drive(float throttle, float steering, bool brake, float deltaTime, bool drift = false)
+        {
+            DriveModel.MaximumSpeed = MaximumSpeed; Steering = steering;
+            int hits = DriveModel.WallHits;
+            DriveModel.Step(throttle, steering, brake, drift, deltaTime);
+            ImpactFlash = hits != DriveModel.WallHits ? .35f : Mathf.Max(0, ImpactFlash - deltaTime);
+            ApplyPose(deltaTime);
+            if (wheels != null) foreach (var wheel in wheels) wheel.Rotate(Vector3.right, Speed * deltaTime * 150, Space.Self);
+            SetEffects(true);
+            return (DriveModel.LastRewardDistance + .25 * DriveModel.LastBoostedRewardDistance) / DriveModel.Course.Length * System.Math.PI * 2;
+        }
+        public void SetEffects(bool active)
+        {
+            if (skids != null) foreach (var t in skids) t.emitting = active && Drifting && Speed > 5;
+            if (jets != null) foreach (var t in jets) { t.emitting = active && (Boosting || Charge > .3f); t.startColor = Boosting ? Palette.Soda : Charge > .7f ? Palette.Yellow : Palette.Pink; }
+        }
+        public void Stop() { DriveModel.Stop(); SetEffects(false); }
+        void ApplyPose(float dt)
+        {
+            var p = DriveModel.Position;
+            transform.SetPositionAndRotation(new Vector3((float)p.X, 1.05f, (float)p.Z), Quaternion.Euler(0, (float)DriveModel.Heading * Mathf.Rad2Deg, 0));
+            if (visual)
+            {
+                var target = Quaternion.Euler(Boosting ? -3 : 0, 180, -Steering * Mathf.Clamp01(Speed / 12) * (Drifting ? 9 : 4));
+                visual.localRotation = dt <= 0 ? target : Quaternion.Slerp(visual.localRotation, target, 1 - Mathf.Exp(-dt * 10));
+            }
+        }
+        void OnDestroy() { if (skidMaterial) Destroy(skidMaterial); if (jetMaterial) Destroy(jetMaterial); }
     }
 }

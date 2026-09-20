@@ -21,6 +21,9 @@ MonoBehaviour:
   Arch: {fileID: 243216994361182502, guid: 2f352559af07aef41a55cd409cfcf9e6, type: 3}
   Tree: {fileID: 2281649266347312442, guid: 2a258017fe4ba39428f08bd83f1e649c, type: 3}
   Lamp: {fileID: 5959595379603989081, guid: 2fed1ecadd711f7459d783925007d002, type: 3}
+  Chevron: {fileID: 21607105777599117, guid: 1c3e839e9c1631a42ad3c4af91fb2a4f, type: 3}
+  Barrier: {fileID: 6777955259046119670, guid: a729403f2e72a0d4f9e4d3d07b646e5c, type: 3}
+  ShortcutGate: {fileID: 7869628955472507100, guid: 64992abaf189a0f419e56b5df315bb53, type: 3}
   PuffMesh: {fileID: 4300000, guid: 78c03866331930c42a010b3a17194c43, type: 2}
   Flavors:
   - {fileID: 2100000, guid: 3fbb811124995ca48b15ff89e2cd2396, type: 2}
