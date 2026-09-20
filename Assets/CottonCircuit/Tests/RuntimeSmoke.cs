@@ -128,6 +128,11 @@ namespace CottonCircuit.Tests
             Check(firstProduct != null && firstProduct.Grams == 60 &&
                   CandyRecipe.Matches(firstProduct, firstOrder),
                 "real kart makes strawberry small candy");
+            double resultPatience = firstOrder.Remaining;
+            game.Tick(0, 0, false, 2);
+            Check(firstOrder.Remaining == resultPatience,
+                "results screen freezes customer patience");
+            yield return new WaitForSecondsRealtime(.6f);
             Capture("04-result.png"); yield return null; yield return null;
             Click("가게로 돌아가기");
             Check(game.Session.Mode == GameMode.Shop &&
@@ -247,6 +252,30 @@ namespace CottonCircuit.Tests
             yield return new WaitForSecondsRealtime(.5f);
             Capture("09-shop-wide.png"); yield return null; yield return null;
             CheckScreenLayout("shop ultrawide");
+            var stockPanel = GameObject.Find("Stock selector");
+            Check(stockPanel != null, "stock selector present at full shelf");
+            var stockButtons = stockPanel.GetComponentsInChildren<Button>();
+            Check(stockButtons.Length == 13 && stockButtons[12].interactable,
+                "twelfth stock button is available");
+            string lastProductId = game.Session.Economy.Inventory[11].Id;
+            stockButtons[12].onClick.Invoke();
+            Check(game.SelectedProductId == lastProductId,
+                "twelfth stock button selects the last product");
+            ClickIn("Stock selector", "선택 재고 정리");
+            Check(game.Session.Economy.Inventory.Count == 12 &&
+                  game.SelectedProductId == lastProductId,
+                "first discard click preserves full shelf");
+            ClickIn("Stock selector", "선택 재고 정리");
+            Check(game.Session.Economy.Inventory.Count == 11 &&
+                  game.Session.Economy.Inventory.Find(p => p.Id == lastProductId) == null,
+                "second discard click removes only selected product");
+            Capture("10-shop-after-discard.png"); yield return null; yield return null;
+            Click("재고 미리 만들기");
+            Check(game.Session.Mode == GameMode.Racing,
+                "discarded slot allows another run");
+            game.FinishRun(); game.ReturnToShop();
+            Check(new SaveStore(saveDirectory).Load().Inventory.Count == 11,
+                "eleven products persist after confirmed discard");
             Check(!failed, "no runtime errors during order loop");
         }
 
@@ -260,6 +289,7 @@ namespace CottonCircuit.Tests
                 if (steps % 8 == 0) yield return null;
                 if (screenshot != null && steps == 160)
                 {
+                    yield return new WaitForSecondsRealtime(.6f);
                     Capture(screenshot); yield return null; yield return null;
                     CheckScreenLayout("race");
                 }

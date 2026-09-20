@@ -14,10 +14,12 @@ an artificial flavor assignment.
 The first order uses the actual Make, stock selection, and Serve buttons. It
 checks that returning with stock does not sell automatically; the correct
 handover pays once with a tip; wrong and repeated handovers pay nothing. It
-also checks patience while driving, pause behavior, expiry preserving stock,
-saved sales/tips, two shelf purchases, twelve-slot capacity, and a full-shelf
-start guard. Drift, boost, recovery, and chase camera checks remain. Screenshots
-cover the initial shop, race, results, help, handover, 4:3, and ultrawide shop.
+also checks patience while driving and frozen on Results, pause behavior,
+expiry preserving stock, saved sales/tips, two shelf purchases, twelve-slot
+capacity, a full-shelf start guard, and two-click discard reopening a slot.
+Drift, boost, recovery, and chase camera checks remain. Screenshots cover the
+initial shop, race, results, help, handover, full shelf at 4:3 and ultrawide,
+and the shelf after a confirmed discard.
 Each captured layout checks active button bounds and text height.
 
 Unity player verification: pending parent build and smoke run.
