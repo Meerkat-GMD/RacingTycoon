@@ -4,11 +4,12 @@ import json
 from pathlib import Path
 
 root=Path(__file__).resolve().parents[2]
+art=root/'Art'/'Blender'
 out=root/'Assets'/'CottonCircuit'/'Models'
-manifest=json.loads((out/'asset-manifest.json').read_text())
+manifest=json.loads((art/'asset-manifest.json').read_text())
 assert len(manifest['assets'])==9
-assert (out/'preview.png').stat().st_size>100_000
-bpy.ops.wm.open_mainfile(filepath=str(root/'Art'/'Blender'/'CottonCircuit.blend'))
+assert (art/'preview.png').stat().st_size>100_000
+bpy.ops.wm.open_mainfile(filepath=str(art/'CottonCircuit.blend'))
 assert 'Preview' in bpy.data.collections
 assert all(name in bpy.data.collections for name in manifest['assets'])
 for name,entry in manifest['assets'].items():
@@ -28,5 +29,11 @@ for name,entry in manifest['assets'].items():
     meshes=[o for o in bpy.context.scene.objects if o.type=='MESH']
     assert meshes and {m.name for o in meshes for m in o.data.materials},name
     assert len(meshes)>=len(entry['objects']),name
+    if name=='Kart':
+        by_name={o.name:o for o in meshes}
+        for side in ('L','R'):
+            assert by_name['WheelF'+side].matrix_world.translation.y < by_name['WheelR'+side].matrix_world.translation.y
+        assert by_name['WheelFL'].matrix_world.translation.x < by_name['WheelFR'].matrix_world.translation.x
+        print('KART_FACING',[(n,tuple(round(v,3) for v in by_name[n].matrix_world.translation)) for n in ('WheelFL','WheelFR','WheelRL','WheelRR')])
     print('VALID',name,'meshes',len(meshes),'triangles',entry['triangles'])
 print('VALIDATION_COMPLETE')

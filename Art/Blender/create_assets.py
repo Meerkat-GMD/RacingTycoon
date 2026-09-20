@@ -6,6 +6,7 @@ from pathlib import Path
 from mathutils import Vector
 
 ROOT = Path(__file__).resolve().parents[2]
+ART = ROOT / 'Art' / 'Blender'
 OUT = ROOT / 'Assets' / 'CottonCircuit' / 'Models'
 OUT.mkdir(parents=True, exist_ok=True)
 bpy.ops.object.select_all(action='SELECT')
@@ -241,10 +242,10 @@ scene.render.engine='CYCLES'; scene.cycles.samples=24
 scene.render.resolution_x=1600; scene.render.resolution_y=1000; scene.render.resolution_percentage=100
 scene.world.color=(.8,.8,.8)
 scene.render.image_settings.file_format='PNG'
-scene.render.filepath=str(OUT/'preview.png')
+scene.render.filepath=str(ART/'preview.png')
 scene.view_settings.view_transform='AgX'
 bpy.context.preferences.filepaths.save_version=0
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'Art'/'Blender'/'CottonCircuit.blend'))
-(OUT/'asset-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+bpy.ops.wm.save_as_mainfile(filepath=str(ART/'CottonCircuit.blend'))
+(ART/'asset-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
 bpy.ops.render.render(write_still=True)
 print('ASSET_KIT_COMPLETE',json.dumps({n:manifest['assets'][n]['triangles'] for n in names}))
