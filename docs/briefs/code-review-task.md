@@ -1,0 +1,6 @@
+# Code review brief
+Review Cotton Circuit, a new Unity 6000.5.3f1 Windows prototype in D:/UnityProjects/RacingTycoon. Read Logs/code-review.diff, then inspect the actual files it names if useful. Spec: docs/superpowers/specs/2026-09-21-cotton-racing-design.md. User explicitly selected racing inside a candy machine winding thread on its central stick, then selling to upgrade.
+
+Read-only review. Do not mutate code, stage, commit, or launch Unity (root is building). Inspect correctness of Production, Economy, GameSession, GameController, SaveStore, KartController, CandyView, GameUI, WorldView and ProjectBuilder. Check runnable gameplay, data persistence, pause/state transitions, UI input, shader/asset lifecycle, bounded geometry and upgrade economics. Avoid cosmetic scope additions. Domain tests currently 22/22 pass; Editor and Windows build verification is underway. Root is independently checking visual/runtime behavior.
+
+Return actionable Critical/Important issues with exact files/lines and repro. Write full report to docs/briefs/code-review.md and short result to parent. Note genuine limitations without inventing requirements (AI opponents/mobile aren't part of this version). Do not repeat test suite unless a finding needs a specific reproduction; no parallel Unity launches.

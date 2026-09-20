@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f6eed10a8aacf24480adf7ec557ba06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CottonCircuit.GameAssets
+  Kart: {fileID: 4715604324333358487, guid: 674c8541b819f3543bdb9ec08586077d, type: 3}
+  Kiosk: {fileID: 2021704678878794327, guid: 880957c05cc60ce44a92cce01e64afbb, type: 3}
+  Spinner: {fileID: 3652714934614885936, guid: 6c3f04582b5841546a57bef2c70d6e8f, type: 3}
+  Puff: {fileID: 2837992618257748097, guid: 3eefa0c008afead44bd4144af2e76f59, type: 3}
+  Customer: {fileID: 2322748828786018131, guid: a61fb10f818188e48b4dc07bb8e6f79d, type: 3}
+  Crystal: {fileID: 3198217513623858884, guid: 915f7fec7d733c64a86541f14e84a9e7, type: 3}
+  Arch: {fileID: 243216994361182502, guid: 2f352559af07aef41a55cd409cfcf9e6, type: 3}
+  Tree: {fileID: 2281649266347312442, guid: 2a258017fe4ba39428f08bd83f1e649c, type: 3}
+  Lamp: {fileID: 5959595379603989081, guid: 2fed1ecadd711f7459d783925007d002, type: 3}
+  PuffMesh: {fileID: 4300000, guid: 78c03866331930c42a010b3a17194c43, type: 2}
+  Flavors:
+  - {fileID: 2100000, guid: 3fbb811124995ca48b15ff89e2cd2396, type: 2}
+  - {fileID: 2100000, guid: 15429cc5f3522664f83eb04bba31c360, type: 2}
+  - {fileID: 2100000, guid: 511105d6752c64a448950e9816d0a562, type: 2}

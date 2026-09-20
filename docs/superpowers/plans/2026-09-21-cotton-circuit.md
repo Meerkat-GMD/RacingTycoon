@@ -18,41 +18,41 @@
 - Preserve other Unity processes. Keep generated builds and Library out of version control.
 
 ## Task 1: Domain and runnable Unity foundation
-Files: `Assets/CottonCircuit/Scripts/Core/{Production,Economy}.cs`, `Tools/Tests/CoreTests.cs`, `Tools/test-core.ps1`, `Assets/CottonCircuit/Tests/Editor/CoreTests.cs`, project manifest/settings.
+Files: `Assets/CottonCircuit/Scripts/Core/{Production,Economy}.cs`, `Tools/Tests/CoreTests.cs`, `Tools/test-core.ps1`, project manifest/settings.
 Interfaces: `Production.Advance(double radians, double radius, int flavor)` returns new sample count; `Product` stores sample list and grams; `Economy.CompleteRun(Product)`, `SellNext()`, `BuyUpgrade(int)` change owned state and return success/value. Capacity and maximum speed derive from upgrades.
-- [ ] Initialize empty project and local feature branch; preserve initial docs.
-- [ ] Create failing tests for a stationary run, one full revolution, flavor/radius retention, capacity, duplicate completion, inventory, insufficient money, sale and upgrade accounting, timestep-independent results.
-- [ ] Run tests with Unity bundled C# compiler/Mono; inspect intentional failures.
-- [ ] Implement domain until those tests pass; store output in `Logs/core-tests.txt`.
-- [ ] Create lightweight Unity project, configure Windows name/input/display, commit this unit.
+- [x] Initialize empty project and local feature branch; preserve initial docs.
+- [x] Create failing tests for a stationary run, one full revolution, flavor/radius retention, capacity, duplicate completion, inventory, insufficient money, sale and upgrade accounting, timestep-independent results.
+- [x] Run tests with Unity bundled C# compiler/Mono; inspect intentional failures.
+- [x] Implement domain until those tests pass; store output in `Logs/core-tests.txt`.
+- [x] Create lightweight Unity project, configure Windows name/input/display, commit this unit.
 
 ## Task 2: Blender asset kit (independent of domain)
 Files: `Art/Blender/create_assets.py`, `Art/Blender/CottonCircuit.blend`, `Art/Blender/asset-manifest.json`, `Assets/CottonCircuit/Models/*.fbx`, `Art/Blender/preview.png`.
 Contract: Unity units are meters, Y up after FBX, kart +Z forward. Named assets `Kart`, `Kiosk`, `Spinner`, `Puff`, `Customer`, `Crystal`, `Arch`, `Tree`, `Lamp`. Materials use semantic color names. Kart wheels have separate named objects. Rooted at ground origin. Agent receives concrete size/palette brief.
-- [ ] Write asset validation for nonempty objects, sane dimensions, named materials, wheel pivots and FBX outputs.
-- [ ] Generate attractive rounded low-poly kit using Blender Python and export each asset separately.
-- [ ] Save one editable blend with collections and an asset overview render.
-- [ ] Run validation, inspect render, correct issues, commit scoped art files.
-- [ ] Review dimensions/material mappings against Unity integration.
+- [x] Write asset validation for nonempty objects, sane dimensions, named materials, wheel pivots and FBX outputs.
+- [x] Generate attractive rounded low-poly kit using Blender Python and export each asset separately.
+- [x] Save one editable blend with collections and an asset overview render.
+- [x] Run validation, inspect render, correct issues, commit scoped art files.
+- [x] Review dimensions/material mappings against Unity integration.
 
 ## Task 3: Playable scene and presentation
 Files: `Assets/CottonCircuit/Scripts/{GameController,KartController,CandyView,WorldView,GameUI,AudioFeedback,SaveStore}.cs`, `Assets/CottonCircuit/Editor/ProjectBuilder.cs`.
 Consume Task 1 domain and Task 2 models. Controller owns Shop/Racing/Results state; a result is committed once. Saving uses serializable domain records. Lane radius 7.5/10/12.5; angle controls orbital position, each color's radius changes candy thickness.
-- [ ] Add smoke specification that scene has kart/model references, camera, canvas and controller; play through a scripted real run → result → shop → sale → purchase with isolated save data.
-- [ ] Assemble dish, lanes, spinner, kiosk, landscaping, kart and customer from prefabs and geometric set dressing.
-- [ ] Implement keyboard orbital racing, pause, speed/position feedback and central thread. Prevent reset jumps from feeding production.
-- [ ] Render candy from retained sample angle/flavor/radius with capped geometry; use same samples for result and display products.
-- [ ] Implement Korean uGUI shop/upgrades, race HUD, result card, help/pause, save errors and new-game recovery.
-- [ ] Generate small audio cues; support mute.
-- [ ] Compile, run smoke scenario, capture shop/race/result screenshots and inspect at 1280x720 and 1920x1080.
+- [x] Add smoke specification that scene has kart/model references, camera, canvas and controller; play through a scripted real run → result → shop → sale → purchase with isolated save data.
+- [x] Assemble dish, lanes, spinner, kiosk, landscaping, kart and customer from prefabs and geometric set dressing.
+- [x] Implement keyboard orbital racing, pause, speed/position feedback and central thread. Prevent reset jumps from feeding production.
+- [x] Render candy from retained sample angle/flavor/radius with capped geometry; use same samples for result and display products.
+- [x] Implement Korean uGUI shop/upgrades, race HUD, result card, help/pause, save errors and new-game recovery.
+- [x] Generate small audio cues; support mute.
+- [x] Compile, run smoke scenario, capture shop/race/result screenshots and inspect at 1280x720 and 1920x1080.
 
 ## Task 4: Verification and delivery
 Files: `README.md`, `docs/verification.md`, `Builds/Windows/CottonCircuit.exe`, `Tools/build.ps1`.
-- [ ] Re-run core tests and Unity editor scene checks, confirm no compilation/runtime errors.
-- [ ] Run isolated smoke scenario including empty run, capacity completion, repeat completion prevention, sale, upgrade, save/reload.
-- [ ] Request code review, resolve material findings and run affected checks.
-- [ ] Build Windows executable; launch verification mode and inspect captures/logs.
-- [ ] Write real results and limitations, update progress ledger, commit source and open playable result.
+- [x] Re-run core tests and Unity editor scene checks, confirm no compilation/runtime errors.
+- [x] Run isolated smoke scenario including empty run, capacity completion, repeat completion prevention, sale, upgrade, save/reload.
+- [x] Request code review, resolve material findings and run affected checks.
+- [x] Build Windows executable; launch verification mode and inspect captures/logs.
+- [x] Write real results and limitations, update progress ledger, commit source and provide the playable executable and instructions.
 
 ## Concrete domain checks
 ```csharp

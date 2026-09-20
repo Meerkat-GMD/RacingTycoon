@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/CottonCircuit/Scenes/CottonCircuit.unity
+    guid: 9ccb9077c34aa8843ac1072dc1843ae1
   m_configObjects: {}
