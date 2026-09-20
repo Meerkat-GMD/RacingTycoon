@@ -22,4 +22,11 @@ initial shop, race, results, help, handover, full shelf at 4:3 and ultrawide,
 and the shelf after a confirmed discard.
 Each captured layout checks active button bounds and text height.
 
-Unity player verification: pending parent build and smoke run.
+The final development-player run passed **93 checks**. Evidence is in
+`Logs/Smoke-orders-verified/result.txt`, `player.log`, and the screenshots in
+that folder. The final captures were inspected, and the UI text-height and
+button-bounds checks passed at the tested aspect ratios.
+
+This is an automated runtime smoke: driving uses test-only `GameController.Tick`
+inputs, and button actions invoke the real uGUI `onClick` handlers. It does not
+simulate physical mouse or keyboard input.
