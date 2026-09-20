@@ -1,0 +1,151 @@
+{
+  "coordinate_system": {
+    "units": "meters",
+    "blender_forward": "-Y",
+    "unity_forward": "+Z",
+    "fbx_axis_forward": "-Z",
+    "fbx_axis_up": "Y",
+    "origin": "ground center"
+  },
+  "materials": {
+    "Strawberry": "#F48DAB",
+    "Cream": "#FFF1D4",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "White": "#FFF9ED",
+    "Gold": "#DBAE61"
+  },
+  "assets": {
+    "Chevron": {
+      "file": "Chevron.fbx",
+      "objects": [
+        "BottomTrim",
+        "DirectionChevron0",
+        "DirectionChevron1",
+        "DirectionChevron2",
+        "NavyBoard",
+        "SignFootL",
+        "SignFootR",
+        "SignPostL",
+        "SignPostR",
+        "TopTrim"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -1.25,
+          -0.14,
+          0.0
+        ],
+        "max": [
+          1.25,
+          0.17,
+          1.99
+        ]
+      },
+      "dimensions_blender_xyz": [
+        2.5,
+        0.31,
+        1.99
+      ],
+      "triangles": 1248,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Vanilla"
+      ]
+    },
+    "Barrier": {
+      "file": "Barrier.fbx",
+      "objects": [
+        "CandyWrapper0",
+        "CandyWrapper1",
+        "CandyWrapper2",
+        "CreamRail",
+        "GoldStudL",
+        "GoldStudR",
+        "PinkLowerBand",
+        "TopIcing"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -1.0,
+          -0.346,
+          0.0
+        ],
+        "max": [
+          1.0,
+          0.3,
+          0.649
+        ]
+      },
+      "dimensions_blender_xyz": [
+        2.0,
+        0.646,
+        0.649
+      ],
+      "triangles": 1024,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Soda",
+        "Strawberry",
+        "White"
+      ]
+    },
+    "ShortcutGate": {
+      "file": "ShortcutGate.fbx",
+      "objects": [
+        "BeamSweet0",
+        "BeamSweet1",
+        "BeamSweet2",
+        "BeamSweet3",
+        "CandyMedallionL",
+        "CandyMedallionR",
+        "CandyStripeL0",
+        "CandyStripeL1",
+        "CandyStripeL2",
+        "CandyStripeL3",
+        "CandyStripeL4",
+        "CandyStripeR0",
+        "CandyStripeR1",
+        "CandyStripeR2",
+        "CandyStripeR3",
+        "CandyStripeR4",
+        "GateBeam",
+        "GateBeamFront",
+        "GateFootL",
+        "GateFootR",
+        "GatePostL",
+        "GatePostR",
+        "GoldBolt"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -2.205,
+          -0.26,
+          0.0
+        ],
+        "max": [
+          2.205,
+          0.255,
+          3.4
+        ]
+      },
+      "dimensions_blender_xyz": [
+        4.41,
+        0.515,
+        3.4
+      ],
+      "triangles": 2728,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Soda",
+        "Strawberry"
+      ]
+    }
+  }
+}
