@@ -1,0 +1,213 @@
+using System;
+using CottonCircuit;
+
+public static class DrivingTests
+{
+    static int passed, failed;
+    static void Check(bool condition, string message) { if (!condition) throw new Exception(message); }
+    static void Near(double actual, double expected, double tolerance, string message)
+    { Check(Math.Abs(actual - expected) <= tolerance, message + " (got " + actual + ", wanted " + expected + ")"); }
+    static void Test(string name, Action action)
+    {
+        try { action(); Console.WriteLine("PASS " + name); passed++; }
+        catch (Exception error) { Console.WriteLine("FAIL " + name + ": " + error.Message); failed++; }
+    }
+    static double Distance(RoadPoint a, RoadPoint b)
+    { double x = a.X - b.X, z = a.Z - b.Z; return Math.Sqrt(x * x + z * z); }
+    static double TurnAngle(double angle)
+    { while (angle > Math.PI) angle -= 2 * Math.PI; while (angle < -Math.PI) angle += 2 * Math.PI; return angle; }
+    static void Follow(ArcadeDrive drive, double seconds)
+    {
+        int steps = (int)(seconds / .02);
+        for (int i = 0; i < steps; i++)
+        {
+            var target = drive.Course.Sample(drive.Sample.Progress + 10).Position;
+            double desired = Math.Atan2(target.X - drive.Position.X, target.Z - drive.Position.Z);
+            double steering = Math.Max(-1, Math.Min(1, TurnAngle(desired - drive.Heading) * 1.8));
+            drive.Step(1, steering, false, false, .02);
+        }
+    }
+
+    public static int Main()
+    {
+        Test("course samples close smoothly at a finite length", () => {
+            var c = RaceCourse.Shared;
+            Check(c.Length > 180 && c.Length < 300, "implausible course length");
+            var start = c.Sample(0);
+            var finish = c.Sample(c.Length);
+            Near(Distance(start.Position, finish.Position), 0, 0.001, "loop is open");
+            Near(Distance(start.Tangent, finish.Tangent), 0, 0.001, "seam turns sharply");
+            for (int i = 0; i < 100; i++) {
+                var s = c.Sample(c.Length * i / 100);
+                Check(Math.Sqrt(s.Position.X * s.Position.X + s.Position.Z * s.Position.Z) < 44,
+                    "road escapes machine rim");
+                Near(Math.Sqrt(s.Tangent.X * s.Tangent.X + s.Tangent.Z * s.Tangent.Z), 1, 0.001, "tangent not unit length");
+            }
+        });
+        Test("projection preserves road side and shortcut mapping", () => {
+            var c = RaceCourse.Shared;
+            var s = c.Sample(c.Length * 0.16);
+            var right = new RoadPoint(s.Tangent.Z, -s.Tangent.X);
+            var p = c.Project(new RoadPoint(s.Position.X + right.X * 2, s.Position.Z + right.Z * 2));
+            Check(!p.IsShortcut && p.Lateral > 1.8 && p.Lateral < 2.2, "road side lost");
+            Check(Math.Abs(p.Progress - s.Progress) < 1.5, "nearby point projected far around loop");
+            Check(c.ShortcutPoints.Length >= 3, "shortcut missing");
+            var shortcut = c.Project(c.ShortcutPoints[c.ShortcutPoints.Length / 2]);
+            Check(shortcut.IsShortcut && shortcut.Progress > 0 && shortcut.Progress < c.Length,
+                "shortcut is not connected to main progress");
+        });
+        Test("throttle moves freely and right steering turns clockwise", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            var start = d.Position;
+            d.Step(1, 0, false, false, 1);
+            Check(Distance(start, d.Position) > 2 && d.Speed > 4, "throttle did not accelerate");
+            double heading = d.Heading;
+            d.Step(1, 0.6, false, false, .3);
+            Check(TurnAngle(d.Heading - heading) > .08, "right steer did not turn right");
+            Check(Distance(start, d.Position) > 4, "steering did not move kart freely");
+            d.Step(0, 0, true, false, .5);
+            Check(d.Speed < 8, "brake did not slow kart");
+        });
+        Test("sustained drift releases one boost and braking cancels it", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            d.Step(1, .55, false, true, .45);
+            Check(d.IsDrifting && d.DriftCharge > .25, "turning drift did not charge");
+            d.Step(1, 0, false, false, .02);
+            Check(!d.IsDrifting && d.BoostCount == 1 && d.BoostRemaining > 0,
+                "drift release did not start boost");
+            d.Step(1, 0, false, false, .1);
+            Check(d.BoostCount == 1, "held release retriggered boost");
+            d.Step(1, 0, true, false, .02);
+            Check(d.BoostRemaining == 0, "braking kept boost active");
+        });
+        Test("boosted progress is reported separately for exact production bonus", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            d.Step(1, .55, false, true, .45);
+            d.Step(1, 0, false, false, .02);
+            Check(d.LastBoostedRewardDistance > 0 &&
+                d.LastBoostedRewardDistance <= d.LastRewardDistance,
+                "boosted distance was not reported");
+            d.Step(1, 0, true, false, .02);
+            Check(d.LastBoostedRewardDistance == 0, "braking reported boosted production");
+        });
+        Test("walls slide and recovery keeps earned progress without paying again", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            double rewarded = d.TotalProgress;
+            for (int i = 0; i < 120; i++) d.Step(1, 1, false, false, .02);
+            Check(d.WallHits > 0, "wall never contacted");
+            var wall = d.Course.Project(d.Position);
+            Check(Math.Abs(wall.Lateral) <= wall.HalfWidth + .05, "kart escaped road");
+            int hits = d.WallHits;
+            d.Recover();
+            Check(d.WallHits == hits && d.TotalProgress >= rewarded && d.LastRewardDistance == 0,
+                "recovery lost statistics or paid reward");
+            Check(Math.Abs(d.Sample.Lateral) < .1 && d.Speed == 0 && d.BoostRemaining == 0,
+                "recovery did not place a stopped kart on centerline");
+        });
+        Test("wall impact keeps kart clearance and does not auto-align steering", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            double before = d.Heading;
+            for (int i = 0; i < 150 && d.WallHits == 0; i++) {
+                before = d.Heading;
+                d.Step(1, 1, false, false, .02);
+            }
+            Check(d.WallHits > 0, "setup missed wall");
+            Check(Math.Abs(d.Sample.Lateral) <= d.Sample.HalfWidth - .75,
+                "kart center did not leave body clearance at barrier");
+            Check(Math.Abs(TurnAngle(d.Heading - before)) < .08,
+                "wall snapped heading to the road tangent");
+            double progress = d.TotalProgress;
+            d.Step(1, 0, false, false, 25);
+            Check(d.Laps == 0 && d.TotalProgress - progress < d.Course.Length / 3,
+                "holding throttle at wall drove a lap automatically");
+        });
+        Test("shortcut centerline and joins stay inside a drivable ribbon", () => {
+            var c = RaceCourse.Shared;
+            for (int i = 0; i < c.ShortcutPoints.Length; i++) {
+                var s = c.Project(c.ShortcutPoints[i]);
+                Check(Math.Abs(s.Lateral) <= s.HalfWidth - .8,
+                    "shortcut centerline projects into a wall at point " + i);
+            }
+        });
+        Test("driver can steer away after stopping against a wall", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            for (int i = 0; i < 150 && d.WallHits == 0; i++) d.Step(1, 1, false, false, .02);
+            Check(d.WallHits > 0, "setup missed wall");
+            d.Stop();
+            double heading = d.Heading;
+            d.Step(1, -1, false, false, 2);
+            Check(Math.Abs(TurnAngle(d.Heading - heading)) > .4,
+                "stopped kart cannot steer away from wall");
+        });
+        Test("course follower earns a lap but reverse oscillation never pays twice", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            Follow(d, 65);
+            Check(d.Laps >= 1, "course follower could not finish a lap");
+            Check(d.TotalProgress > d.Course.Length && d.BestLapSeconds > 0,
+                "lap distance or clock missing");
+            double highWater = d.TotalProgress;
+            d.Stop();
+            for (int i = 0; i < 80; i++) d.Step(0, (i % 20 < 10 ? 1 : -1), true, false, .02);
+            Check(d.TotalProgress == highWater && d.LastRewardDistance == 0,
+                "stationary oscillation paid again");
+        });
+        Test("driving back along visited road earns no new progress", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            Follow(d, 4);
+            d.Recover();
+            int reverseSteps = 0;
+            for (int i = 0; i < 1000; i++) {
+                double previous = d.Sample.Progress;
+                d.Step(.25, 1, false, false, .02);
+                double change = d.Sample.Progress - previous;
+                if (change < -.001 && change > -d.Course.Length / 2) {
+                    reverseSteps++;
+                    Check(d.LastRewardDistance == 0, "backward road motion earned reward");
+                }
+            }
+            Check(reverseSteps > 20, "test did not drive backward on the course");
+        });
+        Test("invalid input cannot move or pay reward", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            var start = d.Position;
+            d.Step(double.NaN, 1, false, false, 1);
+            d.Step(1, double.PositiveInfinity, false, false, 1);
+            d.Step(1, 0, false, false, double.NaN);
+            Check(Distance(start, d.Position) == 0 && d.TotalProgress == 0,
+                "invalid input moved or rewarded kart");
+        });
+        Test("large frame uses the same stable driving steps", () => {
+            var a = new ArcadeDrive(RaceCourse.Shared);
+            var b = new ArcadeDrive(RaceCourse.Shared);
+            a.Step(1, .25, false, false, .8);
+            for (int i = 0; i < 40; i++) b.Step(1, .25, false, false, .02);
+            Near(Distance(a.Position, b.Position), 0, .001, "frame partition changed position");
+            Near(a.TotalProgress, b.TotalProgress, .001, "frame partition changed production progress");
+        });
+        Test("recovery and replay do not pay for already visited road", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            Follow(d, 4);
+            double before = d.TotalProgress;
+            Check(before > 15, "setup did not drive forward");
+            d.Recover();
+            Check(d.LastRewardDistance == 0 && d.TotalProgress == before, "recovery changed reward");
+            d.Step(0, 0, false, false, .2);
+            Check(d.LastRewardDistance == 0 && d.TotalProgress == before, "idle recovered kart earned reward");
+        });
+        Test("stopping clears the current reward pulse", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            Check(d.LastRewardDistance > 0, "setup earned no reward");
+            d.Stop();
+            Check(d.LastRewardDistance == 0 && d.LastBoostedRewardDistance == 0,
+                "stopped kart retained a production pulse");
+        });
+        Console.WriteLine("RESULT: " + passed + " passed, " + failed + " failed");
+        return failed == 0 ? 0 : 1;
+    }
+}

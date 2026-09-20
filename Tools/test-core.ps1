@@ -6,4 +6,10 @@ $taskSources = Get-ChildItem -LiteralPath "$taskRoot\Assets\CottonCircuit\Script
 & "$taskMonoRoot\bin\mono.exe" "$taskMonoRoot\lib\mono\4.5\mcs.exe" -out:"$taskRoot\Logs\CoreTests.exe" @taskSources "$taskRoot\Tools\Tests\CoreTests.cs"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & "$taskMonoRoot\bin\mono.exe" "$taskRoot\Logs\CoreTests.exe" | Tee-Object -FilePath "$taskRoot\Logs\core-tests.txt"
-exit $LASTEXITCODE
+$taskCoreResult = $LASTEXITCODE
+& "$taskMonoRoot\bin\mono.exe" "$taskMonoRoot\lib\mono\4.5\mcs.exe" -out:"$taskRoot\Logs\DrivingTests.exe" @taskSources "$taskRoot\Tools\Tests\DrivingTests.cs"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& "$taskMonoRoot\bin\mono.exe" "$taskRoot\Logs\DrivingTests.exe" | Tee-Object -FilePath "$taskRoot\Logs\driving-tests.txt"
+$taskDrivingResult = $LASTEXITCODE
+if ($taskCoreResult -ne 0) { exit $taskCoreResult }
+exit $taskDrivingResult
