@@ -1,0 +1,404 @@
+{
+  "coordinate_system": {
+    "units": "meters",
+    "blender_forward": "-Y",
+    "unity_forward": "+Z",
+    "fbx_axis_forward": "-Z",
+    "fbx_axis_up": "Y",
+    "origin": "ground center; Puff at center"
+  },
+  "materials": {
+    "Strawberry": "#F48DAB",
+    "Cream": "#FFF1D4",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Plum": "#6C577F",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Gold": "#DBAE61",
+    "Tire": "#414059",
+    "Wood": "#D59C79"
+  },
+  "assets": {
+    "Kart": {
+      "file": "Kart.fbx",
+      "objects": [
+        "Body",
+        "Nose",
+        "Floor",
+        "SeatBase",
+        "SeatBack",
+        "Dashboard",
+        "SteeringWheel",
+        "SteeringStem",
+        "WheelFL",
+        "HubFL",
+        "WheelRL",
+        "HubRL",
+        "HeadlightL",
+        "WheelFR",
+        "HubFR",
+        "WheelRR",
+        "HubRR",
+        "HeadlightR",
+        "SugarTank",
+        "CrystalTop",
+        "TankRing",
+        "FlagPole",
+        "CanopyFlag"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.837,
+          -1.265,
+          0.01
+        ],
+        "max": [
+          0.837,
+          1.205,
+          1.67
+        ]
+      },
+      "dimensions_blender_xyz": [
+        1.675,
+        2.47,
+        1.66
+      ],
+      "triangles": 4246,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Plum",
+        "Soda",
+        "Strawberry",
+        "Tire",
+        "Vanilla",
+        "White"
+      ]
+    },
+    "Kiosk": {
+      "file": "Kiosk.fbx",
+      "objects": [
+        "Platform",
+        "BackWall",
+        "FrontPillar",
+        "SideShelf",
+        "FrontPillar.001",
+        "SideShelf.001",
+        "CounterFront",
+        "CounterTop",
+        "Roof",
+        "AwningLip",
+        "AwningStripe00",
+        "AwningStripe01",
+        "AwningStripe02",
+        "AwningStripe03",
+        "AwningStripe04",
+        "AwningStripe05",
+        "AwningStripe06",
+        "AwningStripe07",
+        "AwningStripe08",
+        "AwningStripe09",
+        "CandyJar",
+        "CandyInJar",
+        "CandyJar.001",
+        "CandyInJar.001",
+        "CandyJar.002",
+        "CandyInJar.002",
+        "CandyJar.003",
+        "CandyInJar.003",
+        "CandyJar.004",
+        "CandyInJar.004",
+        "ShelfJar",
+        "ShelfCandy",
+        "ShelfJar.001",
+        "ShelfCandy.001",
+        "RoofStick",
+        "RoofCandy"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -2.5,
+          -1.5,
+          0.0
+        ],
+        "max": [
+          2.5,
+          1.5,
+          4.74
+        ]
+      },
+      "dimensions_blender_xyz": [
+        5.0,
+        3.0,
+        4.74
+      ],
+      "triangles": 4696,
+      "materials": [
+        "Cream",
+        "Soda",
+        "Strawberry",
+        "Vanilla",
+        "White",
+        "Wood"
+      ]
+    },
+    "Spinner": {
+      "file": "Spinner.fbx",
+      "objects": [
+        "Pedestal",
+        "PedestalTop",
+        "SodaRing",
+        "PinkRing",
+        "DriveHousing",
+        "CenterStick",
+        "StickTip"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.975,
+          -0.975,
+          0.0
+        ],
+        "max": [
+          0.975,
+          0.975,
+          6.59
+        ]
+      },
+      "dimensions_blender_xyz": [
+        1.95,
+        1.95,
+        6.59
+      ],
+      "triangles": 2120,
+      "materials": [
+        "Cream",
+        "Plum",
+        "Soda",
+        "Strawberry",
+        "Wood"
+      ]
+    },
+    "Puff": {
+      "file": "Puff.fbx",
+      "objects": [
+        "Lobe00",
+        "Lobe01",
+        "Lobe02",
+        "Lobe03",
+        "Lobe04"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.53,
+          -0.476,
+          -0.465
+        ],
+        "max": [
+          0.52,
+          0.46,
+          0.426
+        ]
+      },
+      "dimensions_blender_xyz": [
+        1.05,
+        0.936,
+        0.891
+      ],
+      "triangles": 600,
+      "materials": [
+        "White"
+      ]
+    },
+    "Customer": {
+      "file": "Customer.fbx",
+      "objects": [
+        "ShoeL",
+        "LegL",
+        "ArmL",
+        "ShoeR",
+        "LegR",
+        "ArmR",
+        "Torso",
+        "Head",
+        "HairCap",
+        "EyeL",
+        "EyeR"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.459,
+          -0.24,
+          0.0
+        ],
+        "max": [
+          0.459,
+          0.265,
+          1.65
+        ]
+      },
+      "dimensions_blender_xyz": [
+        0.917,
+        0.505,
+        1.65
+      ],
+      "triangles": 1400,
+      "materials": [
+        "Cream",
+        "Navy",
+        "Soda"
+      ]
+    },
+    "Crystal": {
+      "file": "Crystal.fbx",
+      "objects": [
+        "Facet00",
+        "Facet01",
+        "Facet02",
+        "Facet03"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.265,
+          -0.27,
+          0.0
+        ],
+        "max": [
+          0.275,
+          0.18,
+          0.7
+        ]
+      },
+      "dimensions_blender_xyz": [
+        0.541,
+        0.45,
+        0.7
+      ],
+      "triangles": 40,
+      "materials": [
+        "Soda",
+        "Vanilla"
+      ]
+    },
+    "Arch": {
+      "file": "Arch.fbx",
+      "objects": [
+        "FootL",
+        "PostL",
+        "PostStripeL0",
+        "PostStripeL1",
+        "PostStripeL2",
+        "PostStripeL3",
+        "PostStripeL4",
+        "PostStripeL5",
+        "FootR",
+        "PostR",
+        "PostStripeR0",
+        "PostStripeR1",
+        "PostStripeR2",
+        "PostStripeR3",
+        "PostStripeR4",
+        "PostStripeR5",
+        "Beam",
+        "BeamStripe0",
+        "BeamStripe1",
+        "BeamStripe2",
+        "BeamStripe3",
+        "BeamStripe4",
+        "BeamStripe5",
+        "BeamStripe6"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -2.5,
+          -0.45,
+          0.0
+        ],
+        "max": [
+          2.5,
+          0.45,
+          4.145
+        ]
+      },
+      "dimensions_blender_xyz": [
+        5.0,
+        0.9,
+        4.145
+      ],
+      "triangles": 2592,
+      "materials": [
+        "Cream",
+        "Strawberry"
+      ]
+    },
+    "Tree": {
+      "file": "Tree.fbx",
+      "objects": [
+        "Trunk",
+        "Canopy00",
+        "Canopy01",
+        "Canopy02",
+        "Canopy03"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -1.03,
+          -0.791,
+          0.0
+        ],
+        "max": [
+          1.03,
+          0.666,
+          3.757
+        ]
+      },
+      "dimensions_blender_xyz": [
+        2.06,
+        1.457,
+        3.757
+      ],
+      "triangles": 1036,
+      "materials": [
+        "Mint",
+        "Strawberry",
+        "Wood"
+      ]
+    },
+    "Lamp": {
+      "file": "Lamp.fbx",
+      "objects": [
+        "Base",
+        "Post",
+        "GoldCollar",
+        "Globe",
+        "TopCap"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.27,
+          -0.27,
+          0.0
+        ],
+        "max": [
+          0.27,
+          0.27,
+          3.42
+        ]
+      },
+      "dimensions_blender_xyz": [
+        0.54,
+        0.54,
+        3.42
+      ],
+      "triangles": 762,
+      "materials": [
+        "Gold",
+        "Navy",
+        "White"
+      ]
+    }
+  }
+}
