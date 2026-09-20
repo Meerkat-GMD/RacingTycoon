@@ -11,5 +11,10 @@ $taskCoreResult = $LASTEXITCODE
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & "$taskMonoRoot\bin\mono.exe" "$taskRoot\Logs\DrivingTests.exe" | Tee-Object -FilePath "$taskRoot\Logs\driving-tests.txt"
 $taskDrivingResult = $LASTEXITCODE
+& "$taskMonoRoot\bin\mono.exe" "$taskMonoRoot\lib\mono\4.5\mcs.exe" -out:"$taskRoot\Logs\OrderTests.exe" @taskSources "$taskRoot\Tools\Tests\OrderTests.cs"
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& "$taskMonoRoot\bin\mono.exe" "$taskRoot\Logs\OrderTests.exe" | Tee-Object -FilePath "$taskRoot\Logs\order-tests.txt"
+$taskOrderResult = $LASTEXITCODE
 if ($taskCoreResult -ne 0) { exit $taskCoreResult }
-exit $taskDrivingResult
+if ($taskDrivingResult -ne 0) { exit $taskDrivingResult }
+exit $taskOrderResult

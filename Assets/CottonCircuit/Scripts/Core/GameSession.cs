@@ -13,10 +13,15 @@ namespace CottonCircuit
         public GameSession(Economy economy) { Economy = economy; }
         public bool StartRun()
         {
-            if (Mode != GameMode.Shop || Economy.Inventory.Count >= Economy.InventoryLimit) return false;
-            Production = new Production(Economy.Capacity);
+            return StartRun(Economy.Capacity, 60);
+        }
+        public bool StartRun(int targetGrams, double duration)
+        {
+            if (Mode != GameMode.Shop || Economy.Inventory.Count >= Economy.StockCapacity ||
+                targetGrams <= 0 || double.IsNaN(duration) || double.IsInfinity(duration) || duration <= 0) return false;
+            Production = new Production(Math.Min(targetGrams, Economy.Capacity));
             Result = null;
-            Remaining = 60;
+            Remaining = duration;
             Paused = false;
             Mode = GameMode.Racing;
             return true;
