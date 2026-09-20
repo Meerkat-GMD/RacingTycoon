@@ -98,7 +98,14 @@ namespace CottonCircuit
         }
 
         public CourseSample Project(RoadPoint position)
+        { return Project(position, 0); }
+
+        // Clearance reduces each ribbon by the kart's half-width before route selection.
+        // The returned HalfWidth remains the full road width for rendering and HUD use.
+        public CourseSample Project(RoadPoint position, double clearance)
         {
+            if (double.IsNaN(clearance) || double.IsInfinity(clearance)) clearance = 0;
+            clearance = Math.Max(0, clearance);
             CourseSample best = new CourseSample();
             double bestOutside = double.PositiveInfinity, bestCenter = double.PositiveInfinity;
             for (int road = 0; road < 2; road++)
@@ -115,7 +122,7 @@ namespace CottonCircuit
                     RoadPoint center = a + delta * t, tangent = Unit(delta), offset = position - center;
                     double lateral = tangent.Z * offset.X - tangent.X * offset.Z;
                     double centerDistance = Math.Sqrt(Dot(offset, offset));
-                    double outside = Math.Max(0, centerDistance - width);
+                    double outside = Math.Max(0, centerDistance - Math.Max(.01, width - clearance));
                     if (outside > bestOutside + 1e-8 ||
                         (Math.Abs(outside - bestOutside) <= 1e-8 && centerDistance >= bestCenter)) continue;
                     double progress = road == 0

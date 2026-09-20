@@ -27,6 +27,13 @@ public static class DrivingTests
             drive.Step(1, steering, false, false, .02);
         }
     }
+    static void SteerToward(ArcadeDrive drive, RoadPoint target, double desiredSpeed)
+    {
+        double desired = Math.Atan2(target.X - drive.Position.X, target.Z - drive.Position.Z);
+        double steering = Math.Max(-1, Math.Min(1, TurnAngle(desired - drive.Heading) * 2.2));
+        drive.Step(drive.Speed < desiredSpeed ? .75 : 0, steering,
+            drive.Speed > desiredSpeed + .8, false, .02);
+    }
 
     public static int Main()
     {
@@ -55,6 +62,12 @@ public static class DrivingTests
             var shortcut = c.Project(c.ShortcutPoints[c.ShortcutPoints.Length / 2]);
             Check(shortcut.IsShortcut && shortcut.Progress > 0 && shortcut.Progress < c.Length,
                 "shortcut is not connected to main progress");
+        });
+        Test("kart clearance selects the wider valid ribbon at a shortcut overlap", () => {
+            var p = new RoadPoint(26.9341, .0607);
+            var s = RaceCourse.Shared.Project(p, .8);
+            Check(!s.IsShortcut && Math.Abs(s.Lateral) < s.HalfWidth - .8,
+                "narrow shortcut displaced a valid main-road position");
         });
         Test("throttle moves freely and right steering turns clockwise", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);
@@ -132,6 +145,49 @@ public static class DrivingTests
                 Check(Math.Abs(s.Lateral) <= s.HalfWidth - .8,
                     "shortcut centerline projects into a wall at point " + i);
             }
+        });
+        Test("kart steers through shortcut joints without walls or free progress", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            var c = d.Course;
+            double exit = c.Project(c.ShortcutPoints[c.ShortcutPoints.Length - 1]).Progress;
+            for (int i = 0; i < 700 && d.Sample.Progress < 44; i++)
+                SteerToward(d, c.Sample(d.Sample.Progress + 8).Position, 8);
+            Check(d.Sample.Progress >= 44 && d.WallHits == 0, "approach did not reach shortcut cleanly");
+            bool entered = false, merged = false;
+            double largestReward = 0;
+            for (int i = 0; i < 700; i++) {
+                int nearest = 0;
+                double distance = double.PositiveInfinity;
+                for (int j = 0; j < c.ShortcutPoints.Length; j++) {
+                    double candidate = Distance(d.Position, c.ShortcutPoints[j]);
+                    if (candidate < distance) { distance = candidate; nearest = j; }
+                }
+                RoadPoint target = nearest >= c.ShortcutPoints.Length - 5
+                    ? c.Sample(exit + 7).Position
+                    : c.ShortcutPoints[Math.Min(c.ShortcutPoints.Length - 1, nearest + 4)];
+                SteerToward(d, target, 8);
+                if (d.Sample.IsShortcut) entered = true;
+                if (d.LastRewardDistance > largestReward) largestReward = d.LastRewardDistance;
+                Check(d.WallHits == 0, "kart hit a wall crossing shortcut ribbon");
+                if (entered && !d.Sample.IsShortcut && d.Sample.Progress > exit + 3) {
+                    merged = true;
+                    break;
+                }
+            }
+            Check(entered && merged, "kart failed to enter and merge from shortcut");
+            Check(largestReward < .6, "projection switch granted discontinuous progress");
+            Check(d.TotalProgress > exit - 4 && d.TotalProgress <= d.Sample.Progress + .1,
+                "shortcut traversal earned missing or free progress: total " + d.TotalProgress +
+                ", exit " + exit + ", projected " + d.Sample.Progress);
+            bool crossedSeam = false;
+            for (int i = 0; i < 1400; i++) {
+                double before = d.Sample.Progress;
+                SteerToward(d, c.Sample(before + 8).Position, 8);
+                if (before > c.Length - 2 && d.Sample.Progress < 2) { crossedSeam = true; break; }
+            }
+            Check(crossedSeam, "shortcut route did not finish a circuit");
+            Check(d.Laps == 1 && d.BestLapSeconds > 0,
+                "valid seam crossing after shortcut did not complete lap");
         });
         Test("driver can steer away after stopping against a wall", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);

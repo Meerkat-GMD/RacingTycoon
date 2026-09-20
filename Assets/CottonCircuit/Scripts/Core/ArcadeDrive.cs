@@ -59,11 +59,11 @@ namespace CottonCircuit
 
         public void Recover()
         {
-            var road = Course.Project(Position);
+            var road = Course.Project(Position, .8);
             Position = road.Position;
             Heading = Math.Atan2(road.Tangent.X, road.Tangent.Z);
             Stop();
-            Sample = Course.Project(Position);
+            Sample = Course.Project(Position, .8);
             projectedProgress = NearestUnwrapped(Sample.Progress, projectedProgress);
             if (projectedProgress > furthestProgress) furthestProgress = projectedProgress;
             LastRewardDistance = LastBoostedRewardDistance = 0;
@@ -125,7 +125,7 @@ namespace CottonCircuit
             Velocity += (desiredVelocity - Velocity) * Math.Min(1, grip * dt);
             RoadPoint oldPosition = Position;
             Position += Velocity * dt;
-            var road = Course.Project(Position);
+            var road = Course.Project(Position, .8);
             double limit = road.HalfWidth - .8;
             bool wall = Math.Abs(road.Lateral) > limit;
             if (wall)
@@ -141,10 +141,11 @@ namespace CottonCircuit
                 if (!touchingWall) WallHits++;
             }
             touchingWall = wall;
-            Sample = Course.Project(Position);
+            Sample = Course.Project(Position, .8);
 
-            double nextProgress = NearestUnwrapped(Sample.Progress, projectedProgress);
-            double delta = nextProgress - projectedProgress;
+            double previousProgress = projectedProgress;
+            double nextProgress = NearestUnwrapped(Sample.Progress, previousProgress);
+            double delta = nextProgress - previousProgress;
             double moved = Magnitude(Position - oldPosition);
             double plausible = Math.Max(.35, moved * 2.2 + .15);
             if (Math.Abs(delta) > plausible)
@@ -162,7 +163,10 @@ namespace CottonCircuit
             TotalProgress += reward;
             LastRewardDistance += reward;
             if (boosted) LastBoostedRewardDistance += reward;
-            while (TotalProgress >= (Laps + 1) * Course.Length)
+            // A legitimate forward seam crossing completes a lap even when a
+            // shortcut junction consumed a projection jump without candy reward.
+            while (previousProgress < (Laps + 1) * Course.Length &&
+                nextProgress >= (Laps + 1) * Course.Length)
             {
                 Laps++;
                 if (BestLapSeconds == 0 || LapSeconds < BestLapSeconds) BestLapSeconds = LapSeconds;
