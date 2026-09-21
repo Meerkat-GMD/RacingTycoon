@@ -39,14 +39,14 @@ public static class DrivingTests
     {
         Test("course samples close smoothly at a finite length", () => {
             var c = RaceCourse.Shared;
-            Check(c.Length > 180 && c.Length < 300, "implausible course length");
+            Check(c.Length >= 750 && c.Length <= 850, "implausible starter course length");
             var start = c.Sample(0);
             var finish = c.Sample(c.Length);
             Near(Distance(start.Position, finish.Position), 0, 0.001, "loop is open");
             Near(Distance(start.Tangent, finish.Tangent), 0, 0.001, "seam turns sharply");
             for (int i = 0; i < 100; i++) {
                 var s = c.Sample(c.Length * i / 100);
-                Check(Math.Sqrt(s.Position.X * s.Position.X + s.Position.Z * s.Position.Z) < 44,
+                Check(Math.Sqrt(s.Position.X * s.Position.X + s.Position.Z * s.Position.Z) + s.HalfWidth <= 200,
                     "road escapes machine rim");
                 Near(Math.Sqrt(s.Tangent.X * s.Tangent.X + s.Tangent.Z * s.Tangent.Z), 1, 0.001, "tangent not unit length");
             }
@@ -64,7 +64,10 @@ public static class DrivingTests
                 "shortcut is not connected to main progress");
         });
         Test("kart clearance selects the wider valid ribbon at a shortcut overlap", () => {
-            var p = new RoadPoint(26.9341, .0607);
+            var p = new RoadPoint(116.9, 23.1);
+            var withoutClearance = RaceCourse.Shared.Project(p);
+            Check(withoutClearance.IsShortcut && Math.Abs(withoutClearance.Lateral) > RaceCourse.ShortcutHalfWidth - .8,
+                "fixture no longer overlaps a narrow shortcut edge");
             var s = RaceCourse.Shared.Project(p, .8);
             Check(!s.IsShortcut && Math.Abs(s.Lateral) < s.HalfWidth - .8,
                 "narrow shortcut displaced a valid main-road position");
@@ -149,13 +152,14 @@ public static class DrivingTests
         Test("kart steers through shortcut joints without walls or free progress", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);
             var c = d.Course;
+            double entry = c.Project(c.ShortcutPoints[0]).Progress;
             double exit = c.Project(c.ShortcutPoints[c.ShortcutPoints.Length - 1]).Progress;
-            for (int i = 0; i < 700 && d.Sample.Progress < 44; i++)
+            for (int i = 0; i < 6000 && d.Sample.Progress < entry - 10; i++)
                 SteerToward(d, c.Sample(d.Sample.Progress + 8).Position, 8);
-            Check(d.Sample.Progress >= 44 && d.WallHits == 0, "approach did not reach shortcut cleanly");
+            Check(d.Sample.Progress >= entry - 10 && d.WallHits == 0, "approach did not reach shortcut cleanly");
             bool entered = false, merged = false;
             double largestReward = 0;
-            for (int i = 0; i < 700; i++) {
+            for (int i = 0; i < 2000; i++) {
                 int nearest = 0;
                 double distance = double.PositiveInfinity;
                 for (int j = 0; j < c.ShortcutPoints.Length; j++) {
@@ -180,7 +184,7 @@ public static class DrivingTests
                 "shortcut traversal earned missing or free progress: total " + d.TotalProgress +
                 ", exit " + exit + ", projected " + d.Sample.Progress);
             bool crossedSeam = false;
-            for (int i = 0; i < 1400; i++) {
+            for (int i = 0; i < 6500; i++) {
                 double before = d.Sample.Progress;
                 SteerToward(d, c.Sample(before + 8).Position, 8);
                 if (before > c.Length - 2 && d.Sample.Progress < 2) { crossedSeam = true; break; }
