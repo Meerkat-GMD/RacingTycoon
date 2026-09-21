@@ -4,16 +4,16 @@
 
 ## 실행
 
-- 바로 플레이: `Builds/DrivingFeel/CottonCircuit.exe` 실행. 같은 폴더의 `CottonCircuit_Data`, `MonoBleedingEdge`, DLL을 함께 유지하세요. 이전 게임이 열려 있다면 닫은 뒤 실행하세요.
+- 바로 플레이: `Builds/BoosterAcceleration/CottonCircuit.exe` 실행. 같은 폴더의 `CottonCircuit_Data`, `MonoBleedingEdge`, DLL을 함께 유지하세요. 이전 게임이 열려 있다면 닫은 뒤 실행하세요.
 - Unity 편집: Unity Hub에서 이 폴더를 추가하고 **Unity 6000.5.3f1**로 엽니다. `Assets/CottonCircuit/Scenes/CottonCircuit.unity`를 열고 Play를 누르세요.
 - 주문 카드의 **만들러 가기**를 누르고 **W를 길게 눌러** 출발합니다. 재고가 있으면 **주문 선택 → 건네기**로 바로 판매할 수 있습니다.
 
 ## 두 가지 주행 스타일
 
-가게 오른쪽의 **카트 스타일 / 다운힐 스타일**을 선택하고 출발하세요. 같은 두 맵과 솜사탕 레시피로 비교할 수 있습니다. 기본 최고 속도는 약94km/h이며 카트는 출발 후0.8초 안에90% 속도까지 가속합니다. 스타일은 가게에 돌아와 다시 선택할 수 있으며 이번 실행 동안 유지합니다.
+가게 오른쪽의 **카트 스타일 / 다운힐 스타일**을 선택하고 출발하세요. 같은 두 맵과 솜사탕 레시피로 비교할 수 있습니다. 카트의 기본 최고 속도는 약94km/h이며 출발 후0.8초 안에90% 속도까지 가속합니다. 다운힐은 엑셀을 유지하면 이 속도를 넘어 계속 가속합니다. 스타일은 가게에 돌아와 다시 선택할 수 있으며 이번 실행 동안 유지합니다.
 
-- **카트 스타일:** 경쾌한 카트, 빠른 조향, 드리프트 해제 부스트. 게이지32%에서 일반 부스트,75%에서 슈퍼 부스트를 얻습니다. 각각1.1초/1.7초 지속하고 슈퍼 부스트는 기본 차량 기준 최대144km/h입니다.
-- **다운힐 스타일:** Blender로 만든 스포츠쿠페, 더 큰 관성과 미끄러짐, 낮은 추적 카메라. 코너 전 S로 감속하고 Space와 조향으로 미끄러짐을 조절한 뒤 W로 탈출합니다. 완료한 드리프트는 품질을 높이며 자동 해제 부스트는 없습니다. 현재는 같은 평면 코스에서 조작감을 비교하는 모드입니다.
+- **카트 스타일:** W를 누르며 **Shift로 보관 부스터**를 사용합니다. 시작 시1개, 최대2개 보관하며 깨끗한 드리프트 완료 시1개 충전합니다. 보관 부스터는2.5초 동안 기본 차량 기준 최대144km/h까지 가속합니다. 기존 드리프트 해제 부스트도 유지합니다. 게이지32%에서1.1초 미니 부스트,75%에서1.7초 슈퍼 부스트가 나오며, 이 가속이 끝난 뒤 Shift를 누르면 보관 부스터를 사용합니다. 가속 중 추가 입력으로 중복 소모되지 않습니다.
+- **다운힐 스타일:** Blender로 만든 스포츠쿠페, 더 큰 관성과 미끄러짐, 낮은 추적 카메라. **W를 유지하면 속도가 계속 올라갑니다.** 충돌·코너가 없는 가속 계산에서는1/3/10/20초에 약93/132/170/190km/h이며, 기본 차량의216km/h 상한에 가까워질수록 가속이 완만해집니다. 실제 코스에서는 코너 전 S로 감속하고 Space와 조향으로 미끄러짐을 조절한 뒤 W로 탈출합니다. 완료한 드리프트는 품질을 높이며 부스터는 없습니다. 현재는 같은 평면 코스에서 조작감을 비교하는 모드입니다.
 
 ## 조작과 진행
 
@@ -22,7 +22,8 @@
 | W / 위 방향키 | 가속 |
 | A / 왼쪽 방향키 | 왼쪽 조향 |
 | D / 오른쪽 방향키 | 오른쪽 조향 |
-| Space | 코너에서 누르고 드리프트 → 놓아서 부스트 |
+| Space | 코너에서 드리프트 · 카트는 놓으면 짧은 부스트와 보관 부스터 충전 |
+| Shift | 카트 보관 부스터 사용 (W와 함께) |
 | S / 아래 방향키 | 제동 |
 | Enter | 출발 / 주행 포기 확인 / 가게 복귀 |
 | R | 현재 위치 근처 코스 중앙으로 복귀 |
@@ -78,11 +79,13 @@ Unity의 `Cotton Circuit > Rebuild game scene` 메뉴는 생성된 프리팹·�
 ```powershell
 ./Tools/test-core.ps1
 ./Tools/test-feel.ps1
+./Tools/test-booster.ps1
+./Tools/test-acceleration.ps1
 ./Tools/test-recipes.ps1
 ./Tools/test-maps.ps1
-./Tools/build.ps1 -BuildFolder Builds/DrivingFeel
-./Tools/verify-player.ps1 -BuildFolder Builds/DrivingFeel -OutputFolder Logs/Smoke-maps
-./Tools/build.ps1 -BuildFolder Builds/DrivingFeel -Release
+./Tools/build.ps1 -BuildFolder Builds/BoosterAcceleration
+./Tools/verify-player.ps1 -BuildFolder Builds/BoosterAcceleration -OutputFolder Logs/Smoke-booster
+./Tools/build.ps1 -BuildFolder Builds/BoosterAcceleration -Release
 ```
 
 빌드 전 이 프로젝트의 Unity 에디터를 닫아주세요. 기본 빌드 스크립트는 씬을 구성하고 저장·연결 검증을 실행한 뒤 Windows 개발 빌드를 생성합니다. 실행 검증은 별도의 저장 경로를 사용해 정상 저장 데이터를 건드리지 않으며, 주행·맛 선택·수동 전달·확장·재저장과 화면 캡처를 수행합니다. 마지막의 `-Release` 빌드는 자동 검증 코드를 제외한 배포용 실행 파일로 교체합니다. 다시 자동 플레이를 검증할 때는 기본 개발 빌드를 먼저 만드세요.

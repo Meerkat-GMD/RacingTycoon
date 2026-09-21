@@ -9,7 +9,9 @@ namespace CottonCircuit
         float phase;
         public void SetDriving(KartController kart, bool active)
         {
-            Strength = active ? Mathf.Clamp01((kart.Speed - 13) / 20) * (kart.Boosting ? 1 : .38f) : 0;
+            bool downhill = kart.DriveModel.Style == DrivingStyle.Downhill;
+            Strength = !active ? 0 : downhill ? Mathf.Clamp01((kart.Speed - 13) / 42) * .8f
+                : Mathf.Clamp01((kart.Speed - 13) / 20) * (kart.Boosting ? 1 : .38f);
             SetVerticesDirty();
         }
         void Update()

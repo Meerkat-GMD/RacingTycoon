@@ -47,10 +47,11 @@ namespace CottonCircuit
             wasDriving = active;
             bool audible = active && !Muted;
             engine.volume = audible ? Mathf.Lerp(.035f, .17f, Mathf.Clamp01(kart.Speed / 32)) : 0;
-            engine.pitch = .6f + kart.Speed / 20;
+            bool downhill = kart.DriveModel.Style == DrivingStyle.Downhill;
+            engine.pitch = .6f + kart.Speed / (downhill ? 26 : 20);
             skid.volume = audible && kart.Drifting && kart.Speed > 5 ? .13f : 0;
             skid.pitch = 1 + kart.Speed / 40;
-            wind.volume = audible ? Mathf.Clamp01((kart.Speed - 12) / 28) * (kart.Boosting ? .18f : .09f) : 0;
+            wind.volume = audible ? Mathf.Clamp01((kart.Speed - 12) / (downhill ? 43 : 28)) * (kart.Boosting ? .18f : downhill ? .15f : .09f) : 0;
             wind.pitch = .7f + kart.Speed / 60;
         }
         static AudioClip BoostSound(bool strong)

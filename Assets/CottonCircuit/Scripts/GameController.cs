@@ -58,19 +58,21 @@ namespace CottonCircuit
             bool brake = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
             float throttle = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
             float steer = (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
-            Tick(throttle, steer, brake, Time.deltaTime, Input.GetKey(KeyCode.Space));
+            Tick(throttle, steer, brake, Time.deltaTime, Input.GetKey(KeyCode.Space),
+                Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift));
         }
-        public void Tick(float throttle, float steering, bool brake, float deltaTime, bool drift = false)
+        public void Tick(float throttle, float steering, bool brake, float deltaTime, bool drift = false, bool boost = false)
         {
             if (Session == null || Session.Paused || !float.IsFinite(deltaTime) || deltaTime <= 0) return;
             float remaining = Mathf.Min(deltaTime, 120);
             while (remaining > .000001f)
             {
                 float dt = Mathf.Min(.05f, remaining); remaining -= dt;
-                Step(throttle, steering, brake, drift, dt);
+                Step(throttle, steering, brake, drift, dt, boost);
+                boost = false;
             }
         }
-        void Step(float throttle, float steering, bool brake, bool drift, float dt)
+        void Step(float throttle, float steering, bool brake, bool drift, float dt, bool boost)
         {
             if (noticeTimer > 0) { noticeTimer -= dt; if (noticeTimer <= 0) Notice = null; }
             if (Session.Mode != GameMode.Results)
@@ -83,9 +85,11 @@ namespace CottonCircuit
             {
                 int boosts = World.Kart.DriveModel.BoostCount;
                 int drifts = World.Kart.DriveModel.DriftCount;
-                double delta = World.Kart.Drive(throttle, steering, brake, dt, drift);
+                double delta = World.Kart.Drive(throttle, steering, brake, dt, drift, boost);
                 if (World.Kart.DriveModel.BoostCount > boosts) Audio.PlayBoost(World.Kart.DriveModel.BoostTier);
-                if (World.Kart.DriveModel.DriftCount > drifts) Notify("드리프트 성공! 다음 코너를 향해 가속하세요.");
+                if (World.Kart.DriveModel.DriftCount > drifts) Notify(RunStyle == DrivingStyle.Kart
+                    ? "드리프트 성공! 부스터 " + World.Kart.DriveModel.StoredBoosts + "/2 · 가속이 끝나면 Shift로 사용"
+                    : "드리프트 성공! 엑셀을 유지해 속도를 더 올리세요.");
                 Session.TickRecipe(dt, delta * RunTargetGrams / 40.0 * 1.18 * (1 + Session.Economy.Levels[1] * .15), World.Kart.Radius, World.Kart.DriveModel.Laps, World.Kart.DriveModel.SkillCount, World.Kart.DriveModel.WallHits);
                 if (Session.Production.Samples.Count != renderedSamples)
                 {

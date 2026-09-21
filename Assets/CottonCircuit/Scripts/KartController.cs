@@ -79,11 +79,11 @@ namespace CottonCircuit
             if (skids != null) foreach (var t in skids) { t.emitting = false; t.Clear(); }
             if (jets != null) foreach (var t in jets) { t.emitting = false; t.Clear(); }
         }
-        public double Drive(float throttle, float steering, bool brake, float deltaTime, bool drift = false)
+        public double Drive(float throttle, float steering, bool brake, float deltaTime, bool drift = false, bool boost = false)
         {
             DriveModel.MaximumSpeed = MaximumSpeed;
             int hits = DriveModel.WallHits;
-            DriveModel.Step(throttle, steering, brake, drift, deltaTime);
+            DriveModel.Step(throttle, steering, brake, drift, deltaTime, boost);
             Steering = (float)DriveModel.SteeringInput;
             ImpactFlash = hits != DriveModel.WallHits ? .35f : Mathf.Max(0, ImpactFlash - deltaTime);
             ApplyPose(deltaTime);

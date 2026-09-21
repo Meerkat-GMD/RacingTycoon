@@ -115,7 +115,7 @@ namespace CottonCircuit
             largeButton.image.color = game.PreparedSize == 1 ? Palette.Pink : Color.white;
             for (int i = 0; i < 3; i++) flavorButtons[i].image.color = game.PreparedFlavor == i ? Palette.Flavor(i) : Color.white;
             for (int i = 0; i < 2; i++) styleButtons[i].image.color = (int)game.PreparedStyle == i ? Palette.Soda : Color.white;
-            styleHint.text = game.PreparedStyle == DrivingStyle.Kart ? "빠른 방향 전환 · 드리프트 놓으면 부스트" : "묵직한 미끄러짐 · 감속 진입 → 가속 탈출";
+            styleHint.text = game.PreparedStyle == DrivingStyle.Kart ? "Shift 부스터 · 드리프트로 충전 (시작 1개)" : "W 유지하면 계속 가속 · 코너 전 S 감속";
             status.text = game.Store.Error != null ? "저장 오류 · 도움말에서 새 가게 시작" : canMake ? "선택한 맛으로 제작 · 한 바퀴 완주 시 완성\n1번: 작은 60g / 2번: 큰 120g" : "진열대가 찼어요 · 판매하거나 확장하세요";
         }
         void UpdateRaceOrder()

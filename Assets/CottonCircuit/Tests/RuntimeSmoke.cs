@@ -135,7 +135,31 @@ namespace CottonCircuit.Tests
             game.SetMap(0); game.PrepareStock();
             game.Tick(1, 0, false, .8f);
             Check(game.World.Kart.Speed >= 23.4f, "kart accelerates past ninety percent within 0.8 seconds");
+            var boosterDrive = game.World.Kart.DriveModel;
+            Check(boosterDrive.StoredBoosts == 1, "kart starts with one stored booster");
+            game.TogglePause(); game.Tick(1, 0, false, .2f, false, true);
+            Check(boosterDrive.StoredBoosts == 1 && !boosterDrive.ManualBoostActive, "pause rejects booster input without spending stock");
+            game.TogglePause(); game.Tick(1, 0, false, .2f, false, true);
+            Check(boosterDrive.StoredBoosts == 0 && boosterDrive.ManualBoostActive && boosterDrive.BoostCount == 1 && boosterDrive.Speed > 33,
+                "stored booster input accelerates and is consumed only once across controller substeps");
+            yield return new WaitForSecondsRealtime(.5f);
+            Capture("10-stored-booster.png"); yield return null; yield return null;
+            CheckScreenLayout("stored booster");
+            game.Tick(1, 0, true, .02f);
+            Check(!boosterDrive.ManualBoostActive && boosterDrive.BoostRemaining == 0, "brake cancels stored booster in player");
             game.World.Kart.Recover(); game.FinishRun(); game.FinishRun(); game.ReturnToShop();
+            game.Tick(1, 0, false, .1f, false, true);
+            Check(boosterDrive.StoredBoosts == 0 && boosterDrive.BoostCount == 1, "shop rejects booster input");
+            game.SetStyle(1); game.SetMap(0); game.PrepareStock();
+            var downhillDrive = game.World.Kart.DriveModel;
+            game.Tick(1, 0, false, 1);
+            double launchSpeed = downhillDrive.Speed;
+            game.Tick(1, 0, false, .6f, false, true);
+            Check(downhillDrive.Speed > launchSpeed + 3 && downhillDrive.Speed > 29 && downhillDrive.WallHits == 0,
+                "downhill keeps accelerating through former 26m/s limit on the starting straight");
+            Check(downhillDrive.BoostCount == 0 && downhillDrive.StoredBoosts == 0 && !downhillDrive.ManualBoostActive,
+                "downhill ignores the kart booster input");
+            game.FinishRun(); game.FinishRun(); game.ReturnToShop();
             foreach (int style in new[] { 0, 1 })
             {
                 game.SetStyle(style); game.SetMap(0); game.PrepareStock();
@@ -148,6 +172,7 @@ namespace CottonCircuit.Tests
                 Check(game.World.Kart.DriveModel.SkillCount == 1, "completed driving action contributes to quality");
                 Check(style == 0 ? game.World.Kart.DriveModel.BoostTier == 2 : !game.World.Kart.Boosting,
                     "kart releases super boost while downhill retains momentum without boost");
+                if (style == 0) Check(game.World.Kart.DriveModel.StoredBoosts == 2, "clean kart drift fills second booster slot");
                 game.Tick(1, 0, false, .18f);
                 yield return new WaitForSecondsRealtime(.5f);
                 var streaks = FindAnyObjectByType<SpeedLinesGraphic>();
@@ -246,13 +271,9 @@ namespace CottonCircuit.Tests
         }
         void FollowMap()
         {
-            var d = game.World.Kart.DriveModel; var ahead = d.Course.Sample(d.Sample.Progress + (d.Style == DrivingStyle.Downhill ? 16 : 12));
-            double lateral = .8 * Math.Sin(d.Sample.Progress * .02);
-            var target = ahead.Position + new RoadPoint(ahead.Tangent.Z, -ahead.Tangent.X) * lateral;
-            double angle = Math.Atan2(target.X - d.Position.X, target.Z - d.Position.Z) - d.Heading;
-            while (angle > Math.PI) angle -= Math.PI * 2;
-            while (angle < -Math.PI) angle += Math.PI * 2;
-            game.Tick(1, Mathf.Clamp((float)angle * 1.8f, -1, 1), false, .02f);
+            double throttle, steering; bool brake;
+            CourseTestDriver.Input(game.World.Kart.DriveModel, .8, out throttle, out steering, out brake);
+            game.Tick((float)throttle, (float)steering, brake, .02f);
         }
         void Click(string contains)
         {

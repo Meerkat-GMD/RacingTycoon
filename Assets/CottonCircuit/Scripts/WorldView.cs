@@ -80,7 +80,8 @@ namespace CottonCircuit
                 GameCamera.transform.position = Vector3.Lerp(GameCamera.transform.position, target, 1 - Mathf.Exp(-dt * 12));
                 var look = Quaternion.LookRotation(Kart.transform.position + ahead * 12 + Vector3.up * 1.05f - GameCamera.transform.position);
                 GameCamera.transform.rotation = Quaternion.Slerp(GameCamera.transform.rotation, look, 1 - Mathf.Exp(-dt * (downhill ? 9 : 13)));
-                GameCamera.fieldOfView = Mathf.Lerp(GameCamera.fieldOfView, 62 + Mathf.Clamp01(Kart.Speed / 26) * 10 + (Kart.Boosting ? 9 : 0), 1 - Mathf.Exp(-dt * 7));
+                float speedFov = downhill ? Mathf.Clamp01(Kart.Speed / 55) * 19 : Mathf.Clamp01(Kart.Speed / 26) * 10;
+                GameCamera.fieldOfView = Mathf.Lerp(GameCamera.fieldOfView, 62 + speedFov + (Kart.Boosting ? 9 : 0), 1 - Mathf.Exp(-dt * 7));
             }
             else
             {

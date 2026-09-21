@@ -67,23 +67,24 @@ public static class MapTests
             "shortcut route failed a clean forward lap");
         Console.WriteLine("  shortcut saves " + (exit - entry - shortcutLength).ToString("F1") + "m");
     }
-    static void VerifyLap(RaceCourse course, DrivingStyle style)
+    static void VerifyLap(RaceCourse course, DrivingStyle style, double motor = 26)
     {
-        var drive = new ArcadeDrive(course) { MaximumSpeed = 26, Style = style };
-        // The slower wheel and tire response in Downhill needs an earlier turn-in.
-        double lookAhead = style == DrivingStyle.Downhill ? 14 : 12;
+        var drive = new ArcadeDrive(course) { MaximumSpeed = motor, Style = style };
+        double peak = 0; bool braked = false;
         for (int step = 0; step < 1600 && drive.Laps == 0; step++)
         {
-            var target = drive.Course.Sample(drive.Sample.Progress + lookAhead).Position;
-            double desired = Math.Atan2(target.X - drive.Position.X, target.Z - drive.Position.Z);
-            drive.Step(1, Math.Max(-1, Math.Min(1, Turn(desired - drive.Heading) * 1.8)), false, false, .02);
+            double throttle, steering; bool brake;
+            CottonCircuit.Tests.CourseTestDriver.Input(drive, .8, out throttle, out steering, out brake);
+            drive.Step(throttle, steering, brake, false, .02);
+            peak = Math.Max(peak, drive.Speed); braked |= brake;
         }
         Check(drive.Laps == 1, "base kart did not finish a lap in 32 seconds");
-        Check(drive.BestLapSeconds >= 19 && drive.BestLapSeconds <= 32,
+        Check(drive.BestLapSeconds >= 16 && drive.BestLapSeconds <= 32,
             "lap time outside expected race duration: " + drive.BestLapSeconds);
         Check(drive.WallHits == 0, "main course follower hit " + drive.WallHits + " walls");
         Check(drive.TotalProgress >= drive.Course.Length - 1, "main course lost progress before finish");
-        Console.WriteLine("  " + style + ", length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s");
+        if (style == DrivingStyle.Downhill) Check(peak > 32 && braked, "downhill did not use sustained acceleration and corner braking");
+        Console.WriteLine("  " + style + ", motor " + motor + ", length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s, peak " + peak.ToString("F1") + "m/s");
     }
 
     public static int Main()
@@ -151,11 +152,13 @@ public static class MapTests
             foreach (DrivingStyle style in new[] { DrivingStyle.Kart, DrivingStyle.Downhill })
             {
                 DrivingStyle selectedStyle = style;
-                Test("map " + (map + 1) + " 26m/s " + style + " completes a clean lap in 19..32 seconds",
+                Test("map " + (map + 1) + " base " + style + " completes a clean lap with normal inputs",
                     () => VerifyLap(RaceCourse.ForMap(selected), selectedStyle));
                 Test("map " + (map + 1) + " " + style + " shortcut saves distance and drives a clean counted lap",
                     () => VerifyShortcut(RaceCourse.ForMap(selected), selectedStyle));
             }
+            Test("map " + (map + 1) + " upgraded downhill handles high speed with corner braking",
+                () => VerifyLap(RaceCourse.ForMap(selected), DrivingStyle.Downhill, 38.5));
         }
         Console.WriteLine("RESULT: " + passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;

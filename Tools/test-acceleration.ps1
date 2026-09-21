@@ -3,7 +3,7 @@ $taskRoot = Split-Path -Parent $PSScriptRoot
 $taskMonoRoot = 'D:\Unity\Hub\6000.5.3f1\Editor\Data\MonoBleedingEdge'
 New-Item -ItemType Directory -Path "$taskRoot\Logs" -Force | Out-Null
 $taskSources = Get-ChildItem -LiteralPath "$taskRoot\Assets\CottonCircuit\Scripts\Core" -Filter '*.cs' | ForEach-Object { $_.FullName }
-& "$taskMonoRoot\bin\mono.exe" "$taskMonoRoot\lib\mono\4.5\mcs.exe" -define:COTTON_TESTS -out:"$taskRoot\Logs\MapTests.exe" @taskSources "$taskRoot\Assets\CottonCircuit\Tests\CourseTestDriver.cs" "$taskRoot\Tools\Tests\MapTests.cs"
+& "$taskMonoRoot\bin\mono.exe" "$taskMonoRoot\lib\mono\4.5\mcs.exe" -out:"$taskRoot\Logs\AccelerationTests.exe" @taskSources "$taskRoot\Tools\Tests\AccelerationTests.cs"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-& "$taskMonoRoot\bin\mono.exe" "$taskRoot\Logs\MapTests.exe" | Tee-Object -FilePath "$taskRoot\Logs\map-tests.txt"
+& "$taskMonoRoot\bin\mono.exe" "$taskRoot\Logs\AccelerationTests.exe" | Tee-Object -FilePath "$taskRoot\Logs\acceleration-tests.txt"
 exit $LASTEXITCODE
