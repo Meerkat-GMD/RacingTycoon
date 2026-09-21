@@ -1,0 +1,130 @@
+{
+  "coordinate_system": {
+    "units": "meters",
+    "blender_forward": "-Y",
+    "unity_forward": "+Z",
+    "fbx_axis_forward": "-Z",
+    "fbx_axis_up": "Y",
+    "origin": "ground center",
+    "unity_wrapper_y_degrees": 180
+  },
+  "materials": {
+    "Cream": "#FFF1D4",
+    "Soda": "#7ACDCE",
+    "Navy": "#29324D",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Tire": "#414059",
+    "White": "#FFF9ED",
+    "Strawberry": "#F48DAB"
+  },
+  "assets": {
+    "DownhillCoupe": {
+      "file": "DownhillCoupe.fbx",
+      "objects": [
+        "Body",
+        "CabinGlass",
+        "CenterPillarL",
+        "CenterPillarR",
+        "DoorHandleL",
+        "DoorHandleR",
+        "DoorL",
+        "DoorR",
+        "FrontBumper",
+        "FrontGrille",
+        "FrontLip",
+        "FrontPillarL",
+        "FrontPillarR",
+        "GrilleBar",
+        "HeadlightBrowL",
+        "HeadlightBrowR",
+        "HeadlightL",
+        "HeadlightR",
+        "Hood",
+        "HoodCreamInset",
+        "MirrorGlassL",
+        "MirrorGlassR",
+        "MirrorL",
+        "MirrorR",
+        "MirrorStemL",
+        "MirrorStemR",
+        "RearBumper",
+        "RearCenterTrim",
+        "RearDeck",
+        "RearPillarL",
+        "RearPillarR",
+        "RearValance",
+        "RearWing",
+        "Roof",
+        "RoofSodaInset",
+        "SideSkirtL",
+        "SideSkirtR",
+        "TaillightInsetL",
+        "TaillightInsetR",
+        "TaillightL",
+        "TaillightR",
+        "WheelFL",
+        "WheelFR",
+        "WheelRL",
+        "WheelRR",
+        "WingEndplateL",
+        "WingEndplateR",
+        "WingPylonL",
+        "WingPylonR",
+        "WingTop"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -0.776,
+          -1.55,
+          0.0
+        ],
+        "max": [
+          0.776,
+          1.55,
+          1.05
+        ]
+      },
+      "dimensions_blender_xyz": [
+        1.552,
+        3.1,
+        1.05
+      ],
+      "triangles": 8896,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Plum",
+        "Soda",
+        "Strawberry",
+        "Tire",
+        "White"
+      ],
+      "wheel_centers_blender_xyz": {
+        "WheelFL": [
+          -0.665,
+          -0.97,
+          0.27
+        ],
+        "WheelRL": [
+          -0.665,
+          0.97,
+          0.27
+        ],
+        "WheelFR": [
+          0.665,
+          -0.97,
+          0.27
+        ],
+        "WheelRR": [
+          0.665,
+          0.97,
+          0.27
+        ]
+      },
+      "wheel_axle_local": "X",
+      "visual_description": "Original low pastel compact coupe; enclosed cabin, long hood, rear wing; no logos."
+    }
+  }
+}
