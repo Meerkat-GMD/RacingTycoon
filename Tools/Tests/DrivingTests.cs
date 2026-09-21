@@ -39,14 +39,14 @@ public static class DrivingTests
     {
         Test("course samples close smoothly at a finite length", () => {
             var c = RaceCourse.Shared;
-            Check(c.Length >= 750 && c.Length <= 850, "implausible starter course length");
+            Check(c.Length >= 520 && c.Length <= 620, "implausible starter course length");
             var start = c.Sample(0);
             var finish = c.Sample(c.Length);
             Near(Distance(start.Position, finish.Position), 0, 0.001, "loop is open");
             Near(Distance(start.Tangent, finish.Tangent), 0, 0.001, "seam turns sharply");
             for (int i = 0; i < 100; i++) {
                 var s = c.Sample(c.Length * i / 100);
-                Check(Math.Sqrt(s.Position.X * s.Position.X + s.Position.Z * s.Position.Z) + s.HalfWidth <= 200,
+                Check(Math.Sqrt(s.Position.X * s.Position.X + s.Position.Z * s.Position.Z) + s.HalfWidth <= 130,
                     "road escapes machine rim");
                 Near(Math.Sqrt(s.Tangent.X * s.Tangent.X + s.Tangent.Z * s.Tangent.Z), 1, 0.001, "tangent not unit length");
             }
@@ -64,7 +64,7 @@ public static class DrivingTests
                 "shortcut is not connected to main progress");
         });
         Test("kart clearance selects the wider valid ribbon at a shortcut overlap", () => {
-            var p = new RoadPoint(116.9, 23.1);
+            var p = new RoadPoint(80.9, 19.0);
             var withoutClearance = RaceCourse.Shared.Project(p);
             Check(withoutClearance.IsShortcut && Math.Abs(withoutClearance.Lateral) > RaceCourse.ShortcutHalfWidth - .8,
                 "fixture no longer overlaps a narrow shortcut edge");
@@ -87,7 +87,7 @@ public static class DrivingTests
         Test("sustained drift releases one boost and braking cancels it", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);
             d.Step(1, 0, false, false, 1);
-            d.Step(1, .55, false, true, .45);
+            d.Step(1, .55, false, true, .5);
             Check(d.IsDrifting && d.DriftCharge > .25, "turning drift did not charge");
             d.Step(1, 0, false, false, .02);
             Check(!d.IsDrifting && d.BoostCount == 1 && d.BoostRemaining > 0,
@@ -100,7 +100,7 @@ public static class DrivingTests
         Test("boosted progress is reported separately for exact production bonus", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);
             d.Step(1, 0, false, false, 1);
-            d.Step(1, .55, false, true, .45);
+            d.Step(1, .55, false, true, .5);
             d.Step(1, 0, false, false, .02);
             Check(d.LastBoostedRewardDistance > 0 &&
                 d.LastBoostedRewardDistance <= d.LastRewardDistance,

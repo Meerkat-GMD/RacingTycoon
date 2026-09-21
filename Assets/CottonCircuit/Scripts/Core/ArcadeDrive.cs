@@ -2,6 +2,8 @@ using System;
 
 namespace CottonCircuit
 {
+    public enum DrivingStyle { Kart, Downhill }
+
     public sealed class ArcadeDrive
     {
         public RaceCourse Course { get; private set; }
@@ -10,10 +12,16 @@ namespace CottonCircuit
         public double Speed { get; private set; }
         public RoadPoint Velocity { get; private set; }
         public double MaximumSpeed { get; set; }
+        public DrivingStyle Style { get; set; }
+        public double SteeringInput { get; private set; }
         public double DriftCharge { get; private set; }
         public double BoostRemaining { get; private set; }
+        public double BoostDuration { get; private set; }
+        public int BoostTier { get; private set; }
         public bool IsDrifting { get; private set; }
         public int BoostCount { get; private set; }
+        public int DriftCount { get; private set; }
+        public int SkillCount { get { return Style == DrivingStyle.Downhill ? DriftCount : BoostCount; } }
         public int WallHits { get; private set; }
         public int Laps { get; private set; }
         public double BestLapSeconds { get; private set; }
@@ -31,7 +39,7 @@ namespace CottonCircuit
         {
             if (course == null) throw new ArgumentNullException("course");
             Course = course;
-            MaximumSpeed = 18;
+            MaximumSpeed = 26;
             Reset();
         }
 
@@ -42,7 +50,7 @@ namespace CottonCircuit
             Heading = Math.Atan2(Sample.Tangent.X, Sample.Tangent.Z);
             Stop();
             DriftCharge = BoostRemaining = LastRewardDistance = LastBoostedRewardDistance = TotalProgress = 0;
-            BoostCount = WallHits = Laps = 0;
+            BoostCount = DriftCount = WallHits = Laps = 0;
             BestLapSeconds = LapSeconds = projectedProgress = furthestProgress = 0;
             IsDrifting = touchingWall = false;
         }
@@ -51,10 +59,17 @@ namespace CottonCircuit
         {
             Speed = 0;
             Velocity = new RoadPoint(0, 0);
+            SteeringInput = 0;
             IsDrifting = false;
             DriftCharge = 0;
-            BoostRemaining = 0;
+            ClearBoost();
             LastRewardDistance = LastBoostedRewardDistance = 0;
+        }
+
+        void ClearBoost()
+        {
+            BoostRemaining = BoostDuration = 0;
+            BoostTier = 0;
         }
 
         public void Recover()
@@ -92,37 +107,61 @@ namespace CottonCircuit
         void Integrate(double throttle, double steering, bool brake, bool drift, double dt)
         {
             LapSeconds += dt;
-            if (brake)
+            bool downhill = Style == DrivingStyle.Downhill;
+            double speedLimit = Math.Max(1, Finite(MaximumSpeed) ? MaximumSpeed : 26);
+            SteeringInput += (steering - SteeringInput) * (1 - Math.Exp(-dt / (downhill ? .14 : .085)));
+            if (downhill) ClearBoost();
+            if (brake && !downhill)
             {
-                BoostRemaining = 0;
+                ClearBoost();
                 DriftCharge = 0;
             }
-            bool canCharge = drift && !brake && Speed >= 6 && Math.Abs(steering) >= .22;
-            if (canCharge) DriftCharge = Clamp(DriftCharge + dt * 1.5 * Math.Abs(steering), 0, 1);
-            else if (drift && !brake) DriftCharge = Math.Max(0, DriftCharge - dt * .45);
-            if (IsDrifting && !drift && !brake && DriftCharge >= .32)
+            bool slideInput = downhill ? drift || (brake && Math.Abs(SteeringInput) >= .22) : drift && !brake;
+            bool canCharge = slideInput && Speed >= 6 && Math.Abs(SteeringInput) >= .22;
+            if (canCharge) DriftCharge = Clamp(DriftCharge + dt * 1.5 * Math.Abs(SteeringInput), 0, 1);
+            else if (slideInput) DriftCharge = Math.Max(0, DriftCharge - dt * .45);
+            bool completedSlide = downhill && IsDrifting && !slideInput && Speed >= 6 && DriftCharge >= .32;
+            if (!downhill && IsDrifting && !drift && !brake && DriftCharge >= .32)
             {
-                BoostRemaining = .9;
+                BoostTier = DriftCharge >= .75 ? 2 : 1;
+                BoostDuration = BoostTier == 2 ? 1.7 : 1.1;
+                BoostRemaining = BoostDuration;
+                double impulse = Math.Min(BoostTier == 2 ? 8 : 5,
+                    Math.Max(0, speedLimit + (BoostTier == 2 ? 14 : 9) - Speed));
+                Speed += impulse;
+                Velocity += new RoadPoint(Math.Sin(Heading), Math.Cos(Heading)) * impulse;
                 BoostCount++;
             }
-            if (!drift) DriftCharge = 0;
-            IsDrifting = drift && !brake;
+            if (!slideInput) DriftCharge = 0;
+            IsDrifting = slideInput && Speed >= 6;
             bool boosted = BoostRemaining > 0;
-            if (boosted) BoostRemaining = Math.Max(0, BoostRemaining - dt);
+            int activeTier = BoostTier;
+            if (boosted)
+            {
+                BoostRemaining = Math.Max(0, BoostRemaining - dt);
+                if (BoostRemaining < 1e-9) ClearBoost();
+            }
 
-            double speedLimit = Math.Max(1, Finite(MaximumSpeed) ? MaximumSpeed : 18);
-            speedLimit += boosted ? 7 : 0;
-            double acceleration = throttle * (boosted ? 19 : 14);
-            double deceleration = brake ? 25 : 1.7 + Speed * .11;
-            Speed = Clamp(Speed + (acceleration - deceleration) * dt, 0, speedLimit);
+            speedLimit += boosted ? (activeTier == 2 ? 14 : 9) : 0;
+            if (brake) Speed = Math.Max(0, Speed - (downhill ? 25 : 40) * dt);
+            // Carry excess speed through boost expiry instead of clamping the
+            // kart back to its normal limit in a single frame.
+            else if (Speed > speedLimit) Speed = Math.Max(speedLimit, Speed - 9 * dt);
+            else
+            {
+                double acceleration = throttle * (boosted ? 44 : 38);
+                double drag = 1.7 + Speed * .11;
+                Speed = Clamp(Speed + (acceleration - drag) * dt, 0, speedLimit);
+            }
             double rollingSteer = Speed / (Speed + 4);
-            double steeringRate = (drift ? 2.65 : 2.2) *
+            double highSpeedStability = 1 - .18 * Clamp(Speed / 26, 0, 1);
+            double steeringRate = (slideInput ? (downhill ? 2.6 : 2.85) : 2.45) * highSpeedStability *
                 (.25 * throttle + (1 - .25 * throttle) * rollingSteer);
-            Heading += steering * steeringRate * dt;
+            Heading += SteeringInput * steeringRate * dt;
             RoadPoint facing = new RoadPoint(Math.Sin(Heading), Math.Cos(Heading));
             RoadPoint desiredVelocity = facing * Speed;
-            double grip = drift ? 2.7 : 9;
-            Velocity += (desiredVelocity - Velocity) * Math.Min(1, grip * dt);
+            double grip = slideInput ? (downhill ? 2.2 : 2.7) : (downhill ? 7.5 : 13);
+            Velocity += (desiredVelocity - Velocity) * (1 - Math.Exp(-grip * dt));
             RoadPoint oldPosition = Position;
             Position += Velocity * dt;
             var road = Course.Project(Position, .8);
@@ -136,10 +175,13 @@ namespace CottonCircuit
                 double along = Math.Max(0, Dot(Velocity, road.Tangent));
                 Velocity = road.Tangent * (along * .7);
                 Speed = Magnitude(Velocity);
-                BoostRemaining = DriftCharge = 0;
+                ClearBoost();
+                DriftCharge = 0;
+                IsDrifting = false;
                 boosted = false;
                 if (!touchingWall) WallHits++;
             }
+            if (completedSlide && !wall) DriftCount++;
             touchingWall = wall;
             Sample = Course.Project(Position, .8);
 
