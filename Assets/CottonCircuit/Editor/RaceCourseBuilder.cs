@@ -56,27 +56,72 @@ namespace CottonCircuit.Editor
             foreach (double fraction in new[] { .09, .19, .28, .39, .49, .61, .72, .86 })
             {
                 var s = course.Sample(course.Length * fraction); Vector3 tangent = V(s.Tangent, 0), right = new Vector3(tangent.z, 0, -tangent.x);
-                var board = ProjectBuilder.Place(world.Assets.Chevron, V(s.Position) + right * 6.2f, Quaternion.LookRotation(-tangent), root);
+                var board = PlaceRoadside(world.Assets.Chevron, "Corner chevron", V(s.Position) + right * 6.8f,
+                    Quaternion.LookRotation(-tangent), 1, course, root);
+                if (board == null) continue;
                 Vector3 future = V(course.Sample(course.Length * fraction + 10).Tangent, 0);
                 if (Vector3.SignedAngle(tangent, future, Vector3.up) < 0) board.transform.localScale = new Vector3(-1, 1, 1);
             }
+            // Existing Blender props pass close to the camera every half-second
+            // at base speed. Test their entire footprint against both road ribbons.
+            for (int marker = 0; marker * 12 + 14 < course.Length - 12; marker++)
+            {
+                var s = course.Sample(marker * 12 + 14);
+                Vector3 tangent = V(s.Tangent, 0), right = new Vector3(tangent.z, 0, -tangent.x);
+                int side = marker % 2 == 0 ? -1 : 1;
+                PlaceRoadside(world.Assets.Crystal, "Roadside crystal", V(s.Position) + right * (side * 7.1f),
+                    Quaternion.Euler(0, marker * 47, 0), 2.4f, course, root);
+                if (marker % 3 == 1)
+                    PlaceRoadside(world.Assets.Tree, "Roadside tree", V(s.Position) - right * (side * 8.1f),
+                        Quaternion.Euler(0, marker * 31, 0), .95f, course, root);
+            }
             var start = course.Sample(0); var direction = V(start.Tangent, 0); var across = new Vector3(direction.z, 0, -direction.x);
-            var arch = ProjectBuilder.Place(world.Assets.Arch, V(start.Position), Quaternion.LookRotation(direction), root); arch.transform.localScale = new Vector3(2.2f, 1.4f, 1);
+            var arch = ProjectBuilder.Place(world.Assets.Arch, V(start.Position), Quaternion.LookRotation(direction), root); arch.transform.localScale = new Vector3(2.75f, 1.4f, 1);
             for (int row = 0; row < 2; row++) for (int col = 0; col < 16; col++)
             {
                 var tile = ProjectBuilder.Cube("Start checker", V(start.Position, 1.062f) + across * ((col - 7.5f) * .6f) + direction * ((row - .5f) * .6f), new Vector3(.6f, .018f, .6f), materials[(row + col) % 2 == 0 ? "White" : "Navy"], root);
                 tile.transform.rotation = Quaternion.LookRotation(direction);
             }
-            var entrance = course.ShortcutPoints[3]; var toward = V(course.ShortcutPoints[4]) - V(course.ShortcutPoints[2]);
-            ProjectBuilder.Place(world.Assets.ShortcutGate, V(entrance), Quaternion.LookRotation(-toward), root);
+            // The narrower gate belongs after the split, not across the main road.
+            int gatePoint = course.ShortcutPoints.Length / 3;
+            var entrance = course.ShortcutPoints[gatePoint];
+            var toward = V(course.ShortcutPoints[gatePoint + 1]) - V(course.ShortcutPoints[gatePoint - 1]);
+            var gate = ProjectBuilder.Place(world.Assets.ShortcutGate, V(entrance), Quaternion.LookRotation(-toward), root);
+            gate.transform.localScale = new Vector3(1.4f, 1, 1);
             if (world.Assets.CandyTunnel != null)
             {
-                var tunnel = course.Sample(course.MapIndex == 0 ? 36 : 43);
+                // Keep the 8m-long, 11m-wide opening wholly on the first straight.
+                var tunnel = course.Sample(course.MapIndex == 0 ? 24 : 26);
                 ProjectBuilder.Place(world.Assets.CandyTunnel, V(tunnel.Position), Quaternion.LookRotation(V(tunnel.Tangent, 0)), root);
             }
             if (world.Assets.FinishMarker != null)
-                ProjectBuilder.Place(world.Assets.FinishMarker, V(start.Position) + across * 8 + direction * 3,
-                    Quaternion.LookRotation(-direction), root);
+                PlaceRoadside(world.Assets.FinishMarker, "Finish landmark", V(start.Position) + across * 8 + direction * 3,
+                    Quaternion.LookRotation(-direction), 1, course, root);
+        }
+        static GameObject PlaceRoadside(GameObject prefab, string name, Vector3 position, Quaternion rotation,
+            float scale, RaceCourse course, Transform root)
+        {
+            var prop = ProjectBuilder.Place(prefab, position, rotation, root);
+            prop.name = name;
+            prop.transform.localScale = Vector3.one * scale;
+            float radius = 0;
+            foreach (var renderer in prop.GetComponentsInChildren<Renderer>())
+            {
+                Bounds bounds = renderer.bounds;
+                float x = Mathf.Max(Mathf.Abs(bounds.min.x - position.x), Mathf.Abs(bounds.max.x - position.x));
+                float z = Mathf.Max(Mathf.Abs(bounds.min.z - position.z), Mathf.Abs(bounds.max.z - position.z));
+                radius = Mathf.Max(radius, Mathf.Sqrt(x * x + z * z));
+            }
+            var projected = course.Project(new RoadPoint(position.x, position.z));
+            Vector3 offset = position - V(projected.Position, position.y);
+            float fromCenter = new Vector2(position.x, position.z).magnitude;
+            if (offset.magnitude < projected.HalfWidth + radius + .55f ||
+                fromCenter - radius < 30 || fromCenter + radius > 137)
+            {
+                Object.DestroyImmediate(prop);
+                return null;
+            }
+            return prop;
         }
         static void Ribbon(string name, RoadPoint[] points, bool closed, float left, float rightEdge, float height, Material material, Transform parent)
         {

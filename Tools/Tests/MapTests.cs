@@ -21,9 +21,9 @@ public static class MapTests
             Math.Max(-1, Math.Min(1, Turn(desired - drive.Heading) * 2.2)),
             drive.Speed > speed + .8, false, .02);
     }
-    static void VerifyShortcut(RaceCourse course)
+    static void VerifyShortcut(RaceCourse course, DrivingStyle style)
     {
-        var drive = new ArcadeDrive(course);
+        var drive = new ArcadeDrive(course) { Style = style };
         double entry = course.Project(course.ShortcutPoints[0]).Progress;
         double exit = course.Project(course.ShortcutPoints[course.ShortcutPoints.Length - 1]).Progress;
         double shortcutLength = 0;
@@ -67,17 +67,36 @@ public static class MapTests
             "shortcut route failed a clean forward lap");
         Console.WriteLine("  shortcut saves " + (exit - entry - shortcutLength).ToString("F1") + "m");
     }
+    static void VerifyLap(RaceCourse course, DrivingStyle style)
+    {
+        var drive = new ArcadeDrive(course) { MaximumSpeed = 26, Style = style };
+        // The slower wheel and tire response in Downhill needs an earlier turn-in.
+        double lookAhead = style == DrivingStyle.Downhill ? 14 : 12;
+        for (int step = 0; step < 1600 && drive.Laps == 0; step++)
+        {
+            var target = drive.Course.Sample(drive.Sample.Progress + lookAhead).Position;
+            double desired = Math.Atan2(target.X - drive.Position.X, target.Z - drive.Position.Z);
+            drive.Step(1, Math.Max(-1, Math.Min(1, Turn(desired - drive.Heading) * 1.8)), false, false, .02);
+        }
+        Check(drive.Laps == 1, "base kart did not finish a lap in 32 seconds");
+        Check(drive.BestLapSeconds >= 19 && drive.BestLapSeconds <= 32,
+            "lap time outside expected race duration: " + drive.BestLapSeconds);
+        Check(drive.WallHits == 0, "main course follower hit " + drive.WallHits + " walls");
+        Check(drive.TotalProgress >= drive.Course.Length - 1, "main course lost progress before finish");
+        Console.WriteLine("  " + style + ", length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s");
+    }
 
     public static int Main()
     {
-        Test("starter course supports a full length race", () => {
-            Check(RaceCourse.Shared.Length >= 750 && RaceCourse.Shared.Length <= 850,
-                "starter course must be 750..850m, got " + RaceCourse.Shared.Length);
+        Test("starter course fits a quick corner and boost race", () => {
+            Check(RaceCourse.Shared.Length >= 520 && RaceCourse.Shared.Length <= 620,
+                "starter course must be 520..620m, got " + RaceCourse.Shared.Length);
         });
         Test("maps select different full circuits and reject unsupported indices", () => {
             var small = RaceCourse.ForMap(0); var large = RaceCourse.ForMap(1);
             Check(ReferenceEquals(small, RaceCourse.Shared), "legacy default changed away from map 1");
-            Check(large.Length >= 1050 && large.Length <= 1200, "large course must be 1050..1200m");
+            Check(large.Length >= 640 && large.Length <= 750,
+                "large course must be 640..750m, got " + large.Length);
             double difference = 0;
             for (int i = 0; i < 16; i++)
                 difference += Distance(small.Sample(small.Length * i / 16).Position * (1 / small.Length),
@@ -106,8 +125,11 @@ public static class MapTests
                     foreach (var point in points)
                     {
                         double radius = Distance(point, new RoadPoint(0, 0));
-                        Check(!double.IsNaN(radius) && !double.IsInfinity(radius) && radius + RaceCourse.MainHalfWidth <= 200,
+                        double halfWidth = ReferenceEquals(points, course.MainPoints)
+                            ? RaceCourse.MainHalfWidth : RaceCourse.ShortcutHalfWidth;
+                        Check(!double.IsNaN(radius) && !double.IsInfinity(radius) && radius + halfWidth <= 130,
                             "road extends outside machine radius");
+                        Check(radius - halfWidth >= 30, "road overlaps the central stage");
                         Check(point.X >= course.BoundsMin.X && point.X <= course.BoundsMax.X &&
                             point.Z >= course.BoundsMin.Z && point.Z <= course.BoundsMax.Z, "minimap bounds omit road");
                         var projected = course.Project(point, .8);
@@ -126,22 +148,14 @@ public static class MapTests
                 var center = course.Project(course.ShortcutPoints[course.ShortcutPoints.Length / 2]);
                 Check(center.IsShortcut, "shortcut has no independent drivable section");
             });
-            Test("map " + (map + 1) + " base kart completes one clean lap in 45..90 seconds", () => {
-                var drive = new ArcadeDrive(RaceCourse.ForMap(selected));
-                for (int step = 0; step < 4500 && drive.Laps == 0; step++)
-                {
-                    var target = drive.Course.Sample(drive.Sample.Progress + 10).Position;
-                    double desired = Math.Atan2(target.X - drive.Position.X, target.Z - drive.Position.Z);
-                    drive.Step(1, Math.Max(-1, Math.Min(1, Turn(desired - drive.Heading) * 1.8)), false, false, .02);
-                }
-                Check(drive.Laps == 1, "base kart did not finish a lap in 90 seconds");
-                Check(drive.BestLapSeconds >= 45 && drive.BestLapSeconds <= 90,
-                    "lap time outside expected race duration: " + drive.BestLapSeconds);
-                Check(drive.WallHits == 0, "main course follower hit " + drive.WallHits + " walls");
-                Check(drive.TotalProgress >= drive.Course.Length - 1, "main course lost progress before finish");
-                Console.WriteLine("  length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s");
-            });
-            Test("map " + (map + 1) + " shortcut saves distance and drives a clean counted lap", () => VerifyShortcut(RaceCourse.ForMap(selected)));
+            foreach (DrivingStyle style in new[] { DrivingStyle.Kart, DrivingStyle.Downhill })
+            {
+                DrivingStyle selectedStyle = style;
+                Test("map " + (map + 1) + " 26m/s " + style + " completes a clean lap in 19..32 seconds",
+                    () => VerifyLap(RaceCourse.ForMap(selected), selectedStyle));
+                Test("map " + (map + 1) + " " + style + " shortcut saves distance and drives a clean counted lap",
+                    () => VerifyShortcut(RaceCourse.ForMap(selected), selectedStyle));
+            }
         }
         Console.WriteLine("RESULT: " + passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;
