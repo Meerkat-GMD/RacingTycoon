@@ -9,6 +9,7 @@ namespace CottonCircuit
         readonly Button[] orderSelect = new Button[2], orderMake = new Button[2], orderServe = new Button[2], stockButtons = new Button[12];
         Text stockCount, business, shelfText, raceOrder;
         Button shelfButton, discardButton, smallButton, largeButton;
+        readonly Button[] flavorButtons = new Button[3];
         static string SizeName(int size) => size < 0 ? "미완성" : size == 0 ? "작은" : "큰";
         static string ProductName(Product product) => Palette.FlavorName(CandyRecipe.FlavorOf(product)) + " · " + SizeName(CandyRecipe.SizeOf(product));
         CustomerOrder OrderAt(int i) => i < game.Orders.Orders.Count ? game.Orders.Orders[i] : null;
@@ -18,26 +19,32 @@ namespace CottonCircuit
             Label(p, "01  /  MADE TO ORDER", 1240, 136, 320, 25, 12, Palette.Muted, FontStyle.Bold);
             Label(p, "주문을 받았어요", 1240, 172, 320, 48, 28, Palette.Ink, FontStyle.Bold);
             Label(p, "재고가 있으면 골라서 건네고,\n없으면 직접 만들어 돌아오세요.", 1240, 225, 320, 53, 16, Palette.Muted);
-            var stats = Box(p, "Shop reputation", 1240, 294, 320, 60, Color.white);
+            var stats = Box(p, "Shop reputation", 1240, 278, 320, 60, Color.white);
             business = Label(stats.rectTransform, "", 14, 7, 292, 49, 15, Palette.Ink);
             string[] names = { "카트 모터", "설탕통", "가게 꾸미기" };
-            string[] hints = { "최고 속도 증가", "수집량 +15%", "판매가 증가" };
+            string[] hints = { "최고 속도 증가", "감기 속도 +15% · 품질 +5", "판매가 증가" };
             for (int i = 0; i < 3; i++)
             {
                 int index = i;
-                var row = Box(p, "Upgrade " + i, 1240, 374 + 69 * i, 320, 61, Color.white);
-                upgradeTexts[i] = Label(row.rectTransform, names[i], 13, 5, 192, 29, 16, Palette.Ink, FontStyle.Bold);
-                Label(row.rectTransform, hints[i], 13, 34, 188, 22, 12, Palette.Muted);
-                upgradeButtons[i] = ButtonAt(row.rectTransform, "120", 207, 10, 98, 41, Palette.Yellow, Palette.Ink, () => game.BuyUpgrade(index), 16);
+                var row = Box(p, "Upgrade " + i, 1240, 350 + 59 * i, 320, 53, Color.white);
+                upgradeTexts[i] = Label(row.rectTransform, names[i], 13, 2, 192, 29, 16, Palette.Ink, FontStyle.Bold);
+                Label(row.rectTransform, hints[i], 13, 29, 188, 22, 12, Palette.Muted);
+                upgradeButtons[i] = ButtonAt(row.rectTransform, "120", 207, 6, 98, 41, Palette.Yellow, Palette.Ink, () => game.BuyUpgrade(index), 16);
             }
-            var shelf = Box(p, "Shelf expansion", 1240, 581, 320, 65, Color.white);
+            var shelf = Box(p, "Shelf expansion", 1240, 527, 320, 65, Color.white);
             shelfText = Label(shelf.rectTransform, "", 13, 7, 189, 52, 16, Palette.Ink, FontStyle.Bold);
             shelfButton = ButtonAt(shelf.rectTransform, "160", 207, 12, 98, 41, Palette.Soda, Palette.Ink, () => game.BuyShelf(), 16);
-            Label(p, "미리 만들기 · 크기 선택", 1240, 667, 320, 28, 14, Palette.Muted);
-            smallButton = ButtonAt(p, "작은 · 60g", 1240, 703, 155, 42, Palette.Pink, Palette.Ink, () => game.SetSize(0), 16);
-            largeButton = ButtonAt(p, "큰 · 120g", 1404, 703, 156, 42, Color.white, Palette.Ink, () => game.SetSize(1), 16);
-            startButton = ButtonAt(p, "재고 미리 만들기  →", 1240, 763, 320, 55, Palette.Ink, Color.white, () => game.PrepareStock(), 19);
-            status = Label(p, "", 1240, 831, 320, 43, 12, Palette.Muted, FontStyle.Normal, TextAnchor.UpperCenter);
+            Label(p, "맵 선택 · 제품 크기", 1240, 605, 320, 28, 14, Palette.Muted);
+            smallButton = ButtonAt(p, "1번 맵 · 작은", 1240, 635, 155, 42, Palette.Pink, Palette.Ink, () => game.SetSize(0), 16);
+            largeButton = ButtonAt(p, "2번 맵 · 큰", 1404, 635, 156, 42, Color.white, Palette.Ink, () => game.SetSize(1), 16);
+            Label(p, "기계 세팅 · 솜사탕 맛", 1240, 688, 320, 24, 14, Palette.Muted);
+            for (int i = 0; i < 3; i++)
+            {
+                int index = i;
+                flavorButtons[i] = ButtonAt(p, Palette.FlavorName(i), 1240 + i * 110, 720, 100, 40, Color.white, Palette.Ink, () => game.SetFlavor(index), 16);
+            }
+            startButton = ButtonAt(p, "재고 미리 만들기  →", 1240, 780, 320, 53, Palette.Ink, Color.white, () => game.PrepareStock(), 19);
+            status = Label(p, "", 1240, 842, 320, 45, 12, Palette.Muted, FontStyle.Normal, TextAnchor.UpperCenter);
             for (int i = 0; i < 2; i++)
             {
                 int index = i;
@@ -100,13 +107,14 @@ namespace CottonCircuit
             startButton.interactable = canMake;
             smallButton.image.color = game.PreparedSize == 0 ? Palette.Pink : Color.white;
             largeButton.image.color = game.PreparedSize == 1 ? Palette.Pink : Color.white;
-            status.text = game.Store.Error != null ? "저장 오류 · 도움말에서 새 가게 시작" : canMake ? "작은 50g+ / 큰 100g+ · 최대 30초 제작\n가장 많이 모은 맛으로 주문을 맞춰요" : "진열대가 찼어요 · 판매하거나 확장하세요";
+            for (int i = 0; i < 3; i++) flavorButtons[i].image.color = game.PreparedFlavor == i ? Palette.Flavor(i) : Color.white;
+            status.text = game.Store.Error != null ? "저장 오류 · 도움말에서 새 가게 시작" : canMake ? "선택한 맛으로 제작 · 한 바퀴 완주 시 완성\n1번: 작은 60g / 2번: 큰 120g" : "진열대가 찼어요 · 판매하거나 확장하세요";
         }
         void UpdateRaceOrder()
         {
             var order = game.SelectedOrder;
-            raceOrder.text = (game.RunFlavor < 0 ? "미리 만들기" : Palette.FlavorName(game.RunFlavor) + " 주문") + " · 목표 " + game.RunTargetGrams + "g" +
-                (game.RunFlavor < 0 ? "" : order == null ? " · 주문 시간 종료" : " · 손님 " + Mathf.CeilToInt((float)order.Remaining) + "초") + "\n대기 손님 " + game.Orders.Orders.Count + " / 2";
+            raceOrder.text = RaceRecipe.Name(game.RunMap) + " · " + Palette.FlavorName(game.RunFlavor) + " " + game.RunTargetGrams + "g\n" +
+                (order == null ? "코스 완주로 제작 완료" : "주문 손님 " + Mathf.CeilToInt((float)order.Remaining) + "초") + " · 대기 " + game.Orders.Orders.Count + "/2";
         }
     }
 }

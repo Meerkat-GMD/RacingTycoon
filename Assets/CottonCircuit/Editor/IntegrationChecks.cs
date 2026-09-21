@@ -54,8 +54,8 @@ namespace CottonCircuit.Editor
                 migrated.TotalTips == 0 && migrated.OrdersServed == 0 && migrated.MissedOrders == 0 &&
                 migrated.SatisfactionTotal == 0, "V1 save initializes order fields");
             Check(legacyStore.Save(migrated) &&
-                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(legacyDirectory, "cotton-circuit.json"))).Version == 2,
-                "migrated save writes V2");
+                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(legacyDirectory, "cotton-circuit.json"))).Version == 3,
+                "migrated save writes V3");
 
             var expanded = new Economy { Coins = 820, ShelfLevel = 1, OrderSerial = 12,
                 NextCustomerIn = 7.5, TotalTips = 42, MissedOrders = 4,
@@ -65,7 +65,7 @@ namespace CottonCircuit.Editor
             expanded.Orders.Add(new CustomerOrder { Id = "order-12", Flavor = 0, Size = 1, Remaining = 17.5 });
             var expandedDirectory = Path.Combine(root, "orders");
             var expandedStore = new SaveStore(expandedDirectory);
-            Check(expandedStore.Save(expanded), "V2 save accepts expanded shelf and waiting orders");
+            Check(expandedStore.Save(expanded), "V3 save accepts expanded shelf and waiting orders");
             var restored = new SaveStore(expandedDirectory).Load();
             Check(restored.ShelfLevel == 1 && restored.StockCapacity == 9 && restored.Inventory.Count == 9 &&
                 restored.Coins == 820 && restored.Orders.Count == 2 &&
@@ -74,7 +74,7 @@ namespace CottonCircuit.Editor
                 restored.NextCustomerIn == 7.5 && restored.OrderSerial == 12 &&
                 restored.TotalTips == 42 && restored.MissedOrders == 4 &&
                 restored.OrdersServed == 3 && restored.SatisfactionTotal == 2.25,
-                "V2 round trip retains orders, timing, rewards, and shelf capacity");
+                "V3 round trip retains orders, timing, rewards, and shelf capacity");
             expanded.ShelfLevel = 0;
             Check(!SaveStore.Valid(expanded), "inventory beyond current shelf capacity rejected");
             expanded.ShelfLevel = 1;
@@ -103,13 +103,35 @@ namespace CottonCircuit.Editor
             var priorV2 = File.ReadAllText(Path.Combine(expandedDirectory, "cotton-circuit.json"));
             Check(!expandedStore.Save(expanded) &&
                 File.ReadAllText(Path.Combine(expandedDirectory, "cotton-circuit.json")) == priorV2,
-                "invalid in-memory V2 does not overwrite valid save");
+                "invalid in-memory V3 does not overwrite valid save");
             File.WriteAllText(Path.Combine(expandedDirectory, "cotton-circuit.json"),
                 JsonUtility.ToJson(new SaveStore.Envelope { Version = 2, State = expanded }, true));
             var invalidStore = new SaveStore(expandedDirectory);
             invalidStore.Load();
             Check(!invalidStore.CanSave && !invalidStore.Save(new Economy()),
                 "malformed V2 file protected from overwrite");
+        }
+        static void CheckRecipeSaves(string root)
+        {
+            var stock = MakeStock();
+            var e = new Economy { Coins = 610, ShelfLevel = 1, OrderSerial = 2, OrdersServed = 1,
+                TotalSold = 1, TotalTips = 10, LifetimeRevenue = 100, SatisfactionTotal = .5 };
+            e.CompleteRun(stock);
+            e.Orders.Add(new CustomerOrder { Id = "order-2", Flavor = 1, Size = 1, Remaining = 60 });
+            var dir = Path.Combine(root, "v2-migration"); Directory.CreateDirectory(dir);
+            File.WriteAllText(Path.Combine(dir, "cotton-circuit.json"), JsonUtility.ToJson(new SaveStore.Envelope { Version = 2, State = e }));
+            var store = new SaveStore(dir); var restored = store.Load();
+            Check(store.CanSave && restored.Coins == 610 && restored.Inventory[0].Id == stock.Id && restored.ShelfLevel == 1,
+                "V2 migration keeps stock, coins and shelves");
+            Check(restored.Orders[0].Remaining == 150 && restored.Inventory[0].Quality == 0 && restored.SatisfactionTotal == .5,
+                "V2 migration preserves waiting ratio and legacy candy value");
+            restored.Inventory[0].Quality = 75;
+            Check(store.Save(restored) && new SaveStore(dir).Load().Inventory[0].Quality == 75,
+                "V3 preserves product quality");
+            Check(JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(dir, "cotton-circuit.json"))).Version == 3,
+                "V2 migration writes version3");
+            restored.Inventory[0].Quality = 101; Check(!SaveStore.Valid(restored), "out of range quality rejected");
+            restored.Inventory[0].Quality = -1; Check(!SaveStore.Valid(restored), "negative quality rejected");
         }
         public static void Run()
         {
@@ -125,8 +147,9 @@ namespace CottonCircuit.Editor
             Check(assets.Kart && assets.Kiosk && assets.Spinner && assets.Puff && assets.Customer && assets.Crystal && assets.Arch && assets.Tree && assets.Lamp, "all nine Blender assets used");
             Check(assets.Chevron && assets.Barrier && assets.ShortcutGate, "three new Blender racing props imported");
             Check(assets.DisplayRack && assets.OrderBoard && assets.QueuePost && game.World.DisplayRacks.Length == 3, "three Blender shop props and expandable racks wired");
-            Check(GameObject.Find("Collection strip") && GameObject.Find("Sugar cut shortcut"), "collection strip and neutral shortcut present");
-            Check(GameObject.Find("Sugarway circuit") && GameObject.Find("Racing surface") && GameObject.Find("Sugar cut shortcut"), "main course and shortcut rendered from physics geometry");
+            Check(assets.CandyTunnel && assets.FinishMarker, "two new Blender map landmarks imported");
+            Check(game.World.CourseRoots != null && game.World.CourseRoots.Length == 2 && game.World.CourseRoots[0].Find("Racing surface 1") && game.World.CourseRoots[1].Find("Racing surface 2"), "two maps rendered from their physics courses");
+            Check(game.World.ShopRoot && game.World.ShopRoot.position.x < -200, "shop is outside the enlarged machine");
             Check(game.World.CandyCamera && game.World.CandyPreview, "live cotton preview camera wired");
             foreach (var part in assets.Kart.GetComponentsInChildren<Transform>())
                 if (part.name == "Nose") Check(assets.Kart.transform.InverseTransformPoint(part.position).z > .2f, "kart nose faces gameplay +Z");
@@ -147,6 +170,7 @@ namespace CottonCircuit.Editor
             e.Levels[1] = 99; Check(!SaveStore.Valid(e), "invalid upgrade level rejected");
             e.Levels[1] = 0; e.Inventory[0].Samples[0].Radius = double.NaN; Check(!SaveStore.Valid(e), "nonfinite product coordinates rejected");
             CheckOrderSaves(dir);
+            CheckRecipeSaves(dir);
             Debug.Log("COTTON_EDITOR_CHECKS_PASSED " + count);
             File.WriteAllText("Logs/editor-checks.txt", count + " editor checks passed\n" + dir);
         }

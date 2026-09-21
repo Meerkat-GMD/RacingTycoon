@@ -6,14 +6,27 @@ namespace CottonCircuit
     {
         public KartController Kart;
         Color[] roadColors;
-        Vector2 Map(RoadPoint p) => new Vector2(((float)p.X + 42) / 84 * rectTransform.rect.width, ((float)p.Z + 36) / 76 * rectTransform.rect.height);
+        RaceCourse cachedCourse;
+        Vector2 center, extent;
+        Vector2 Map(RoadPoint p)
+        {
+            float scale = Mathf.Min(rectTransform.rect.width / extent.x, rectTransform.rect.height / extent.y);
+            return new Vector2(rectTransform.rect.width, rectTransform.rect.height) * .5f + (new Vector2((float)p.X, (float)p.Z) - center) * scale;
+        }
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            vh.Clear(); var course = RaceCourse.Shared;
-            if (roadColors == null)
+            vh.Clear(); var course = Kart && Kart.DriveModel != null ? Kart.DriveModel.Course : RaceCourse.Shared;
+            if (cachedCourse != course)
             {
+                cachedCourse = course;
+                Vector2 min = new Vector2(float.MaxValue, float.MaxValue), max = new Vector2(float.MinValue, float.MinValue);
+                foreach (var point in course.MainPoints)
+                {
+                    Vector2 p = new Vector2((float)point.X, (float)point.Z); min = Vector2.Min(min, p); max = Vector2.Max(max, p);
+                }
+                center = (min + max) * .5f; extent = max - min + Vector2.one * 25;
                 roadColors = new Color[course.MainPoints.Length];
-                for (int i = 0; i < roadColors.Length; i++) roadColors[i] = Palette.Flavor(Mathf.Min(2, (int)(course.Project(course.MainPoints[i]).Progress / course.Length * 3)));
+                for (int i = 0; i < roadColors.Length; i++) roadColors[i] = course == RaceCourse.ForMap(0) ? Palette.Pink : Palette.Soda;
             }
             for (int i = 0; i < course.MainPoints.Length; i++)
                 Line(vh, Map(course.MainPoints[i]), Map(course.MainPoints[(i + 1) % course.MainPoints.Length]), 7, roadColors[i]);

@@ -12,6 +12,11 @@ namespace CottonCircuit
         public Transform Customer;
         public Transform DisplayRoot;
         public Transform[] DisplayRacks;
+        public Transform[] CourseRoots;
+        public Transform ShopRoot;
+        public const float CandyScale = 8;
+        Vector3 ShopOffset => ShopRoot ? ShopRoot.position : Vector3.zero;
+        Vector3 ShopFocus => new Vector3(-52, 1.2f, 10) + ShopOffset;
         public LineRenderer SugarThread;
         public Light Sun;
         public bool AnimationPaused;
@@ -35,22 +40,31 @@ namespace CottonCircuit
             }
             else
             {
-                focus = mode == GameMode.Shop ? new Vector3(-52, 1.2f, 10) : new Vector3(0, 7, 0);
-                size = mode == GameMode.Shop ? 5.2f : 9;
-                GameCamera.transform.position = focus + new Vector3(28, 34, 40);
+                focus = mode == GameMode.Shop ? ShopFocus : new Vector3(0, 28, 0);
+                size = mode == GameMode.Shop ? 5.2f : 32;
+                GameCamera.transform.position = focus + new Vector3(56, 68, 80);
                 GameCamera.transform.LookAt(focus); GameCamera.orthographicSize = size;
             }
             UpdateViewport();
         }
         public void Initialize()
         {
-            focus = new Vector3(-52, 1.2f, 10);
+            focus = ShopFocus;
             size = 5.2f;
             UpdateViewport();
             if (queue == null) queue = new[] { Customer, Instantiate(Assets.Customer, transform).transform };
             foreach (var person in departing) if (person) Destroy(person.gameObject);
             departing.Clear(); queueIds[0] = queueIds[1] = null;
             AnimationPaused = false;
+        }
+        public void SelectCourse(int map)
+        {
+            if (CourseRoots != null) for (int i = 0; i < CourseRoots.Length; i++) CourseRoots[i].gameObject.SetActive(i == map);
+            Kart.SetCourse(RaceCourse.ForMap(map)); SetCandyQuality(0);
+        }
+        public void SetCandyQuality(int quality)
+        {
+            CentralCandy.transform.localScale = Vector3.one * CandyScale * (1 + Mathf.Clamp(quality, 0, 100) * .001f);
         }
         void LateUpdate()
         {
@@ -67,11 +81,11 @@ namespace CottonCircuit
             }
             else
             {
-                Vector3 desired = mode == GameMode.Shop ? new Vector3(-52, 1.2f, 10) : new Vector3(0, 7, 0);
-                float desiredSize = mode == GameMode.Shop ? 5.2f : 9;
+                Vector3 desired = mode == GameMode.Shop ? ShopFocus : new Vector3(0, 28, 0);
+                float desiredSize = mode == GameMode.Shop ? 5.2f : 32;
                 focus = Vector3.Lerp(focus, desired, 1 - Mathf.Exp(-dt * 5));
                 size = Mathf.Lerp(size, desiredSize, 1 - Mathf.Exp(-dt * 5));
-                GameCamera.transform.position = focus + new Vector3(28, 34, 40);
+                GameCamera.transform.position = focus + new Vector3(56, 68, 80);
                 GameCamera.transform.LookAt(focus); GameCamera.orthographicSize = size;
             }
             if (Stick && mode == GameMode.Racing && !AnimationPaused && Kart.Speed > 0)
@@ -93,7 +107,7 @@ namespace CottonCircuit
             SugarThread.enabled = active;
             if (!active) return;
             var start = Kart.transform.position + Vector3.up * 1.25f;
-            var end = new Vector3(0, 6.4f, 0);
+            var end = new Vector3(0, 25.6f, 0);
             SugarThread.startColor = Palette.Flavor(Kart.Flavor);
             SugarThread.endColor = Palette.Flavor(Kart.Flavor);
             SugarThread.positionCount = 24;
@@ -113,8 +127,8 @@ namespace CottonCircuit
                 bool visible = mode == GameMode.Shop && i < economy.Orders.Count;
                 queue[i].gameObject.SetActive(visible); if (!visible) continue;
                 var order = economy.Orders[i];
-                if (queueIds[i] != order.Id) { queueIds[i] = order.Id; queue[i].position = new Vector3(-50, .3f, 16.5f); }
-                Vector3 target = new Vector3(-52, .3f, 11.4f + i * 2);
+                if (queueIds[i] != order.Id) { queueIds[i] = order.Id; queue[i].position = ShopOffset + new Vector3(-50, .3f, 16.5f); }
+                Vector3 target = ShopOffset + new Vector3(-52, .3f, 11.4f + i * 2);
                 queue[i].position = Vector3.MoveTowards(queue[i].position, target, dt * 3);
                 queue[i].rotation = Quaternion.Euler(0, 180, 0);
             }
@@ -122,7 +136,7 @@ namespace CottonCircuit
             {
                 var person = departing[i]; person.gameObject.SetActive(mode == GameMode.Shop);
                 if (mode != GameMode.Shop) continue;
-                Vector3 target = new Vector3(-47, .3f, 17);
+                Vector3 target = ShopOffset + new Vector3(-47, .3f, 17);
                 person.rotation = Quaternion.LookRotation(target - person.position);
                 person.position = Vector3.MoveTowards(person.position, target, dt * 3.5f);
                 if ((person.position - target).sqrMagnitude < .1f) { Destroy(person.gameObject); departing.RemoveAt(i); }
