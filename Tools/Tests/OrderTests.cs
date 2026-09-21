@@ -48,7 +48,7 @@ public static class OrderTests
             Check(manager.Orders.Count == 1 && manager.Orders[0].Id == "order-1" &&
                 manager.Orders[0].Flavor == 0 && manager.Orders[0].Size == 0 &&
                 economy.OrderSerial == 1 && manager.Revision == 1, "initial order missing or incorrect");
-            Near(manager.Orders[0].Remaining, 120, "initial patience wrong");
+            Near(manager.Orders[0].Remaining, CustomerOrder.Patience, "initial patience wrong");
         });
         Test("initial order can request valid saved stock", () => {
             var economy = new Economy();
@@ -78,8 +78,8 @@ public static class OrderTests
             var manager = new OrderManager(economy);
             manager.Tick(15);
             Check(manager.Orders.Count == 2 && manager.Orders[1].Id == "order-2" &&
-                manager.Orders[0].Remaining == 105, "second arrival timing wrong");
-            manager.Tick(105);
+                manager.Orders[0].Remaining == CustomerOrder.Patience - 15, "second arrival timing wrong");
+            manager.Tick(CustomerOrder.Patience - 15);
             Check(manager.Orders.Count == 1 && manager.Orders[0].Id == "order-2" &&
                 economy.MissedOrders == 1 && economy.Inventory.Count == 1 && economy.Coins == 80,
                 "expiry changed stock/coins or queue");
@@ -106,7 +106,7 @@ public static class OrderTests
             var manager = new OrderManager(economy);
             int revision = manager.Revision;
             manager.Tick(-1); manager.Tick(double.NaN); manager.Tick(double.PositiveInfinity);
-            Check(manager.Revision == revision && manager.Orders[0].Remaining == 120,
+            Check(manager.Revision == revision && manager.Orders[0].Remaining == CustomerOrder.Patience,
                 "invalid time changed queue");
             manager.Tick(1e12);
             Check(manager.Orders.Count <= 2 && economy.MissedOrders > 0 && economy.MissedOrders < 1000,
@@ -139,7 +139,7 @@ public static class OrderTests
             var stock = Strawberry("timed");
             economy.CompleteRun(stock);
             var manager = new OrderManager(economy);
-            manager.Tick(60);
+            manager.Tick(CustomerOrder.Patience / 2);
             var receipt = manager.Serve("order-1", stock.Id);
             Check(receipt != null && receipt.Price == 73 && receipt.Tip == 9,
                 "half-patience tip wrong");
@@ -151,7 +151,7 @@ public static class OrderTests
             var stock = Strawberry("kept");
             economy.CompleteRun(stock);
             var manager = new OrderManager(economy);
-            manager.Tick(120);
+            manager.Tick(CustomerOrder.Patience);
             Check(manager.Serve("order-1", stock.Id) == null && economy.Inventory.Count == 1 &&
                 economy.TotalSold == 0 && economy.Coins == 80, "expired handover paid");
         });

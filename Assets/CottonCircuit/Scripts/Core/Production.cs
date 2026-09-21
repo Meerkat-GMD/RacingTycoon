@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace CottonCircuit
 {
     [Serializable] public class WindingSample { public double Angle; public double Radius; public int Flavor; }
-    [Serializable] public class Product { public string Id; public int Grams; public List<WindingSample> Samples = new List<WindingSample>(); }
+    [Serializable] public class Product { public string Id; public int Grams; public int Quality; public List<WindingSample> Samples = new List<WindingSample>(); }
     public class Production
     {
         public const double SampleStep = Math.PI / 10;

@@ -5,7 +5,7 @@ namespace CottonCircuit
 {
     [Serializable] public class CustomerOrder
     {
-        public const double Patience = 120;
+        public const double Patience = 300;
         public string Id;
         public int Flavor;
         public int Size;

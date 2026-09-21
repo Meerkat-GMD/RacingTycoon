@@ -6,7 +6,7 @@ namespace CottonCircuit
 {
     public class SaveStore
     {
-        [Serializable] public class Envelope { public int Version = 2; public Economy State; }
+        [Serializable] public class Envelope { public int Version = 3; public Economy State; }
         readonly string directory;
         public string DirectoryPath { get { return directory; } }
         string FilePath => Path.Combine(directory, "cotton-circuit.json");
@@ -20,14 +20,7 @@ namespace CottonCircuit
             {
                 if (new FileInfo(FilePath).Length > 8 * 1024 * 1024) throw new InvalidDataException();
                 var envelope = JsonUtility.FromJson<Envelope>(File.ReadAllText(FilePath));
-                if (envelope == null || envelope.State == null) throw new InvalidDataException();
-                if (envelope.Version == 1)
-                {
-                    if (!ValidLegacy(envelope.State)) throw new InvalidDataException();
-                    MigrateLegacy(envelope.State);
-                }
-                else if (envelope.Version != 2) throw new InvalidDataException();
-                if (!Valid(envelope.State)) throw new InvalidDataException();
+                if (!Upgrade(envelope)) throw new InvalidDataException();
                 return envelope.State;
             }
             catch (Exception e) when (e is IOException || e is InvalidDataException || e is ArgumentException || e is UnauthorizedAccessException)
@@ -63,6 +56,8 @@ namespace CottonCircuit
             { Error = "기존 저장 파일을 보관하지 못했어요."; return false; }
         }
         public static bool Valid(Economy e)
+        { return Valid(e, CustomerOrder.Patience, true); }
+        static bool Valid(Economy e, double patience, bool validateQuality)
         {
             if (e == null || e.ShelfLevel < 0 || e.ShelfLevel > 2 ||
                 e.Orders == null || e.Orders.Count > 2 || e.OrderSerial < 0 ||
@@ -72,14 +67,14 @@ namespace CottonCircuit
                 e.TotalTips > e.LifetimeRevenue ||
                 !Finite(e.NextCustomerIn) || e.NextCustomerIn <= 0 || e.NextCustomerIn > 15 ||
                 !Finite(e.SatisfactionTotal) || e.SatisfactionTotal < 0 ||
-                e.SatisfactionTotal > e.OrdersServed || !ValidBase(e, e.StockCapacity)) return false;
+                e.SatisfactionTotal > e.OrdersServed || !ValidBase(e, e.StockCapacity, validateQuality)) return false;
             var orderIds = new HashSet<string>();
             foreach (var order in e.Orders)
             {
                 if (order == null || string.IsNullOrEmpty(order.Id) || !orderIds.Add(order.Id) ||
                     order.Flavor < 0 || order.Flavor > 2 || order.Size < 0 || order.Size > 1 ||
                     !Finite(order.Remaining) || order.Remaining <= 0 ||
-                    order.Remaining > CustomerOrder.Patience) return false;
+                    order.Remaining > patience) return false;
                 int serial;
                 if (!order.Id.StartsWith("order-", StringComparison.Ordinal) ||
                     !int.TryParse(order.Id.Substring(6), out serial) || serial <= 0 ||
@@ -87,7 +82,28 @@ namespace CottonCircuit
             }
             return true;
         }
-        static bool ValidLegacy(Economy e) { return ValidBase(e, Economy.InventoryLimit); }
+        static bool Upgrade(Envelope envelope)
+        {
+            if (envelope == null || envelope.State == null) return false;
+            var state = envelope.State;
+            if (envelope.Version == 1)
+            {
+                if (!ValidBase(state, Economy.InventoryLimit, false)) return false;
+                MigrateLegacy(state);
+            }
+            else if (envelope.Version == 2)
+            {
+                // Validate against the old deadline before preserving each waiting ratio.
+                if (!Valid(state, 120, false)) return false;
+                foreach (var order in state.Orders) order.Remaining *= CustomerOrder.Patience / 120;
+            }
+            else if (envelope.Version != 3) return false;
+            if (envelope.Version < 3)
+                foreach (var product in state.Inventory) product.Quality = 0;
+            if (!Valid(state)) return false;
+            envelope.Version = 3;
+            return true;
+        }
         static void MigrateLegacy(Economy e)
         {
             e.ShelfLevel = 0;
@@ -100,7 +116,7 @@ namespace CottonCircuit
             e.OrdersServed = 0;
         }
         static bool Finite(double value) { return !double.IsNaN(value) && !double.IsInfinity(value); }
-        static bool ValidBase(Economy e, int stockCapacity)
+        static bool ValidBase(Economy e, int stockCapacity, bool validateQuality)
         {
             if (e == null || e.Coins < 0 || e.Coins > 1000000000 || e.Day < 1 || e.Levels == null || e.Levels.Length != 3 ||
                 e.Inventory == null || e.Inventory.Count > stockCapacity || e.CompletedIds == null || e.TotalSold < 0 || e.LifetimeRevenue < 0) return false;
@@ -109,7 +125,8 @@ namespace CottonCircuit
             foreach (var product in e.Inventory)
             {
                 if (product == null || string.IsNullOrEmpty(product.Id) || !ids.Add(product.Id) || product.Samples == null ||
-                    product.Samples.Count == 0 || product.Samples.Count > 230 || product.Grams != product.Samples.Count * 2) return false;
+                    product.Samples.Count == 0 || product.Samples.Count > 230 || product.Grams != product.Samples.Count * 2 ||
+                    (validateQuality && (product.Quality < 0 || product.Quality > 100))) return false;
                 double previous = 0;
                 foreach (var sample in product.Samples)
                 {

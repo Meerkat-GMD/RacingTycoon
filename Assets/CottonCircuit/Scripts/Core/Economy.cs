@@ -38,7 +38,9 @@ namespace CottonCircuit
             if (product == null || product.Grams <= 0) return 0;
             var flavors = new HashSet<int>();
             foreach (var sample in product.Samples) flavors.Add(sample.Flavor);
-            return (int)Math.Round((20 + product.Grams * .75 + flavors.Count * 8) * (1 + Levels[2] * .25));
+            double qualityMultiplier = 1 + Math.Max(0, Math.Min(100, product.Quality)) * .003;
+            return (int)Math.Round((20 + product.Grams * .75 + flavors.Count * 8) *
+                (1 + Levels[2] * .25) * qualityMultiplier);
         }
         public int SellNext()
         {
