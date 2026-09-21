@@ -1,0 +1,123 @@
+{
+  "coordinate_system": {
+    "units": "meters",
+    "blender_forward": "-Y",
+    "unity_forward": "+Z",
+    "fbx_axis_forward": "-Z",
+    "fbx_axis_up": "Y",
+    "origin": "ground center"
+  },
+  "materials": {
+    "Strawberry": "#F48DAB",
+    "Cream": "#FFF1D4",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "White": "#FFF9ED",
+    "Gold": "#DBAE61"
+  },
+  "assets": {
+    "CandyTunnel": {
+      "file": "CandyTunnel.fbx",
+      "objects": [
+        "Foot1Left",
+        "Foot1Right",
+        "Foot2Left",
+        "Foot2Right",
+        "Foot3Left",
+        "Foot3Right",
+        "GoldCuff1Left",
+        "GoldCuff1Right",
+        "GoldCuff2Left",
+        "GoldCuff2Right",
+        "GoldCuff3Left",
+        "GoldCuff3Right",
+        "SideStringLeft",
+        "SideStringRight",
+        "SpiralArch1",
+        "SpiralArch2",
+        "SpiralArch3"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -6.46,
+          -4.0,
+          0.0
+        ],
+        "max": [
+          6.46,
+          4.0,
+          8.96
+        ]
+      },
+      "dimensions_blender_xyz": [
+        12.92,
+        8.0,
+        8.96
+      ],
+      "triangles": 25420,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Soda",
+        "Strawberry",
+        "Vanilla",
+        "White"
+      ],
+      "clearance": {
+        "width": 11.0,
+        "apex_height": 8.0,
+        "road_width": 9.6,
+        "road_headroom": 2.3
+      }
+    },
+    "FinishMarker": {
+      "file": "FinishMarker.fbx",
+      "objects": [
+        "CandyCenter",
+        "CandyMedallion",
+        "CandyRim",
+        "CandyStem",
+        "CandySwirl",
+        "PodiumFrontBand",
+        "PodiumIcing",
+        "PodiumTop",
+        "RibbonHighlightLeft",
+        "RibbonHighlightRight",
+        "RibbonLeft",
+        "RibbonRight",
+        "StemCollar",
+        "VictoryStar",
+        "WinnerPodium"
+      ],
+      "bounds_blender_xyz": {
+        "min": [
+          -1.5,
+          -0.75,
+          0.0
+        ],
+        "max": [
+          1.5,
+          0.75,
+          4.992
+        ]
+      },
+      "dimensions_blender_xyz": [
+        3.0,
+        1.5,
+        4.992
+      ],
+      "triangles": 9016,
+      "materials": [
+        "Cream",
+        "Gold",
+        "Navy",
+        "Soda",
+        "Strawberry",
+        "Vanilla",
+        "White"
+      ]
+    }
+  }
+}
