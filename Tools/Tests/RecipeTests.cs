@@ -63,7 +63,7 @@ public static class RecipeTests
         Test("one lap fills missing winding samples and awards exactly once", () => {
             var s = new GameSession(new Economy());
             Start(s, 1, 1);
-            Tick(s, 75, 0, 10, 1, 5, 0);
+            Tick(s, RaceRecipe.ParSeconds(1), 0, 10, 1, 5, 0);
             Check(s.Mode == GameMode.Results && s.Result != null && s.Result.Grams == 120,
                 "lap left missing samples or no candy");
             Check(s.Economy.Inventory.Count == 1 && s.Economy.Day == 2 && Bonus(s) == 40 &&
@@ -129,7 +129,7 @@ public static class RecipeTests
             s.Tick(180, 100, 10, 2);
             Check(s.Mode == GameMode.Racing && s.Elapsed == 0 && s.Production.Grams == 0,
                 "legacy lane tick changed recipe");
-            Tick(s, 50, 100, 10, 1);
+            Tick(s, RaceRecipe.ParSeconds(0), 100, 10, 1);
             s.ReturnToShop(); Check(Start(s, 1, 2), "second recipe refused");
             Check(s.Result == null && s.ResultBonus == 0 && s.Elapsed == 0 && s.Remaining == 240,
                 "previous result leaked into next recipe");
@@ -156,9 +156,9 @@ public static class RecipeTests
         });
         Test("fast and slower finishes produce bounded time-based bonuses", () => {
             var fast = new GameSession(new Economy());
-            Start(fast, 0, 0); Tick(fast, 25, 100, 10, 1);
+            Start(fast, 0, 0); Tick(fast, RaceRecipe.ParSeconds(0) * .5, 100, 10, 1);
             var slow = new GameSession(new Economy());
-            Start(slow, 0, 0); Tick(slow, 100, 100, 10, 1);
+            Start(slow, 0, 0); Tick(slow, RaceRecipe.ParSeconds(0) * 2, 100, 10, 1);
             Check(Bonus(fast) == 20 && Bonus(slow) == 10 && fast.Economy.Coins == 100 &&
                 slow.Economy.Coins == 90, "time-based bonus is missing or exceeds cap");
         });

@@ -35,8 +35,9 @@ namespace CottonCircuit
             if (CandyCamera) CandyCamera.enabled = mode == GameMode.Racing;
             if (mode == GameMode.Racing)
             {
-                GameCamera.transform.position = Kart.transform.position - Kart.transform.forward * 9 + Vector3.up * 5.6f;
-                GameCamera.transform.LookAt(Kart.transform.position + Kart.transform.forward * 7 + Vector3.up);
+                GameCamera.transform.position = Kart.transform.position - Kart.transform.forward * 7.4f + Vector3.up * (Kart.DriveModel.Style == DrivingStyle.Downhill ? 3.2f : 4.1f);
+                GameCamera.transform.LookAt(Kart.transform.position + Kart.transform.forward * 12 + Vector3.up);
+                GameCamera.fieldOfView = 62;
             }
             else
             {
@@ -72,12 +73,14 @@ namespace CottonCircuit
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
             if (mode == GameMode.Racing)
             {
+                if (AnimationPaused) return;
                 Vector3 ahead = Kart.transform.forward;
-                Vector3 target = Kart.transform.position - ahead * (Kart.Boosting ? 10.2f : 9) + Vector3.up * 5.6f;
-                GameCamera.transform.position = Vector3.Lerp(GameCamera.transform.position, target, 1 - Mathf.Exp(-dt * 8));
-                var look = Quaternion.LookRotation(Kart.transform.position + ahead * 7 + Vector3.up * 1.1f - GameCamera.transform.position);
-                GameCamera.transform.rotation = Quaternion.Slerp(GameCamera.transform.rotation, look, 1 - Mathf.Exp(-dt * 11));
-                GameCamera.fieldOfView = Mathf.Lerp(GameCamera.fieldOfView, 58 + Mathf.Clamp01(Kart.Speed / 26) * 9 + (Kart.Boosting ? 6 : 0), 1 - Mathf.Exp(-dt * 5));
+                bool downhill = Kart.DriveModel.Style == DrivingStyle.Downhill;
+                Vector3 target = Kart.transform.position - ahead * (Kart.Boosting ? 8.3f : 7.4f) + Vector3.up * (downhill ? 3.2f : 4.1f);
+                GameCamera.transform.position = Vector3.Lerp(GameCamera.transform.position, target, 1 - Mathf.Exp(-dt * 12));
+                var look = Quaternion.LookRotation(Kart.transform.position + ahead * 12 + Vector3.up * 1.05f - GameCamera.transform.position);
+                GameCamera.transform.rotation = Quaternion.Slerp(GameCamera.transform.rotation, look, 1 - Mathf.Exp(-dt * (downhill ? 9 : 13)));
+                GameCamera.fieldOfView = Mathf.Lerp(GameCamera.fieldOfView, 62 + Mathf.Clamp01(Kart.Speed / 26) * 10 + (Kart.Boosting ? 9 : 0), 1 - Mathf.Exp(-dt * 7));
             }
             else
             {

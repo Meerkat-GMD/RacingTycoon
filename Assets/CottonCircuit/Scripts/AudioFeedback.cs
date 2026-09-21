@@ -3,15 +3,17 @@ namespace CottonCircuit
 {
     public class AudioFeedback : MonoBehaviour
     {
-        AudioSource source, engine, skid;
-        AudioClip purchase, complete, select, boost, engineClip, skidClip;
+        AudioSource source, engine, skid, wind;
+        AudioClip purchase, complete, select, boost, superBoost, engineClip, skidClip, windClip;
+        bool wasDriving;
         public bool Muted { get; private set; }
         void Awake()
         {
             source = gameObject.AddComponent<AudioSource>(); source.playOnAwake = false; source.volume = .18f;
-            select = Tone(520, .08f); purchase = Tone(880, .18f); complete = Tone(660, .35f); boost = Tone(220, .5f, true);
-            engineClip = Motor(false); skidClip = Motor(true);
-            engine = Loop(engineClip); skid = Loop(skidClip);
+            select = Tone(520, .08f); purchase = Tone(880, .18f); complete = Tone(660, .35f);
+            boost = BoostSound(false); superBoost = BoostSound(true);
+            engineClip = Motor(false); skidClip = Motor(true); windClip = Motor(true);
+            engine = Loop(engineClip); skid = Loop(skidClip); wind = Loop(windClip);
         }
         AudioSource Loop(AudioClip clip)
         {
@@ -41,14 +43,33 @@ namespace CottonCircuit
         public void UpdateDriving(KartController kart, bool active)
         {
             if (!engine) return;
+            if (wasDriving && !active) source.Stop();
+            wasDriving = active;
             bool audible = active && !Muted;
-            engine.volume = audible ? Mathf.Lerp(.035f, .15f, Mathf.Clamp01(kart.Speed / 26)) : 0;
-            engine.pitch = .65f + kart.Speed / 19;
-            skid.volume = audible && kart.Drifting ? .13f : 0;
+            engine.volume = audible ? Mathf.Lerp(.035f, .17f, Mathf.Clamp01(kart.Speed / 32)) : 0;
+            engine.pitch = .6f + kart.Speed / 20;
+            skid.volume = audible && kart.Drifting && kart.Speed > 5 ? .13f : 0;
             skid.pitch = 1 + kart.Speed / 40;
+            wind.volume = audible ? Mathf.Clamp01((kart.Speed - 12) / 28) * (kart.Boosting ? .18f : .09f) : 0;
+            wind.pitch = .7f + kart.Speed / 60;
         }
+        static AudioClip BoostSound(bool strong)
+        {
+            int count = strong ? 15435 : 9922; var data = new float[count];
+            var random = new System.Random(strong ? 103 : 91); float noise = 0;
+            for (int i = 0; i < count; i++)
+            {
+                float t = i / 22050f, p = (float)i / count;
+                noise = Mathf.Lerp(noise, (float)random.NextDouble() * 2 - 1, .4f);
+                float envelope = Mathf.Min(1, p * 18) * Mathf.Pow(1 - p, 1.6f);
+                data[i] = (noise * .85f + Mathf.Sin(2 * Mathf.PI * (100 * t + 220 * t * t)) * .22f) * envelope;
+            }
+            var clip = AudioClip.Create(strong ? "Super sugar rush" : "Sugar rush", count, 1, 22050, false);
+            clip.SetData(data, 0); return clip;
+        }
+        public void PlayBoost(int tier) { if (!Muted && source) source.PlayOneShot(tier == 2 ? superBoost : boost, 1.4f); }
         public void Play(int kind) { if (!Muted && source) source.PlayOneShot(kind == 0 ? select : kind == 1 ? purchase : kind == 3 ? boost : complete); }
-        public void Toggle() { Muted = !Muted; if (Muted) { source.Stop(); engine.volume = 0; skid.volume = 0; } }
-        void OnDestroy() { foreach (var clip in new[] { purchase, complete, select, boost, engineClip, skidClip }) if (clip) Destroy(clip); }
+        public void Toggle() { Muted = !Muted; if (Muted) { source.Stop(); engine.volume = 0; skid.volume = 0; wind.volume = 0; } }
+        void OnDestroy() { foreach (var clip in new[] { purchase, complete, select, boost, superBoost, engineClip, skidClip, windClip }) if (clip) Destroy(clip); }
     }
 }

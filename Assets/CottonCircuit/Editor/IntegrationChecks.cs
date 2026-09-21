@@ -30,6 +30,34 @@ namespace CottonCircuit.Editor
             production.Advance(3 * Math.PI, 10, 2);
             return production.Finish();
         }
+        static void CheckRoadside(WorldView world)
+        {
+            for (int map = 0; map < 2; map++)
+            {
+                var bounds = new List<Bounds>(); int props = 0;
+                foreach (Transform child in world.CourseRoots[map])
+                {
+                    if (!child.name.StartsWith("Roadside ")) continue;
+                    props++;
+                    foreach (var renderer in child.GetComponentsInChildren<Renderer>(true)) bounds.Add(renderer.bounds);
+                }
+                Check(props >= 20, "map " + map + " has close roadside landmarks for speed perception");
+                var course = RaceCourse.ForMap(map); bool clear = true;
+                foreach (var points in new[] { course.MainPoints, course.ShortcutPoints })
+                    foreach (var point in points)
+                    {
+                        var road = course.Project(point);
+                        var right = new RoadPoint(road.Tangent.Z, -road.Tangent.X);
+                        foreach (int side in new[] { -1, 0, 1 })
+                        {
+                            var p = point + right * (side * (road.HalfWidth - 1.2));
+                            var vehicle = new Bounds(new Vector3((float)p.X, 1.75f, (float)p.Z), new Vector3(1.6f, 1.4f, 1.6f));
+                            foreach (var prop in bounds) if (vehicle.Intersects(prop)) clear = false;
+                        }
+                    }
+                Check(clear, "map " + map + " roadside meshes leave drivable lanes clear");
+            }
+        }
         static void CheckOrderSaves(string root)
         {
             var stock = MakeStock();
@@ -148,7 +176,9 @@ namespace CottonCircuit.Editor
             Check(assets.Chevron && assets.Barrier && assets.ShortcutGate, "three new Blender racing props imported");
             Check(assets.DisplayRack && assets.OrderBoard && assets.QueuePost && game.World.DisplayRacks.Length == 3, "three Blender shop props and expandable racks wired");
             Check(assets.CandyTunnel && assets.FinishMarker, "two new Blender map landmarks imported");
+            Check(assets.DownhillCoupe && assets.DownhillCoupe.GetComponentsInChildren<Renderer>().Length > 0, "Blender downhill coupe imported for style comparison");
             Check(game.World.CourseRoots != null && game.World.CourseRoots.Length == 2 && game.World.CourseRoots[0].Find("Racing surface 1") && game.World.CourseRoots[1].Find("Racing surface 2"), "two maps rendered from their physics courses");
+            CheckRoadside(game.World);
             Check(game.World.ShopRoot && game.World.ShopRoot.position.x < -200, "shop is outside the enlarged machine");
             Check(game.World.CandyCamera && game.World.CandyPreview, "live cotton preview camera wired");
             foreach (var part in assets.Kart.GetComponentsInChildren<Transform>())

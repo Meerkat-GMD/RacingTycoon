@@ -6,7 +6,7 @@ namespace CottonCircuit
         public GameObject Kart, Kiosk, Spinner, Puff, Customer, Crystal, Arch, Tree, Lamp;
         public GameObject Chevron, Barrier, ShortcutGate;
         public GameObject DisplayRack, OrderBoard, QueuePost;
-        public GameObject CandyTunnel, FinishMarker;
+        public GameObject CandyTunnel, FinishMarker, DownhillCoupe;
         public Mesh PuffMesh;
         public Material[] Flavors;
     }

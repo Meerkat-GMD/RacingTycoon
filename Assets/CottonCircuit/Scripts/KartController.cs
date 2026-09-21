@@ -10,7 +10,7 @@ namespace CottonCircuit
         public int Flavor => ConfiguredFlavor;
         public int CollectionFlavor => ConfiguredFlavor;
         public bool IsCollecting => CollectionFlavor >= 0 && DriveModel.LastRewardDistance > 0;
-        public float MaximumSpeed = 18;
+        public float MaximumSpeed = 26;
         public bool Boosting => DriveModel != null && DriveModel.BoostRemaining > 0;
         public bool Drifting => DriveModel != null && DriveModel.IsDrifting;
         public float Charge => DriveModel == null ? 0 : (float)DriveModel.DriftCharge;
@@ -18,12 +18,14 @@ namespace CottonCircuit
         public float ImpactFlash { get; private set; }
         Transform[] wheels;
         Transform visual;
+        Transform kartVisual, coupeRoot;
         TrailRenderer[] skids, jets;
         Material skidMaterial, jetMaterial;
         void Awake()
         {
             DriveModel = new ArcadeDrive();
             visual = transform.childCount > 0 ? transform.GetChild(0) : null;
+            kartVisual = visual;
             wheels = System.Array.FindAll(GetComponentsInChildren<Transform>(), t => t.name.StartsWith("Wheel"));
             skidMaterial = new Material(Shader.Find("Sprites/Default"));
             jetMaterial = new Material(Shader.Find("Sprites/Default"));
@@ -53,6 +55,21 @@ namespace CottonCircuit
         {
             DriveModel = new ArcadeDrive(course); ResetPosition();
         }
+        public void SetStyle(DrivingStyle style, GameObject coupePrefab)
+        {
+            DriveModel.Style = style;
+            bool downhill = style == DrivingStyle.Downhill && coupePrefab;
+            if (downhill && !coupeRoot)
+            {
+                coupeRoot = Instantiate(coupePrefab, transform).transform;
+                coupeRoot.name = "Downhill coupe visual";
+            }
+            kartVisual.gameObject.SetActive(!downhill);
+            if (coupeRoot) coupeRoot.gameObject.SetActive(downhill);
+            visual = downhill ? coupeRoot.GetChild(0) : kartVisual;
+            wheels = System.Array.FindAll(visual.GetComponentsInChildren<Transform>(), t => t.name.StartsWith("Wheel"));
+            ClearTrails(); ApplyPose(0);
+        }
         public void Recover()
         {
             DriveModel.Recover(); ImpactFlash = 0; ClearTrails(); ApplyPose(0);
@@ -64,9 +81,10 @@ namespace CottonCircuit
         }
         public double Drive(float throttle, float steering, bool brake, float deltaTime, bool drift = false)
         {
-            DriveModel.MaximumSpeed = MaximumSpeed; Steering = steering;
+            DriveModel.MaximumSpeed = MaximumSpeed;
             int hits = DriveModel.WallHits;
             DriveModel.Step(throttle, steering, brake, drift, deltaTime);
+            Steering = (float)DriveModel.SteeringInput;
             ImpactFlash = hits != DriveModel.WallHits ? .35f : Mathf.Max(0, ImpactFlash - deltaTime);
             ApplyPose(deltaTime);
             if (wheels != null) foreach (var wheel in wheels) wheel.Rotate(Vector3.right, Speed * deltaTime * 150, Space.Self);
@@ -76,7 +94,12 @@ namespace CottonCircuit
         public void SetEffects(bool active)
         {
             if (skids != null) foreach (var t in skids) t.emitting = active && Drifting && Speed > 5;
-            if (jets != null) foreach (var t in jets) { t.emitting = active && (Boosting || Charge > .3f); t.startColor = Boosting ? Palette.Soda : Charge > .7f ? Palette.Yellow : Palette.Pink; }
+            if (jets != null) foreach (var t in jets)
+            {
+                t.emitting = active && DriveModel.Style == DrivingStyle.Kart && (Boosting || Charge > .32f);
+                t.startColor = Boosting ? (DriveModel.BoostTier == 2 ? Palette.Yellow : Palette.Soda) : Charge >= .75f ? Palette.Yellow : Palette.Pink;
+                t.time = Boosting ? .5f : .22f; t.startWidth = Boosting ? .55f : .25f;
+            }
         }
         public void Stop() { DriveModel.Stop(); SetEffects(false); }
         void ApplyPose(float dt)

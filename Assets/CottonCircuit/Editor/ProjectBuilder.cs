@@ -30,6 +30,7 @@ namespace CottonCircuit.Editor
             assets.Chevron = Import("Chevron"); assets.Barrier = Import("Barrier"); assets.ShortcutGate = Import("ShortcutGate");
             assets.DisplayRack = Import("DisplayRack"); assets.OrderBoard = Import("OrderBoard"); assets.QueuePost = Import("QueuePost");
             assets.CandyTunnel = Import("CandyTunnel"); assets.FinishMarker = Import("FinishMarker");
+            assets.DownhillCoupe = Import("DownhillCoupe");
             assets.Flavors = new[] { materials["Strawberry"], materials["Soda"], materials["Vanilla"] };
             var puff = (GameObject)PrefabUtility.InstantiatePrefab(assets.Puff);
             var combine = new List<CombineInstance>();
@@ -128,11 +129,11 @@ namespace CottonCircuit.Editor
         static void BuildWorld(WorldView world)
         {
             Transform root = world.transform;
-            Cylinder("Floating garden", new Vector3(-6, -.8f, 1), new Vector3(490, 1, 460), materials["Base"], root);
-            Cylinder("Machine body", new Vector3(0, .05f, 0), new Vector3(420, .7f, 420), materials["Cream"], root);
-            Cylinder("Inner plate", new Vector3(0, .8f, 0), new Vector3(418, .13f, 418), materials["White"], root);
-            Ring("Rounded machine rim", 209, 210, .75f, 2.3f, materials["Cream"], root);
-            Ring("Pink rim inlay", 209.35f, 209.65f, 2.3f, 2.33f, materials["Strawberry"], root);
+            Cylinder("Floating garden", new Vector3(-6, -.8f, 1), new Vector3(330, 1, 320), materials["Base"], root);
+            Cylinder("Machine body", new Vector3(0, .05f, 0), new Vector3(280, .7f, 280), materials["Cream"], root);
+            Cylinder("Inner plate", new Vector3(0, .8f, 0), new Vector3(278, .13f, 278), materials["White"], root);
+            Ring("Rounded machine rim", 139, 140, .75f, 2.3f, materials["Cream"], root);
+            Ring("Pink rim inlay", 139.35f, 139.65f, 2.3f, 2.33f, materials["Strawberry"], root);
             Cylinder("Spinner stage", new Vector3(0, 1, 0), new Vector3(60, .18f, 60), materials["Plum"], root);
             Cylinder("Spinner stage inset", new Vector3(0, 1.2f, 0), new Vector3(58, .06f, 58), materials["Cream"], root);
             RaceCourseBuilder.Build(world, materials);
@@ -165,7 +166,7 @@ namespace CottonCircuit.Editor
             for (int i = 0; i < 18; i++)
             {
                 float a = i * Mathf.PI * 2 / 18;
-                var pos = new Vector3(Mathf.Cos(a) * 212, -.02f, Mathf.Sin(a) * 212);
+                var pos = new Vector3(Mathf.Cos(a) * 142, -.02f, Mathf.Sin(a) * 142);
                 if (pos.x < -40 && pos.z > 0) continue;
                 var tree = Place(i % 3 == 0 ? world.Assets.Lamp : world.Assets.Tree, pos, Quaternion.Euler(0, i * 51, 0), root);
                 tree.transform.localScale *= i % 2 == 0 ? .85f : 1.1f;

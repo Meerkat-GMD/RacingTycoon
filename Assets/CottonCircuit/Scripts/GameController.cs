@@ -16,6 +16,8 @@ namespace CottonCircuit
         public int PreparedFlavor { get; private set; }
         public int PreparedSize => PreparedMap;
         public int RunMap { get; private set; }
+        public DrivingStyle PreparedStyle { get; private set; }
+        public DrivingStyle RunStyle { get; private set; }
         public int RunTargetGrams { get; private set; } = 60;
         public int RunFlavor { get; private set; } = -1;
         public CustomerOrder SelectedOrder => Session?.Economy.Orders.Find(o => o.Id == SelectedOrderId);
@@ -80,9 +82,11 @@ namespace CottonCircuit
             if (Session.Mode == GameMode.Racing)
             {
                 int boosts = World.Kart.DriveModel.BoostCount;
+                int drifts = World.Kart.DriveModel.DriftCount;
                 double delta = World.Kart.Drive(throttle, steering, brake, dt, drift);
-                if (World.Kart.DriveModel.BoostCount > boosts) Audio.Play(3);
-                Session.TickRecipe(dt, delta * RunTargetGrams / 40.0 * 1.18 * (1 + Session.Economy.Levels[1] * .15), World.Kart.Radius, World.Kart.DriveModel.Laps, World.Kart.DriveModel.BoostCount, World.Kart.DriveModel.WallHits);
+                if (World.Kart.DriveModel.BoostCount > boosts) Audio.PlayBoost(World.Kart.DriveModel.BoostTier);
+                if (World.Kart.DriveModel.DriftCount > drifts) Notify("드리프트 성공! 다음 코너를 향해 가속하세요.");
+                Session.TickRecipe(dt, delta * RunTargetGrams / 40.0 * 1.18 * (1 + Session.Economy.Levels[1] * .15), World.Kart.Radius, World.Kart.DriveModel.Laps, World.Kart.DriveModel.SkillCount, World.Kart.DriveModel.WallHits);
                 if (Session.Production.Samples.Count != renderedSamples)
                 {
                     renderedSamples = Session.Production.Samples.Count; World.CentralCandy.Show(Session.Production.Samples);
@@ -120,16 +124,22 @@ namespace CottonCircuit
             if (Session.Mode != GameMode.Shop || Session.Paused || flavor < 0 || flavor > 2) return;
             PreparedFlavor = flavor; SelectedOrderId = null; UI.Refresh();
         }
+        public void SetStyle(int style)
+        {
+            if (Session.Mode != GameMode.Shop || Session.Paused || style < 0 || style > 1) return;
+            PreparedStyle = (DrivingStyle)style; UI.Refresh();
+        }
         public void PrepareStock() { if (Session.Mode != GameMode.Shop || Session.Paused) return; SelectedOrderId = null; StartRun(); }
         public void MakeOrder(string id) { SelectOrder(id); if (SelectedOrderId == id) StartRun(); }
         public void StartRun()
         {
             if (Session.Paused || Session.Mode != GameMode.Shop) return;
             if (!Store.CanSave) { Notify(Store.Error + "  도움말 → 새 가게 시작"); return; }
-            RunMap = PreparedMap; RunFlavor = PreparedFlavor;
+            RunMap = PreparedMap; RunFlavor = PreparedFlavor; RunStyle = PreparedStyle;
             RunTargetGrams = RaceRecipe.TargetGrams(RunMap);
             if (!Session.StartRecipe(RunMap, RunFlavor)) { Notify("진열대가 가득 찼어요. 손님에게 건네거나 재고를 정리하세요."); return; }
             World.SelectCourse(RunMap); World.Kart.ConfiguredFlavor = RunFlavor;
+            World.Kart.SetStyle(RunStyle, World.Assets.DownhillCoupe);
             World.Kart.MaximumSpeed = Session.Economy.MaxSpeed; World.Kart.ResetPosition(); renderedSamples = -1; abortConfirmUntil = 0;
             World.CentralCandy.Show(null); Audio.Play(0); SyncMode();
             Notify(RaceRecipe.Name(RunMap) + " · " + Palette.FlavorName(RunFlavor) + " 설정! 한 바퀴 완주하면 완성됩니다.");

@@ -119,6 +119,60 @@ namespace CottonCircuit.Tests
                     "stock return preserves recipe without highlighting an unrelated order");
             }
             Check(game.Session.Economy.Inventory.Count == 5, "five other configured recipes are stocked");
+            for (int map = 0; map < 2; map++)
+            {
+                Click("다운힐 스타일"); game.SetMap(map); game.SetFlavor(1); game.PrepareStock();
+                Check(game.RunStyle == DrivingStyle.Downhill && game.World.Kart.DriveModel.Style == DrivingStyle.Downhill,
+                    "downhill button selects a distinct driving model");
+                var coupe = game.World.Kart.transform.Find("Downhill coupe visual");
+                Check(coupe && coupe.gameObject.activeInHierarchy, "downhill coupe replaces kart visual");
+                yield return DriveMap(map, 1, map == 0 ? "07-downhill.png" : null);
+                Check(game.World.Kart.DriveModel.BoostCount == 0, "downhill grip driving does not trigger kart boosts");
+                game.ReturnToShop(); game.DiscardSelected(); game.DiscardSelected();
+                Check(game.Session.Economy.Inventory.Count == 5, "comparison product removed without touching original stock");
+            }
+            Click("카트 스타일");
+            game.SetMap(0); game.PrepareStock();
+            game.Tick(1, 0, false, .8f);
+            Check(game.World.Kart.Speed >= 23.4f, "kart accelerates past ninety percent within 0.8 seconds");
+            game.World.Kart.Recover(); game.FinishRun(); game.FinishRun(); game.ReturnToShop();
+            foreach (int style in new[] { 0, 1 })
+            {
+                game.SetStyle(style); game.SetMap(0); game.PrepareStock();
+                game.Tick(1, 0, false, .4f);
+                for (int i = 0; i < 180 && game.World.Kart.Charge < .8f; i++)
+                    game.Tick(0, i % 40 < 20 ? .65f : -.65f, false, .02f, true);
+                Check(game.World.Kart.Charge >= .8f && game.World.Kart.DriveModel.WallHits == 0,
+                    "controlled sliding charges without wall contact in style " + style);
+                game.Tick(1, 0, false, .02f);
+                Check(game.World.Kart.DriveModel.SkillCount == 1, "completed driving action contributes to quality");
+                Check(style == 0 ? game.World.Kart.DriveModel.BoostTier == 2 : !game.World.Kart.Boosting,
+                    "kart releases super boost while downhill retains momentum without boost");
+                game.Tick(1, 0, false, .18f);
+                yield return new WaitForSecondsRealtime(.5f);
+                var streaks = FindAnyObjectByType<SpeedLinesGraphic>();
+                if (style == 0)
+                {
+                    Check(streaks && streaks.Strength > .4f && game.World.GameCamera.fieldOfView > 76,
+                        "boost visibly expands field of view and speed streaks");
+                    Capture("08-super-boost.png"); yield return null; yield return null;
+                }
+                else { Capture("09-downhill-slide.png"); yield return null; yield return null; }
+                CheckScreenLayout("driving style " + style);
+                game.TogglePause(); var cameraPosition = game.World.GameCamera.transform.position;
+                yield return new WaitForSecondsRealtime(.2f);
+                Check(streaks.Strength == 0 && (game.World.GameCamera.transform.position - cameraPosition).sqrMagnitude < .00001f,
+                    "pause freezes chase camera and removes speed effects");
+                bool silent = true;
+                foreach (var source in game.Audio.GetComponents<AudioSource>())
+                    if (source.isPlaying && source.volume > 0) silent = false;
+                Check(silent, "pause silences active driving audio");
+                game.TogglePause(); game.ToggleMute();
+                foreach (var source in game.Audio.GetComponents<AudioSource>())
+                    Check(!source.isPlaying || source.volume == 0, "mute silences wind engine and rush");
+                game.ToggleMute(); game.FinishRun(); game.FinishRun(); game.ReturnToShop();
+            }
+            game.SetStyle(0);
             // Do not lose a customer's identity when stock requests or time change.
             if (game.Orders.Orders.Count == 0) game.Tick(0, 0, false, 16);
             var pending = game.Orders.Orders[0];
@@ -170,7 +224,7 @@ namespace CottonCircuit.Tests
                 if (game.Session.Production.IsFull && game.Session.Mode == GameMode.Racing)
                     filledBeforeFinish = true;
                 if (steps % 16 == 0) yield return null;
-                if (screenshot != null && steps == 900)
+                if (screenshot != null && steps == 500)
                 {
                     yield return new WaitForSecondsRealtime(.6f); Capture(screenshot); yield return null; yield return null;
                     CheckScreenLayout("race map " + map);
@@ -181,17 +235,18 @@ namespace CottonCircuit.Tests
                 " laps=" + game.World.Kart.DriveModel.Laps + " hits=" + game.World.Kart.DriveModel.WallHits;
             Check(game.Session.Mode == GameMode.Results && p != null && game.World.Kart.DriveModel.Laps == 1,
                 "one complete lap creates product: " + diagnostic);
+            Check(game.World.Kart.DriveModel.WallHits == 0, "both styles can follow the course cleanly at base speed");
             Check(filledBeforeFinish, "full weight does not end the race early");
             Check(p.Grams == RaceRecipe.TargetGrams(map) && CandyRecipe.SizeOf(p) == map && p.Samples.TrueForAll(s => s.Flavor == taste),
                 "map fixes size and machine setting fixes every flavor sample");
             foreach (var sample in p.Samples) { minRadius = Math.Min(minRadius, sample.Radius); maxRadius = Math.Max(maxRadius, sample.Radius); }
             Check(maxRadius - minRadius > .1, "driving line remains in cotton shape");
-            Check(game.Session.Elapsed > (map == 0 ? 35 : 50) && game.Session.Elapsed < RaceRecipe.Timeout(map), "longer race is playable at baseline speed");
+            Check(game.Session.Elapsed > 18 && game.Session.Elapsed < 36, "compressed course finishes in a short fast round");
             Check(p.Quality >= 0 && p.Quality <= 100 && game.Session.ResultBonus > 0, "completed race has bounded quality and record bonus");
         }
         void FollowMap()
         {
-            var d = game.World.Kart.DriveModel; var ahead = d.Course.Sample(d.Sample.Progress + 10);
+            var d = game.World.Kart.DriveModel; var ahead = d.Course.Sample(d.Sample.Progress + (d.Style == DrivingStyle.Downhill ? 16 : 12));
             double lateral = .8 * Math.Sin(d.Sample.Progress * .02);
             var target = ahead.Position + new RoadPoint(ahead.Tangent.Z, -ahead.Tangent.X) * lateral;
             double angle = Math.Atan2(target.X - d.Position.X, target.Z - d.Position.Z) - d.Heading;

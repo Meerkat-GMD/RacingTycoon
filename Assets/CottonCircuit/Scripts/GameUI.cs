@@ -11,9 +11,10 @@ namespace CottonCircuit
         Sprite rounded;
         RectTransform root;
         GameObject shop, race, result, pause, toast, common;
-        Text driftLabel, raceEvent, bestLap, mapTitle, raceQuality, resultHeading; Image driftFill; RaceMapGraphic map;
+        Text driftLabel, raceEvent, bestLap, mapTitle, raceQuality, resultHeading, raceControls; Image driftFill; RaceMapGraphic map;
         Text coins, day, timer, grams, speed, laps, flavor, resultTitle, resultWeight, resultPrice, resultDetail, notice, status, muteLabel;
         Image productionFill;
+        SpeedLinesGraphic speedLines;
         Text[] upgradeTexts = new Text[3];
         Button[] upgradeButtons = new Button[3];
         Button startButton;
@@ -58,6 +59,8 @@ namespace CottonCircuit
         void BuildRace()
         {
             var p = race.GetComponent<RectTransform>();
+            speedLines = Rect(p, "Speed streaks", 0, 0, 1600, 900).gameObject.AddComponent<SpeedLinesGraphic>();
+            speedLines.raycastTarget = false;
             var mapCard = Box(p, "Course map", 32, 32, 240, 232, new Color(1, .97f, .90f, .93f));
             mapTitle = Label(mapCard.rectTransform, "SUGARWAY  /  01", 17, 10, 206, 28, 14, Palette.Ink, FontStyle.Bold);
             var mapRect = Rect(mapCard.rectTransform, "Live course", 12, 47, 216, 173); mapRect.pivot = Vector2.zero; mapRect.anchoredPosition = new Vector2(12, -220);
@@ -86,7 +89,7 @@ namespace CottonCircuit
             ButtonAt(p, "도움말  Esc", 1415, 289, 153, 42, Palette.Cream, Palette.Ink, () => game.TogglePause(), 14);
             raceOrder = Label(p, "", 558, 142, 484, 53, 16, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
             var controls = Box(p, "Driving controls", 310, 848, 980, 35, new Color(1, .97f, .9f, .95f));
-            Label(controls.rectTransform, "W 가속    A / D 조향    Space 누르고 코너 → 놓으면 부스트    S 제동    R 복귀", 10, 0, 960, 35, 15, Palette.Ink, FontStyle.Normal, TextAnchor.MiddleCenter);
+            raceControls = Label(controls.rectTransform, "", 10, 0, 960, 35, 15, Palette.Ink, FontStyle.Normal, TextAnchor.MiddleCenter);
         }
         void BuildResult()
         {
@@ -109,7 +112,7 @@ namespace CottonCircuit
             pause.GetComponent<Image>().raycastTarget = true;
             var card = Box(pause.GetComponent<RectTransform>(), "Pause card", 474, 166, 652, 568, Palette.Cream);
             Label(card.rectTransform, "잠깐, 달콤한 휴식", 38, 31, 577, 53, 32, Palette.Ink, FontStyle.Bold);
-            Label(card.rectTransform, "W / ↑         가속해서 중앙 막대 주위를 달려요\nA D / ← →  좌우 조향\nSpace          코너에서 누르고, 놓아서 부스트\nS / ↓            브레이크\nEnter          출발 · 포기 확인 · 가게 복귀\nR                 주행 위치 복귀 (완주 진행은 유지)\nEsc             일시정지 / 계속하기\n맛 설정       출발 전에 고른 맛으로 끝까지 제작\n가게            재고 선택 → 맞는 주문에 건네기", 40, 113, 576, 234, 17, Palette.Ink);
+            Label(card.rectTransform, "W / ↑         가속해서 중앙 막대 주위를 달려요\nA D / ← →  좌우 조향\nSpace          드리프트 · 카트는 놓으면 부스트\nS / ↓            브레이크\nEnter          출발 · 포기 확인 · 가게 복귀\nR                 주행 위치 복귀 (완주 진행은 유지)\nEsc             일시정지 / 계속하기\n맛 설정       출발 전에 고른 맛으로 끝까지 제작\n가게            재고 선택 → 맞는 주문에 건네기", 40, 113, 576, 234, 17, Palette.Ink);
             ButtonAt(card.rectTransform, "계속하기", 40, 360, 574, 56, Palette.Ink, Color.white, () => game.TogglePause(), 20);
             var mute = ButtonAt(card.rectTransform, "소리 켜짐", 40, 440, 273, 46, Color.white, Palette.Ink, () => game.ToggleMute(), 16);
             muteLabel = mute.GetComponentInChildren<Text>();
@@ -126,10 +129,11 @@ namespace CottonCircuit
         {
             if (!root || game.Session == null) return;
             var s = game.Session; var e = s.Economy;
+            if (speedLines) speedLines.SetDriving(game.World.Kart, s.Mode == GameMode.Racing && !s.Paused);
             coins.text = e.Coins.ToString("N0"); day.text = "DAY " + e.Day.ToString("00");
             common.SetActive(s.Mode != GameMode.Racing); shop.SetActive(s.Mode == GameMode.Shop); race.SetActive(s.Mode == GameMode.Racing); result.SetActive(s.Mode == GameMode.Results);
             pause.SetActive(s.Paused); toast.SetActive(!string.IsNullOrEmpty(game.Notice)); notice.text = game.Notice ?? "";
-            toast.GetComponent<RectTransform>().anchoredPosition = new Vector2(s.Paused || s.Mode == GameMode.Racing ? 470 : 278, s.Paused ? -780 : s.Mode == GameMode.Racing ? -570 : -435);
+            toast.GetComponent<RectTransform>().anchoredPosition = new Vector2(s.Paused || s.Mode == GameMode.Racing ? 470 : 278, s.Paused ? -780 : s.Mode == GameMode.Racing ? -286 : -435);
             muteLabel.text = game.Audio.Muted ? "소리 꺼짐" : "소리 켜짐";
             if (s.Mode == GameMode.Shop) RefreshShop();
             if (s.Mode == GameMode.Racing)
@@ -139,14 +143,20 @@ namespace CottonCircuit
                 grams.text = s.Production.Grams + " g";
                 productionFill.rectTransform.sizeDelta = new Vector2(284f * s.Production.Grams / game.RunTargetGrams, 8);
                 var kart = game.World.Kart; var drive = kart.DriveModel;
+                raceControls.text = game.RunStyle == DrivingStyle.Kart ? "W 가속    A / D 조향    Space 누르고 코너 → 놓으면 부스트    S 제동    R 복귀" : "W 가속    A / D 조향    S 코너 전 감속    Space 미끄러짐 → W로 탈출    R 복귀";
                 speed.text = Mathf.RoundToInt(kart.Speed * 3.6f) + " km/h";
                 laps.text = "완주 " + Mathf.Clamp01((float)(drive.TotalProgress / drive.Course.Length)).ToString("P0");
                 bestLap.text = Mathf.Max(0, (float)(drive.Course.Length - drive.TotalProgress)).ToString("0") + "m 남음\n중량이 차도 완주까지 달려요";
                 flavor.text = Palette.FlavorName(game.RunFlavor) + "맛 설정\n" + (s.Production.IsFull ? "완주 대기" : "주행 경로를 감는 중");
-                raceQuality.text = "예상 품질 " + RaceRecipe.Quality(drive.BoostCount, drive.WallHits, e.Levels[1]) + " / 100";
-                driftFill.rectTransform.sizeDelta = new Vector2(540 * (kart.Boosting ? Mathf.Clamp01((float)drive.BoostRemaining / .9f) : kart.Charge), 14);
-                driftFill.color = kart.Boosting ? Palette.Soda : kart.Charge >= .32f ? Palette.Yellow : Palette.Pink;
-                driftLabel.text = kart.Boosting ? "SUGAR BOOST!  품질 보너스" : kart.Charge >= .32f ? "Space를 놓으세요!  부스트 준비" : kart.Drifting ? "코너를 유지해 충전하세요" : "Space + 조향으로 드리프트";
+                raceQuality.text = "예상 품질 " + RaceRecipe.Quality(drive.SkillCount, drive.WallHits, e.Levels[1]) + " / 100";
+                driftFill.rectTransform.sizeDelta = new Vector2(540 * (kart.Boosting ? Mathf.Clamp01((float)(drive.BoostRemaining / Math.Max(.01, drive.BoostDuration))) : kart.Charge), 14);
+                driftFill.color = kart.Boosting ? (drive.BoostTier == 2 ? Palette.Yellow : Palette.Soda) : kart.Charge >= .75f ? Palette.Yellow : Palette.Pink;
+                driftLabel.text = kart.Boosting ? (drive.BoostTier == 2 ? "SUPER BOOST!  강한 가속" : "SUGAR BOOST!  가속 중") : kart.Charge >= .75f ? "슈퍼 부스트 준비!  Space 놓기" : kart.Charge >= .32f ? "부스트 준비 · 더 모으면 슈퍼!" : kart.Drifting ? "코너를 유지해 충전하세요" : "Space + 조향 → 놓으면 부스트";
+                if (game.RunStyle == DrivingStyle.Downhill)
+                {
+                    driftFill.color = Palette.Soda;
+                    driftLabel.text = kart.Drifting ? "라인 유지 · 출구를 향해 가속" : "코너 전 S 감속 · Space로 미끄러짐";
+                }
                 bool wrongWay = kart.Speed > 3 && (Math.Sin(drive.Heading) * drive.Sample.Tangent.X + Math.Cos(drive.Heading) * drive.Sample.Tangent.Z) < -.35;
                 raceEvent.text = kart.ImpactFlash > 0 ? "벽 충돌!  속도가 줄었어요" : wrongWay ? "역방향!  R로 코스 방향에 맞춰 복귀" : kart.Boosting ? "달콤한 가속!" : drive.Sample.IsShortcut ? "SUGAR CUT · 빠른 완주에 도전" : "";
                 UpdateRaceOrder();

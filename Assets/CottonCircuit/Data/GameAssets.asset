@@ -29,6 +29,7 @@ MonoBehaviour:
   QueuePost: {fileID: 4788541943601450625, guid: 11ec92eb8208a8441960008d678771e4, type: 3}
   CandyTunnel: {fileID: 7838328599509858352, guid: 0c07585ed87b20b42b1556b8258d75a6, type: 3}
   FinishMarker: {fileID: 995136744627314463, guid: b1145abebaf208b48bf875a17821ac61, type: 3}
+  DownhillCoupe: {fileID: 2675036050335082124, guid: d6929a8b1b656f24e86c30927d7b0500, type: 3}
   PuffMesh: {fileID: 4300000, guid: 78c03866331930c42a010b3a17194c43, type: 2}
   Flavors:
   - {fileID: 2100000, guid: 3fbb811124995ca48b15ff89e2cd2396, type: 2}
