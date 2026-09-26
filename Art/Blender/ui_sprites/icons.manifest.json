@@ -1,0 +1,1913 @@
+{
+  "category": "icons",
+  "module": "Art/Blender/ui_sprites/icons.py",
+  "source_spec": "docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md",
+  "blender_version": "5.2.2 LTS",
+  "blend": "Art/Blender/ui_sprites/icons.blend",
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "adaptive_sampling": false,
+    "seed": 260927,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1.0,
+    "format": "PNG",
+    "color_mode": "RGBA",
+    "bit_depth": 8
+  },
+  "palette": {
+    "Strawberry": "#F48DAB",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Cream": "#FFF1D4",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Wood": "#D59C79",
+    "Tire": "#414059",
+    "Base": "#9DBBAF",
+    "Skin1": "#F1C6A6",
+    "Skin2": "#B87A65",
+    "Skin3": "#E8AF88",
+    "Hair1": "#574F59",
+    "Hair2": "#8D5B4A",
+    "Hair3": "#45475B",
+    "Pants1": "#7C789D",
+    "Pants2": "#65688B",
+    "Pants3": "#5F968F",
+    "Magenta": "#C2577E"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "material_recipe": {
+    "roughness": 0.85,
+    "specular_ior_level": 0.08
+  },
+  "coordinate_system": {
+    "up": "+Z",
+    "front": "-Y",
+    "units": "meters"
+  },
+  "passes": "Art/Blender/ui-sprite-passes/icons",
+  "assets": [
+    {
+      "id": "Trait_Hours",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.874,
+        "target": [
+          0,
+          0.003,
+          1.261
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "wall clock",
+        "traits": [
+          "hours"
+        ],
+        "category": "business",
+        "disc": "#EBC997"
+      },
+      "objects": [
+        "Trait_Hours_Clock_Case",
+        "Trait_Hours_Clock_Cream_Bezel",
+        "Trait_Hours_Clock_Dial",
+        "Trait_Hours_Dial_Marker_00",
+        "Trait_Hours_Dial_Marker_01",
+        "Trait_Hours_Dial_Marker_02",
+        "Trait_Hours_Dial_Marker_03",
+        "Trait_Hours_Hands_Hub",
+        "Trait_Hours_Hour_Hand_4_30",
+        "Trait_Hours_Minute_Hand_12",
+        "Trait_Hours_Pose"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Hours_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Hours_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Hours_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Hours_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Hours_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Patience",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Patience.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.874,
+        "target": [
+          0.011,
+          -0.002,
+          1.25
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "hourglass",
+        "traits": [
+          "patience"
+        ],
+        "category": "business",
+        "disc": "#EBC997"
+      },
+      "objects": [
+        "Trait_Patience_Bottom_Plate",
+        "Trait_Patience_Glass_Lower",
+        "Trait_Patience_Glass_Upper",
+        "Trait_Patience_Pose",
+        "Trait_Patience_Post_L",
+        "Trait_Patience_Post_R",
+        "Trait_Patience_Sand_Lower",
+        "Trait_Patience_Sand_Stream",
+        "Trait_Patience_Sand_Upper",
+        "Trait_Patience_Top_Plate"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Patience_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Patience_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Patience_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Ads",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Ads.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.905,
+        "target": [
+          0.088,
+          -0.024,
+          1.206
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "megaphone",
+        "traits": [
+          "ads"
+        ],
+        "category": "business",
+        "disc": "#EBC997"
+      },
+      "objects": [
+        "Trait_Ads_Bell_Mouth",
+        "Trait_Ads_Bell_Rim",
+        "Trait_Ads_Grip",
+        "Trait_Ads_Horn",
+        "Trait_Ads_Horn_Pose",
+        "Trait_Ads_Mouthpiece",
+        "Trait_Ads_Pose",
+        "Trait_Ads_Sound_Wave_1",
+        "Trait_Ads_Sound_Wave_2"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Ads_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ads_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ads_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ads_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_RepeatAds",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_RepeatAds.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.745,
+        "target": [
+          -0.002,
+          -0.012,
+          1.206
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "heart speech bubble",
+        "traits": [
+          "repeat_ads"
+        ],
+        "category": "business",
+        "disc": "#EBC997"
+      },
+      "objects": [
+        "Trait_RepeatAds_Heart",
+        "Trait_RepeatAds_Pose",
+        "Trait_RepeatAds_Speech_Bubble"
+      ],
+      "materials": [
+        {
+          "name": "Trait_RepeatAds_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_RepeatAds_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Shelf",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Shelf.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.745,
+        "target": [
+          -0.001,
+          -0.006,
+          1.228
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "display shelf",
+        "traits": [
+          "shelf"
+        ],
+        "category": "business",
+        "disc": "#EBC997"
+      },
+      "objects": [
+        "Trait_Shelf_Bottom_Board",
+        "Trait_Shelf_Candy_00_Lobe_0",
+        "Trait_Shelf_Candy_00_Lobe_1",
+        "Trait_Shelf_Candy_00_Lobe_2",
+        "Trait_Shelf_Candy_00_Lobe_3",
+        "Trait_Shelf_Candy_01_Lobe_0",
+        "Trait_Shelf_Candy_01_Lobe_1",
+        "Trait_Shelf_Candy_01_Lobe_2",
+        "Trait_Shelf_Candy_01_Lobe_3",
+        "Trait_Shelf_Candy_02_Lobe_0",
+        "Trait_Shelf_Candy_02_Lobe_1",
+        "Trait_Shelf_Candy_02_Lobe_2",
+        "Trait_Shelf_Candy_02_Lobe_3",
+        "Trait_Shelf_Candy_10_Lobe_0",
+        "Trait_Shelf_Candy_10_Lobe_1",
+        "Trait_Shelf_Candy_10_Lobe_2",
+        "Trait_Shelf_Candy_10_Lobe_3",
+        "Trait_Shelf_Candy_11_Lobe_0",
+        "Trait_Shelf_Candy_11_Lobe_1",
+        "Trait_Shelf_Candy_11_Lobe_2",
+        "Trait_Shelf_Candy_11_Lobe_3",
+        "Trait_Shelf_Candy_12_Lobe_0",
+        "Trait_Shelf_Candy_12_Lobe_1",
+        "Trait_Shelf_Candy_12_Lobe_2",
+        "Trait_Shelf_Candy_12_Lobe_3",
+        "Trait_Shelf_Middle_Board",
+        "Trait_Shelf_Pose",
+        "Trait_Shelf_Post_L",
+        "Trait_Shelf_Post_R",
+        "Trait_Shelf_Top_Board"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Shelf_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Shelf_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Shelf_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Shelf_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Shelf_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Sales",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Sales.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.939,
+        "target": [
+          0.001,
+          0.009,
+          1.283
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "shop signboard",
+        "traits": [
+          "sales"
+        ],
+        "category": "sales",
+        "disc": "#E2C2AD"
+      },
+      "objects": [
+        "Trait_Sales_Board_Face",
+        "Trait_Sales_Board_Frame",
+        "Trait_Sales_Emblem_Lobe_0",
+        "Trait_Sales_Emblem_Lobe_1",
+        "Trait_Sales_Emblem_Lobe_2",
+        "Trait_Sales_Emblem_Lobe_3",
+        "Trait_Sales_Emblem_Stick",
+        "Trait_Sales_Hanger_Bar",
+        "Trait_Sales_Hanger_Rod_0",
+        "Trait_Sales_Hanger_Rod_2",
+        "Trait_Sales_Letter_Bar_0",
+        "Trait_Sales_Letter_Bar_1",
+        "Trait_Sales_Pose"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Sales_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sales_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sales_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sales_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_PriceTag",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_PriceTag.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.745,
+        "target": [
+          0.089,
+          -0.018,
+          1.228
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "price tag",
+        "traits": [
+          "flavor_price",
+          "location_price"
+        ],
+        "category": "sales",
+        "disc": "#E2C2AD"
+      },
+      "objects": [
+        "Trait_PriceTag_Coin",
+        "Trait_PriceTag_Coin_Star",
+        "Trait_PriceTag_Grommet",
+        "Trait_PriceTag_Grommet_Hole",
+        "Trait_PriceTag_Pose",
+        "Trait_PriceTag_String",
+        "Trait_PriceTag_Tag",
+        "Trait_PriceTag_Tag_Pose"
+      ],
+      "materials": [
+        {
+          "name": "Trait_PriceTag_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_PriceTag_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_PriceTag_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_PriceTag_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Engine",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Engine.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.068,
+        "target": [
+          0.068,
+          -0.001,
+          1.283
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "engine",
+        "traits": [
+          "engine"
+        ],
+        "category": "equipment",
+        "disc": "#B8D9CC"
+      },
+      "objects": [
+        "Trait_Engine_Block",
+        "Trait_Engine_Bore_Plug_0",
+        "Trait_Engine_Bore_Plug_1",
+        "Trait_Engine_Bore_Plug_2",
+        "Trait_Engine_Cylinder_Head",
+        "Trait_Engine_Exhaust_Pipe",
+        "Trait_Engine_Exhaust_Port",
+        "Trait_Engine_Fan_Housing",
+        "Trait_Engine_Intake_Bar",
+        "Trait_Engine_Intake_Neck",
+        "Trait_Engine_Oil_Pan",
+        "Trait_Engine_Pose",
+        "Trait_Engine_Pulley",
+        "Trait_Engine_Pulley_Hub",
+        "Trait_Engine_Valve_Cover"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Engine_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Engine_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Engine_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Engine_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Handling",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Handling.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.81,
+        "target": [
+          0,
+          0,
+          1.25
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "steering wheel",
+        "traits": [
+          "handling"
+        ],
+        "category": "equipment",
+        "disc": "#B8D9CC"
+      },
+      "objects": [
+        "Trait_Handling_Hub",
+        "Trait_Handling_Hub_Star",
+        "Trait_Handling_Pose",
+        "Trait_Handling_Rim",
+        "Trait_Handling_Spoke_Bottom",
+        "Trait_Handling_Spoke_Left",
+        "Trait_Handling_Spoke_Right",
+        "Trait_Handling_Top_Marker",
+        "Trait_Handling_Wheel_Pose"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Handling_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Handling_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Handling_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Handling_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Handling_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Kart",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Kart.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.059,
+        "target": [
+          0.076,
+          -0.031,
+          1.174
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "classic kart",
+        "traits": [
+          "coupe"
+        ],
+        "category": "equipment",
+        "disc": "#B8D9CC"
+      },
+      "objects": [
+        "Trait_Kart_Body",
+        "Trait_Kart_Bumper",
+        "Trait_Kart_Chassis",
+        "Trait_Kart_Engine",
+        "Trait_Kart_Exhaust",
+        "Trait_Kart_Hubcap_FL",
+        "Trait_Kart_Hubcap_FR",
+        "Trait_Kart_Hubcap_RL",
+        "Trait_Kart_Hubcap_RR",
+        "Trait_Kart_Kart_Pose",
+        "Trait_Kart_Nose",
+        "Trait_Kart_Number_Plate",
+        "Trait_Kart_Pose",
+        "Trait_Kart_Seat",
+        "Trait_Kart_Seat_Back",
+        "Trait_Kart_Steering_Column",
+        "Trait_Kart_Steering_Wheel",
+        "Trait_Kart_Wheel_FL",
+        "Trait_Kart_Wheel_FR",
+        "Trait_Kart_Wheel_RL",
+        "Trait_Kart_Wheel_RR"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Kart_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_Tire",
+          "palette_name": "Tire",
+          "palette_srgb": "#414059",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_StickSpeed",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_StickSpeed.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.943,
+        "target": [
+          -0.02,
+          0.018,
+          1.305
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "spinning stick with motion arcs",
+        "traits": [
+          "stick_speed"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_StickSpeed_Arrow_Pose",
+        "Trait_StickSpeed_Floss_Wisp_0",
+        "Trait_StickSpeed_Floss_Wisp_1",
+        "Trait_StickSpeed_Floss_Wisp_2",
+        "Trait_StickSpeed_Floss_Wisp_3",
+        "Trait_StickSpeed_Floss_Wisp_4",
+        "Trait_StickSpeed_Floss_Wisp_5",
+        "Trait_StickSpeed_Pose",
+        "Trait_StickSpeed_Spin_Arrow",
+        "Trait_StickSpeed_Spin_Arrow_Head",
+        "Trait_StickSpeed_Stick",
+        "Trait_StickSpeed_Stick_Stripe_1",
+        "Trait_StickSpeed_Stick_Stripe_2",
+        "Trait_StickSpeed_Stick_Stripe_3"
+      ],
+      "materials": [
+        {
+          "name": "Trait_StickSpeed_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_StickSpeed_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_StickSpeed_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_StickSpeed_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Spoon",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Spoon.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.661,
+        "target": [
+          -0.033,
+          0.013,
+          1.281
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "measuring spoon",
+        "traits": [
+          "stick_saving",
+          "sugar_saving"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_Spoon_Bowl",
+        "Trait_Spoon_Handle",
+        "Trait_Spoon_Handle_End",
+        "Trait_Spoon_Handle_Hole",
+        "Trait_Spoon_Measure_Label",
+        "Trait_Spoon_Pose",
+        "Trait_Spoon_Spoon_Pose",
+        "Trait_Spoon_Sugar_Heap"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Spoon_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Spoon_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Spoon_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Ribbon",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Ribbon.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.638,
+        "target": [
+          0.024,
+          0.008,
+          1.294
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "ribbon cotton candy",
+        "traits": [
+          "stick_quality",
+          "quality_focus"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_Ribbon_Bow_Knot",
+        "Trait_Ribbon_Bow_Loop_0",
+        "Trait_Ribbon_Bow_Loop_2",
+        "Trait_Ribbon_Bow_Tail_0",
+        "Trait_Ribbon_Bow_Tail_2",
+        "Trait_Ribbon_Floss_Core",
+        "Trait_Ribbon_Floss_Lobe_01",
+        "Trait_Ribbon_Floss_Lobe_02",
+        "Trait_Ribbon_Floss_Lobe_03",
+        "Trait_Ribbon_Floss_Lobe_04",
+        "Trait_Ribbon_Floss_Lobe_05",
+        "Trait_Ribbon_Floss_Lobe_06",
+        "Trait_Ribbon_Floss_Lobe_07",
+        "Trait_Ribbon_Floss_Lobe_08",
+        "Trait_Ribbon_Floss_Lobe_09",
+        "Trait_Ribbon_Floss_Lobe_10",
+        "Trait_Ribbon_Floss_Lobe_11",
+        "Trait_Ribbon_Floss_Lobe_12",
+        "Trait_Ribbon_Floss_Lobe_13",
+        "Trait_Ribbon_Floss_Lobe_14",
+        "Trait_Ribbon_Floss_Lobe_15",
+        "Trait_Ribbon_Floss_Lobe_16",
+        "Trait_Ribbon_Floss_Lobe_17",
+        "Trait_Ribbon_Floss_Lobe_18",
+        "Trait_Ribbon_Floss_Lobe_19",
+        "Trait_Ribbon_Floss_Lobe_20",
+        "Trait_Ribbon_Pose",
+        "Trait_Ribbon_Sparkle",
+        "Trait_Ribbon_Stick",
+        "Trait_Ribbon_Stick_Stripe_1",
+        "Trait_Ribbon_Stick_Stripe_2",
+        "Trait_Ribbon_Stick_Stripe_3"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Ribbon_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ribbon_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ribbon_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ribbon_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Ribbon_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Sugar2",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Sugar2.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.648,
+        "target": [
+          0,
+          -0.003,
+          1.239
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "sugar bag with 2 Gold stars",
+        "traits": [
+          "sugar_2"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_Sugar2_Folded_Top",
+        "Trait_Sugar2_Grade_Star_1",
+        "Trait_Sugar2_Grade_Star_2",
+        "Trait_Sugar2_Label",
+        "Trait_Sugar2_Pose",
+        "Trait_Sugar2_Pouch",
+        "Trait_Sugar2_Top_Crimp"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Sugar2_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sugar2_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sugar2_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sugar2_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Sugar3",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Sugar3.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.648,
+        "target": [
+          0,
+          -0.003,
+          1.239
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "sugar bag with 3 Gold stars",
+        "traits": [
+          "sugar_3"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_Sugar3_Folded_Top",
+        "Trait_Sugar3_Grade_Star_1",
+        "Trait_Sugar3_Grade_Star_2",
+        "Trait_Sugar3_Grade_Star_3",
+        "Trait_Sugar3_Label",
+        "Trait_Sugar3_Pose",
+        "Trait_Sugar3_Pouch",
+        "Trait_Sugar3_Top_Crimp"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Sugar3_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sugar3_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sugar3_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Sugar3_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Machine",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Machine.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.327,
+        "target": [
+          0.015,
+          0.027,
+          1.359
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "cotton-candy machine",
+        "traits": [
+          "machine_2",
+          "machine_3"
+        ],
+        "category": "equipment",
+        "disc": "#B8D9CC"
+      },
+      "objects": [
+        "Trait_Machine_Cabinet",
+        "Trait_Machine_Candy_Floss_0",
+        "Trait_Machine_Candy_Floss_1",
+        "Trait_Machine_Candy_Floss_2",
+        "Trait_Machine_Candy_Floss_3",
+        "Trait_Machine_Candy_Floss_4",
+        "Trait_Machine_Candy_Floss_5",
+        "Trait_Machine_Candy_Stick",
+        "Trait_Machine_Control_Panel",
+        "Trait_Machine_Dial",
+        "Trait_Machine_Floss_Web_0",
+        "Trait_Machine_Floss_Web_1",
+        "Trait_Machine_Floss_Web_2",
+        "Trait_Machine_Floss_Web_3",
+        "Trait_Machine_Floss_Web_4",
+        "Trait_Machine_Floss_Web_5",
+        "Trait_Machine_Floss_Web_6",
+        "Trait_Machine_Floss_Web_7",
+        "Trait_Machine_Floss_Web_8",
+        "Trait_Machine_Foot_0",
+        "Trait_Machine_Foot_1",
+        "Trait_Machine_Machine_Pose",
+        "Trait_Machine_Neck",
+        "Trait_Machine_Pose",
+        "Trait_Machine_Switch",
+        "Trait_Machine_Tub",
+        "Trait_Machine_Tub_Rim"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Machine_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Machine_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Machine_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Machine_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Machine_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_FlavorSoda",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_FlavorSoda.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.488,
+        "target": [
+          0.048,
+          0.014,
+          1.326
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "Soda cotton candy",
+        "traits": [
+          "flavor_soda"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_FlavorSoda_Candy_Pose",
+        "Trait_FlavorSoda_Floss_Core",
+        "Trait_FlavorSoda_Floss_Lobe_01",
+        "Trait_FlavorSoda_Floss_Lobe_02",
+        "Trait_FlavorSoda_Floss_Lobe_03",
+        "Trait_FlavorSoda_Floss_Lobe_04",
+        "Trait_FlavorSoda_Floss_Lobe_05",
+        "Trait_FlavorSoda_Floss_Lobe_06",
+        "Trait_FlavorSoda_Floss_Lobe_07",
+        "Trait_FlavorSoda_Floss_Lobe_08",
+        "Trait_FlavorSoda_Floss_Lobe_09",
+        "Trait_FlavorSoda_Floss_Lobe_10",
+        "Trait_FlavorSoda_Floss_Lobe_11",
+        "Trait_FlavorSoda_Floss_Lobe_12",
+        "Trait_FlavorSoda_Floss_Lobe_13",
+        "Trait_FlavorSoda_Floss_Lobe_14",
+        "Trait_FlavorSoda_Floss_Lobe_15",
+        "Trait_FlavorSoda_Floss_Lobe_16",
+        "Trait_FlavorSoda_Floss_Lobe_17",
+        "Trait_FlavorSoda_Floss_Lobe_18",
+        "Trait_FlavorSoda_Floss_Lobe_19",
+        "Trait_FlavorSoda_Floss_Lobe_20",
+        "Trait_FlavorSoda_Pose",
+        "Trait_FlavorSoda_Stick",
+        "Trait_FlavorSoda_Stick_Stripe_1",
+        "Trait_FlavorSoda_Stick_Stripe_2",
+        "Trait_FlavorSoda_Stick_Stripe_3"
+      ],
+      "materials": [
+        {
+          "name": "Trait_FlavorSoda_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_FlavorSoda_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_FlavorVanilla",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_FlavorVanilla.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.488,
+        "target": [
+          0.059,
+          0.012,
+          1.326
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "Vanilla cotton candy",
+        "traits": [
+          "flavor_vanilla"
+        ],
+        "category": "production",
+        "disc": "#EBA5B3"
+      },
+      "objects": [
+        "Trait_FlavorVanilla_Candy_Pose",
+        "Trait_FlavorVanilla_Floss_Core",
+        "Trait_FlavorVanilla_Floss_Lobe_01",
+        "Trait_FlavorVanilla_Floss_Lobe_02",
+        "Trait_FlavorVanilla_Floss_Lobe_03",
+        "Trait_FlavorVanilla_Floss_Lobe_04",
+        "Trait_FlavorVanilla_Floss_Lobe_05",
+        "Trait_FlavorVanilla_Floss_Lobe_06",
+        "Trait_FlavorVanilla_Floss_Lobe_07",
+        "Trait_FlavorVanilla_Floss_Lobe_08",
+        "Trait_FlavorVanilla_Floss_Lobe_09",
+        "Trait_FlavorVanilla_Floss_Lobe_10",
+        "Trait_FlavorVanilla_Floss_Lobe_11",
+        "Trait_FlavorVanilla_Floss_Lobe_12",
+        "Trait_FlavorVanilla_Floss_Lobe_13",
+        "Trait_FlavorVanilla_Floss_Lobe_14",
+        "Trait_FlavorVanilla_Floss_Lobe_15",
+        "Trait_FlavorVanilla_Floss_Lobe_16",
+        "Trait_FlavorVanilla_Floss_Lobe_17",
+        "Trait_FlavorVanilla_Floss_Lobe_18",
+        "Trait_FlavorVanilla_Floss_Lobe_19",
+        "Trait_FlavorVanilla_Floss_Lobe_20",
+        "Trait_FlavorVanilla_Pose",
+        "Trait_FlavorVanilla_Stick",
+        "Trait_FlavorVanilla_Stick_Stripe_1",
+        "Trait_FlavorVanilla_Stick_Stripe_2",
+        "Trait_FlavorVanilla_Stick_Stripe_3"
+      ],
+      "materials": [
+        {
+          "name": "Trait_FlavorVanilla_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_FlavorVanilla_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Worker",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Worker.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.783,
+        "target": [
+          0.057,
+          0.004,
+          1.293
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "worker with apron",
+        "traits": [
+          "worker_1",
+          "worker_2"
+        ],
+        "category": "staff",
+        "disc": "#C9BDE0"
+      },
+      "objects": [
+        "Trait_Worker_Apron_Bib",
+        "Trait_Worker_Apron_Pocket",
+        "Trait_Worker_Apron_Strap_0",
+        "Trait_Worker_Apron_Strap_2",
+        "Trait_Worker_Apron_Waist_Tie",
+        "Trait_Worker_Pose",
+        "Trait_Worker_Worker_Head_Blush_L",
+        "Trait_Worker_Worker_Head_Blush_R",
+        "Trait_Worker_Worker_Head_Cap_Button",
+        "Trait_Worker_Worker_Head_Cap_Crown",
+        "Trait_Worker_Worker_Head_Cap_Visor",
+        "Trait_Worker_Worker_Head_Eye_L",
+        "Trait_Worker_Worker_Head_Eye_R",
+        "Trait_Worker_Worker_Head_Face",
+        "Trait_Worker_Worker_Head_Hair_Back",
+        "Trait_Worker_Worker_Pose",
+        "Trait_Worker_Worker_Torso"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Worker_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Worker_Hair2",
+          "palette_name": "Hair2",
+          "palette_srgb": "#8D5B4A",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Worker_Mint",
+          "palette_name": "Mint",
+          "palette_srgb": "#99C4AE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Worker_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Worker_Skin1",
+          "palette_name": "Skin1",
+          "palette_srgb": "#F1C6A6",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Worker_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_GradCap",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_GradCap.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.044,
+        "target": [
+          -0.004,
+          -0.015,
+          1.195
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "graduation cap",
+        "traits": [
+          "worker_grade_2",
+          "worker_grade_3"
+        ],
+        "category": "staff",
+        "disc": "#C9BDE0"
+      },
+      "objects": [
+        "Trait_GradCap_Board",
+        "Trait_GradCap_Board_Gold_Trim",
+        "Trait_GradCap_Button",
+        "Trait_GradCap_Cap_Pose",
+        "Trait_GradCap_Diploma",
+        "Trait_GradCap_Diploma_Ribbon",
+        "Trait_GradCap_Pose",
+        "Trait_GradCap_Skull_Cap",
+        "Trait_GradCap_Tassel",
+        "Trait_GradCap_Tassel_Cord",
+        "Trait_GradCap_Tassel_Drop"
+      ],
+      "materials": [
+        {
+          "name": "Trait_GradCap_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_GradCap_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_GradCap_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_GradCap_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Glove",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Glove.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.648,
+        "target": [
+          0.081,
+          0.009,
+          1.326
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "work glove",
+        "traits": [
+          "worker_speed"
+        ],
+        "category": "staff",
+        "disc": "#C9BDE0"
+      },
+      "objects": [
+        "Trait_Glove_Back_Of_Hand",
+        "Trait_Glove_Cuff",
+        "Trait_Glove_Cuff_Band",
+        "Trait_Glove_Finger_1",
+        "Trait_Glove_Finger_2",
+        "Trait_Glove_Finger_3",
+        "Trait_Glove_Finger_4",
+        "Trait_Glove_Pose",
+        "Trait_Glove_Thumb"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Glove_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Glove_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Glove_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_MapPin",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_MapPin.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.036,
+        "target": [
+          0.008,
+          -0.022,
+          1.174
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "map pin",
+        "traits": [
+          "location_1",
+          "location_2",
+          "location_3"
+        ],
+        "category": "location",
+        "disc": "#ACD2D9"
+      },
+      "objects": [
+        "Trait_MapPin_Map_Panel_0",
+        "Trait_MapPin_Map_Panel_1",
+        "Trait_MapPin_Map_Panel_2",
+        "Trait_MapPin_Map_Pose",
+        "Trait_MapPin_Pin_Dot",
+        "Trait_MapPin_Pin_Head",
+        "Trait_MapPin_Pin_Point",
+        "Trait_MapPin_Pose",
+        "Trait_MapPin_Route_Dash_0",
+        "Trait_MapPin_Route_Dash_1",
+        "Trait_MapPin_Route_Dash_2"
+      ],
+      "materials": [
+        {
+          "name": "Trait_MapPin_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_MapPin_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_MapPin_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_MapPin_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_MapPin_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trait_Group",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Group.png",
+      "kind": "icon",
+      "canvas": [
+        84,
+        84
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.133,
+        "target": [
+          -0.041,
+          0.035,
+          1.359
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "subject": "customer group",
+        "traits": [
+          "group_visit"
+        ],
+        "category": "business",
+        "disc": "#EBC997"
+      },
+      "objects": [
+        "Trait_Group_Front_Head_Blush_L",
+        "Trait_Group_Front_Head_Blush_R",
+        "Trait_Group_Front_Head_Eye_L",
+        "Trait_Group_Front_Head_Eye_R",
+        "Trait_Group_Front_Head_Face",
+        "Trait_Group_Front_Head_Hair_Back",
+        "Trait_Group_Front_Head_Hair_Crown",
+        "Trait_Group_Front_Head_Hair_Fringe",
+        "Trait_Group_Front_Torso",
+        "Trait_Group_Left_Head_Blush_L",
+        "Trait_Group_Left_Head_Blush_R",
+        "Trait_Group_Left_Head_Eye_L",
+        "Trait_Group_Left_Head_Eye_R",
+        "Trait_Group_Left_Head_Face",
+        "Trait_Group_Left_Head_Hair_Back",
+        "Trait_Group_Left_Head_Hair_Crown",
+        "Trait_Group_Left_Head_Hair_Fringe",
+        "Trait_Group_Left_Torso",
+        "Trait_Group_Pose",
+        "Trait_Group_Right_Head_Blush_L",
+        "Trait_Group_Right_Head_Blush_R",
+        "Trait_Group_Right_Head_Eye_L",
+        "Trait_Group_Right_Head_Eye_R",
+        "Trait_Group_Right_Head_Face",
+        "Trait_Group_Right_Head_Hair_Back",
+        "Trait_Group_Right_Head_Hair_Crown",
+        "Trait_Group_Right_Head_Hair_Fringe",
+        "Trait_Group_Right_Torso"
+      ],
+      "materials": [
+        {
+          "name": "Trait_Group_Hair1",
+          "palette_name": "Hair1",
+          "palette_srgb": "#574F59",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Hair2",
+          "palette_name": "Hair2",
+          "palette_srgb": "#8D5B4A",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Hair3",
+          "palette_name": "Hair3",
+          "palette_srgb": "#45475B",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Pants2",
+          "palette_name": "Pants2",
+          "palette_srgb": "#65688B",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Skin1",
+          "palette_name": "Skin1",
+          "palette_srgb": "#F1C6A6",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Skin2",
+          "palette_name": "Skin2",
+          "palette_srgb": "#B87A65",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Skin3",
+          "palette_name": "Skin3",
+          "palette_srgb": "#E8AF88",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Group_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    }
+  ]
+}
