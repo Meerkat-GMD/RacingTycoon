@@ -116,6 +116,8 @@ namespace CottonCircuit.Editor
             }
             Check(found.Count == 66 && badImports.Count == 0, found.Count + " UI sprites import as single sprites without mipmaps, with alpha transparency and HQ compression" +
                 (badImports.Count == 0 ? "" : ": wrong settings " + string.Join(", ", badImports)));
+            Check(!AssetDatabase.IsValidFolder("Assets/CottonCircuit/Resources") && !Directory.Exists("Assets/CottonCircuit/Resources"),
+                "Assets/CottonCircuit/Resources is gone; the Mina portrait comes from GameAssets.MinaPortrait");
         }
         static void CheckRenderPipeline()
         {

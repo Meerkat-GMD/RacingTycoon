@@ -6,16 +6,16 @@ namespace CottonCircuit
     {
         readonly UnityEngine.UI.Image[] streetTargets = new UnityEngine.UI.Image[ShopShift.CustomerCapacity];
         readonly ShopDropTarget[] streetDrops = new ShopDropTarget[ShopShift.CustomerCapacity];
-        readonly ShopStreetGraphic[] streetPeople = new ShopStreetGraphic[ShopShift.CustomerCapacity];
+        readonly StreetSprite[] streetPeople = new StreetSprite[ShopShift.CustomerCapacity];
         readonly ShopStreetGraphic[] streetBubbles = new ShopStreetGraphic[ShopShift.CustomerCapacity];
         readonly ShopArtGraphic[] streetOrders = new ShopArtGraphic[ShopShift.CustomerCapacity];
-        readonly ShopStreetGraphic[] streetEmotes = new ShopStreetGraphic[ShopShift.CustomerCapacity];
+        readonly StreetSprite[] streetEmotes = new StreetSprite[ShopShift.CustomerCapacity];
         readonly UnityEngine.UI.Image[] streetPatience = new UnityEngine.UI.Image[ShopShift.CustomerCapacity];
         readonly UnityEngine.UI.Text[] streetFlavors = new UnityEngine.UI.Text[ShopShift.CustomerCapacity];
         readonly UnityEngine.UI.Text[] streetSizes = new UnityEngine.UI.Text[ShopShift.CustomerCapacity];
         readonly UnityEngine.UI.Text[] streetReactions = new UnityEngine.UI.Text[ShopShift.CustomerCapacity];
         UnityEngine.UI.Text streetStatus;
-        ProgressionArtGraphic progressionStreetScene;
+        UnityEngine.UI.Image progressionStreetScene;
         int streetLocation = -1;
 
         public string ShiftCustomerIdAt(int slot) => game && game.Shift != null ? game.Shift.CustomerAt(slot)?.Id : null;
@@ -23,7 +23,7 @@ namespace CottonCircuit
         void BuildShopStreet(RectTransform parent)
         {
             var scene = Rect(parent, "Shop street", 980, 90, 596, 314);
-            if (game.HasProgression) progressionStreetScene = PrepArt(scene, "LocationStreetBackdrop", 0, 0, 596, 314, "scene", PrepPink);
+            if (game.HasProgression) progressionStreetScene = PrepSprite(scene, "LocationStreetBackdrop", 0, 0, 596, 314, UiArt.LocationStreet(0));
             else StreetArt(scene, "Street backdrop", 0, 0, 596, 314, ShopStreetArtKind.Backdrop);
             StreetArt(scene, "Side view storefront", 6, 48, 169, 230, ShopStreetArtKind.Storefront);
             Label(scene, "솜사탕", 34, 69, 113, 30, 20, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
@@ -42,8 +42,8 @@ namespace CottonCircuit
                     var customer = game.Shift.CustomerAt(customerSlot);
                     return customer == null ? "" : Palette.FlavorName(customer.Flavor) + (game.HasProgression && Progression.MaxSugarGrade(game.Session.Economy) == 1 ? "" : " · " + ShiftTierName(customer.Size)) + "\n" + Mathf.CeilToInt((float)customer.PatienceRemaining) + "초 남음\n주문에 맞는 제품을 끌어다 건네주세요.";
                 });
-                streetPeople[slot] = StreetArt(target.rectTransform, "Street customer " + slot, 25, 132, 82, 140, ShopStreetArtKind.Customer, slot);
-                var bubble = StreetArt(target.rectTransform, "Order bubble " + slot, 0, 0, 132, 130, ShopStreetArtKind.SpeechBubble);
+                streetPeople[slot] = (StreetSprite)StreetArt(target.rectTransform, "Street customer " + slot, 25, 132, 82, 140, ShopStreetArtKind.Customer, slot);
+                var bubble = (ShopStreetGraphic)StreetArt(target.rectTransform, "Order bubble " + slot, 0, 0, 132, 130, ShopStreetArtKind.SpeechBubble);
                 streetBubbles[slot] = bubble;
                 streetOrders[slot] = ShiftArt(bubble.rectTransform, "Requested cotton " + slot, 23, 4, 80, 77, ShopArtKind.CottonCandy);
                 var size = Box(bubble.rectTransform, "Order size badge " + slot, 94, 17, 25, 27, Palette.Ink, false);
@@ -51,7 +51,7 @@ namespace CottonCircuit
                 streetFlavors[slot] = Label(bubble.rectTransform, "", 9, 79, 114, 21, 14, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
                 streetPatience[slot] = Progress(bubble.rectTransform, 18, 104, 96, 4, Palette.Soda);
                 streetPatience[slot].name = "Customer patience " + slot;
-                streetEmotes[slot] = StreetArt(bubble.rectTransform, "Customer emote " + slot, 30, 16, 72, 66, ShopStreetArtKind.HeartEmote);
+                streetEmotes[slot] = (StreetSprite)StreetArt(bubble.rectTransform, "Customer emote " + slot, 30, 16, 72, 66, ShopStreetArtKind.HeartEmote);
                 streetReactions[slot] = Label(bubble.rectTransform, "", 9, 84, 114, 23, 12, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
             }
         }
@@ -63,7 +63,7 @@ namespace CottonCircuit
             bool showSizes = !game.HasProgression || Progression.MaxSugarGrade(game.Session.Economy) > 1;
             if (progressionStreetScene && streetLocation != location)
             {
-                streetLocation = location; progressionStreetScene.Variant = location; progressionStreetScene.SetVerticesDirty();
+                streetLocation = location; progressionStreetScene.sprite = UiArt.LocationStreet(location);
             }
             for (int slot = 0; slot < streetTargets.Length; slot++)
             {
@@ -105,11 +105,18 @@ namespace CottonCircuit
                 : game.HasProgression ? "손님 3명" : "손님 3명  ·  말풍선이나 손님에게 솜사탕을 건네주세요";
         }
 
-        ShopStreetGraphic StreetArt(RectTransform parent, string name, float x, float y, float width, float height,
+        // Speech bubbles stay flat ShopStreetGraphic frames; every other kind is a pre-rendered StreetSprite.
+        UnityEngine.UI.MaskableGraphic StreetArt(RectTransform parent, string name, float x, float y, float width, float height,
             ShopStreetArtKind kind, int variant = 0)
         {
-            var graphic = Rect(parent, name, x, y, width, height).gameObject.AddComponent<ShopStreetGraphic>();
-            graphic.raycastTarget = false; graphic.Configure(kind, variant); return graphic;
+            var go = Rect(parent, name, x, y, width, height).gameObject;
+            if (kind == ShopStreetArtKind.SpeechBubble)
+            {
+                var bubble = go.AddComponent<ShopStreetGraphic>();
+                bubble.raycastTarget = false; bubble.Configure(kind, variant); return bubble;
+            }
+            var sprite = go.AddComponent<StreetSprite>();
+            sprite.Configure(kind, variant); return sprite;
         }
     }
 }

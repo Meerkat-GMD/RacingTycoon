@@ -60,8 +60,13 @@ namespace CottonCircuit.Tests
             double sugarStartGrowth = speedGrownMeters;
             DriveShiftUnfueledGrowth(lapMeters * .05, "first growing-candy sample");
             var growth = GameObject.Find("Growing candy").GetComponent<ShopArtGraphic>().GrowthScale;
+            var growingRect = GameObject.Find("Growing candy").GetComponent<RectTransform>();
+            Vector3 stickBase = growingRect.position; float drawnScale = growingRect.localScale.x;
             DriveShiftUnfueledGrowth(lapMeters * .05, "second growing-candy sample");
             Check(GameObject.Find("Growing candy").GetComponent<ShopArtGraphic>().GrowthScale > growth, "cotton visibly grows before reaching the next tier");
+            Check(growingRect.pivot == UiArt.CandyPivot && growingRect.localScale.x > drawnScale &&
+                Vector3.Distance(growingRect.position, stickBase) < .01f,
+                "growing cotton sprite scales up about its fixed stick base");
             double grown = speedGrownMeters - sugarStartGrowth;
             Check(Math.Abs(game.Shift.State.SugarGrams - (10 - grown / lapMeters * 50)) < .00001 &&
                 Math.Abs(game.Shift.State.BatchMeters - grown) < .00001,
@@ -105,7 +110,7 @@ namespace CottonCircuit.Tests
                 Math.Abs(order.ReactionRemaining - ShopShift.ReactionDuration) < .001,
                 "matching sale keeps its customer for the heart reaction");
             Check(GameObject.Find("Customer emote 0").activeInHierarchy &&
-                GameObject.Find("Customer emote 0").GetComponent<ShopStreetGraphic>().Kind == ShopStreetArtKind.HeartEmote,
+                GameObject.Find("Customer emote 0").GetComponent<StreetSprite>().Kind == ShopStreetArtKind.HeartEmote,
                 "correct sale displays a heart emote");
             AddRackStock(1, 1); AddRackStock(2, 2);
             game.UI.Refresh();
@@ -131,7 +136,7 @@ namespace CottonCircuit.Tests
             DragStock(0, "CustomerDropTarget0");
             Check(game.Shift.CustomerAt(0) == order && order.Angry && game.Shift.State.DayWrong == 1, "wrong delivery shows angry existing customer");
             Check(!order.TimedOut && GameObject.Find("Customer emote 0").activeInHierarchy &&
-                GameObject.Find("Customer emote 0").GetComponent<ShopStreetGraphic>().Kind == ShopStreetArtKind.AngryEmote,
+                GameObject.Find("Customer emote 0").GetComponent<StreetSprite>().Kind == ShopStreetArtKind.AngryEmote,
                 "wrong order displays the angry emote without timeout");
             Check(game.Session.Economy.Coins == beforeWrong && game.Session.Economy.Inventory.Count == 0, "wrong product consumed without payment");
             CaptureShift("04-angry.png");
@@ -563,7 +568,7 @@ namespace CottonCircuit.Tests
                 "timeout records one miss, preserves stock and shows an angry reaction");
             Check(SaveStore.Valid(economy), "timed-out customer state is valid for saving");
             Check(GameObject.Find("Customer emote 0").activeInHierarchy &&
-                GameObject.Find("Customer emote 0").GetComponent<ShopStreetGraphic>().Kind == ShopStreetArtKind.AngryEmote &&
+                GameObject.Find("Customer emote 0").GetComponent<StreetSprite>().Kind == ShopStreetArtKind.AngryEmote &&
                 !patienceBar.activeInHierarchy,
                 "timed-out customer changes from patience gauge to angry emote");
             Check(game.DeliverCandy(retained.Id, first.Id) == DeliveryResult.Rejected && economy.Inventory.Contains(retained),
