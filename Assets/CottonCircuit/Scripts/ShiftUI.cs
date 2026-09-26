@@ -45,8 +45,9 @@ namespace CottonCircuit
                     shiftMachineButtons[i] = button; button.name = "SwitchMachine_" + i;
                     HoverHint.Attach(button.gameObject, () => MachineAvailability(machineIndex), true);
                 }
-                shiftGradeButton = ButtonAt(p, "설탕 1등급", 534, 57, 107, 27, Palette.Soda, Palette.Ink, () => game.CycleSugarGrade(game.Shift.SelectedMachine), 12); shiftGradeButton.name = "BusinessSugarGrade";
-                HoverHint.Attach(shiftGradeButton.gameObject, () => game.Shift.State.SugarGrams > 0 || game.Shift.State.BatchMeters > 0 ? "설탕과 제작 중인 제품을 비운 뒤 등급을 바꿀 수 있어요." : "클릭하면 다음 설탕 등급.\n기본 딸기 설탕은 무료예요.", true);
+                shiftGradeButton = ButtonAt(p, "설탕 1등급", 534, 57, 107, 27, Palette.Soda, Palette.Ink, () => { }, 12); shiftGradeButton.name = "BusinessSugarGrade";
+                shiftGradeButton.interactable = false;
+                HoverHint.Attach(shiftGradeButton.gameObject, () => SugarGradeDetails(game.Shift.SelectedMachine), true);
             }
             day = Label(p, "DAY 01", 302, 25, 115, 25, 14, Palette.Muted, FontStyle.Bold);
             autoDriveButton = ButtonAt(p, "자동 주행 ON", 652, 22, 166, 46, Palette.Soda, Palette.Ink, () => game.ToggleAutoDrive(), 17);
@@ -200,10 +201,10 @@ namespace CottonCircuit
             shiftTier.text = state.BatchMeters <= 0 ? "생산 준비" : Palette.FlavorName(state.BatchFlavor) + (sizedProducts ? " · " + ShiftTierName(batchTier) : batchTier < 0 ? " · 미완성" : "") + (batchTier < 0 ? " (판매 불가)" : "");
             double nextMeters = ShopShift.MetersForSize(Math.Min(maxSize, batchTier + 1));
             double previousMeters = batchTier < 0 ? 0 : ShopShift.MetersForSize(batchTier);
-            shiftNextTier.text = capped ? "완성  ·  F 꺼내기" : (sizedProducts ? ShiftTierName(batchTier + 1) : "완성") + "까지 " + (Math.Ceiling(Math.Max(0, nextMeters - state.BatchMeters) / ShopShift.LapMeters * 100) / 100).ToString("0.00") + " 바퀴";
+            shiftNextTier.text = capped ? (sizedProducts ? "최대 크기  ·  F 꺼내기" : "완성  ·  F 꺼내기") : (sizedProducts && batchTier >= 0 ? ShiftTierName(batchTier) + " 꺼내기 가능 · " : "") + (sizedProducts ? ShiftTierName(batchTier + 1) : "완성") + "까지 " + (Math.Ceiling(Math.Max(0, nextMeters - state.BatchMeters) / ShopShift.LapMeters * 100) / 100).ToString("0.00") + " 바퀴";
             if (!capped && state.BatchMeters > 0 && (state.SugarGrams <= 0 || state.SugarFlavor != state.BatchFlavor)) shiftNextTier.text = Palette.FlavorName(state.BatchFlavor) + " 설탕 대기";
             shiftGrowthFill.rectTransform.sizeDelta = new Vector2(258 * (capped ? 1 : Mathf.Clamp01((float)((state.BatchMeters - previousMeters) / Math.Max(.001, nextMeters - previousMeters)))), 4);
-            shiftSizeLimits.text = !progression ? "소 1바퀴 · 중 1.5바퀴 · 대 2바퀴" : sizedProducts ? "최대 " + ShiftTierName(maxSize) + "  /  " + (ShopShift.MetersForSize(maxSize) / ShopShift.LapMeters).ToString("0.##") + " 바퀴" : "";
+            shiftSizeLimits.text = !progression ? "소 1바퀴 · 중 1.5바퀴 · 대 2바퀴" : sizedProducts ? shift.SizeLimitNote(selectedMachine) + "  /  " + (ShopShift.MetersForSize(maxSize) / ShopShift.LapMeters).ToString("0.##") + " 바퀴" : "";
             shiftBatchArt.Configure(ShopArtKind.CottonCandy, Math.Max(0, state.BatchFlavor), batchTier); shiftBatchArt.SetDistance(state.BatchMeters); shiftBatchArt.color = state.BatchMeters > 0 ? Color.white : new Color(1, 1, 1, .18f);
             shiftExtractButton.interactable = allowed && state.BatchMeters > 0 && economy.Inventory.Count < economy.StockCapacity;
             shiftEmptySugarButton.interactable = allowed && state.SugarGrams > 0;
@@ -263,14 +264,25 @@ namespace CottonCircuit
                 var button = shiftMachineButtons[i]; if (!button) continue;
                 bool owned = i < Progression.OwnedMachines(economy); var slot = game.Machine(i);
                 button.interactable = allowed && owned; button.image.color = i == selected ? Palette.Soda : Color.white;
-                string status = !owned ? "잠김" : i == selected ? "운전" : slot != null && slot.WorkerAssigned ? "알바" : "대기";
+                bool worker = slot != null && slot.WorkerAssigned;
+                string status = !owned ? "잠김" : i == selected ? (worker ? "운전 · 알바 쉼" : "운전") : worker ? "알바" : "대기";
                 button.GetComponentInChildren<UnityEngine.UI.Text>().text = "M0" + (i + 1) + "  ·  " + status;
             }
             if (shiftGradeButton)
             {
-                shiftGradeButton.GetComponentInChildren<UnityEngine.UI.Text>().text = "설탕 " + game.Machine(selected).SugarGrade + "등급";
-                shiftGradeButton.interactable = allowed && Progression.MaxSugarGrade(economy) > 1 && game.Shift.State.SugarGrams <= 0 && game.Shift.State.BatchMeters <= 0;
+                shiftGradeButton.GetComponentInChildren<UnityEngine.UI.Text>().text = "설탕 " + game.Shift.SugarGrade(selected) + "등급";
+                shiftGradeButton.interactable = false;
             }
+        }
+
+        string SugarGradeDetails(int machine)
+        {
+            var economy = game.Session.Economy;
+            string note = game.Shift.SizeLimitNote(machine);
+            return "해금한 최고 등급 설탕을 기계가 쓸 수 있는 만큼 자동으로 써요.\n" +
+                Progression.MachineName(machine) + "는 " + Progression.MachineTier(machine) + "등급 설탕까지 쓸 수 있어요." +
+                (note.Length > 0 ? "\n" + note : "") +
+                (Progression.MaxSugarGrade(economy) < 3 ? "\n성장 지도에서 더 좋은 설탕을 해금할 수 있어요." : "");
         }
 
         string SugarBagDetails(int flavorIndex)
@@ -280,7 +292,7 @@ namespace CottonCircuit
             if (!Progression.HasFlavor(economy, flavorIndex)) return "성장 지도에서 " + Palette.FlavorName(flavorIndex) + " 맛을 해금하세요.";
             if (!game.Shift.CanMakeFlavor(selected, flavorIndex)) return Palette.FlavorName(flavorIndex) + " 맛에는 " + Progression.FlavorMachineTier(flavorIndex) + "등급 기계가 필요해요.";
             int cost = game.Shift.PourCost(selected, flavorIndex);
-            return Palette.FlavorName(flavorIndex) + " 설탕  /  " + game.Machine(selected).SugarGrade + "등급\n" + (cost == 0 ? "무료" : cost + " C / 10g") + "\n작게 흔들면 조금, 크게 흔들면 많이 들어가요.\n실제 투입량의 재료비를 코인 단위로 올림해요.";
+            return Palette.FlavorName(flavorIndex) + " 설탕  /  " + game.Shift.SugarGrade(selected) + "등급\n" + (cost == 0 ? "무료" : cost + " C / 10g") + "\n작게 흔들면 조금, 크게 흔들면 많이 들어가요.\n실제 투입량의 재료비를 코인 단위로 올림해요.";
         }
 
         static string ShiftTierName(int tier) => tier < 0 ? "미완성" : tier == 0 ? "소" : tier == 1 ? "중" : "대";

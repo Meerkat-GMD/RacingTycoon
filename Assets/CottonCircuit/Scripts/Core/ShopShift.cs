@@ -206,7 +206,7 @@ namespace CottonCircuit
             if (index < 0) return false;
             var selected = economy.Inventory[index];
             if (economy.Progression != null && (!CanMakeFlavor(SelectedMachine, selected.FlavorIndex) ||
-                selected.SugarGrade > State.Machines[SelectedMachine].SugarGrade ||
+                selected.SugarGrade > SugarGrade(SelectedMachine) ||
                 selected.DistanceMeters > MetersForSize(MaxSize(SelectedMachine)) + 1e-7)) return false;
             if (!selected.DistanceBased || !Finite(selected.DistanceMeters) || selected.DistanceMeters <= 0 ||
                 selected.FlavorIndex < 0 || selected.FlavorIndex > 2) return false;

@@ -90,14 +90,5 @@ namespace CottonCircuit
             if (!PreparationActions || index < 0 || index >= Progression.OwnedMachines(Session.Economy)) return;
             var m = Machine(index); m.RecipeSize = (m.RecipeSize + 1) % (Shift.MaxSize(index) + 1); Save(); UI.Refresh();
         }
-        public void CycleSugarGrade(int index)
-        {
-            if (!HasProgression || Session.Paused || !Store.CanSave || index < 0 || index >= Progression.OwnedMachines(Session.Economy) ||
-                (!InPreparation && !InBusiness)) return;
-            var m = Machine(index);
-            if (m.SugarGrams > 0 || m.BatchMeters > 0) { Notify("설탕과 솜사탕을 비운 뒤 변경"); return; }
-            m.SugarGrade = m.SugarGrade % Progression.MaxSugarGrade(Session.Economy) + 1;
-            m.RecipeSize = Math.Min(m.RecipeSize, Shift.MaxSize(index)); Save(); UI.Refresh();
-        }
     }
 }

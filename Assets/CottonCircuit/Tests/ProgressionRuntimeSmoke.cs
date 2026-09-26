@@ -177,10 +177,19 @@ namespace CottonCircuit.Tests
             yield return ClickProgression("SelectCart_1");
             Check(e.Progression.CartStyle == 1, "downhill can be reselected after unlocking the classic kart");
             CheckDefaultShiftDriving("reselected progression downhill");
-            yield return ClickProgression("RecipeGrade_1"); yield return ClickProgression("RecipeFlavor_1"); yield return ClickProgression("RecipeSize_1");
-            yield return ClickProgression("AssignWorker_1"); yield return ClickProgression("SelectMachine_2");
+            Check(GameObject.Find("RecipeFlavor_1")==null && GameObject.Find("RecipeSize_1")==null,
+                "worker recipe controls stay hidden until a worker is assigned");
+            yield return ClickProgression("AssignWorker_1"); yield return null;
+            yield return ClickProgression("RecipeFlavor_1"); yield return ClickProgression("RecipeSize_1");
+            yield return ClickProgression("SelectMachine_2");
             Check(game.Machine(1).WorkerAssigned && game.Machine(1).RecipeFlavor==1 && game.Machine(1).RecipeSize==1,"equipment controls configure worker recipe");
-            yield return ClickProgression("RecipeGrade_2"); yield return ClickProgression("RecipeGrade_2");
+            Check(GameObject.Find("RecipeFlavor_0")==null && GameObject.Find("RecipeFlavor_2")==null,
+                "machines without a worker hide the worker recipe");
+            for (int i = 0; i < 3; i++)
+                Check(!GameObject.Find("RecipeGrade_" + i).GetComponent<Button>().interactable &&
+                    game.Machine(i).SugarGrade == i + 1 &&
+                    GameObject.Find("RecipeGrade_" + i).GetComponentInChildren<Text>().text == (i + 1) + "등급 · 자동",
+                    "machine " + i + " shows its automatic sugar grade instead of a selector");
             CaptureShift("06-equipment.png");
             yield return ClickProgression("OpenLocations"); yield return null;
             yield return ClickProgression("PreviewLocation_3"); yield return ClickProgression("SelectLocation");

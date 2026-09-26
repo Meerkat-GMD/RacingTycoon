@@ -121,20 +121,11 @@ public static class ProgressionBalance
             int size = i == 0 ? 0 : 1;
             machine.WorkerAssigned = assigned;
             machine.RecipeFlavor = flavor;
-            machine.RecipeSize = size;
-            SetEmptyGrade(i, Math.Min(Progression.MaxSugarGrade(economy), Math.Max(1, size + 1)));
+            machine.RecipeSize = Math.Min(size, shift.MaxSize(i));
         }
     }
-    static void SetEmptyGrade(int index, int grade)
-    {
-        var machine = shift.Machine(index);
-        if (machine.SugarGrade == grade) return;
-        if (grade < 1 || grade > Progression.MaxSugarGrade(economy) ||
-            machine.SugarGrams > 0 || machine.BatchMeters > 0)
-            throw new Exception("Sugar grade can change only on an empty machine");
-        machine.SugarGrade = grade;
-        machine.RecipeSize = Math.Min(machine.RecipeSize, shift.MaxSize(index));
-    }
+    // Sugar grade is automatic, so the player stops each batch at the ordered size with F.
+    static readonly int[] batchTargetSize = { 0, 0, 0 };
     static void PlayDay()
     {
         economy.Progression.SelectedLocation =
@@ -163,7 +154,8 @@ public static class ProgressionBalance
                 MachineProduction machine = shift.Machine(selected);
                 if (finishing)
                 {
-                    int size = Math.Min(Progression.MachineTier(selected), machine.BatchSugarGrade) - 1;
+                    int size = Math.Min(batchTargetSize[selected],
+                        Math.Min(Progression.MachineTier(selected), machine.BatchSugarGrade) - 1);
                     if (machine.BatchMeters >= ShopShift.MetersForSize(size) - 1e-7) shift.Extract();
                     else
                     {
@@ -173,10 +165,7 @@ public static class ProgressionBalance
                 }
                 else if (order != null)
                 {
-                    int grade = Math.Min(Progression.MaxSugarGrade(economy), order.Size + 1);
-                    if (machine.SugarGrade != grade && shift.State.SugarGrams > 0)
-                        shift.EmptySugar();
-                    SetEmptyGrade(selected, grade);
+                    batchTargetSize[selected] = order.Size;
                     if (shift.State.SugarGrams > 1e-7 && shift.State.SugarFlavor != order.Flavor)
                         shift.EmptySugar();
                     if (shift.State.SugarGrams < 1e-7) shift.Pour(order.Flavor);
