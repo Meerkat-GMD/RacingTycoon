@@ -64,6 +64,30 @@ namespace CottonCircuit
         public const double WarmupSpeedRatio = .2;
         public const double MaximumSpeedYield = 1.6;
 
+        // Quality keeps its saved 0-100 scale; stars are the nearest third of it,
+        // so older saved scores still read as a sensible star count.
+        public const int MaxStars = 3;
+        public static int Stars(int quality)
+        {
+            return Math.Max(0, Math.Min(MaxStars, (int)Math.Round(quality * MaxStars / 100.0, MidpointRounding.AwayFromZero)));
+        }
+        public static int QualityForStars(int stars)
+        {
+            return (int)Math.Round(Math.Max(0, Math.Min(MaxStars, stars)) * 100.0 / MaxStars, MidpointRounding.AwayFromZero);
+        }
+        public static string StarText(int quality)
+        {
+            int stars = Stars(quality);
+            return new string('★', stars) + new string('☆', MaxStars - stars);
+        }
+
+        // Each new wall contact knocks one star off the candy on the stick,
+        // even while it is not growing; with no candy there is nothing to lose.
+        static int AfterWallHits(double batchMeters, int quality, int wallHits)
+        {
+            return batchMeters > 0 && wallHits > 0 ? QualityForStars(Stars(quality) - wallHits) : quality;
+        }
+
         public static double SpeedYield(double speed)
         {
             if (!Finite(speed) || speed <= 0) return 0;
@@ -141,9 +165,9 @@ namespace CottonCircuit
             return true;
         }
 
-        public void Advance(double seconds, double forwardMeters, int skillDelta = 0, int hitDelta = 0)
+        public void Advance(double seconds, double forwardMeters, int wallHits = 0)
         {
-            if (economy.Progression != null) { AdvanceProgression(seconds, forwardMeters, skillDelta, hitDelta); return; }
+            if (economy.Progression != null) { AdvanceProgression(seconds, forwardMeters, wallHits); return; }
             if (!IsOpen || !Finite(seconds) || seconds <= 0) return;
             double elapsed = Math.Min(seconds, State.RemainingSeconds);
             if (Finite(forwardMeters) && forwardMeters > 0 && State.SugarGrams > 0 &&
@@ -155,7 +179,7 @@ namespace CottonCircuit
                     if (State.BatchMeters == 0)
                     {
                         State.BatchFlavor = State.SugarFlavor;
-                        State.BatchQuality = RaceRecipe.Quality(0, 0, economy.Levels[1]);
+                        State.BatchQuality = QualityForStars(MaxStars);
                     }
                     State.BatchMeters += meters;
                     // Normalize tiny frame-summation drift at each visible size target.
@@ -166,10 +190,9 @@ namespace CottonCircuit
                     }
                     State.SugarGrams = Math.Max(0, State.SugarGrams - meters * SugarPerMeter);
                     if (State.SugarGrams <= 1e-9) { State.SugarGrams = 0; State.SugarFlavor = -1; }
-                    long quality = State.BatchQuality + Math.Max(0L, skillDelta) * 5 - Math.Max(0L, hitDelta) * 10;
-                    State.BatchQuality = (int)Math.Max(0, Math.Min(100, quality));
                 }
             }
+            State.BatchQuality = AfterWallHits(State.BatchMeters, State.BatchQuality, wallHits);
             AdvanceCustomer(elapsed);
             State.RemainingSeconds = Math.Max(0, State.RemainingSeconds - elapsed);
             if (State.RemainingSeconds == 0)

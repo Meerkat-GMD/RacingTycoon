@@ -208,6 +208,14 @@ namespace CottonCircuit.Tests
                 foreach (var label in item.GetComponentsInChildren<Text>())
                     if (label.text.Contains(tierLabel)) tagged = true;
                 Check(tagged, "rack product carries its size tag: " + tierLabel);
+                if (tier >= 0)
+                {
+                    string starLabel = StarText(ShopShift.Stars(product.Quality));
+                    bool starred = false;
+                    foreach (var label in item.GetComponentsInChildren<Text>())
+                        if (label.text.Contains(starLabel)) starred = true;
+                    Check(starred, "sellable rack product carries its stars: " + starLabel);
+                }
                 CheckRackRaycast(PointerAtSource(item.gameObject), item);
                 var itemRect = item.GetComponent<RectTransform>();
                 // Test the body of the bag, not just one central pickup pixel.

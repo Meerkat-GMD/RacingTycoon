@@ -122,7 +122,7 @@ namespace CottonCircuit
             var m = State.Machines[index];
             return m.BatchMeters > 0 ? Math.Min(Progression.MachineTier(index), m.BatchSugarGrade) - 1 : MaxSize(index);
         }
-        void Grow(int index, double meters, int skills, int hits)
+        void Grow(int index, double meters)
         {
             var m = State.Machines[index];
             if (!Finite(meters) || meters <= 0 || m.SugarGrams <= 0 || m.BatchMeters > 0 && m.BatchFlavor != m.SugarFlavor) return;
@@ -134,20 +134,21 @@ namespace CottonCircuit
             // but only the part below the cap makes the candy bigger.
             double growth = Math.Min(meters * Progression.GrowthMultiplier(economy), m.SugarGrams / sugarRate);
             if (growth <= 0) return;
-            if (m.BatchMeters == 0) { m.BatchFlavor = m.SugarFlavor; m.BatchQuality = (int)Math.Min(100, 50 + Progression.QualityBonus(economy)); m.BatchSugarGrade = grade; }
+            if (m.BatchMeters == 0) { m.BatchFlavor = m.SugarFlavor; m.BatchQuality = QualityForStars(MaxStars); m.BatchSugarGrade = grade; }
             double sized = Math.Min(needed, growth);
             m.BatchMeters += sized;
             m.BatchOverflowMeters += growth - sized;
             for (int size = 0; size < 3; size++) if (Math.Abs(m.BatchMeters - MetersForSize(size)) < 1e-7) m.BatchMeters = MetersForSize(size);
             m.SugarGrams = Math.Max(0, m.SugarGrams - growth * sugarRate);
             if (m.SugarGrams < 1e-9) { m.SugarGrams = 0; m.SugarFlavor = -1; }
-            m.BatchQuality = (int)Math.Max(0, Math.Min(100, m.BatchQuality + Math.Max(0L, skills) * 5 - Math.Max(0L, hits) * 10));
         }
-        void AdvanceProgression(double seconds, double meters, int skills, int hits)
+        void AdvanceProgression(double seconds, double meters, int wallHits)
         {
             if (!IsOpen || !Finite(seconds) || seconds <= 0) return;
             double elapsed = Math.Min(seconds, State.RemainingSeconds); SyncActive();
-            Grow(SelectedMachine, meters * elapsed / seconds, skills, hits);
+            Grow(SelectedMachine, meters * elapsed / seconds);
+            var driven = State.Machines[SelectedMachine];
+            driven.BatchQuality = AfterWallHits(driven.BatchMeters, driven.BatchQuality, wallHits);
             double remaining = elapsed;
             while (remaining > 1e-9)
             {
@@ -165,7 +166,7 @@ namespace CottonCircuit
                         if ((m.SugarGrams <= 1e-9 || m.SugarFlavor != flavor) && !PourMachine(i, flavor)) continue;
                         double step = Math.Min(Progression.WorkerMetersPerSecond(economy) * dt,
                             (target - m.BatchMeters) / Progression.GrowthMultiplier(economy));
-                        Grow(i, step, 0, 0);
+                        Grow(i, step);
                     }
                     if (m.BatchMeters + 1e-7 >= target)
                     {

@@ -35,7 +35,8 @@ namespace CottonCircuit
                     if (product == null) return "";
                     int tier = ShopShift.SizeOf(product);
                     string size = game.HasProgression && Progression.MaxSugarGrade(game.Session.Economy) == 1 ? "" : " · " + ShiftTierName(tier);
-                    return Palette.FlavorName(product.FlavorIndex) + size + "\n" + ShiftDistanceLabel(product.DistanceMeters) + " · 품질 " + product.Quality + "\n" + (tier < 0 ? "판매 불가" : game.Session.Economy.Price(product).ToString("N0") + " C") + "\n손님에게 건네거나 주행 화면에서 이어 만드세요.";
+                    return Palette.FlavorName(product.FlavorIndex) + size + "\n" + ShiftDistanceLabel(product.DistanceMeters) + " · " + ShopShift.StarText(product.Quality) + "\n" +
+                        (tier < 0 ? "판매 불가" : game.Session.Economy.Price(product).ToString("N0") + " C · 별 보너스 +" + game.Session.Economy.StarBonus(product) + " C") + "\n손님에게 건네거나 주행 화면에서 이어 만드세요.";
                 });
                 shiftStockArt[i] = ShiftArt(hit.rectTransform, "Bagged shelf cotton candy", 0, 0, 74, 92, ShopArtKind.BaggedCottonCandy);
                 var tag = Box(hit.rectTransform, "Paper grade tag", 43, 68, 21, 20, Palette.Cream, false);
@@ -66,7 +67,7 @@ namespace CottonCircuit
                 hit.raycastTarget = allowed && product != null;
                 var art = shiftStockArt[i];
                 art.gameObject.SetActive(product != null);
-                shiftStockTags[i].gameObject.SetActive(product != null && (!game.HasProgression || Progression.MaxSugarGrade(economy) > 1 || ShopShift.SizeOf(product) < 0));
+                shiftStockTags[i].gameObject.SetActive(product != null);
                 if (product == null) continue;
 
                 int tier = ShopShift.SizeOf(product);
@@ -76,7 +77,8 @@ namespace CottonCircuit
                 art.SetDistance(product.DistanceMeters);
                 bool selected = product.Id == game.SelectedProductId || product.Id == shiftHoveredProductId;
                 var tag = shiftStockTags[i];
-                float width = tier < 0 ? 42 : 21;
+                bool sized = !game.HasProgression || Progression.MaxSugarGrade(economy) > 1;
+                float width = tier < 0 ? 42 : sized ? 46 : 34;
                 float rotatedHeight = Mathf.Sin(8 * Mathf.Deg2Rad) * width + Mathf.Cos(8 * Mathf.Deg2Rad) * 19;
                 float tagTop = Mathf.Min(placement.height * .76f, placement.height - rotatedHeight - 2);
                 tag.rectTransform.anchoredPosition = new Vector2(placement.width - width - 4, -tagTop);
@@ -84,8 +86,9 @@ namespace CottonCircuit
                 tag.color = tier < 0 ? Palette.Hex("F8D38C") : selected ? Palette.Yellow : Palette.Hex("FFF0D4");
                 var grade = shiftStockGrades[i];
                 grade.rectTransform.sizeDelta = new Vector2(width, 19);
-                grade.fontSize = tier < 0 ? 9 : 12;
-                grade.text = ShiftTierName(tier);
+                grade.fontSize = tier < 0 ? 9 : 10;
+                // Unfinished candy cannot be sold yet, so its tag says so instead of showing stars.
+                grade.text = tier < 0 ? ShiftTierName(tier) : (sized ? ShiftTierName(tier) + " " : "") + ShopShift.StarText(product.Quality);
             }
             RefreshShelfDetails();
         }
@@ -127,7 +130,7 @@ namespace CottonCircuit
             shiftShelfDetails.color = product == null ? Palette.Muted : Palette.Ink;
             shiftShelfDetails.text = product == null ? "손님에게 건네거나 주행 화면으로 가져와 이어 만드세요" :
                 Palette.FlavorName(product.FlavorIndex) + " · " + ShiftTierName(ShopShift.SizeOf(product)) + " · " +
-                ShiftDistanceLabel(product.DistanceMeters) + (ShopShift.SizeOf(product) < 0 ? " · 판매 불가" : "");
+                ShiftDistanceLabel(product.DistanceMeters) + (ShopShift.SizeOf(product) < 0 ? " · 판매 불가" : " · " + ShopShift.StarText(product.Quality));
         }
 
         public void HoverShelfProduct(ShopDragItem item, bool hovered)

@@ -6,7 +6,7 @@ namespace CottonCircuit
 {
     public partial class GameUI
     {
-        UnityEngine.UI.Text shiftSugar, shiftBatch, shiftTier, shiftNextTier;
+        UnityEngine.UI.Text shiftSugar, shiftBatch, shiftBatchStars, shiftTier, shiftNextTier;
         UnityEngine.UI.Text shiftDayCaption, shiftResultStats, shiftResultTitle, shiftGhostCaption, shiftPourHint;
         UnityEngine.UI.Image shiftSugarFill, shiftGrowthFill, shiftTrashCard, shiftRaceHighlight, shiftRaceResumeSurface;
         UnityEngine.UI.Button shiftExtractButton, shiftEmptySugarButton;
@@ -120,6 +120,8 @@ namespace CottonCircuit
             shiftSugarFill = Progress(machine.rectTransform, 14, 40, 340, 5, Palette.Soda);
             shiftBatchArt = ShiftArt(machine.rectTransform, "Growing candy", 9, 51, 77, 88, ShopArtKind.CottonCandy);
             shiftBatch = Label(machine.rectTransform, "0.00 바퀴", 94, 52, 172, 33, 26, Palette.Ink, FontStyle.Bold);
+            shiftBatchStars = Label(machine.rectTransform, "", 268, 55, 88, 30, 20, Palette.Hex("E09A2B"), FontStyle.Bold, TextAnchor.MiddleRight);
+            shiftBatchStars.name = "Batch stars";
             shiftTier = Label(machine.rectTransform, "생산 준비", 96, 86, 252, 21, 13, Palette.Muted);
             shiftNextTier = Label(machine.rectTransform, "소까지 1.00 바퀴", 96, 111, 252, 20, 12, Palette.Muted);
             shiftGrowthFill = Progress(machine.rectTransform, 96, 135, 258, 4, Palette.Pink);
@@ -130,7 +132,8 @@ namespace CottonCircuit
             shiftSizeLimits = Label(p, "소 1바퀴 · 중 1.5바퀴 · 대 2바퀴", 594, 164, 333, 23, 12, Palette.Ink, FontStyle.Bold);
             if (!game.HasProgression) Label(p, "설탕 50g / 바퀴", 594, 190, 333, 20, 12, Palette.Muted);
             machine.raycastTarget = true;
-            HoverHint.Attach(machine.gameObject, () => game.HasProgression ? "설탕 봉지를 주행 화면으로 끌고 위아래로 흔들어요.\n같은 맛으로 성장해요. 최대 크기 뒤에도 설탕은 계속 감기지만\n크기는 그대로예요. F로 꺼내어 진열대에 보관해요." : "설탕 50g / 바퀴.\n같은 맛 설탕을 넣고 달리면 자라요.");
+            HoverHint.Attach(machine.gameObject, () => (game.HasProgression ? "설탕 봉지를 주행 화면으로 끌고 위아래로 흔들어요.\n같은 맛으로 성장해요. 최대 크기 뒤에도 설탕은 계속 감기지만\n크기는 그대로예요. F로 꺼내어 진열대에 보관해요." : "설탕 50g / 바퀴.\n같은 맛 설탕을 넣고 달리면 자라요.") +
+                "\n솜사탕은 ★★★로 시작하고 벽에 부딪힐 때마다 별이 하나 줄어요.\n별 하나당 판매가 +" + (Progression.StarBonus(game.Session.Economy) * 100).ToString("0.#") + "%");
             HoverHint.Attach(shiftExtractButton.gameObject, "F로 현재 제품을 꺼내요.\n1바퀴 이상 감아야 판매할 수 있어요.", true);
             HoverHint.Attach(shiftEmptySugarButton.gameObject, "기계의 남은 설탕을 비워요.\n환급되지 않아요.", true);
 
@@ -141,6 +144,7 @@ namespace CottonCircuit
             driftLabel = Label(driftCard.rectTransform, "", 12, 6, 420, 29, 14, Color.white, FontStyle.Bold, TextAnchor.MiddleCenter);
             driftFill = Progress(driftCard.rectTransform, 14, 41, 416, 7, Palette.Soda);
             raceEvent = Label(p, "", 220, 345, 520, 46, 22, Palette.Ink, FontStyle.Bold, TextAnchor.MiddleCenter);
+            raceEvent.name = "Shift race event";
             var controls = Box(p, "Driving controls", 20, 851, 920, 31, new Color(1, .97f, .9f, .94f));
             raceControls = Label(controls.rectTransform, "", 10, 0, 900, 31, 13, Palette.Ink, FontStyle.Normal, TextAnchor.MiddleCenter);
             // Active only while carrying a product, above HUDs so the entire race is a drop area.
@@ -198,6 +202,7 @@ namespace CottonCircuit
             shiftSugarFill.rectTransform.sizeDelta = new Vector2(340 * Mathf.Clamp01((float)(state.SugarGrams / 100)), 5);
             shiftSugarFill.color = Time.unscaledTime < shiftPourFlashUntil ? Palette.Yellow : state.SugarFlavor < 0 ? Palette.Soda : Palette.Flavor(state.SugarFlavor);
             shiftBatch.text = ShiftDistanceLabel(state.BatchMeters + state.BatchOverflowMeters);
+            shiftBatchStars.text = state.BatchMeters > 0 ? ShopShift.StarText(state.BatchQuality) : "";
             shiftTier.text = state.BatchMeters <= 0 ? "생산 준비" : Palette.FlavorName(state.BatchFlavor) + (sizedProducts ? " · " + ShiftTierName(batchTier) : batchTier < 0 ? " · 미완성" : "") + (batchTier < 0 ? " (판매 불가)" : "");
             double nextMeters = ShopShift.MetersForSize(Math.Min(maxSize, batchTier + 1));
             double previousMeters = batchTier < 0 ? 0 : ShopShift.MetersForSize(batchTier);
@@ -243,7 +248,8 @@ namespace CottonCircuit
             if (downhill) driftLabel.text = kart.Drifting ? "드리프트 감속 중 · 코너 출구에서 다시 가속" : "이니셜D · W 가속 · Space 드리프트 감속";
             if (progression && !downhill) driftLabel.text = kart.Boosting ? "BOOST" : "BOOSTER  " + drive.StoredBoosts + " / 2";
             driftLabel.transform.parent.gameObject.SetActive(!downhill && !game.AutoDrive);
-            raceEvent.text = kart.ImpactFlash > 0 ? "벽 충돌!  R로 코스 복귀" : "";
+            raceEvent.text = kart.ImpactFlash <= 0 ? "" : state.BatchMeters > 0
+                ? "벽 충돌!  솜사탕 " + ShopShift.StarText(state.BatchQuality) + "  ·  R로 코스 복귀" : "벽 충돌!  R로 코스 복귀";
             raceControls.text = game.AutoDrive ? "설탕 봉지를 흔들어 넣기   →   거리만큼 성장   →   F로 꺼내기   →   손님에게 드래그" : "W 가속   A / D 조향   S 제동   Space 드리프트   Shift 부스터   F 꺼내기   R 복귀   Esc 일시정지";
             if (downhill && !game.AutoDrive) raceControls.text = "W 유지 → 계속 가속   A / D 조향   S 제동   Space 드리프트 감속   F 꺼내기   R 복귀   Esc 일시정지";
             if (progression) raceControls.text = "W A S D    ·    Space 드리프트" + (downhill ? "" : "    ·    Shift 부스터") + "    ·    F 꺼내기    ·    Esc";

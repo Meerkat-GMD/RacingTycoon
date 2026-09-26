@@ -134,8 +134,11 @@ namespace CottonCircuit.Tests
             var p=game.ExtractCandy(); Check(p!=null && ShopShift.SizeOf(p)==0, "first extraction is sellable");
             var c=game.Shift.State.Customers.Find(customer=>!customer.Angry&&!customer.Happy);
             Check(c!=null, "customer waits for first product");
+            int starBonus=e.StarBonus(p);
             DragStock(0,"CustomerDropTarget"+c.Slot);
             Check(e.Coins > initialCoins && e.Business.DaySold == 1, "real shelf drag sells once");
+            Check(ShopShift.Stars(p.Quality)==3 && starBonus>0 && game.Notice!=null && game.Notice.Contains("★★★ 보너스 +"+starBonus),
+                "progression sale notice shows the clean candy's star bonus: "+game.Notice);
             CaptureShift("04-business.png");
             game.Shift.Advance(1000,0); game.UI.Refresh();
             Check(e.Progression.Phase==BusinessPhase.Results, "clock closes shift"); CaptureShift("05-results.png");

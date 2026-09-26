@@ -139,7 +139,7 @@ public static class ShopShiftTests
         });
         Test("only positive finite forward distance grows a fueled batch", () => {
             var shift = new ShopShift(new Economy()); shift.Pour(0);
-            foreach (double distance in new[] { 0d, -100d, double.NaN, double.PositiveInfinity }) shift.Advance(1, distance, 3, 1);
+            foreach (double distance in new[] { 0d, -100d, double.NaN, double.PositiveInfinity }) shift.Advance(1, distance, 1);
             Check(shift.State.BatchMeters == 0 && shift.State.SugarGrams == 10 && shift.State.BatchQuality == 50,
                 "idle, reverse, or invalid distance changed the batch");
             double remaining = shift.State.RemainingSeconds;
@@ -274,7 +274,7 @@ public static class ShopShiftTests
         Test("closing clips the final frame and next day starts with empty stock and production", () => {
             var e = new Economy(); var shift = new ShopShift(e); var p = Make(shift, 0, LapMeters * .5);
             shift.Pour(0);
-            shift.Advance(1, 100, 1, 0);
+            shift.Advance(1, 100);
             shift.State.BatchProductId = "active-candy";
             var oldCustomer = shift.CustomerAt(0);
             shift.Advance(597, 0); shift.Advance(2, 1000);
@@ -297,7 +297,7 @@ public static class ShopShiftTests
         });
         Test("empty sugar preserves the active candy stock customer and clock", () => {
             var e = new Economy(); var shift = new ShopShift(e); var stocked = Make(shift, 1, 100);
-            shift.Pour(2); shift.Advance(1, 100, 2, 0);
+            shift.Pour(2); shift.Advance(1, 100);
             shift.State.BatchProductId = "active-candy";
             var customer = shift.CustomerAt(0);
             double remaining = shift.State.RemainingSeconds, nextArrival = shift.State.NextCustomerIn;
@@ -339,7 +339,7 @@ public static class ShopShiftTests
                 e.Levels[2] == 3 && e.ShelfLevel == 1 && e.StockCapacity == capacity,
                 "next day corrupted daily or lifetime progress");
         });
-        Test("distance prices use A B C bases with quality and shop level modifiers", () => {
+        Test("distance prices use A B C bases with star and shop level modifiers", () => {
             var e = new Economy();
             int[] prices = { 30, 60, 90 };
             for (int i = 0; i < 3; i++)
@@ -347,8 +347,11 @@ public static class ShopShiftTests
                 var p = ShopShift.Preview(LapMeters * (1 + i * .5), 0); p.Quality = 0;
                 Check(e.Price(p) == prices[i], "distance tier has wrong base price");
             }
-            var candy = ShopShift.Preview(LapMeters * 1.5, 2); candy.Quality = 100; e.Levels[2] = 2;
-            Check(e.Price(candy) == 117, "quality and shop multiplier did not apply to tier base");
+            // Small base 30 x shop level 1.25 = 37.5, then five percent per star.
+            var candy = ShopShift.Preview(LapMeters, 2); candy.Quality = ShopShift.QualityForStars(3); e.Levels[2] = 1;
+            Check(e.Price(candy) == 43, "three stars and shop multiplier did not apply to tier base: " + e.Price(candy));
+            candy.Quality = ShopShift.QualityForStars(2);
+            Check(e.Price(candy) == 41, "two stars did not add ten percent: " + e.Price(candy));
             var legacy = new Production(60); legacy.Advance(100, 10, 0); var old = legacy.Finish();
             e.Levels[2] = 0; Check(e.Price(old) == 73, "legacy product pricing changed");
         });
@@ -384,10 +387,53 @@ public static class ShopShiftTests
             resumed.Advance(1.1, 0); resumed.Advance(.5, 0); var waiting = new ShopShift(e);
             Check(waiting.CustomerAt(0) == null && Near(waiting.State.NextCustomerIn, ShopShift.ArrivalDelay - 3), "reload skipped arrival wait");
         });
-        Test("eligible driving changes quality while extracting resets the next batch", () => {
-            var shift = new ShopShift(new Economy()); shift.Pour(0); shift.Advance(1, LapMeters * .1, 2, 1);
-            Check(shift.Extract().Quality == 50, "driving deltas did not set batch quality");
-            shift.Advance(1, LapMeters * .1, 1, 0); Check(shift.Extract().Quality == 55, "batch quality leaked or skill did not apply");
+        Test("a new batch starts with three stars", () => {
+            var shift = new ShopShift(new Economy()); shift.Pour(0); shift.Advance(1, LapMeters * .1);
+            Check(ShopShift.Stars(shift.Extract().Quality) == 3, "clean batch did not start with three stars");
+        });
+        Test("each new wall hit removes one star from the candy on the stick", () => {
+            var shift = new ShopShift(new Economy()); shift.Pour(0); shift.Advance(1, LapMeters * .05);
+            shift.Advance(1, LapMeters * .05, 1);
+            Check(ShopShift.Stars(shift.State.BatchQuality) == 2, "first hit did not remove a star");
+            shift.Advance(1, LapMeters * .01, 1);
+            Check(ShopShift.Stars(shift.Extract().Quality) == 1, "second hit did not remove another star");
+        });
+        Test("stars stop at zero", () => {
+            var shift = new ShopShift(new Economy()); shift.Pour(0); shift.Advance(1, LapMeters * .05);
+            shift.Advance(1, LapMeters * .01, 5);
+            var candy = shift.Extract();
+            Check(ShopShift.Stars(candy.Quality) == 0 && candy.Quality == 0, "stars went below zero or kept a remainder");
+        });
+        Test("a wall hit costs a star even after the sugar has run out", () => {
+            var shift = new ShopShift(new Economy()); shift.Pour(0, 1); shift.Advance(1, LapMeters);
+            Check(shift.State.SugarGrams == 0 && shift.State.BatchMeters > 0 && ShopShift.Stars(shift.State.BatchQuality) == 3,
+                "fixture did not exhaust the sugar on a clean candy");
+            shift.Advance(1, LapMeters * .1, 1);
+            Check(ShopShift.Stars(shift.State.BatchQuality) == 2, "a stalled candy ignored the wall hit");
+        });
+        Test("a wall hit before any candy exists costs nothing", () => {
+            var shift = new ShopShift(new Economy()); shift.Advance(1, LapMeters * .1, 2);
+            shift.Pour(0); shift.Advance(1, LapMeters * .1);
+            Check(ShopShift.Stars(shift.Extract().Quality) == 3, "a hit without candy was charged to the next batch");
+        });
+        Test("saved quality scores read as the nearest star count", () => {
+            int[] scores = { 0, 16, 17, 33, 50, 67, 73, 78, 100 };
+            int[] stars = { 0, 0, 1, 1, 2, 2, 2, 2, 3 };
+            for (int i = 0; i < scores.Length; i++)
+                Check(ShopShift.Stars(scores[i]) == stars[i], "score " + scores[i] + " read as " + ShopShift.Stars(scores[i]) + " stars");
+            for (int count = 0; count <= 3; count++)
+                Check(ShopShift.Stars(ShopShift.QualityForStars(count)) == count, "star count " + count + " did not round-trip");
+        });
+        Test("star text shows earned stars filled and lost stars hollow", () => {
+            Check(ShopShift.StarText(100) == "★★★" && ShopShift.StarText(67) == "★★☆" &&
+                ShopShift.StarText(33) == "★☆☆" && ShopShift.StarText(0) == "☆☆☆", "star text did not match the star count");
+        });
+        Test("star bonus coins are the part of the sale price the stars add", () => {
+            var e = new Economy();
+            var candy = ShopShift.Preview(LapMeters, 0); candy.Quality = ShopShift.QualityForStars(3);
+            var plain = ShopShift.Preview(LapMeters, 0); plain.Quality = 0;
+            Check(e.StarBonus(candy) == e.Price(candy) - e.Price(plain) && e.StarBonus(candy) > 0 && e.StarBonus(plain) == 0,
+                "star bonus did not match the price difference");
         });
         Test("vertical round trips pour once while jitter horizontal and outside motion do not", () => {
             var shake = new SugarShake(); Check(!shake.Move(0, 0, true), "pickup poured");
@@ -412,7 +458,7 @@ public static class ShopShiftTests
                 shift.State.BatchProductId == picked.Id && shift.State.BatchQuality == 73 && shift.State.BatchMeters == picked.DistanceMeters &&
                 shift.State.BatchFlavor == 1 && shift.State.SugarGrams == sugar && shift.State.SugarFlavor == 0, "exchange lost attributes");
             Check(!shift.ResumeProduct(picked.Id), "repeated resume duplicated active candy");
-            shift.Advance(1, 100, 5, 0);
+            shift.Advance(1, 100);
             Check(shift.State.BatchMeters == picked.DistanceMeters && shift.State.SugarGrams == sugar && shift.State.BatchQuality == 73,
                 "wrong sugar grew resumed candy");
             Check(shift.Pour(1), "matching replacement sugar refused");

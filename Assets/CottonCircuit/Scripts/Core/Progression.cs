@@ -48,7 +48,7 @@ namespace CottonCircuit
             N("coupe", "클래식 카트", "드리프트와 부스터를 사용하는 카트 주행을 해금합니다.", "equipment", "차", 1, 480, 1, 120, 565, "handling"),
             N("stick_speed", "젓가락 회전", "달린 거리당 솜사탕 성장량이 단계마다 12% 오릅니다.", "production", "성", 3, 110, 2.0, 820, 343),
             N("stick_saving", "설탕 절약", "솜사탕 성장에 필요한 설탕이 단계마다 8% 줄어듭니다.", "production", "절", 3, 140, 2.0, 960, 315, "stick_speed"),
-            N("stick_quality", "예쁜 말기", "완제품 품질 보너스가 단계마다 6점 오릅니다.", "production", "품", 3, 135, 2.0, 890, 219, "stick_speed"),
+            N("stick_quality", "예쁜 말기", "별 하나당 판매 보너스가 단계마다 0.6%p 오릅니다.", "production", "품", 3, 135, 2.0, 890, 219, "stick_speed"),
             N("sugar_2", "고운 설탕", "2등급 설탕과 중간 크기를 해금합니다.", "production", "설", 1, 210, 1, 800, 451),
             N("sugar_3", "특급 설탕", "3등급 설탕과 큰 크기를 해금합니다.", "production", "특", 1, 690, 1, 891, 561, "sugar_2"),
             N("machine_2", "두 번째 기계", "2등급 기계를 즉시 설치합니다.", "equipment", "기", 1, 360, 1, 647, 342, "sugar_2"),
@@ -66,7 +66,7 @@ namespace CottonCircuit
             N("location_3", "별빛 광장", "최종 지역인 별빛 광장 장사를 엽니다.", "location", "별", 1, 2700, 1, 609, 595, "location_2", "machine_3", "flavor_vanilla"),
             N("location_price", "지역 단골", "새 지역에서 받는 금액이 단계마다 오릅니다.", "sales", "단", 3, 280, 2.0, 372, 199, "location_1", "sales"),
             N("sugar_saving", "설탕 계량", "설탕 사용량이 추가로 줄어듭니다.", "production", "계", 2, 320, 2.1, 942, 456, "stick_saving", "sugar_2"),
-            N("quality_focus", "장식 기술", "완제품 품질 보너스를 추가로 올립니다.", "production", "꽃", 2, 340, 2.1, 794, 115, "stick_quality", "flavor_soda"),
+            N("quality_focus", "장식 기술", "별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.", "production", "꽃", 2, 340, 2.1, 794, 115, "stick_quality", "flavor_soda"),
             N("repeat_ads", "입소문", "추가 홍보로 방문 간격을 더 줄입니다.", "business", "입", 2, 390, 2.1, 375, 426, "ads", "location_1"),
             N("group_visit", "단체 손님", "손님이 여럿 함께 찾아올 확률이 단계마다 오르고, 2단계부터는 세 명도 옵니다.", "business", "무", 3, 180, 2.0, 250, 380, "ads")
         };
@@ -175,7 +175,7 @@ namespace CottonCircuit
         public static int WorkerGrade(Economy e) { return 1 + Level(e, "worker_grade_2") + Level(e, "worker_grade_3"); }
         public static double GrowthMultiplier(Economy e) { return 1 + .12 * Level(e, "stick_speed"); }
         public static double SugarMultiplier(Economy e) { return Math.Max(.5, 1 - .08 * Level(e, "stick_saving") - .07 * Level(e, "sugar_saving")); }
-        public static double QualityBonus(Economy e) { return 6 * Level(e, "stick_quality") + 5 * Level(e, "quality_focus"); }
+        public static double StarBonus(Economy e) { return .05 + .006 * Level(e, "stick_quality") + .005 * Level(e, "quality_focus"); }
         public static double SalesMultiplier(Economy e)
         {
             int location = e != null && e.Progression != null ? Math.Max(0, Math.Min(3, e.Progression.SelectedLocation)) : 0;
@@ -235,7 +235,7 @@ namespace CottonCircuit
                 return Values("설탕 사용량", SugarMultiplier(e) * 100,
                     Math.Max(.5, SugarMultiplier(e) - (id == "stick_saving" ? .08 : .07)) * 100, "0", "%");
             if (id == "stick_quality" || id == "quality_focus")
-                return Values("품질 보너스", QualityBonus(e), QualityBonus(e) + (id == "stick_quality" ? 6 : 5), "0", "점");
+                return Values("별 하나당 보너스", StarBonus(e) * 100, (StarBonus(e) + (id == "stick_quality" ? .006 : .005)) * 100, "0.0", "%");
             if (id == "sales") return Values("기본 가격", (1 + .1 * level) * 100, (1 + .1 * (level + 1)) * 100, "0", "%");
             if (id == "flavor_price") return Values("특별한 맛", (1.07 + .06 * level) * 100, (1.07 + .06 * (level + 1)) * 100, "0", "%");
             if (id == "location_price") return Values("지역 보너스", .06 * level * 100, .06 * (level + 1) * 100, "0", "%/지역");
