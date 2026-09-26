@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "non_eye_objects_unchanged": 123,
+  "non_eye_sha256_before": "85b21d5cf358a2b8d9a9c5b9625edea9b8b154055f15ddfa5768a88deebd1cb5",
+  "non_eye_sha256_after": "85b21d5cf358a2b8d9a9c5b9625edea9b8b154055f15ddfa5768a88deebd1cb5",
+  "replaced": [
+    "EX_Face_EyeWhite_L",
+    "EX_Face_BrownIris_L",
+    "EX_Face_EyePupil_L",
+    "EX_Face_IrisWarmLower_L",
+    "EX_Face_EyeCatchlight_L",
+    "EX_Face_UpperLash_L",
+    "EX_Face_Brow_L",
+    "EX_Face_EyeWhite_R",
+    "EX_Face_BrownIris_R",
+    "EX_Face_EyePupil_R",
+    "EX_Face_IrisWarmLower_R",
+    "EX_Face_EyeCatchlight_R",
+    "EX_Face_UpperLash_R",
+    "EX_Face_Brow_R"
+  ],
+  "eye_objects": [
+    "EX_Face_Eye_L",
+    "EX_Face_Eye_R"
+  ],
+  "eye_settings": {
+    "style": "Approved male chamfered Navy dot eyes; no whites, iris, highlights, lashes or brows",
+    "reference": "../GameCustomerFaceted/customer_head.py",
+    "author_dimensions": [
+      0.075,
+      0.02,
+      0.106
+    ],
+    "author_spacing": 0.41,
+    "author_bevel": 0.006,
+    "author_center_yz": [
+      -0.401,
+      4.313
+    ],
+    "model_scale": 0.48,
+    "palette": "Navy #29324D"
+  },
+  "creation_transport": "Blender MCP execute_blender_code"
+}

@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "date": "2026-09-27",
+  "method": "Exact approved Blender PNGs, resized and alpha-composited only",
+  "sources": {
+    "male": {
+      "path": "Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png",
+      "sha256": "d5f1717cc87194580a921d1463352e3fb22ae189e001c131bec61357b8ab136a"
+    },
+    "male_large": {
+      "path": "Art/Blender/GameCustomerFaceted/Customer_01_Faceted-large.png",
+      "sha256": "814b6f7e77f3138cae91604eb30833ae576145a94017931941eb6030c4332867"
+    },
+    "female": {
+      "path": "Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer.png",
+      "sha256": "e974dcaa1fa42f72da4483451f429da457a8492c1cb21501df46202619751ea2"
+    },
+    "female_large": {
+      "path": "Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer-large.png",
+      "sha256": "f2d82aa6551d89c2336288a17212033c029fd95933453ab7c863a56061a13b50"
+    },
+    "candy": {
+      "path": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
+      "sha256": "6e92884e2154ab8556f3ef0dfac5a65e2340b0c11a78523483ef03917ca7c313"
+    },
+    "clock": {
+      "path": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
+      "sha256": "bbbd3643055a9ffdbf3b39d303c80c0402de6a2d935ff7d7e7e0e57b6e1d98b3"
+    },
+    "racing": {
+      "path": "docs/screenshots/urp-migration-racing.png",
+      "sha256": "56a8c889f293a86df83f54779472fbdae369a6e4a111a0da46a62fbd2fc9526a"
+    }
+  },
+  "outputs": {
+    "art-concept-lowpoly-test.png": {
+      "size": [
+        2060,
+        1220
+      ],
+      "sha256": "49f0b920d1c36fdc635df1989db9eb6f483f576a9277e625e298e065fe742268"
+    },
+    "art-concept-vs-racing.png": {
+      "size": [
+        1658,
+        408
+      ],
+      "sha256": "4a3caea910f6336029c801963c91a08d1382ff6129da2702c57949d373ddcf58"
+    }
+  },
+  "native_panels": [
+    {
+      "key": "male",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        268,
+        1010
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "female",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        410,
+        1010
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "candy",
+      "size": [
+        77,
+        88
+      ],
+      "xy": [
+        558,
+        1062
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "clock",
+      "size": [
+        42,
+        42
+      ],
+      "xy": [
+        713,
+        1108
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "male",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        1262,
+        1010
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "female",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        1404,
+        1010
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "candy",
+      "size": [
+        77,
+        88
+      ],
+      "xy": [
+        1552,
+        1062
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "clock",
+      "size": [
+        42,
+        42
+      ],
+      "xy": [
+        1707,
+        1108
+      ],
+      "background": "#29324D"
+    }
+  ],
+  "native_panels_match_source_pixels": true,
+  "racing_pixels_unchanged": true,
+  "racing_source_crop": [
+    962,
+    200,
+    1920,
+    538
+  ],
+  "racing_board_destination": [
+    0,
+    60,
+    958,
+    398
+  ],
+  "source_assets_unchanged": true
+}

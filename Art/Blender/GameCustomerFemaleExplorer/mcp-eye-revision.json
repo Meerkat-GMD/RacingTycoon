@@ -1,0 +1,23 @@
+{
+  "transport": "MCP stdio JSON-RPC",
+  "server": {
+    "name": "BlenderMCP",
+    "title": null,
+    "version": "1.30.0",
+    "websiteUrl": null,
+    "icons": null
+  },
+  "tool": "execute_blender_code",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Code executed successfully: Info: Saved as \"GameCustomerFemaleExplorer.blend\"\nEXPLORER_RENDERED Customer_02_Explorer.png\nEXPLORER_RENDERED Customer_02_Explorer-large.png\nGAME_CUSTOMER_SCENE_VERIFIED {'passed': True, 'scene_count': 1, 'mesh_objects': 120, 'vertices': 1578, 'triangles_before_bevel': 2678, 'all_flat_shaded': True, 'palette_only': True, 'reference_packed': True, 'palette_materials': ['EX_Cream', 'EX_Gold', 'EX_Hair2', 'EX_Mint', 'EX_Navy', 'EX_Pants1', 'EX_Pants3', 'EX_Plum', 'EX_Skin1', 'EX_Skin3', 'EX_Strawberry', 'EX_Vanilla', 'EX_White', 'EX_Wood'], 'male_matched_dot_eyes': True, 'eye_objects': ['EX_Face_Eye_L', 'EX_Face_Eye_R'], 'lights_watts': {'EX_Key': 900.0, 'EX_Fill': 250.0, 'EX_Rim': 70.0}, 'geometry_camera_bounds': [0.16849152743816376, 0.06082013621926308, 0.7918063402175903, 0.93937748670578], 'render_size': [164, 280], 'source_scene': 'Game_Customer_Female_Explorer', 'packed_scripts': ['GameCustomerFemaleExplorer/create_explorer.py', 'GameCustomerFemaleExplorer/explorer_head.py', 'GameCustomerFemaleExplorer/explorer_lib.py', 'GameCustomerFemaleExplorer/ui_sprite_common.py'], 'creation_transport': 'Blender MCP execute_blender_code'}\nEYES_REVISED_AND_RENDERED 2 NON_EYE_OBJECTS_UNCHANGED 123\n"
+      }
+    ],
+    "structuredContent": {
+      "result": "Code executed successfully: Info: Saved as \"GameCustomerFemaleExplorer.blend\"\nEXPLORER_RENDERED Customer_02_Explorer.png\nEXPLORER_RENDERED Customer_02_Explorer-large.png\nGAME_CUSTOMER_SCENE_VERIFIED {'passed': True, 'scene_count': 1, 'mesh_objects': 120, 'vertices': 1578, 'triangles_before_bevel': 2678, 'all_flat_shaded': True, 'palette_only': True, 'reference_packed': True, 'palette_materials': ['EX_Cream', 'EX_Gold', 'EX_Hair2', 'EX_Mint', 'EX_Navy', 'EX_Pants1', 'EX_Pants3', 'EX_Plum', 'EX_Skin1', 'EX_Skin3', 'EX_Strawberry', 'EX_Vanilla', 'EX_White', 'EX_Wood'], 'male_matched_dot_eyes': True, 'eye_objects': ['EX_Face_Eye_L', 'EX_Face_Eye_R'], 'lights_watts': {'EX_Key': 900.0, 'EX_Fill': 250.0, 'EX_Rim': 70.0}, 'geometry_camera_bounds': [0.16849152743816376, 0.06082013621926308, 0.7918063402175903, 0.93937748670578], 'render_size': [164, 280], 'source_scene': 'Game_Customer_Female_Explorer', 'packed_scripts': ['GameCustomerFemaleExplorer/create_explorer.py', 'GameCustomerFemaleExplorer/explorer_head.py', 'GameCustomerFemaleExplorer/explorer_lib.py', 'GameCustomerFemaleExplorer/ui_sprite_common.py'], 'creation_transport': 'Blender MCP execute_blender_code'}\nEYES_REVISED_AND_RENDERED 2 NON_EYE_OBJECTS_UNCHANGED 123\n"
+    },
+    "isError": false
+  }
+}

@@ -1,0 +1,204 @@
+{
+  "scope": "Customer01 neutral style study only; no Unity layout or behavior changes",
+  "identity": "Soda clothing, cream oval badge, Hair1 dark hair, Skin1, Pants1 lavender trousers, navy/cream sneakers",
+  "style_reference": "../ReferenceAdventurer/ReferenceAdventurer.blend",
+  "proportion": "Reference-led longer body (about 3.6 heads); explicit concept variation from older 2.5-head study",
+  "palette": {
+    "Strawberry": "#F48DAB",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Cream": "#FFF1D4",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Wood": "#D59C79",
+    "Tire": "#414059",
+    "Base": "#9DBBAF",
+    "Skin1": "#F1C6A6",
+    "Skin2": "#B87A65",
+    "Skin3": "#E8AF88",
+    "Hair1": "#574F59",
+    "Hair2": "#8D5B4A",
+    "Hair3": "#45475B",
+    "Pants1": "#7C789D",
+    "Pants2": "#65688B",
+    "Pants3": "#5F968F"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "camera": {
+    "yaw_deg": -20,
+    "elevation_deg": 15,
+    "orthographic_scale": 2.85,
+    "target": [
+      0,
+      -0.015,
+      1.22
+    ]
+  },
+  "seed": 260927,
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1,
+    "film_transparent": true,
+    "color_mode": "RGBA"
+  },
+  "display_size": [
+    82,
+    140
+  ],
+  "outputs": [
+    {
+      "file": "Customer_01_Faceted.png",
+      "size": [
+        164,
+        280
+      ]
+    },
+    {
+      "file": "Customer_01_Faceted-large.png",
+      "size": [
+        656,
+        1120
+      ]
+    }
+  ],
+  "shadow": "Real Cycles catcher, navy tint, alpha <=0.32, soft elliptical contact falloff",
+  "creation_transport": "Blender MCP execute_blender_code",
+  "collections": {
+    "Head_Hair": [
+      "GC_Head_FacetedFace",
+      "GC_Head_Neck",
+      "GC_Head_Ear_L",
+      "GC_Face_Eye_L",
+      "GC_Face_Blush_L",
+      "GC_Head_Ear_R",
+      "GC_Face_Eye_R",
+      "GC_Face_Blush_R",
+      "GC_Face_TinySmile",
+      "GC_Hair_FacetedCap",
+      "GC_Hair_CrownLift",
+      "GC_Hair_CrownRight",
+      "GC_Hair_LeftUpper",
+      "GC_Hair_LeftOuter",
+      "GC_Hair_LeftLower",
+      "GC_Hair_RightUpper",
+      "GC_Hair_RightOuter",
+      "GC_Hair_RightLower",
+      "GC_Hair_LeftTemple",
+      "GC_Hair_LeftPart",
+      "GC_Hair_WideTopSweep",
+      "GC_Hair_LongSideSweep",
+      "GC_Hair_RightFringe",
+      "GC_Hair_RightTemple"
+    ],
+    "Soda_Jacket": [
+      "GC_Soda_Jacket_Torso",
+      "GC_Cream_Tee",
+      "GC_Left_Jacket_Front",
+      "GC_Left_Front_Zip_Seam",
+      "GC_Left_Hem_Rib",
+      "GC_Right_Jacket_Front",
+      "GC_Right_Front_Zip_Seam",
+      "GC_Right_Hem_Rib",
+      "GC_Hood_Back",
+      "GC_Cream_Collar_Left",
+      "GC_Cream_Collar_Right",
+      "GC_Cream_Oval_Badge",
+      "GC_Badge_Check_Top",
+      "GC_Badge_Check_Bottom",
+      "GC_Right_Pocket_Opening"
+    ],
+    "Arms_Hands": [
+      "GC_Left_Upper_Sleeve",
+      "GC_Left_Lower_Sleeve",
+      "GC_Left_Cream_Cuff",
+      "GC_Left_Hand",
+      "GC_Left_Thumb",
+      "GC_Right_Upper_Sleeve",
+      "GC_Right_Lower_Sleeve",
+      "GC_Right_Cream_Cuff",
+      "GC_Right_Hand",
+      "GC_Right_Thumb"
+    ],
+    "Pants_Sneakers": [
+      "GC_Trouser_Waist",
+      "GC_Left_Tapered_Trousers",
+      "GC_Left_Knee_Fold",
+      "GC_Left_Turnup",
+      "GC_Left_Sock",
+      "GC_Left_Navy_Sneaker",
+      "GC_Left_Cream_Sole",
+      "GC_Left_Cream_Toe",
+      "GC_Left_Soda_Heel_Tab",
+      "GC_Left_Wide_Lace_0",
+      "GC_Left_Wide_Lace_1",
+      "GC_Right_Tapered_Trousers",
+      "GC_Right_Knee_Fold",
+      "GC_Right_Turnup",
+      "GC_Right_Sock",
+      "GC_Right_Navy_Sneaker",
+      "GC_Right_Cream_Sole",
+      "GC_Right_Cream_Toe",
+      "GC_Right_Soda_Heel_Tab",
+      "GC_Right_Wide_Lace_0",
+      "GC_Right_Wide_Lace_1"
+    ],
+    "Messenger_Bag": [
+      "GC_Messenger_Strap",
+      "GC_Strap_Edge",
+      "GC_Strap_Adjuster_Frame",
+      "GC_Strap_Adjuster_Pin",
+      "GC_Wood_Messenger_Bag",
+      "GC_Cream_Bag_Flap",
+      "GC_Bag_Clasp_Tab",
+      "GC_Gold_Bag_Clasp"
+    ]
+  }
+}

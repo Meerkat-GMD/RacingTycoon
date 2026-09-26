@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "assets": [
+    {
+      "file": "Customer_02_Explorer.png",
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "metrics": {
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          164,
+          280
+        ],
+        "alpha_bbox": [
+          26,
+          23,
+          135,
+          271
+        ],
+        "transparent_edge_pixels": {
+          "left": 26,
+          "top": 23,
+          "right": 29,
+          "bottom": 9
+        },
+        "solid_pixel_fraction": 0.31727,
+        "opaque_pixel_count": 13810,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 9458,
+        "native_display_size": [
+          82,
+          140
+        ],
+        "native_solid_pixel_count": 3644,
+        "native_contrast": {
+          "cream": {
+            "median_opaque_contrast_ratio": 3.95,
+            "opaque_fraction_contrast_at_least_1_5": 0.9383
+          },
+          "ink": {
+            "median_opaque_contrast_ratio": 2.991,
+            "opaque_fraction_contrast_at_least_1_5": 0.881
+          }
+        },
+        "native_contrast_note": "Descriptive pixel metrics only; face readability and silhouette separation require visual review of female-explorer-comparison.png at 100%."
+      }
+    },
+    {
+      "file": "Customer_02_Explorer-large.png",
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "metrics": {
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          656,
+          1120
+        ],
+        "alpha_bbox": [
+          110,
+          94,
+          538,
+          1084
+        ],
+        "transparent_edge_pixels": {
+          "left": 110,
+          "top": 94,
+          "right": 118,
+          "bottom": 36
+        },
+        "solid_pixel_fraction": 0.31678,
+        "opaque_pixel_count": 230013,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 51467,
+        "native_display_size": [
+          82,
+          140
+        ],
+        "native_solid_pixel_count": 3645,
+        "native_contrast": {
+          "cream": {
+            "median_opaque_contrast_ratio": 3.95,
+            "opaque_fraction_contrast_at_least_1_5": 0.9373
+          },
+          "ink": {
+            "median_opaque_contrast_ratio": 2.991,
+            "opaque_fraction_contrast_at_least_1_5": 0.8707
+          }
+        },
+        "native_contrast_note": "Descriptive pixel metrics only; face readability and silhouette separation require visual review of female-explorer-comparison.png at 100%."
+      }
+    }
+  ]
+}

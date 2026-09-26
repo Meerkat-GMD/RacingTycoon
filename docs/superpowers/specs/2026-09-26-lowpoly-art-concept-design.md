@@ -1,6 +1,8 @@
 # 로우폴리 아트 컨셉: 파스텔 토이
 
-작성일: 2026-09-26. 사용자 결정: **게임에 들어간 2D 이미지를 모두 "파스텔 토이" 로우폴리 렌더로 교체한다.** 왼쪽 3D 레이싱 화면은 이미 같은 계열이므로 바꾸지 않는다.
+작성일: 2026-09-26. 캐릭터 기준 갱신일: 2026-09-27. 사용자 결정: **게임에 들어간 2D 이미지를 모두 "파스텔 토이" 로우폴리 렌더로 교체한다.** 왼쪽 3D 레이싱 화면은 이미 같은 계열이므로 바꾸지 않는다.
+
+현재 승인된 캐릭터 기준은 남자 `Customer_01_Faceted.png`와 머리카락·점 눈 수정을 반영한 여자 `Customer_02_Explorer.png`다. 이번 갱신은 이 두 캐릭터를 명세와 비교 이미지의 기준으로 채택한 것이다. Unity 런타임의 손님 스프라이트 교체·연결 완료를 뜻하지 않으며, 전체 2D 그림 교체 범위와 이후 적용·검증 기준은 아래에 유지한다.
 
 ## 결정 과정
 - 교체 전 게임에는 시각 언어가 세 가지 섞여 있었다. 미나 초상화는 애니메이션풍 페인팅이고, 가게와 아이콘은 코드로 그린 기하학 도형이며, 레이싱 화면은 파스텔 로우폴리 3D다.
@@ -8,8 +10,29 @@
 - 실제 게임 24종의 Steam 스크린샷을 비교한 뒤, 사용자는 "좋은 피자, 위대한 피자"의 2D 카툰과 로우폴리 3D를 후보로 골랐다.
 - 로우폴리를 두 가지 표현으로 시험 렌더링했다. A는 윤곽선 없는 파스텔 토이, B는 윤곽선이 있는 카툰 로우폴리다. 사용자는 B를 골랐다가, 현재 레이싱 화면이 A 계열임을 확인하고 A로 확정했다. 3D 화면을 고치지 않고도 2D와 3D가 같은 게임처럼 보이기 때문이다.
 - B에서 기대한 작은 크기의 가독성은 A 안에서 림 라이트, 대비 규칙, 접지 그림자로 보완한다.
+- 이후 남자는 넓은 다각형 면과 긴 몸 비율을 가진 소다색 재킷 손님으로, 여자는 새 탐험가 참고 이미지의 의상·자세를 옮긴 캐릭터로 수정했다. 여자의 머리카락을 곡선형 입체 다발로 다듬고 남자와 같은 작은 남색 점 눈을 적용한 현재 버전을 기준으로 확정한다. 초기 2.5등신 규칙은 이 승인본으로 대체한다.
 
-참고 이미지: `docs/screenshots/art-concept-lowpoly-test.png`(A와 B 시험 렌더), `docs/screenshots/art-concept-vs-racing.png`(현재 레이싱 화면과 비교). 두 이미지는 방향 확인용 시험 결과이며 최종 에셋이 아니다. 시험 렌더의 색은 공용 팔레트와 다르므로, 본 작업에서는 아래 팔레트를 쓴다.
+초기 A/B 시험 보드는 [A/B 시험 렌더 보관본](../../screenshots/archive/2026-09-26/art-concept-lowpoly-test.png)과 [레이싱 비교 보관본](../../screenshots/archive/2026-09-26/art-concept-vs-racing.png)에 남긴다. 보관본의 시험 색상과 초기 캐릭터는 제작 기준으로 쓰지 않는다. 현재 기준은 아래 승인본과 공용 팔레트다.
+
+## 승인된 캐릭터와 비교 이미지
+
+| 기준 | 승인 PNG | Blender 원본 | 재생성 소스·설정 |
+|---|---|---|---|
+| 남자 손님 | [Customer_01_Faceted.png](../../../Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png) | [GameCustomerFaceted.blend](../../../Art/Blender/GameCustomerFaceted/GameCustomerFaceted.blend) | [create_customer.py](../../../Art/Blender/GameCustomerFaceted/create_customer.py), [customer_head.py](../../../Art/Blender/GameCustomerFaceted/customer_head.py), [manifest.json](../../../Art/Blender/GameCustomerFaceted/manifest.json) |
+| 여자 탐험가 | [Customer_02_Explorer.png](../../../Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer.png) | [GameCustomerFemaleExplorer.blend](../../../Art/Blender/GameCustomerFemaleExplorer/GameCustomerFemaleExplorer.blend) | [create_explorer.py](../../../Art/Blender/GameCustomerFemaleExplorer/create_explorer.py), [explorer_head.py](../../../Art/Blender/GameCustomerFemaleExplorer/explorer_head.py), [manifest.json](../../../Art/Blender/GameCustomerFemaleExplorer/manifest.json) |
+
+- **남자:** 각진 얼굴과 넓은 면, 비대칭으로 쓸어 넘긴 어두운 다각형 머리카락, Soda 재킷, Cream 셔츠·깃·배지, Wood 메신저백, Pants1 바지, Navy/Cream 운동화를 유지한다. 참고 원본에 맞춘 약 3.6등신 비율을 기준으로 한다.
+- **여자:** Cream 모자와 Vanilla색으로 말린 앞 장식, Strawberry 목도리, Cream 재킷과 두 갈래의 긴 Strawberry 코트 자락, Pants3/Mint 녹색 치마, 맨다리와 접힌 부츠, 큰 Wood 배낭을 유지한다. 한 손으로 배낭 끈을 잡은 비대칭 자세와 참고 원본의 긴 몸 비율을 따른다. 모자 아래 Navy 머리카락은 이어진 두피와 끝이 가늘어지는 곡선형 다발 12개로 구성하고, 눈과 귀를 드러내며 목덜미에서 짧게 끝낸다.
+- **공통 얼굴:** Navy `#29324D`의 작은 세로 점 눈 두 개를 사용한다. 모서리를 1단 깎은 형태로, 두 캐릭터의 눈은 생성 좌표계에서 같은 크기·간격을 쓴다. 흰자·홍채·반사광·속눈썹·눈썹은 넣지 않는다. 볼 터치와 작은 입은 유지한다.
+- **출력:** 두 캐릭터 모두 표시 82×140, 투명 RGBA PNG 164×280이다. 같은 카메라의 `-large.png` 656×1120은 확대 검토용이며 게임 표시 크기를 바꾸는 기준이 아니다.
+
+아래 보드는 승인된 두 캐릭터의 확대 모습과 실제 표시 크기 82×140을 크림 배경 `#FFF6E7`과 잉크 배경 `#29324D`에서 비교한다. 배경의 `#FFF6E7`은 가독성 확인용 색이며 캐릭터 재질의 Cream `#FFF1D4`와 구분한다.
+
+![승인된 남자·여자 캐릭터의 확대 및 실제 표시 크기 비교](../../screenshots/art-concept-lowpoly-test.png)
+
+아래 보드는 왼쪽에 기존 레이싱 캡처, 오른쪽에 승인된 두 캐릭터를 배치해 스타일을 비교한다. 두 보드는 아트 방향을 확인하는 자료이며 Unity에 두 캐릭터가 적용된 플레이 화면은 아니다.
+
+![기존 레이싱 화면과 승인된 남자·여자 캐릭터 비교](../../screenshots/art-concept-vs-racing.png)
 
 ## 목표와 범위
 - 2D 화면에 쓰이는 그림을 모두 같은 로우폴리 스타일의 사전 렌더 스프라이트로 바꾼다.
@@ -18,19 +41,19 @@
 - 게임 규칙, UI 배치, 조작은 바꾸지 않는다. 그림의 표시 위치와 크기는 현재 값을 유지한다.
 
 ## 스타일 규칙
-- **형태:** 면이 보이는 플랫 셰이딩 로우폴리로 만든다. 윤곽선은 쓰지 않는다. 둥근 물체는 분할 1~2단계의 아이코스피어를 기본 단위로 하고, 각진 물체는 모서리를 살짝 깎은 상자를 쓴다.
-- **캐릭터 비율:** 머리가 큰 2.5등신이다. 얼굴은 점 눈, 볼 터치, 작은 입으로 표현한다. 손님마다 머리 모양, 모자, 옷, 피부색으로 구분한다.
+- **형태:** 넓은 면이 보이는 플랫 셰이딩 로우폴리로 만든다. 윤곽선은 쓰지 않는다. 얼굴과 옷은 승인본처럼 직접 설계한 다각형 면을 쓰고, 각진 소품은 모서리를 살짝 깎는다. 아이코스피어는 둥근 소품에 쓸 수 있지만 캐릭터 머리의 필수 기본형은 아니다. 머리카락은 남자의 넓은 입체 쐐기 면 또는 여자의 끝이 가늘어지는 곡선형 입체 다발처럼 두께와 흐름이 읽히게 만든다.
+- **캐릭터 비율:** 승인된 두 캐릭터처럼 머리를 크게 유지하면서 몸과 다리가 길어진 비율을 따른다. 남자는 약 3.6등신이며, 여자는 탐험가 참고 원본의 비율과 승인 실루엣을 기준으로 한다. 모든 손님을 하나의 고정 등신 수로 맞추지 않는다. 얼굴은 위의 공통 점 눈, 볼 터치, 작은 입으로 표현하고 머리 모양, 모자, 옷, 피부색으로 구분한다.
 - **솜사탕:** 조금 큰 중심 구 위에 작은 구 20개 안팎을 무작위로 붙이고, 꼭짓점을 조금씩 흔들어 폭신한 덩어리로 만든다. 막대는 크림색에 맛 색 줄무늬를 넣는다.
 - **색:** 아래 공용 팔레트만 쓴다. 조명을 받은 면은 밝아지고 그늘진 면은 어두워지지만, 기준 색은 팔레트 값이어야 한다.
 - **조명:** 모든 에셋이 같은 조명 세트를 쓴다.
-  - 키 라이트: 왼쪽 위 앞에서 비추는 따뜻한 면광원이다. 시험 렌더 기준값은 위치 (-2, -3, 7), 세기 900W, 크기 4, 색 `#FFF1DD`다.
-  - 필 라이트: 오른쪽 앞에서 비추는 차가운 면광원이다. 시험 렌더 기준값은 위치 (4.5, -3.5, 3), 세기 250W, 크기 5, 색 `#DDE6FF`다.
-  - 림 라이트: 피사체 뒤쪽 위에서 비추는 약한 흰색 면광원이다. 시험 렌더에는 없었으므로 첫 구현 작업에서 값을 정하고 목록 파일에 기록한다.
+  - 키 라이트: 왼쪽 위 앞에서 비추는 따뜻한 면광원이다. 위치 (-2, -3, 7), 세기 900W, 크기 4, 색 `#FFF1DD`다.
+  - 필 라이트: 오른쪽 앞에서 비추는 차가운 면광원이다. 위치 (4.5, -3.5, 3), 세기 250W, 크기 5, 색 `#DDE6FF`다.
+  - 림 라이트: 피사체 뒤쪽 위에서 비추는 약한 흰색 면광원이다. 위치 (1.5, 3, 5), 세기 70W, 크기 3, 색 `#FFFFFF`이며 두 승인본의 목록 파일에 기록되어 있다.
   - 환경광: `#F3ECF7`, 세기 0.75.
 - **카메라:** 직교 카메라를 쓴다. 피사체를 정면에서 왼쪽으로 20° 돌려 보고, 15° 내려다본다. 특성 아이콘은 정면에서 10° 이내로 돌려 형태가 바로 읽히게 한다.
 - **그림자:** 손님, 제품, 가게처럼 바닥에 놓이는 대상은 그림자 캐처 평면으로 짧은 접지 그림자를 스프라이트에 포함한다. 그림자가 캔버스 가장자리에서 잘리지 않도록 여백을 둔다. 아이콘과 감정 표시에는 그림자를 넣지 않는다.
 - **가독성:** 손님과 제품은 배경보다 한 단계 진한 색을 쓴다. 림 라이트로 실루엣을 배경에서 분리한다. 모든 스프라이트는 실제 표시 크기로 줄여서 밝은 배경과 어두운 잉크색 배경 위에서 모두 형태가 읽혀야 한다.
-- **렌더 설정:** Cycles 64 샘플과 노이즈 제거를 쓴다. 색 변환은 `Standard`, 룩은 `None`이다. 배경은 투명(film transparent)이며 RGBA PNG로 저장한다.
+- **렌더 설정:** Cycles 64 샘플과 노이즈 제거를 쓴다. 색 변환은 `Standard`, 룩은 `None`, 노출은 -1.8, 감마는 1이다. 배경은 투명(film transparent)이며 RGBA PNG로 저장한다.
 - **해상도:** UI 기준 해상도가 1600×900이므로 실제 표시 크기의 2배로 렌더링한다.
 
 ## 공용 팔레트
@@ -128,12 +151,30 @@ Blender에서 사전 렌더링한 PNG를 Unity 스프라이트로 쓴다.
 - Unity 안에서 실시간 3D로 그리는 방식은 이미지마다 카메라와 렌더 텍스처가 필요해 구조가 복잡해진다. 커지는 솜사탕도 크기 단계별 스프라이트로 충분히 표현되므로 혼합 방식도 쓰지 않는다.
 
 ## 파일 구조
-- `Art/Blender/create_ui_sprites.py`: 모델 생성과 렌더링을 담당한다. 조명, 카메라, 팔레트를 한곳에서 정의하고 모든 에셋이 이를 공유한다.
+- `Art/Blender/GameCustomerFaceted/`, `Art/Blender/GameCustomerFemaleExplorer/`: 위 승인본의 독립 Blender 원본, 생성 코드, 렌더, 설정·검증 기록이다. 현재 캐릭터 제작 기준이며 Unity 참조 연결과는 별도로 관리한다.
+- `Art/Blender/ui_sprite_common.py`: 승인본과 초기 대표 샘플 생성기가 공유하는 팔레트·조명·렌더 설정이다.
+- `Art/Blender/create_ui_sprites.py`: 초기 대표 샘플 3종의 생성·렌더 코드다. 두 승인본 생성기도 이 파일의 접지 그림자 렌더 처리를 재사용한다. 이 파일의 초기 손님 모델은 현재 승인 캐릭터를 재생성하는 소스가 아니다.
 - `Art/Blender/validate_ui_sprites.py`: 목록 파일과 실제 PNG를 대조하고 크기, 투명 여백, 개수를 검사한다.
-- `Art/Blender/UiSprites.blend`: 편집 가능한 원본이다. 에셋마다 컬렉션을 나눈다.
-- `Art/Blender/ui-sprites-manifest.json`: 에셋 이름, 렌더 크기, 조명 값을 기록한다.
-- `Art/Blender/ui-sprites-preview.png`: 전체 스프라이트를 한 장에 모은 확인용 이미지다.
+- `Art/Blender/UiSprites.blend`: 초기 대표 샘플 3종의 편집 가능한 원본이다. 에셋마다 컬렉션을 나눈다.
+- `Art/Blender/ui-sprites-manifest.json`: 초기 대표 샘플의 이름, 렌더 크기, 조명 값을 기록한다.
+- `Art/Blender/ui-sprites-preview.png`: 초기 대표 샘플을 한 장에 모은 확인용 이미지다. 최신 캐릭터는 위 승인본 보드에서 확인한다.
+- `Art/Blender/update_art_concept_boards.py`: 승인본으로 이 문서의 두 비교 보드를 다시 만든다. 확대에는 `-large.png`, 실제 표시 크기에는 164×280 PNG를 82×140으로 축소한 이미지를 쓴다.
+- `Art/Blender/art-concept-boards-validation.json`: 보드에 사용한 원본 경로·해시와 해상도, 실제 크기 합성 및 레이싱 캡처 픽셀 보존 검사 결과다.
 - `Assets/CottonCircuit/Sprites/`: Unity용 PNG를 `Customers`, `Shop`, `Items`, `Icons`, `Locations`, `Machines`, `Characters`로 나누어 둔다.
+
+## 승인본과 비교 보드 재생성
+
+프로젝트 루트에서 실행한다. 앞의 두 Blender 명령은 현재 생성 코드로 원본과 두 해상도의 렌더를 다시 만든다. 마지막 명령은 해당 렌더를 사용해 문서의 비교 이미지를 갱신한다.
+
+```powershell
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerFaceted/create_customer.py
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerFemaleExplorer/create_explorer.py
+python Art/Blender/GameCustomerFaceted/validate_png.py
+python Art/Blender/GameCustomerFemaleExplorer/validate_png.py
+python Art/Blender/update_art_concept_boards.py
+```
+
+Blender MCP에서 현재 편집한 모델을 유지한 채 재렌더하려면 각 [남자 README](../../../Art/Blender/GameCustomerFaceted/README.md)와 [여자 README](../../../Art/Blender/GameCustomerFemaleExplorer/README.md)의 `GC_ACTION='render'`, `EX_ACTION='render'` 사용법을 따른다. 여자 승인본은 `revisions/`의 수정 전 백업이 아니라 현재 폴더의 머리카락·점 눈 수정본이다.
 
 ## 코드 적용 원칙
 - 코드로 도형을 그리던 그림은 `Image`와 스프라이트로 바꾸고, 대체된 그리기 코드는 삭제한다. 말풍선과 원판처럼 남는 UI 도형 코드는 유지한다.
@@ -142,6 +183,8 @@ Blender에서 사전 렌더링한 PNG를 Unity 스프라이트로 쓴다.
 - 표시 위치와 크기, 화남 상태와 맛·크기에 따른 선택, 달린 거리에 따른 솜사탕 크기 변화, 진열대의 고정 위치 같은 현재 동작은 그대로 유지한다.
 
 ## 검증과 완료 기준
+다음은 전체 게임 그림 교체 작업의 완료 기준이다. 이번 명세·비교 보드 갱신만으로 통과한 것으로 간주하지 않는다.
+
 1. `validate_ui_sprites.py`가 통과한다. 목록 파일의 모든 에셋이 PNG로 존재하고, 크기와 투명 여백이 규칙에 맞는다.
 2. 교체 대상 표의 모든 그림이 게임에서 스프라이트로 표시되고, 대체된 도형 그리기 코드가 남아 있지 않다.
 3. Unity 에디터 검증에서 모든 스프라이트 참조가 연결되어 있음을 확인한다.

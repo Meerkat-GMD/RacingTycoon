@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "scene_count": 1,
+  "mesh_objects": 78,
+  "vertices": 923,
+  "triangles_before_bevel": 1532,
+  "all_flat_shaded": true,
+  "palette_only": true,
+  "palette_materials": [
+    "GC_Cream",
+    "GC_Gold",
+    "GC_Hair1",
+    "GC_Hair3",
+    "GC_Navy",
+    "GC_Pants1",
+    "GC_Plum",
+    "GC_Skin1",
+    "GC_Skin3",
+    "GC_Soda",
+    "GC_Strawberry",
+    "GC_Wood"
+  ],
+  "lights_watts": {
+    "GC_Key": 900.0,
+    "GC_Fill": 250.0,
+    "GC_Rim": 70.0
+  },
+  "geometry_camera_bounds": [
+    0.20481762290000916,
+    0.06127934902906418,
+    0.8050135374069214,
+    0.9224833846092224
+  ],
+  "render_size": [
+    164,
+    280
+  ],
+  "source_scene": "Game_Customer_Faceted",
+  "packed_scripts": [
+    "GameCustomerFaceted/create_customer.py",
+    "GameCustomerFaceted/customer_head.py",
+    "GameCustomerFaceted/customer_lib.py",
+    "GameCustomerFaceted/ui_sprite_common.py"
+  ],
+  "creation_transport": "Blender MCP execute_blender_code"
+}

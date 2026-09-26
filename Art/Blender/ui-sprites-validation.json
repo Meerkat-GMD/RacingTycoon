@@ -1,0 +1,181 @@
+{
+  "scope": "Three Blender UI sprite samples; visual readability is reviewed in the preview board.",
+  "passed": true,
+  "errors": [],
+  "warnings": [],
+  "assets": [
+    {
+      "id": "CottonCandy_Strawberry_Medium",
+      "passed": true,
+      "metrics": {
+        "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
+        "exists": true,
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          154,
+          176
+        ],
+        "alpha_bbox": [
+          29,
+          14,
+          119,
+          169
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "transparent_edge_pixels": {
+          "left": 29,
+          "top": 14,
+          "right": 35,
+          "bottom": 7
+        },
+        "solid_pixel_fraction": 0.24151,
+        "visible_pixel_fraction": 0.30888,
+        "alpha_weighted_coverage": 0.2474,
+        "solid_bbox": [
+          30,
+          15,
+          116,
+          160
+        ],
+        "opaque_pixel_count": 6201,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 3729,
+        "opaque_luminance_range": [
+          0.2298,
+          0.6159
+        ],
+        "native_solid_pixel_count": 1660,
+        "beauty_pass_comparison_available": true,
+        "beauty_opaque_pixel_count": 6149,
+        "beauty_opaque_changed_pixel_count": 0,
+        "beauty_opaque_max_channel_difference": 0,
+        "optional_80x77_contain_size": [
+          67,
+          77
+        ],
+        "optional_80x77_note": "Contain scaling preserves aspect ratio; slot integration is outside this sample task."
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "Customer_01_Neutral",
+      "passed": true,
+      "metrics": {
+        "file": "Assets/CottonCircuit/Sprites/Customers/Customer_01_Neutral.png",
+        "exists": true,
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          164,
+          280
+        ],
+        "alpha_bbox": [
+          25,
+          24,
+          133,
+          265
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "transparent_edge_pixels": {
+          "left": 25,
+          "top": 24,
+          "right": 31,
+          "bottom": 15
+        },
+        "solid_pixel_fraction": 0.39072,
+        "visible_pixel_fraction": 0.43125,
+        "alpha_weighted_coverage": 0.39281,
+        "solid_bbox": [
+          26,
+          25,
+          132,
+          257
+        ],
+        "opaque_pixel_count": 17227,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 5772,
+        "opaque_luminance_range": [
+          0.012,
+          0.7813
+        ],
+        "native_solid_pixel_count": 4507,
+        "beauty_pass_comparison_available": true,
+        "beauty_opaque_pixel_count": 17084,
+        "beauty_opaque_changed_pixel_count": 0,
+        "beauty_opaque_max_channel_difference": 0
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "id": "Trait_Hours",
+      "passed": true,
+      "metrics": {
+        "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
+        "exists": true,
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          84,
+          84
+        ],
+        "alpha_bbox": [
+          12,
+          12,
+          72,
+          71
+        ],
+        "alpha_extrema": [
+          0,
+          255
+        ],
+        "transparent_edge_pixels": {
+          "left": 12,
+          "top": 12,
+          "right": 12,
+          "bottom": 13
+        },
+        "solid_pixel_fraction": 0.36465,
+        "visible_pixel_fraction": 0.39101,
+        "alpha_weighted_coverage": 0.36479,
+        "solid_bbox": [
+          13,
+          13,
+          71,
+          70
+        ],
+        "opaque_pixel_count": 2428,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 1369,
+        "opaque_luminance_range": [
+          0.123,
+          0.8516
+        ],
+        "native_solid_pixel_count": 642
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "blend": {
+    "file": "Art/Blender/UiSprites.blend",
+    "exists": true,
+    "bytes": 172434
+  },
+  "manifest_asset_count": 3,
+  "png_files_found": 3
+}
