@@ -21,7 +21,7 @@ namespace CottonCircuit
         readonly UnityEngine.UI.Text[] shiftSugarCosts = new UnityEngine.UI.Text[3];
         readonly UnityEngine.UI.Text[] shiftSugarNames = new UnityEngine.UI.Text[3];
         UnityEngine.UI.Button shiftGradeButton;
-        UnityEngine.UI.Text shiftSizeLimits, shiftResultCaption;
+        UnityEngine.UI.Text shiftSizeLimits, shiftResultCaption, speedYieldLabel;
 
         public bool ShiftInteractionsAllowed => game && game.Shift != null && game.Shift.IsOpen && !game.Shift.Paused && !game.Session.Paused && game.Store != null && game.Store.CanSave;
         public ShopDragItem ActiveShiftDrag => shiftDrag;
@@ -134,7 +134,7 @@ namespace CottonCircuit
             HoverHint.Attach(shiftEmptySugarButton.gameObject, "기계의 남은 설탕을 비워요.\n환급되지 않아요.", true);
 
             var speedCard = Box(p, "Speedometer", 20, 746, 220, 91, Palette.Ink);
-            Label(speedCard.rectTransform, "LIVE RACING", 14, 9, 192, 22, 12, Palette.Soda, FontStyle.Bold);
+            speedYieldLabel = Label(speedCard.rectTransform, "LIVE RACING", 14, 9, 192, 22, 12, Palette.Soda, FontStyle.Bold);
             speed = Label(speedCard.rectTransform, "0 km/h", 12, 34, 196, 48, 32, Color.white, FontStyle.Bold);
             var driftCard = Box(p, "Drift meter", 258, 778, 444, 59, Palette.Ink);
             driftLabel = Label(driftCard.rectTransform, "", 12, 6, 420, 29, 14, Color.white, FontStyle.Bold, TextAnchor.MiddleCenter);
@@ -231,7 +231,10 @@ namespace CottonCircuit
             var kart = game.World.Kart; var drive = kart.DriveModel;
             bool downhill = game.RunStyle == DrivingStyle.Downhill;
             speedLines.SetDriving(kart, shift.IsOpen && !shift.Paused);
-            speed.text = Mathf.RoundToInt(kart.Speed * 3.6f) + " km/h"; mapTitle.text = progression ? "M0" + (selectedMachine + 1) + "  /  LIVE" : downhill ? "이니셜D  /  LIVE" : "SUGARWAY  /  LIVE";
+            speed.text = Mathf.RoundToInt(kart.Speed * 3.6f) + " km/h";
+            double speedYield = ShopShift.SpeedYield(kart.Speed);
+            speedYieldLabel.text = speedYield <= 0 ? "예열 중 · 속도를 올려요" : "감기 속도 ×" + speedYield.ToString("0.0");
+            speedYieldLabel.color = speedYield <= 0 ? new Color(1, 1, 1, .6f) : speedYield >= 1 ? Palette.Yellow : Palette.Soda; mapTitle.text = progression ? "M0" + (selectedMachine + 1) + "  /  LIVE" : downhill ? "이니셜D  /  LIVE" : "SUGARWAY  /  LIVE";
             float boostFraction = Mathf.Clamp01((float)(drive.BoostRemaining / Math.Max(.01, drive.BoostDuration)));
             driftFill.rectTransform.sizeDelta = new Vector2(416 * (kart.Boosting ? boostFraction : kart.Charge), 7);
             driftFill.color = kart.Boosting ? Palette.Yellow : Palette.Soda;

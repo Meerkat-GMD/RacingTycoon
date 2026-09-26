@@ -100,6 +100,21 @@ public static class MapTests
         Console.WriteLine("  " + style + ", motor " + motor + ", length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s, peak " + peak.ToString("F1") + "m/s");
     }
 
+    // Mirrors ShiftController: forward meters scaled by speed, normalized to the shop lap.
+    static double YieldPerLap(int map, DrivingStyle style, double engine)
+    {
+        var drive = new ArcadeDrive(RaceCourse.ForMap(map)) { MaximumSpeed = engine, Style = style };
+        double grown = 0;
+        for (int step = 0; step < 30000 && drive.TotalProgress < drive.Course.Length * 2; step++)
+        {
+            double throttle, steering; bool brake;
+            CottonCircuit.Tests.CourseTestDriver.Input(drive, .8, out throttle, out steering, out brake);
+            drive.Step(throttle, steering, brake, false, .02);
+            grown += drive.LastRewardDistance * ShopShift.SpeedYield(drive.Speed);
+        }
+        return grown / drive.TotalProgress;
+    }
+
     public static int Main()
     {
         Test("starter course fits a quick corner and boost race", () => {
@@ -179,6 +194,23 @@ public static class MapTests
             }
             Test("map " + (map + 1) + " upgraded downhill handles high speed with corner braking",
                 () => VerifyLap(RaceCourse.ForMap(selected), DrivingStyle.Downhill, 38.5));
+        }
+        for (int map = 0; map < 2; map++)
+        {
+            int selected = map;
+            Test("map " + (map + 1) + " speed-based growth keeps clean base laps and rewards speed", () => {
+                double kart = YieldPerLap(selected, DrivingStyle.Kart, 26);
+                double fast = YieldPerLap(selected, DrivingStyle.Kart, 26 * 1.24);
+                double slow = YieldPerLap(selected, DrivingStyle.Kart, 15);
+                double downhill = YieldPerLap(selected, DrivingStyle.Downhill, 26);
+                double crawl = YieldPerLap(selected, DrivingStyle.Kart, ShopShift.ReferenceSpeed * ShopShift.WarmupSpeedRatio);
+                Console.WriteLine("  growth per lap: kart " + kart.ToString("F2") + ", engine+3 " + fast.ToString("F2") +
+                    ", slow " + slow.ToString("F2") + ", downhill " + downhill.ToString("F2"));
+                Check(kart > .95 && kart < 1.05, "clean base kart lap should grow about one lap of candy");
+                Check(fast > kart * 1.2 && downhill > kart, "faster driving did not grow more candy");
+                Check(slow > 0 && slow < .5, "slow driving was not penalized beyond distance");
+                Check(crawl == 0, "crawling below warm-up speed grew candy");
+            });
         }
         Console.WriteLine("RESULT: " + passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;

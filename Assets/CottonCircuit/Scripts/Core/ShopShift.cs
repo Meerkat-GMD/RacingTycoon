@@ -56,6 +56,19 @@ namespace CottonCircuit
         public const int CustomerCapacity = 3;
         public const int TierPrice = 30;
         public const int MaximumPreviewSamples = 180;
+        // Driven candy grows faster than speed: nothing sticks below the warm-up speed,
+        // a clean lap at the base engine speed grows one lap of candy, and upgraded
+        // engines, boosts or downhill runs grow more per meter. Sugar follows growth.
+        public const double ReferenceSpeed = 26;
+        public const double WarmupSpeedRatio = .2;
+        public const double MaximumSpeedYield = 1.6;
+
+        public static double SpeedYield(double speed)
+        {
+            if (!Finite(speed) || speed <= 0) return 0;
+            double warmed = (speed / ReferenceSpeed - WarmupSpeedRatio) / (1 - WarmupSpeedRatio);
+            return warmed <= 0 ? 0 : Math.Min(MaximumSpeedYield, Math.Pow(warmed, 1.3));
+        }
         readonly Economy economy;
         public BusinessState State { get { return economy.Business; } }
         public bool Paused { get; set; }
