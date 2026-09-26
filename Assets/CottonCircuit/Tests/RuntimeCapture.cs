@@ -28,11 +28,11 @@ namespace CottonCircuit.Tests
                 foreach (var camera in cameras)
                     if (camera.enabled && camera.gameObject.activeInHierarchy && !camera.targetTexture)
                         RenderCameraViewport(camera, frame);
-                RenderOverlayCanvas(frame);
 
                 RenderTexture.active = frame;
                 image = new Texture2D(frame.width, frame.height, TextureFormat.RGB24, false);
                 image.ReadPixels(new Rect(0, 0, frame.width, frame.height), 0, 0, false);
+                BlendOverlayCanvas(image);
                 image.Apply(false, false);
                 File.WriteAllBytes(Path.Combine(output, name), image.EncodeToPNG());
 
@@ -86,19 +86,24 @@ namespace CottonCircuit.Tests
             }
         }
 
-        static void RenderOverlayCanvas(RenderTexture frame)
+        // URP clears the color target of every base camera, so the UI cannot be drawn over
+        // the world texture. Render it on transparent black and blend it over the world pixels.
+        static void BlendOverlayCanvas(Texture2D image)
         {
             const int captureLayer = 31;
             var cameraObject = new GameObject("Runtime screenshot UI camera", typeof(Camera));
             var camera = cameraObject.GetComponent<Camera>();
             camera.enabled = false;
-            camera.clearFlags = CameraClearFlags.Depth;
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = Color.clear;
             camera.cullingMask = 1 << captureLayer;
             camera.orthographic = true;
-            camera.orthographicSize = frame.height * .5f;
+            camera.orthographicSize = image.height * .5f;
             camera.nearClipPlane = .1f; camera.farClipPlane = 100;
             camera.transform.position = new Vector3(0, 0, -10);
-            camera.targetTexture = frame;
+            var target = RenderTexture.GetTemporary(image.width, image.height, 24, RenderTextureFormat.ARGB32);
+            camera.targetTexture = target;
+            Texture2D overlay = null;
             var states = new List<CanvasCaptureState>();
             var layers = new Dictionary<GameObject, int>();
             try
@@ -118,6 +123,23 @@ namespace CottonCircuit.Tests
                 }
                 Canvas.ForceUpdateCanvases();
                 camera.Render();
+                RenderTexture.active = target;
+                overlay = new Texture2D(image.width, image.height, TextureFormat.RGBA32, false);
+                overlay.ReadPixels(new Rect(0, 0, image.width, image.height), 0, 0, false);
+                // UI shaders write premultiplied color: ui + world * (1 - ui alpha).
+                // Blend in linear space, as the GPU does for these sRGB textures.
+                var world = image.GetPixels32();
+                var ui = overlay.GetPixels32();
+                var linear = new float[256];
+                for (int i = 0; i < 256; i++) linear[i] = Mathf.GammaToLinearSpace(i / 255f);
+                for (int i = 0; i < world.Length; i++)
+                {
+                    if (ui[i].a == 0 && ui[i].r == 0 && ui[i].g == 0 && ui[i].b == 0) continue;
+                    float keep = 1 - ui[i].a / 255f;
+                    world[i] = new Color32(Blend(linear, ui[i].r, world[i].r, keep),
+                        Blend(linear, ui[i].g, world[i].g, keep), Blend(linear, ui[i].b, world[i].b, keep), 255);
+                }
+                image.SetPixels32(world);
             }
             finally
             {
@@ -125,9 +147,15 @@ namespace CottonCircuit.Tests
                 foreach (var layer in layers) if (layer.Key) layer.Key.layer = layer.Value;
                 Canvas.ForceUpdateCanvases();
                 camera.targetTexture = null;
+                RenderTexture.active = null;
+                RenderTexture.ReleaseTemporary(target);
+                if (overlay) Destroy(overlay);
                 Destroy(cameraObject);
             }
         }
+
+        static byte Blend(float[] linear, byte ui, byte world, float keep) =>
+            (byte)Mathf.Clamp(Mathf.RoundToInt(Mathf.LinearToGammaSpace(linear[ui] + linear[world] * keep) * 255), 0, 255);
 
         sealed class CanvasCaptureState
         {

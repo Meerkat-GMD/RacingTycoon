@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEditor;
 namespace CottonCircuit.Editor
 {
@@ -57,6 +59,20 @@ namespace CottonCircuit.Editor
                     }
                 Check(clear, "map " + map + " roadside meshes leave drivable lanes clear");
             }
+        }
+        static void CheckRenderPipeline()
+        {
+            var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(ProjectBuilder.PipelinePath);
+            Check(pipeline && GraphicsSettings.defaultRenderPipeline == pipeline && pipeline.rendererDataList[0] is UniversalRendererData,
+                "URP asset with a Universal renderer is the default pipeline");
+            for (int i = 0; i < QualitySettings.names.Length; i++)
+                Check(QualitySettings.GetRenderPipelineAssetAt(i) == pipeline, "quality level " + QualitySettings.names[i] + " renders with URP");
+            var shaders = new HashSet<string>();
+            foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include))
+                foreach (var material in renderer.sharedMaterials) if (material) shaders.Add(material.shader.name);
+            foreach (var shader in shaders)
+                Check(shader.StartsWith("Universal Render Pipeline/") || shader == "Sprites/Default" || shader == "GUI/Text Shader",
+                    "scene shader " + shader + " renders in URP");
         }
         static void CheckOrderSaves(string root)
         {
@@ -170,6 +186,7 @@ namespace CottonCircuit.Editor
             var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
             Check(game && game.World && game.UI && game.Audio, "wired playable scene");
             Check(game.World.Kart && game.World.CentralCandy && game.World.Customer && game.World.SugarThread, "world gameplay references");
+            CheckRenderPipeline();
             Debug.Log("COTTON_MESH_DIAGNOSTIC assets=" + (game.World.Assets ? game.World.Assets.name : "null") + " mesh=" + (game.World.Assets.PuffMesh ? game.World.Assets.PuffMesh.name + " vertices=" + game.World.Assets.PuffMesh.vertexCount : "null"));
             Check(game.World.Assets.PuffMesh && game.World.Assets.PuffMesh.vertexCount > 0, "Blender cotton mesh imported");
             var assets = game.World.Assets;

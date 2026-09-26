@@ -99,4 +99,4 @@ Unity의 `Cotton Circuit > Rebuild game scene` 메뉴는 생성된 프리팹·�
 ./Tools/build.ps1 -BuildFolder Builds/Progression -Release
 ```
 
-빌드 스크립트는 Unity의 에셋·씬 생성 코드와 저장 검증을 실행합니다. 실제 플레이어 검증은 개발 빌드에서만 실행하고, 별도의 저장 폴더를 사용합니다. 기존 주행/연속 생산 검증은 명시적인 레거시 진입점으로 유지합니다. 하루 초기화와 설탕 비우기 검증은 `docs/day-reset-verification.md`, 이어 만들기 검증은 `docs/candy-resume-verification.md`, 가게 앞 손님 구성은 `docs/shop-street-verification.md`, 드리프트 감속 기록은 `docs/drift-slowdown-verification.md`, 도로 확장 기록은 `docs/wide-road-downhill-verification.md`, 바퀴 기준 생산 기록은 `docs/lap-balance-verification.md`에 기록합니다.
+빌드 스크립트는 Unity의 에셋·씬 생성 코드와 저장 검증을 실행합니다. 실제 플레이어 검증은 개발 빌드에서만 실행하고, 별도의 저장 폴더를 사용합니다. 기존 주행/연속 생산 검증은 명시적인 레거시 진입점으로 유지합니다. 하루 초기화와 설탕 비우기 검증은 `docs/day-reset-verification.md`, 이어 만들기 검증은 `docs/candy-resume-verification.md`, 가게 앞 손님 구성은 `docs/shop-street-verification.md`, 드리프트 감속 기록은 `docs/drift-slowdown-verification.md`, 도로 확장 기록은 `docs/wide-road-downhill-verification.md`, 바퀴 기준 생산 기록은 `docs/lap-balance-verification.md`, URP 전환 기록은 `docs/urp-migration-verification.md`에 기록합니다.

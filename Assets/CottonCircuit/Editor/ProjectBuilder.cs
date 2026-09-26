@@ -7,12 +7,15 @@ using UnityEditor.Build;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 namespace CottonCircuit.Editor
 {
     public static class ProjectBuilder
     {
         const string Root = "Assets/CottonCircuit";
         public const string ScenePath = Root + "/Scenes/CottonCircuit.unity";
+        public const string PipelinePath = Root + "/Rendering/CottonCircuitURP.asset";
+        const string RendererPath = Root + "/Rendering/CottonCircuitURP_Renderer.asset";
         static readonly Dictionary<string, Material> materials = new Dictionary<string, Material>();
         [MenuItem("Cotton Circuit/Rebuild game scene")]
         public static void CreateScene()
@@ -21,8 +24,9 @@ namespace CottonCircuit.Editor
             double shakeWidth = ReadSceneSugarShakeWidth(ScenePath);
             // Create the scene before loading generated assets: NewScene unloads unreferenced meshes.
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            foreach (var folder in new[] { "Materials", "Prefabs", "Meshes", "Scenes", "Data" }) Directory.CreateDirectory(Root + "/" + folder);
+            foreach (var folder in new[] { "Materials", "Prefabs", "Meshes", "Scenes", "Data", "Rendering" }) Directory.CreateDirectory(Root + "/" + folder);
             AssetDatabase.Refresh();
+            ConfigureRenderPipeline();
             MakeMaterials();
             var assets = ScriptableObject.CreateInstance<GameAssets>();
             assets.Kart = Import("Kart"); assets.Kiosk = Import("Kiosk"); assets.Spinner = Import("Spinner");
@@ -58,7 +62,7 @@ namespace CottonCircuit.Editor
             light.shadowStrength = .4f; light.shadowBias = .035f; lightObject.transform.rotation = Quaternion.Euler(48, -32, 0); world.Sun = light;
             RenderSettings.skybox = null; RenderSettings.ambientMode = AmbientMode.Trilight;
             RenderSettings.ambientSkyColor = Palette.Hex("D9E6EF") * .65f; RenderSettings.ambientEquatorColor = Palette.Hex("D9CBDD") * .65f; RenderSettings.ambientGroundColor = Palette.Hex("B6A3A5") * .65f;
-            RenderSettings.ambientIntensity = 1; RenderSettings.fog = false; QualitySettings.antiAliasing = 4; QualitySettings.shadowDistance = 100;
+            RenderSettings.ambientIntensity = 1; RenderSettings.fog = false;
             PlayerSettings.companyName = "SugarRoad Studio"; PlayerSettings.productName = "Cotton Circuit";
             PlayerSettings.defaultScreenWidth = 1600; PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed; PlayerSettings.resizableWindow = true;
@@ -70,20 +74,43 @@ namespace CottonCircuit.Editor
             AssetDatabase.SaveAssets();
             Debug.Log("COTTON_SCENE_READY " + ScenePath);
         }
+        static void ConfigureRenderPipeline()
+        {
+            var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(PipelinePath);
+            if (!pipeline)
+            {
+                var renderer = ScriptableObject.CreateInstance<UniversalRendererData>();
+                renderer.postProcessData = AssetDatabase.LoadAssetAtPath<PostProcessData>("Packages/com.unity.render-pipelines.universal/Runtime/Data/PostProcessData.asset");
+                AssetDatabase.CreateAsset(renderer, RendererPath);
+                pipeline = UniversalRenderPipelineAsset.Create(renderer); AssetDatabase.CreateAsset(pipeline, PipelinePath);
+            }
+            // Keep the former Built-in Ultra look: 4x MSAA, LDR cameras, soft sun shadows in four cascades to 100 m.
+            pipeline.supportsHDR = false; pipeline.msaaSampleCount = 4; pipeline.shadowDistance = 100; pipeline.shadowCascadeCount = 4;
+            // URP exposes soft shadow support read-only, so write the field its inspector writes.
+            var serialized = new SerializedObject(pipeline);
+            serialized.FindProperty("m_SoftShadowsSupported").boolValue = true; serialized.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(pipeline);
+            GraphicsSettings.defaultRenderPipeline = pipeline;
+            int activeLevel = QualitySettings.GetQualityLevel();
+            for (int i = 0; i < QualitySettings.names.Length; i++) { QualitySettings.SetQualityLevel(i, false); QualitySettings.renderPipeline = pipeline; }
+            QualitySettings.SetQualityLevel(activeLevel, false);
+            AssetDatabase.SaveAssets();
+        }
         static void MakeMaterials()
         {
             materials.Clear();
             string[] names = { "Strawberry", "Cream", "Soda", "Vanilla", "Navy", "Plum", "White", "Mint", "Gold", "Tire", "Wood", "Ground", "InnerLane", "MiddleLane", "OuterLane", "Base", "RoadNeutral" };
             string[] colors = { "F48DAB", "FFF1D4", "7ACDCE", "F9D27D", "29324D", "6C577F", "FFF9ED", "99C4AE", "DBAE61", "414059", "D59C79", "E7DFDB", "E7B4C3", "B4DADD", "F5DFAD", "9DBBAF", "C6CAD1" };
+            var lit = Shader.Find("Universal Render Pipeline/Lit"); var unlit = Shader.Find("Universal Render Pipeline/Unlit");
             for (int i = 0; i < names.Length; i++)
             {
                 var path = Root + "/Materials/" + names[i] + ".mat";
-                var material = AssetDatabase.LoadAssetAtPath<Material>(path);
-                if (!material) { material = new Material(Shader.Find("Standard")); AssetDatabase.CreateAsset(material, path); }
-                material.name = names[i]; material.color = Palette.Hex(colors[i]); material.SetFloat("_Glossiness", .18f); material.SetFloat("_Metallic", 0);
-                materials[names[i]] = material; EditorUtility.SetDirty(material);
+                // Write each material fresh so no Built-in Standard properties linger in the asset.
+                var material = new Material(names[i] == "Ground" ? unlit : lit) { name = names[i], color = Palette.Hex(colors[i]) };
+                if (material.shader == lit) { material.SetFloat("_Smoothness", .18f); material.SetFloat("_Metallic", 0); }
+                ReplaceAsset(material, path);
+                materials[names[i]] = AssetDatabase.LoadAssetAtPath<Material>(path); EditorUtility.SetDirty(materials[names[i]]);
             }
-            materials["Ground"].shader = Shader.Find("Unlit/Color");
         }
         static GameObject Import(string name)
         {
