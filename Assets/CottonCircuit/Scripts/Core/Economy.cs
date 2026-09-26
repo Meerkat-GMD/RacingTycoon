@@ -20,10 +20,12 @@ namespace CottonCircuit
         public int OrdersServed;
         public int TotalSold;
         public int LifetimeRevenue;
-        public int StockCapacity { get { return 6 + Math.Max(0, Math.Min(2, ShelfLevel)) * 3; } }
-        public int ShelfCost { get { return ShelfLevel == 0 ? 160 : ShelfLevel == 1 ? 300 : 0; } }
+        public BusinessState Business;
+        public ProgressionState Progression;
+        public int StockCapacity { get { return Progression == null ? 6 + Math.Max(0, Math.Min(2, ShelfLevel)) * 3 : CottonCircuit.Progression.Capacity(this); } }
+        public int ShelfCost { get { return Progression != null ? 0 : ShelfLevel == 0 ? 160 : ShelfLevel == 1 ? 300 : 0; } }
         public int Capacity { get { return 220 + Levels[1] * 80; } }
-        public float MaxSpeed { get { return 26f + Levels[0] * 2.5f; } }
+        public float MaxSpeed { get { return Progression == null ? 26f + Levels[0] * 2.5f : (float)(26 * CottonCircuit.Progression.SpeedMultiplier(this)); } }
         public bool CompleteRun(Product product)
         {
             if (product == null || product.Grams <= 0 || string.IsNullOrEmpty(product.Id) ||
@@ -36,11 +38,22 @@ namespace CottonCircuit
         public int Price(Product product)
         {
             if (product == null || product.Grams <= 0) return 0;
+            if (product.DistanceBased)
+            {
+                int size = ShopShift.SizeOf(product);
+                if (size < 0) return 0;
+                double quality = 1 + Math.Max(0, Math.Min(100, product.Quality)) * .003;
+                double multiplier = Progression == null ? (1 + Levels[2] * .25) :
+                    CottonCircuit.Progression.SalesMultiplier(this) * CottonCircuit.Progression.FlavorPriceMultiplier(this, product.FlavorIndex);
+                return (int)Math.Round(ShopShift.TierPrice * (size + 1) * multiplier * quality);
+            }
             var flavors = new HashSet<int>();
             foreach (var sample in product.Samples) flavors.Add(sample.Flavor);
             double qualityMultiplier = 1 + Math.Max(0, Math.Min(100, product.Quality)) * .003;
+            double legacyMultiplier = Progression == null ? (1 + Levels[2] * .25) :
+                CottonCircuit.Progression.SalesMultiplier(this) * CottonCircuit.Progression.FlavorPriceMultiplier(this, product.FlavorIndex);
             return (int)Math.Round((20 + product.Grams * .75 + flavors.Count * 8) *
-                (1 + Levels[2] * .25) * qualityMultiplier);
+                legacyMultiplier * qualityMultiplier);
         }
         public int SellNext()
         {
@@ -70,7 +83,7 @@ namespace CottonCircuit
         }
         public int UpgradeCost(int index)
         {
-            if (index < 0 || index >= 3 || Levels[index] >= 3) return 0;
+            if (Progression != null || index < 0 || index >= 3 || Levels[index] >= 3) return 0;
             return new[] { 120, 250, 450 }[Levels[index]];
         }
         public bool BuyUpgrade(int index)

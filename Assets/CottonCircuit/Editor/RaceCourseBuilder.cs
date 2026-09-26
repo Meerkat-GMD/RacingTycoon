@@ -8,7 +8,7 @@ namespace CottonCircuit.Editor
         static Vector3 V(RoadPoint p, float y = 1.04f) => new Vector3((float)p.X, y, (float)p.Z);
         public static void Build(WorldView world, Dictionary<string, Material> materials)
         {
-            world.CourseRoots = new Transform[2];
+            world.CourseRoots = new Transform[RaceCourse.MapCount];
             for (int map = 0; map < world.CourseRoots.Length; map++)
             {
                 var root = new GameObject("Sugarway circuit " + (map + 1)).transform;
@@ -21,8 +21,13 @@ namespace CottonCircuit.Editor
         static void BuildCourse(WorldView world, Dictionary<string, Material> materials, RaceCourse course, Transform root)
         {
             string suffix = " " + (course.MapIndex + 1);
+            // Blender openings were placed for the original 9.6m / 4.4m roads.
+            // Scale their width with the ribbons while preserving height and depth.
+            float mainWidthScale = (float)RaceCourse.MainHalfWidth / 4.8f;
+            float shortcutWidthScale = (float)RaceCourse.ShortcutHalfWidth / 2.2f;
             Ribbon("Racing surface" + suffix, course.MainPoints, true, -(float)RaceCourse.MainHalfWidth,
-                (float)RaceCourse.MainHalfWidth, 1.04f, materials[course.MapIndex == 0 ? "InnerLane" : "MiddleLane"], root);
+                (float)RaceCourse.MainHalfWidth, 1.04f, materials[course.MapIndex == 0 ? "InnerLane" :
+                    course.MapIndex == 1 ? "MiddleLane" : "OuterLane"], root);
             Ribbon("Sugar cut shortcut" + suffix, course.ShortcutPoints, false, -(float)RaceCourse.ShortcutHalfWidth,
                 (float)RaceCourse.ShortcutHalfWidth, 1.06f, materials["RoadNeutral"], root);
             for (double p = 0; p < course.Length; p += 3.5)
@@ -56,7 +61,7 @@ namespace CottonCircuit.Editor
             foreach (double fraction in new[] { .09, .19, .28, .39, .49, .61, .72, .86 })
             {
                 var s = course.Sample(course.Length * fraction); Vector3 tangent = V(s.Tangent, 0), right = new Vector3(tangent.z, 0, -tangent.x);
-                var board = PlaceRoadside(world.Assets.Chevron, "Corner chevron", V(s.Position) + right * 6.8f,
+                var board = PlaceRoadside(world.Assets.Chevron, "Corner chevron", V(s.Position) + right * (float)(s.HalfWidth + 2),
                     Quaternion.LookRotation(-tangent), 1, course, root);
                 if (board == null) continue;
                 Vector3 future = V(course.Sample(course.Length * fraction + 10).Tangent, 0);
@@ -69,17 +74,19 @@ namespace CottonCircuit.Editor
                 var s = course.Sample(marker * 12 + 14);
                 Vector3 tangent = V(s.Tangent, 0), right = new Vector3(tangent.z, 0, -tangent.x);
                 int side = marker % 2 == 0 ? -1 : 1;
-                PlaceRoadside(world.Assets.Crystal, "Roadside crystal", V(s.Position) + right * (side * 7.1f),
+                PlaceRoadside(world.Assets.Crystal, "Roadside crystal", V(s.Position) + right * (float)(side * (s.HalfWidth + 2.3)),
                     Quaternion.Euler(0, marker * 47, 0), 2.4f, course, root);
                 if (marker % 3 == 1)
-                    PlaceRoadside(world.Assets.Tree, "Roadside tree", V(s.Position) - right * (side * 8.1f),
+                    PlaceRoadside(world.Assets.Tree, "Roadside tree", V(s.Position) - right * (float)(side * (s.HalfWidth + 3.3)),
                         Quaternion.Euler(0, marker * 31, 0), .95f, course, root);
             }
             var start = course.Sample(0); var direction = V(start.Tangent, 0); var across = new Vector3(direction.z, 0, -direction.x);
-            var arch = ProjectBuilder.Place(world.Assets.Arch, V(start.Position), Quaternion.LookRotation(direction), root); arch.transform.localScale = new Vector3(2.75f, 1.4f, 1);
+            var arch = ProjectBuilder.Place(world.Assets.Arch, V(start.Position), Quaternion.LookRotation(direction), root);
+            arch.transform.localScale = new Vector3(2.75f * mainWidthScale, 1.4f, 1);
+            float checkerWidth = (float)(RaceCourse.MainHalfWidth * 2 / 16);
             for (int row = 0; row < 2; row++) for (int col = 0; col < 16; col++)
             {
-                var tile = ProjectBuilder.Cube("Start checker", V(start.Position, 1.062f) + across * ((col - 7.5f) * .6f) + direction * ((row - .5f) * .6f), new Vector3(.6f, .018f, .6f), materials[(row + col) % 2 == 0 ? "White" : "Navy"], root);
+                var tile = ProjectBuilder.Cube("Start checker", V(start.Position, 1.062f) + across * ((col - 7.5f) * checkerWidth) + direction * ((row - .5f) * .6f), new Vector3(checkerWidth, .018f, .6f), materials[(row + col) % 2 == 0 ? "White" : "Navy"], root);
                 tile.transform.rotation = Quaternion.LookRotation(direction);
             }
             // The narrower gate belongs after the split, not across the main road.
@@ -87,15 +94,16 @@ namespace CottonCircuit.Editor
             var entrance = course.ShortcutPoints[gatePoint];
             var toward = V(course.ShortcutPoints[gatePoint + 1]) - V(course.ShortcutPoints[gatePoint - 1]);
             var gate = ProjectBuilder.Place(world.Assets.ShortcutGate, V(entrance), Quaternion.LookRotation(-toward), root);
-            gate.transform.localScale = new Vector3(1.4f, 1, 1);
+            gate.transform.localScale = new Vector3(1.4f * shortcutWidthScale, 1, 1);
             if (world.Assets.CandyTunnel != null)
             {
-                // Keep the 8m-long, 11m-wide opening wholly on the first straight.
+                // Widen the authored 11m opening while retaining the 8m depth on the first straight.
                 var tunnel = course.Sample(course.MapIndex == 0 ? 24 : 26);
-                ProjectBuilder.Place(world.Assets.CandyTunnel, V(tunnel.Position), Quaternion.LookRotation(V(tunnel.Tangent, 0)), root);
+                var tunnelProp = ProjectBuilder.Place(world.Assets.CandyTunnel, V(tunnel.Position), Quaternion.LookRotation(V(tunnel.Tangent, 0)), root);
+                tunnelProp.transform.localScale = new Vector3(mainWidthScale, 1, 1);
             }
             if (world.Assets.FinishMarker != null)
-                PlaceRoadside(world.Assets.FinishMarker, "Finish landmark", V(start.Position) + across * 8 + direction * 3,
+                PlaceRoadside(world.Assets.FinishMarker, "Finish landmark", V(start.Position) + across * (float)(start.HalfWidth + 3.2) + direction * 3,
                     Quaternion.LookRotation(-direction), 1, course, root);
         }
         static GameObject PlaceRoadside(GameObject prefab, string name, Vector3 position, Quaternion rotation,

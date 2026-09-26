@@ -243,6 +243,88 @@ public static class FeelTests
             Follow(drive, .1);
             Check(drive.DriftCount == 1, "slide completion repeated every frame");
         });
+        Test("downhill Space overrides full throttle and slows actual movement", () => {
+            var drift = DownhillDrive(26); var normal = DownhillDrive(26);
+            double speed = drift.Speed;
+            double velocity = Distance(drift.Velocity, new RoadPoint(0, 0));
+            RoadPoint start = drift.Position;
+            double progress = drift.TotalProgress;
+            drift.Step(1, 0, false, true, .02);
+            Check(drift.Speed < speed && Distance(drift.Velocity, new RoadPoint(0, 0)) < velocity,
+                "Space did not immediately reduce both displayed speed and road velocity");
+            drift.Step(1, 0, false, true, .48);
+            normal.Step(1, 0, false, false, .5);
+            Check(drift.WallHits == 0 && normal.WallHits == 0, "slowdown comparison hit a wall");
+            Check(drift.Speed < speed - 3 && drift.Speed > speed - 6,
+                "half-second drift did not scrub speed smoothly: " + speed + " -> " + drift.Speed);
+            Check(Distance(start, drift.Position) < Distance(start, normal.Position) - 1,
+                "Space changed the speed display without reducing travel distance");
+            Check(drift.TotalProgress - progress < normal.TotalProgress - progress - 1,
+                "Space slowdown did not reduce distance-based production");
+            Console.WriteLine("  DOWNHILL half-second Space m/s: " + speed.ToString("F3") + " -> " +
+                drift.Speed.ToString("F3") + "; full throttle: " + normal.Speed.ToString("F3"));
+        });
+        Test("downhill Space slows below the slide threshold and can stop", () => {
+            var drive = new ArcadeDrive { Style = DrivingStyle.Downhill };
+            drive.Step(1, 0, false, false, .12);
+            Check(drive.Speed > 3 && drive.Speed < 6, "low-speed fixture missed the slide threshold");
+            double before = drive.Speed;
+            drive.Step(1, 0, false, true, .1);
+            Check(drive.Speed < before, "Space requires active slide charge to slow the car");
+            drive.Step(1, 0, false, true, 2);
+            Near(drive.Speed, 0, 1e-12, "holding Space leaves a hidden minimum speed");
+            Near(Distance(drive.Velocity, new RoadPoint(0, 0)), 0, 1e-12,
+                "road motion continued after Space stopped the car");
+            Check(drive.DriftCount == 0 && drive.BoostCount == 0, "low-speed Space farmed skills or boosts");
+        });
+        Test("downhill releasing Space resumes normal acceleration without a boost", () => {
+            var drive = DownhillDrive(26);
+            double entry = drive.Speed;
+            drive.Step(1, .3, false, true, .3);
+            double exit = drive.Speed;
+            Check(exit < entry, "Space did not slow before release");
+            drive.Step(1, 0, false, false, .02);
+            Check(drive.Speed > exit && drive.Speed < exit + 1, "release did not return to normal engine pull");
+            Check(drive.BoostCount == 0 && drive.BoostRemaining == 0 && drive.LastBoostedRewardDistance == 0,
+                "downhill Space release generated a kart boost");
+        });
+        Test("downhill service brake stays stronger and takes priority over Space", () => {
+            var drift = DownhillDrive(26); var brake = DownhillDrive(26); var both = DownhillDrive(26);
+            double entry = drift.Speed;
+            drift.Step(1, 0, false, true, .5);
+            brake.Step(1, 0, true, false, .5);
+            both.Step(1, 0, true, true, .5);
+            Check(drift.Speed < entry && drift.Speed > brake.Speed + 5, "Space slowdown is absent or exceeds braking");
+            Near(both.Speed, brake.Speed, 1e-10, "Space stacked with service braking");
+        });
+        Test("downhill full throttle with Space held at rest cannot launch or charge", () => {
+            var drive = new ArcadeDrive { Style = DrivingStyle.Downhill };
+            RoadPoint start = drive.Position;
+            drive.Step(1, 1, false, true, 1);
+            Near(drive.Speed, 0, 0, "throttle overrode Space at rest");
+            Near(Distance(start, drive.Position), 0, 0, "Space at rest moved the car");
+            Check(drive.DriftCharge == 0 && drive.DriftCount == 0 && drive.TotalProgress == 0,
+                "stationary Space farmed skills or production");
+        });
+        Test("downhill Space preserves slip while slowing the car", () => {
+            var drive = DownhillDrive(26);
+            double entry = drive.Speed;
+            drive.Step(1, .65, false, true, .3);
+            double slip = Math.Abs(Angle(drive.Heading - Math.Atan2(drive.Velocity.X, drive.Velocity.Z)));
+            Check(drive.WallHits == 0 && drive.Speed < entry, "drift fixture did not slow cleanly");
+            Check(slip > .08 && drive.IsDrifting, "Space slowdown snapped velocity onto the car heading");
+        });
+        Test("downhill Space slowdown is stable across caller frame sizes", () => {
+            var large = DownhillDrive(26); var small = DownhillDrive(26); var fine = DownhillDrive(26);
+            large.Step(1, .3, false, true, .5);
+            for (int i = 0; i < 25; i++) small.Step(1, .3, false, true, .02);
+            for (int i = 0; i < 50; i++) fine.Step(1, .3, false, true, .01);
+            Check(large.Speed < 24, "Space slowdown was missing at every frame size");
+            Near(large.Speed, small.Speed, 1e-10, "large caller frame changed drift speed");
+            Near(Distance(large.Position, small.Position), 0, 1e-10, "large caller frame changed drift motion");
+            Near(large.Speed, fine.Speed, .05, "drift speed depends on frame rate");
+            Near(Distance(large.Position, fine.Position), 0, .15, "drift motion depends on frame rate");
+        });
         Test("downhill braking into a turn scrubs speed and initiates a controlled slide", () => {
             var drive = DownhillDrive(26);
             double before = drive.Speed;
@@ -283,7 +365,9 @@ public static class FeelTests
             ClearState(drive);
         });
         Test("wall impacts cancel pending skill and boost in both styles", () => {
-            foreach (var drive in new[] { ReadyDrive(), DownhillDrive(12) }) {
+            // A downhill handbrake can now stop the car; enter at normal driving
+            // speed so the charged slide still reaches the wall before stopping.
+            foreach (var drive in new[] { ReadyDrive(), DownhillDrive(26) }) {
                 Charge(drive, .4);
                 int skills = (int)drive.SkillCount;
                 for (int i = 0; i < 300 && drive.WallHits == 0; i++)
@@ -304,7 +388,7 @@ public static class FeelTests
             Check(boosted.LastBoostedRewardDistance == 0, "wall impact retained boost production");
         });
         Test("downhill slide released into a wall does not award a clean-slide skill", () => {
-            var probe = DownhillDrive(12);
+            var probe = DownhillDrive(26);
             Charge(probe, .4);
             int steps = 0;
             while (probe.WallHits == 0 && steps < 200) {
@@ -312,7 +396,7 @@ public static class FeelTests
                 steps++;
             }
             Check(probe.WallHits > 0, "release collision setup missed wall");
-            var drive = DownhillDrive(12);
+            var drive = DownhillDrive(26);
             Charge(drive, .4);
             for (int i = 1; i < steps; i++) drive.Step(1, 1, false, true, .02);
             Check(drive.WallHits == 0 && drive.DriftCharge >= .32, "release fixture lost clean charged approach");

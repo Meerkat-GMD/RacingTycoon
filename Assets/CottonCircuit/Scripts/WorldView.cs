@@ -22,6 +22,10 @@ namespace CottonCircuit
         public bool AnimationPaused;
         public Camera CandyCamera;
         public RenderTexture CandyPreview;
+        public Camera ShopCamera { get; private set; }
+        bool continuousMode;
+        bool ChaseActive => continuousMode || mode == GameMode.Racing;
+        bool ShopVisible => continuousMode || mode == GameMode.Shop;
         GameMode mode;
         Vector3 focus;
         float size = 22;
@@ -29,11 +33,28 @@ namespace CottonCircuit
         Transform[] queue;
         readonly string[] queueIds = new string[2];
         readonly List<Transform> departing = new List<Transform>();
+        public void SetContinuousMode(bool enabled)
+        {
+            continuousMode = enabled;
+            if (enabled && !ShopCamera)
+            {
+                var cameraObject = new GameObject("Shop preview camera", typeof(Camera));
+                cameraObject.transform.SetParent(transform, false);
+                ShopCamera = cameraObject.GetComponent<Camera>();
+                ShopCamera.CopyFrom(GameCamera);
+                ShopCamera.targetTexture = null;
+                ShopCamera.orthographic = true;
+                ShopCamera.orthographicSize = 5.2f;
+                ShopCamera.depth = GameCamera.depth + 1;
+            }
+            if (ShopCamera) ShopCamera.enabled = enabled;
+            SetMode(mode);
+        }
         public void SetMode(GameMode value)
         {
-            mode = value; GameCamera.orthographic = mode != GameMode.Racing;
-            if (CandyCamera) CandyCamera.enabled = mode == GameMode.Racing;
-            if (mode == GameMode.Racing)
+            mode = value; GameCamera.orthographic = !ChaseActive;
+            if (CandyCamera) CandyCamera.enabled = ChaseActive;
+            if (ChaseActive)
             {
                 GameCamera.transform.position = Kart.transform.position - Kart.transform.forward * 7.4f + Vector3.up * (Kart.DriveModel.Style == DrivingStyle.Downhill ? 3.2f : 4.1f);
                 GameCamera.transform.LookAt(Kart.transform.position + Kart.transform.forward * 12 + Vector3.up);
@@ -71,7 +92,7 @@ namespace CottonCircuit
         {
             UpdateViewport();
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
-            if (mode == GameMode.Racing)
+            if (ChaseActive)
             {
                 if (AnimationPaused) return;
                 Vector3 ahead = Kart.transform.forward;
@@ -92,7 +113,7 @@ namespace CottonCircuit
                 GameCamera.transform.position = focus + new Vector3(56, 68, 80);
                 GameCamera.transform.LookAt(focus); GameCamera.orthographicSize = size;
             }
-            if (Stick && mode == GameMode.Racing && !AnimationPaused && Kart.Speed > 0)
+            if (Stick && ChaseActive && !AnimationPaused && Kart.Speed > 0)
             {
                 Stick.Rotate(Vector3.up, Time.deltaTime * Kart.Speed / Kart.Radius * Mathf.Rad2Deg);
                 CentralCandy.transform.rotation = Stick.rotation;
@@ -100,11 +121,30 @@ namespace CottonCircuit
         }
         void UpdateViewport()
         {
+            if (Screen.width <= 0 || Screen.height <= 0) return;
             float scale = Mathf.Min(Screen.width / 1600f, Screen.height / 900f);
             float width = 1600 * scale, height = 900 * scale;
+            if (continuousMode)
+            {
+                // Match the centered 1600 x 900 composition used by CanvasScaler.Expand.
+                GameCamera.rect = DesignViewport(new Rect(0, 92, 960, 808), scale, width, height);
+                if (ShopCamera)
+                {
+                    ShopCamera.rect = DesignViewport(new Rect(980, 82, 596, 126), scale, width, height);
+                    ShopCamera.transform.position = ShopFocus + new Vector3(56, 68, 80);
+                    ShopCamera.transform.LookAt(ShopFocus);
+                }
+                return;
+            }
             float bottom = mode == GameMode.Shop ? height * 410 / 900 : 0;
             float crop = mode == GameMode.Shop ? 350f / 900 : 1;
             GameCamera.rect = new Rect((Screen.width - width) / (2 * Screen.width), ((Screen.height - height) / 2 + bottom) / Screen.height, width * (mode == GameMode.Racing ? 1 : .755f) / Screen.width, height * crop / Screen.height);
+        }
+        static Rect DesignViewport(Rect rect, float scale, float width, float height)
+        {
+            return new Rect(((Screen.width - width) * .5f + rect.x * scale) / Screen.width,
+                ((Screen.height - height) * .5f + (900 - rect.yMax) * scale) / Screen.height,
+                rect.width * scale / Screen.width, rect.height * scale / Screen.height);
         }
         public void UpdateThread(bool active)
         {
@@ -128,18 +168,19 @@ namespace CottonCircuit
             if (queue == null) return;
             for (int i = 0; i < 2; i++)
             {
-                bool visible = mode == GameMode.Shop && i < economy.Orders.Count;
+                bool business = economy.Business != null;
+                bool visible = ShopVisible && (business ? i == 0 && economy.Business.Customer != null : i < economy.Orders.Count);
                 queue[i].gameObject.SetActive(visible); if (!visible) continue;
-                var order = economy.Orders[i];
-                if (queueIds[i] != order.Id) { queueIds[i] = order.Id; queue[i].position = ShopOffset + new Vector3(-50, .3f, 16.5f); }
+                string orderId = business ? economy.Business.Customer.Id : economy.Orders[i].Id;
+                if (queueIds[i] != orderId) { queueIds[i] = orderId; queue[i].position = ShopOffset + new Vector3(-50, .3f, 16.5f); }
                 Vector3 target = ShopOffset + new Vector3(-52, .3f, 11.4f + i * 2);
                 queue[i].position = Vector3.MoveTowards(queue[i].position, target, dt * 3);
                 queue[i].rotation = Quaternion.Euler(0, 180, 0);
             }
             for (int i = departing.Count - 1; i >= 0; i--)
             {
-                var person = departing[i]; person.gameObject.SetActive(mode == GameMode.Shop);
-                if (mode != GameMode.Shop) continue;
+                var person = departing[i]; person.gameObject.SetActive(ShopVisible);
+                if (!ShopVisible) continue;
                 Vector3 target = ShopOffset + new Vector3(-47, .3f, 17);
                 person.rotation = Quaternion.LookRotation(target - person.position);
                 person.position = Vector3.MoveTowards(person.position, target, dt * 3.5f);

@@ -19,12 +19,12 @@ public static class AccelerationTests
 
     static double Run(double seconds, double throttle = 1, bool brake = false,
         double start = 0, double maximumSpeed = 26, double dt = .02, int boostTier = 0,
-        DrivingStyle style = DrivingStyle.Downhill)
+        DrivingStyle style = DrivingStyle.Downhill, bool drift = false)
     {
         double speed = start;
         int steps = (int)Math.Round(seconds / dt);
         for (int i = 0; i < steps; i++)
-            speed = DriveAcceleration.Advance(speed, throttle, brake, style, maximumSpeed, boostTier, dt);
+            speed = DriveAcceleration.Advance(speed, throttle, brake, style, maximumSpeed, boostTier, dt, drift);
         return speed;
     }
 
@@ -78,6 +78,46 @@ public static class AccelerationTests
             Near(brake, 20, 1e-10, "downhill brakes changed or throttle overrode braking");
             Near(Run(3, brake: true, start: 45), 0, 1e-12, "braking reversed the car");
             Near(Run(30, throttle: 0, start: 45), 0, 1e-12, "coasting never stopped");
+        });
+        Test("downhill handbrake slows at low cruising and high speeds regardless of throttle", () => {
+            foreach (double entry in new double[] { 3, 26, 45 })
+            {
+                double slowed = Run(.5, start: entry, drift: true);
+                Check(slowed >= 0 && slowed < entry - 1, "handbrake did not slow from " + entry);
+                Check(slowed > Run(.5, start: entry, brake: true), "handbrake exceeded the service brake");
+                Near(slowed, Run(.5, start: entry, throttle: 0, drift: true), 1e-12,
+                    "full throttle overrode the handbrake");
+                Near(slowed, Run(.5, start: entry, throttle: .5, drift: true), 1e-12,
+                    "partial throttle overrode the handbrake");
+            }
+            double highSpeed = Run(.5, start: 45, drift: true);
+            Console.WriteLine("  DOWNHILL half-second Space from 45 m/s: " + highSpeed.ToString("F3"));
+            Check(DriveAcceleration.Advance(80, 1, false, DrivingStyle.Downhill, 26, 0, .02, true) < 79.7,
+                "over-limit speed bypassed the handbrake slowdown");
+        });
+        Test("downhill service braking takes priority over the handbrake without stacking", () => {
+            Near(Run(.5, start: 45, brake: true, drift: true), 32.5, 1e-10,
+                "handbrake changed the service-brake response");
+            Near(Run(3, start: 45, brake: true, drift: true), 0, 0,
+                "combined braking reversed the car");
+        });
+        Test("downhill handbrake reaches zero and release restores engine pull", () => {
+            Near(Run(2, start: 3, drift: true), 0, 0, "handbrake retained a minimum rolling speed");
+            Near(Run(1, drift: true), 0, 0, "handbrake allowed a launch from rest");
+            double slowed = Run(.5, start: 26, drift: true);
+            Check(Run(.5, start: slowed) > slowed + 1, "releasing the handbrake retained deceleration");
+        });
+        Test("downhill handbrake deceleration is stable across supported timesteps", () => {
+            Near(Run(.5, start: 45, drift: true), Run(.5, start: 45, dt: .005, drift: true), .02,
+                "handbrake deceleration depends on frame timing");
+            Near(Run(3, start: 3, drift: true), Run(3, start: 3, dt: .005, drift: true), 0,
+                "handbrake stopping depends on frame timing");
+        });
+        Test("kart drift input preserves normal engine pull and booster behavior", () => {
+            foreach (int tier in new int[] { 0, 1, 2 })
+                Near(Run(1, boostTier: tier, style: DrivingStyle.Kart, drift: true),
+                    Run(1, boostTier: tier, style: DrivingStyle.Kart), 0,
+                    "downhill handbrake response leaked into kart engine or boost");
         });
         Test("downhill partial throttle launches more slowly and settles below full throttle", () => {
             double partialLaunch = Run(1, throttle: .5);

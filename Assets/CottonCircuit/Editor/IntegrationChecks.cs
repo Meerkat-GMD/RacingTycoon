@@ -32,7 +32,7 @@ namespace CottonCircuit.Editor
         }
         static void CheckRoadside(WorldView world)
         {
-            for (int map = 0; map < 2; map++)
+            for (int map = 0; map < RaceCourse.MapCount; map++)
             {
                 var bounds = new List<Bounds>(); int props = 0;
                 foreach (Transform child in world.CourseRoots[map])
@@ -82,8 +82,8 @@ namespace CottonCircuit.Editor
                 migrated.TotalTips == 0 && migrated.OrdersServed == 0 && migrated.MissedOrders == 0 &&
                 migrated.SatisfactionTotal == 0, "V1 save initializes order fields");
             Check(legacyStore.Save(migrated) &&
-                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(legacyDirectory, "cotton-circuit.json"))).Version == 3,
-                "migrated save writes V3");
+                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(legacyDirectory, "cotton-circuit.json"))).Version == 8,
+                "migrated save writes V8");
 
             var expanded = new Economy { Coins = 820, ShelfLevel = 1, OrderSerial = 12,
                 NextCustomerIn = 7.5, TotalTips = 42, MissedOrders = 4,
@@ -156,14 +156,15 @@ namespace CottonCircuit.Editor
             restored.Inventory[0].Quality = 75;
             Check(store.Save(restored) && new SaveStore(dir).Load().Inventory[0].Quality == 75,
                 "V3 preserves product quality");
-            Check(JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(dir, "cotton-circuit.json"))).Version == 3,
-                "V2 migration writes version3");
+            Check(JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(dir, "cotton-circuit.json"))).Version == 8,
+                "V2 migration writes V8");
             restored.Inventory[0].Quality = 101; Check(!SaveStore.Valid(restored), "out of range quality rejected");
             restored.Inventory[0].Quality = -1; Check(!SaveStore.Valid(restored), "negative quality rejected");
         }
         public static void Run()
         {
             count = 0;
+            SugarShakeInspectorChecks.Run(Check);
             if (!UnityEngine.Object.FindAnyObjectByType<GameController>())
                 UnityEditor.SceneManagement.EditorSceneManager.OpenScene(ProjectBuilder.ScenePath);
             var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
@@ -177,7 +178,9 @@ namespace CottonCircuit.Editor
             Check(assets.DisplayRack && assets.OrderBoard && assets.QueuePost && game.World.DisplayRacks.Length == 3, "three Blender shop props and expandable racks wired");
             Check(assets.CandyTunnel && assets.FinishMarker, "two new Blender map landmarks imported");
             Check(assets.DownhillCoupe && assets.DownhillCoupe.GetComponentsInChildren<Renderer>().Length > 0, "Blender downhill coupe imported for style comparison");
-            Check(game.World.CourseRoots != null && game.World.CourseRoots.Length == 2 && game.World.CourseRoots[0].Find("Racing surface 1") && game.World.CourseRoots[1].Find("Racing surface 2"), "two maps rendered from their physics courses");
+            Check(game.World.CourseRoots != null && game.World.CourseRoots.Length == RaceCourse.MapCount &&
+                game.World.CourseRoots[0].Find("Racing surface 1") && game.World.CourseRoots[1].Find("Racing surface 2") &&
+                game.World.CourseRoots[2].Find("Racing surface 3"), "three maps rendered from their physics courses");
             CheckRoadside(game.World);
             Check(game.World.ShopRoot && game.World.ShopRoot.position.x < -200, "shop is outside the enlarged machine");
             Check(game.World.CandyCamera && game.World.CandyPreview, "live cotton preview camera wired");
@@ -194,6 +197,11 @@ namespace CottonCircuit.Editor
             Check(loaded.Coins == 225 && loaded.Levels[0] == 1 && loaded.Inventory.Count == 1 && loaded.Inventory[0].Samples.Count == 20, "save restores economy and winding samples");
             Check(loaded.Inventory[0].Samples[19].Flavor == 2 && loaded.Inventory[0].Samples[0].Radius == 7.5, "save preserves lane history");
             File.WriteAllText(Path.Combine(dir, "cotton-circuit.json"), "{broken");
+            var recovered = new SaveStore(dir); var restored = recovered.Load();
+            Check(recovered.CanSave && restored.Coins == 345 && restored.Levels[0] == 0,
+                "corrupt primary recovers the validated previous save");
+            File.WriteAllText(Path.Combine(dir, "cotton-circuit.json"), "{broken");
+            File.WriteAllText(Path.Combine(dir, "cotton-circuit.json.bak"), "{broken backup");
             var broken = new SaveStore(dir); broken.Load();
             Check(!broken.CanSave && !broken.Save(e) && File.ReadAllText(Path.Combine(dir, "cotton-circuit.json")) == "{broken", "corrupt save protected from overwrite");
             Check(broken.ArchiveAndReset() && broken.Save(new Economy()), "explicit reset archives corrupt save");

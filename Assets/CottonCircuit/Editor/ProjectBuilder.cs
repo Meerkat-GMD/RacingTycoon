@@ -18,6 +18,7 @@ namespace CottonCircuit.Editor
         public static void CreateScene()
         {
             if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            double shakeWidth = ReadSceneSugarShakeWidth(ScenePath);
             // Create the scene before loading generated assets: NewScene unloads unreferenced meshes.
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             foreach (var folder in new[] { "Materials", "Prefabs", "Meshes", "Scenes", "Data" }) Directory.CreateDirectory(Root + "/" + folder);
@@ -41,6 +42,7 @@ namespace CottonCircuit.Editor
             assets = AssetDatabase.LoadAssetAtPath<GameAssets>(Root + "/Data/GameAssets.asset");
             var gameObject = new GameObject("Cotton Circuit");
             var controller = gameObject.AddComponent<GameController>();
+            controller.SetSugarShakeFullStrokePixels(shakeWidth);
             controller.Audio = gameObject.AddComponent<AudioFeedback>(); controller.UI = gameObject.AddComponent<GameUI>();
             var worldObject = new GameObject("Candy park"); var world = worldObject.AddComponent<WorldView>(); world.Assets = assets; controller.World = world;
             BuildWorld(world);
@@ -227,6 +229,27 @@ namespace CottonCircuit.Editor
             var mesh = go.GetComponent<TextMesh>(); mesh.text = text; mesh.fontSize = 64; mesh.characterSize = size; mesh.anchor = TextAnchor.MiddleCenter;
             mesh.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"); mesh.color = color; go.GetComponent<MeshRenderer>().sharedMaterial = mesh.font.material;
         }
+        internal static double ReadSceneSugarShakeWidth(string scenePath)
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath(scenePath);
+            bool preview = !scene.IsValid() || !scene.isLoaded;
+            if (preview)
+            {
+                if (!File.Exists(scenePath)) return SugarShake.DefaultFullStrokePixels;
+                scene = EditorSceneManager.OpenPreviewScene(scenePath);
+            }
+            try
+            {
+                foreach (var root in scene.GetRootGameObjects())
+                {
+                    var controller = root.GetComponentInChildren<GameController>(true);
+                    if (controller) return controller.SugarShakeFullStrokePixels;
+                }
+                return SugarShake.DefaultFullStrokePixels;
+            }
+            finally { if (preview) EditorSceneManager.ClosePreviewScene(scene); }
+        }
+
         public static void VerifyAndBuild()
         {
             CreateScene(); IntegrationChecks.Run();

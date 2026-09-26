@@ -1,0 +1,173 @@
+using System;
+using System.Collections.Generic;
+namespace CottonCircuit
+{
+    public partial class ShopShift
+    {
+        public int SelectedMachine { get { return economy.Progression == null ? 0 : economy.Progression.SelectedMachine; } }
+        public double Duration { get { return economy.Progression == null ? DayDuration : Progression.DaySeconds(economy); } }
+        public double PatienceLimit { get { return economy.Progression == null ? CustomerPatience : Progression.PatienceSeconds(economy); } }
+        public double ArrivalInterval { get { return economy.Progression == null ? ArrivalDelay : Progression.ArrivalSeconds(economy); } }
+        void InitializeMachines(bool fresh)
+        {
+            if (State.Machines == null) State.Machines = new List<MachineProduction>();
+            while (State.Machines.Count < 3) State.Machines.Add(new MachineProduction());
+            if (fresh) State.RemainingSeconds = Duration;
+            LoadActive();
+        }
+        public MachineProduction Machine(int index)
+        {
+            if (index < 0 || index >= State.Machines.Count) return null;
+            if (index == SelectedMachine) SyncActive();
+            return State.Machines[index];
+        }
+        public void SyncActive()
+        {
+            if (economy.Progression == null || State.Machines == null || State.Machines.Count <= SelectedMachine) return;
+            var m = State.Machines[SelectedMachine];
+            m.SugarGrams = State.SugarGrams; m.SugarFlavor = State.SugarFlavor;
+            m.BatchMeters = State.BatchMeters; m.BatchFlavor = State.BatchFlavor; m.BatchQuality = State.BatchQuality;
+            m.BatchProductId = State.BatchProductId; m.BatchSugarGrade = State.BatchSugarGrade;
+        }
+        void LoadActive()
+        {
+            var m = State.Machines[SelectedMachine];
+            State.SugarGrams = m.SugarGrams; State.SugarFlavor = m.SugarFlavor;
+            State.BatchMeters = m.BatchMeters; State.BatchFlavor = m.BatchFlavor; State.BatchQuality = m.BatchQuality;
+            State.BatchProductId = m.BatchProductId; State.BatchSugarGrade = m.BatchSugarGrade;
+        }
+        public bool SelectMachine(int index)
+        {
+            if (economy.Progression == null || Paused || index < 0 || index >= Progression.OwnedMachines(economy) ||
+                economy.Progression.Phase == BusinessPhase.Results) return false;
+            SyncActive(); economy.Progression.SelectedMachine = index; LoadActive(); return true;
+        }
+        public bool BeginBusiness()
+        {
+            if (economy.Progression == null || Paused || economy.Progression.Phase != BusinessPhase.Preparation) return false;
+            if (State.Closed) economy.Day++;
+            ClearDay(); State.Closed = false; State.RemainingSeconds = Duration;
+            economy.Progression.Phase = BusinessPhase.Operating; Arrive(false); return true;
+        }
+        public bool ReturnToPreparation()
+        {
+            if (economy.Progression == null || Paused || economy.Progression.Phase != BusinessPhase.Results) return false;
+            economy.Progression.Phase = BusinessPhase.Preparation;
+            ClearDay(); State.Closed = true; State.RemainingSeconds = Duration; return true;
+        }
+        void ClearDay()
+        {
+            economy.Inventory.Clear(); economy.CompletedIds.Clear(); economy.Orders.Clear();
+            foreach (var m in State.Machines) m.Clear();
+            LoadActive(); State.Customers.Clear(); State.Customer = null; State.NextCustomerIn = 0;
+            State.DayRevenue = State.DaySold = State.DayWrong = State.DayMissed = State.DayTrashed = State.DayMaterialCost = 0;
+        }
+        public int MaxSize(int index)
+        {
+            if (economy.Progression == null) return 2;
+            return Math.Max(0, Math.Min(Progression.MachineTier(index), Math.Min(Progression.MaxSugarGrade(economy), State.Machines[index].SugarGrade)) - 1);
+        }
+        public bool CanMakeFlavor(int index, int flavor)
+        {
+            return economy.Progression == null ? flavor >= 0 && flavor < 3 : index >= 0 && index < Progression.OwnedMachines(economy) &&
+                Progression.HasFlavor(economy, flavor) && Progression.FlavorMachineTier(flavor) <= Progression.MachineTier(index);
+        }
+        public int PourCost(int index, int flavor, double grams = PourAmount)
+        {
+            if (economy.Progression == null || flavor == 0 && State.Machines[index].SugarGrade == 1) return 0;
+            return (int)Math.Ceiling(Math.Max(0, grams) / PourAmount * (State.Machines[index].SugarGrade - 1 + flavor * 2));
+        }
+        bool PourMachine(int index, int flavor, double grams = PourAmount)
+        {
+            if (!Finite(grams) || grams <= 1e-7) return false;
+            var m = State.Machines[index];
+            if (!CanMakeFlavor(index, flavor) || m.BatchMeters > 0 && m.BatchFlavor != flavor ||
+                m.BatchMeters >= MetersForSize(EffectiveMaxSize(index)) - 1e-7) return false;
+            double existing = m.SugarFlavor == flavor ? m.SugarGrams : 0;
+            double accepted = Math.Min(Math.Min(PourAmount, grams), SugarCapacity - existing);
+            if (accepted <= 1e-7) return false;
+            int cost = PourCost(index, flavor, accepted);
+            if (economy.Coins < cost) return false;
+            economy.Coins -= cost; State.DayMaterialCost += cost;
+            m.SugarFlavor = flavor; m.SugarGrams = existing + accepted; return true;
+        }
+        int EffectiveMaxSize(int index)
+        {
+            var m = State.Machines[index];
+            return m.BatchMeters > 0 ? Math.Min(Progression.MachineTier(index), m.BatchSugarGrade) - 1 : MaxSize(index);
+        }
+        void Grow(int index, double meters, int skills, int hits)
+        {
+            var m = State.Machines[index];
+            if (!Finite(meters) || meters <= 0 || m.SugarGrams <= 0 || m.BatchMeters > 0 && m.BatchFlavor != m.SugarFlavor) return;
+            int grade = m.BatchMeters > 0 ? m.BatchSugarGrade : m.SugarGrade;
+            int cap = Math.Min(Progression.MachineTier(index), grade) - 1;
+            double needed = Math.Max(0, MetersForSize(cap) - m.BatchMeters);
+            double sugarRate = SugarPerMeter * Progression.SugarMultiplier(economy);
+            double growth = Math.Min(needed, Math.Min(meters * Progression.GrowthMultiplier(economy), m.SugarGrams / sugarRate));
+            if (growth <= 0) return;
+            if (m.BatchMeters == 0) { m.BatchFlavor = m.SugarFlavor; m.BatchQuality = (int)Math.Min(100, 50 + Progression.QualityBonus(economy)); m.BatchSugarGrade = grade; }
+            m.BatchMeters += growth;
+            for (int size = 0; size < 3; size++) if (Math.Abs(m.BatchMeters - MetersForSize(size)) < 1e-7) m.BatchMeters = MetersForSize(size);
+            m.SugarGrams = Math.Max(0, m.SugarGrams - growth * sugarRate);
+            if (m.SugarGrams < 1e-9) { m.SugarGrams = 0; m.SugarFlavor = -1; }
+            m.BatchQuality = (int)Math.Max(0, Math.Min(100, m.BatchQuality + Math.Max(0L, skills) * 5 - Math.Max(0L, hits) * 10));
+        }
+        void AdvanceProgression(double seconds, double meters, int skills, int hits)
+        {
+            if (!IsOpen || !Finite(seconds) || seconds <= 0) return;
+            double elapsed = Math.Min(seconds, State.RemainingSeconds); SyncActive();
+            Grow(SelectedMachine, meters * elapsed / seconds, skills, hits);
+            double remaining = elapsed;
+            while (remaining > 1e-9)
+            {
+                double dt = Math.Min(.2, remaining); remaining -= dt;
+                for (int i = 0; i < Progression.OwnedMachines(economy); i++)
+                {
+                    var m = State.Machines[i];
+                    if (i == SelectedMachine || !m.WorkerAssigned || Progression.WorkerGrade(economy) < Progression.MachineTier(i) ||
+                        economy.Inventory.Count >= economy.StockCapacity) continue;
+                    double target = MetersForSize(Math.Min(m.RecipeSize, EffectiveMaxSize(i)));
+                    if (m.BatchMeters + 1e-7 < target)
+                    {
+                        // Finish a handed-over batch with its original flavor and material limit.
+                        int flavor = m.BatchMeters > 0 ? m.BatchFlavor : m.RecipeFlavor;
+                        if ((m.SugarGrams <= 1e-9 || m.SugarFlavor != flavor) && !PourMachine(i, flavor)) continue;
+                        double step = Math.Min(Progression.WorkerMetersPerSecond(economy) * dt,
+                            (target - m.BatchMeters) / Progression.GrowthMultiplier(economy));
+                        Grow(i, step, 0, 0);
+                    }
+                    if (m.BatchMeters + 1e-7 >= target)
+                    {
+                        var p = Preview(m.BatchMeters, m.BatchFlavor);
+                        p.Id = string.IsNullOrEmpty(m.BatchProductId) ? Guid.NewGuid().ToString("N") : m.BatchProductId;
+                        p.Quality = m.BatchQuality; p.SugarGrade = m.BatchSugarGrade;
+                        economy.Inventory.Add(p); if (!economy.CompletedIds.Contains(p.Id)) economy.CompletedIds.Add(p.Id);
+                        m.BatchMeters = 0; m.BatchFlavor = -1; m.BatchQuality = 50; m.BatchProductId = null; m.BatchSugarGrade = 1;
+                    }
+                }
+            }
+            LoadActive(); AdvanceCustomer(elapsed);
+            State.RemainingSeconds = Math.Max(0, State.RemainingSeconds - elapsed);
+            if (State.RemainingSeconds == 0)
+            {
+                State.Closed = true; economy.Progression.Phase = BusinessPhase.Results; DiscardLeftovers();
+                State.Customers.Clear(); State.Customer = null; State.NextCustomerIn = 0;
+            }
+        }
+        void ChooseOrder(out int flavor, out int size)
+        {
+            var choices = new List<int>();
+            int location = economy.Progression.SelectedLocation;
+            for (int f = 0; f < 3; f++)
+                for (int m = 0; m < Progression.OwnedMachines(economy); m++)
+                    if (CanMakeFlavor(m, f))
+                    {
+                        int cap = Math.Min(Progression.MachineTier(m), Progression.MaxSugarGrade(economy)) - 1;
+                        for (int z = 0; z <= cap; z++) { int key = f * 3 + z; if (!choices.Contains(key)) choices.Add(key); }
+                    }
+            int choice = choices[(economy.OrderSerial * (location * 2 + 1) + economy.OrderSerial / Math.Max(1, choices.Count)) % choices.Count];
+            flavor = choice / 3; size = choice % 3;
+        }
+    }
+}

@@ -32,6 +32,19 @@ public static class BoosterTests
     }
     public static int Main()
     {
+        Test("selecting downhill immediately clears kart boost without moving the car", () => {
+            var drive = Ready();
+            drive.Step(1, 0, false, false, .02, true);
+            Check(drive.BoostRemaining > 0 && drive.ManualBoostActive, "fixture did not start a kart boost");
+            var position = drive.Position; double speed = drive.Speed, progress = drive.TotalProgress;
+            drive.Style = DrivingStyle.Downhill;
+            Check(drive.StoredBoosts == 0 && drive.BoostRemaining == 0 && !drive.ManualBoostActive && drive.BoostTier == 0,
+                "downhill inherited a kart booster before its first driving step");
+            Check(drive.Position.X == position.X && drive.Position.Z == position.Z && drive.Speed == speed && drive.TotalProgress == progress,
+                "style selection reset the machine's driving progress");
+            var fresh = Ready(); fresh.Style = DrivingStyle.Downhill;
+            Check(fresh.StoredBoosts == 0, "fresh downhill inherited the starting kart boost");
+        });
         Test("starting booster gives an immediate kick and consumes exactly one stock", () => {
             var drive = Ready(); double speed = drive.Speed;
             drive.Step(1, 0, false, false, .02, true);

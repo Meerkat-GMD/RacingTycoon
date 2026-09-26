@@ -9,7 +9,7 @@ namespace CottonCircuit
 
         // ArcadeDrive calls this once per integration step, no longer than .02 seconds.
         public static double Advance(double speed, double throttle, bool brake, DrivingStyle style,
-            double maximumSpeed, int boostTier, double dt)
+            double maximumSpeed, int boostTier, double dt, bool drift = false)
         {
             speed = Finite(speed) ? Math.Max(0, speed) : 0;
             if (!Finite(throttle) || !Finite(dt) || dt <= 0) return speed;
@@ -20,6 +20,8 @@ namespace CottonCircuit
             double limit = baseLimit + (downhill ? 34 : tier == 2 ? 14 : tier == 1 ? 9 : 0);
 
             if (brake) return Math.Max(0, speed - (downhill ? 25 : 40) * dt);
+            // The downhill handbrake overrides engine pull even with throttle held.
+            if (downhill && drift) return Math.Max(0, speed - (4 + speed * .18) * dt);
             // Preserve momentum when a boost expires or an engine limit is lowered.
             if (speed > limit) return Math.Max(limit, speed - 9 * dt);
 

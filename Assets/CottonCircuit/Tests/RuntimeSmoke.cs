@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace CottonCircuit.Tests
 {
-    public class RuntimeSmoke : MonoBehaviour
+    public partial class RuntimeSmoke : MonoBehaviour
     {
         string output, saveDirectory;
         GameController game;
@@ -19,7 +19,9 @@ namespace CottonCircuit.Tests
         static void Install()
         {
             var args = Environment.GetCommandLineArgs();
-            if (Array.IndexOf(args, "--smoke-test") < 0) return;
+            bool shift = Array.IndexOf(args, "--shop-shift-smoke") >= 0;
+            bool progression = Array.IndexOf(args, "--progression-smoke") >= 0;
+            if (!shift && !progression && Array.IndexOf(args, "--smoke-test") < 0) return;
             var runner = new GameObject("Runtime verification").AddComponent<RuntimeSmoke>();
             runner.output = Path.GetFullPath("CottonSmoke");
             foreach (string arg in args)
@@ -29,7 +31,7 @@ namespace CottonCircuit.Tests
                 "isolated-save-" + Guid.NewGuid().ToString("N"));
             runner.game = FindAnyObjectByType<GameController>();
             runner.game.enabled = false;
-            runner.game.Initialize(runner.saveDirectory);
+            runner.game.Initialize(runner.saveDirectory, shift || progression, true, progression);
             Application.logMessageReceived += runner.Log;
         }
 
@@ -45,7 +47,8 @@ namespace CottonCircuit.Tests
         IEnumerator RunGuarded()
         {
             var stack = new Stack<IEnumerator>();
-            stack.Push(Scenario());
+            stack.Push(Array.IndexOf(Environment.GetCommandLineArgs(), "--progression-smoke") >= 0 ? ProgressionScenario() :
+                Array.IndexOf(Environment.GetCommandLineArgs(), "--shop-shift-smoke") >= 0 ? ShiftScenario() : Scenario());
             while (stack.Count > 0)
             {
                 object current;
@@ -163,7 +166,9 @@ namespace CottonCircuit.Tests
             foreach (int style in new[] { 0, 1 })
             {
                 game.SetStyle(style); game.SetMap(0); game.PrepareStock();
-                game.Tick(1, 0, false, .4f);
+                // Space now scrubs downhill speed; build enough entry speed to
+                // finish the intended charged slide before slowing below 6m/s.
+                game.Tick(1, 0, false, style == 0 ? .4f : .8f);
                 for (int i = 0; i < 180 && game.World.Kart.Charge < .8f; i++)
                     game.Tick(0, i % 40 < 20 ? .65f : -.65f, false, .02f, true);
                 Check(game.World.Kart.Charge >= .8f && game.World.Kart.DriveModel.WallHits == 0,
@@ -171,7 +176,7 @@ namespace CottonCircuit.Tests
                 game.Tick(1, 0, false, .02f);
                 Check(game.World.Kart.DriveModel.SkillCount == 1, "completed driving action contributes to quality");
                 Check(style == 0 ? game.World.Kart.DriveModel.BoostTier == 2 : !game.World.Kart.Boosting,
-                    "kart releases super boost while downhill retains momentum without boost");
+                    "kart releases super boost while downhill exits its slowing slide without boost");
                 if (style == 0) Check(game.World.Kart.DriveModel.StoredBoosts == 2, "clean kart drift fills second booster slot");
                 game.Tick(1, 0, false, .18f);
                 yield return new WaitForSecondsRealtime(.5f);
@@ -239,6 +244,7 @@ namespace CottonCircuit.Tests
             ClickIn("Stock selector", "선택 재고 정리"); Check(game.Session.Economy.Inventory.Count == 12, "first discard does not delete");
             ClickIn("Stock selector", "선택 재고 정리"); Check(game.Session.Economy.Inventory.Count == 11 && game.Session.Economy.Inventory.TrueForAll(p => p.Id != discarded), "confirmed discard removes only selected item");
             Check(!failed, "no runtime errors through map recipe cycle");
+            yield return ContinuousScenario();
         }
         IEnumerator DriveMap(int map, int taste, string screenshot)
         {
@@ -325,8 +331,7 @@ namespace CottonCircuit.Tests
 
         void Capture(string name)
         {
-            Canvas.ForceUpdateCanvases();
-            ScreenCapture.CaptureScreenshot(Path.Combine(output, name));
+            CaptureOffscreen(name);
         }
 
         void Log(string condition, string trace, LogType type)

@@ -17,6 +17,7 @@ namespace CottonCircuit
         CustomerOrder OrderAt(int i) => i < game.Orders.Orders.Count ? game.Orders.Orders[i] : null;
         void BuildShop()
         {
+            if (splitLayout) { BuildSplitShop(); return; }
             var p = shop.GetComponent<RectTransform>();
             Label(p, "01  /  MADE TO ORDER", 1240, 123, 320, 22, 12, Palette.Muted, FontStyle.Bold);
             Label(p, "주문을 받았어요", 1240, 152, 320, 42, 28, Palette.Ink, FontStyle.Bold);
@@ -82,21 +83,21 @@ namespace CottonCircuit
             for (int i = 0; i < 2; i++)
             {
                 var order = OrderAt(i); bool exists = order != null;
-                orderTitles[i].text = exists ? "손님 " + (i + 1) + "   " + Palette.FlavorName(order.Flavor) + " · " + SizeName(order.Size) + " 솜사탕" : "다음 손님을 기다려요";
+                orderTitles[i].text = exists ? (splitLayout ? "" : "손님 " + (i + 1) + "   ") + Palette.FlavorName(order.Flavor) + " · " + SizeName(order.Size) + " 솜사탕" : "다음 손님을 기다려요";
                 int matches = exists ? e.Inventory.FindAll(product => CandyRecipe.Matches(product, order)).Count : 0;
-                orderHints[i].text = exists ? "남은 시간 " + Mathf.CeilToInt((float)order.Remaining) + "초   ·   " + (matches > 0 ? "맞는 재고 " + matches + "개 · 골라서 건네주세요" : "맞는 재고 없음 · 만들어 주세요") : "여유가 있을 때 인기 메뉴를 미리 만들어두세요.";
-                orderFills[i].rectTransform.sizeDelta = new Vector2(exists ? 522 * (float)(order.Remaining / CustomerOrder.Patience) : 0, 5);
+                orderHints[i].text = exists ? "남은 시간 " + Mathf.CeilToInt((float)order.Remaining) + "초" + (splitLayout ? "\n" : "   ·   ") + (matches > 0 ? "맞는 재고 " + matches + "개 · 골라서 건네주세요" : "맞는 재고 없음 · 만들어 주세요") : splitLayout ? "여유가 있을 때\n메뉴를 미리 만들어두세요." : "여유가 있을 때 인기 메뉴를 미리 만들어두세요.";
+                orderFills[i].rectTransform.sizeDelta = new Vector2(exists ? (splitLayout ? 264 : 522) * (float)(order.Remaining / CustomerOrder.Patience) : 0, 5);
                 orderFills[i].color = exists && order.Remaining < 30 ? Palette.Pink : Palette.Soda;
                 orderCards[i].color = exists && game.SelectedOrderId == order.Id ? Palette.Hex("FCE7B8") : Palette.Cream;
-                orderSelect[i].interactable = exists; orderMake[i].interactable = exists && canMake;
+                orderSelect[i].interactable = exists; orderMake[i].interactable = exists && (splitLayout ? game.Store.CanSave : canMake);
                 orderServe[i].interactable = exists && game.Store.CanSave && CandyRecipe.Matches(game.SelectedProduct, order);
             }
-            stockCount.text = "내 진열대   " + e.Inventory.Count + " / " + e.StockCapacity + "    ·    솜사탕 선택 → 손님의 ‘건네기’";
+            stockCount.text = "내 진열대   " + e.Inventory.Count + " / " + e.StockCapacity + (splitLayout ? "   ·   선택 후 건네기" : "    ·    솜사탕 선택 → 손님의 ‘건네기’");
             for (int i = 0; i < 12; i++)
             {
                 bool stocked = i < e.Inventory.Count;
                 var b = stockButtons[i]; b.interactable = stocked;
-                b.GetComponentInChildren<Text>().text = stocked ? ProductName(e.Inventory[i]) + "  " + e.Inventory[i].Grams + "g" : i < e.StockCapacity ? "빈 칸" : "확장하면 사용 가능";
+                b.GetComponentInChildren<Text>().text = stocked ? ProductName(e.Inventory[i]) + (splitLayout ? "\n" : "  ") + e.Inventory[i].Grams + "g" : i < e.StockCapacity ? "빈 칸" : splitLayout ? "확장 슬롯" : "확장하면 사용 가능";
                 b.image.color = stocked && e.Inventory[i].Id == game.SelectedProductId ? Palette.Soda : Color.white;
             }
             discardButton.interactable = game.SelectedProduct != null && game.Store.CanSave;
@@ -110,13 +111,13 @@ namespace CottonCircuit
             shelfText.text = "진열대  " + e.ShelfLevel + "/2\n" + e.StockCapacity + "칸";
             shelfButton.GetComponentInChildren<Text>().text = e.ShelfCost == 0 ? "MAX" : e.ShelfCost.ToString();
             shelfButton.interactable = e.ShelfCost > 0 && e.Coins >= e.ShelfCost && game.Store.CanSave;
-            startButton.interactable = canMake;
+            startButton.interactable = splitLayout ? game.Store.CanSave : canMake;
             smallButton.image.color = game.PreparedSize == 0 ? Palette.Pink : Color.white;
             largeButton.image.color = game.PreparedSize == 1 ? Palette.Pink : Color.white;
             for (int i = 0; i < 3; i++) flavorButtons[i].image.color = game.PreparedFlavor == i ? Palette.Flavor(i) : Color.white;
             for (int i = 0; i < 2; i++) styleButtons[i].image.color = (int)game.PreparedStyle == i ? Palette.Soda : Color.white;
-            styleHint.text = game.PreparedStyle == DrivingStyle.Kart ? "Shift 부스터 · 드리프트로 충전 (시작 1개)" : "W 유지하면 계속 가속 · 코너 전 S 감속";
-            status.text = game.Store.Error != null ? "저장 오류 · 도움말에서 새 가게 시작" : canMake ? "선택한 맛으로 제작 · 한 바퀴 완주 시 완성\n1번: 작은 60g / 2번: 큰 120g" : "진열대가 찼어요 · 판매하거나 확장하세요";
+            styleHint.text = splitLayout ? "맵 · 맛 · 주행 스타일 변경은 다음 생산부터 적용돼요." : game.PreparedStyle == DrivingStyle.Kart ? "Shift 부스터 · 드리프트로 충전 (시작 1개)" : "W 유지하면 계속 가속 · 코너 전 S 감속";
+            status.text = game.Store.Error != null ? "저장 오류 · 도움말에서 새 가게 시작" : !canMake ? "진열대가 찼어요 · 판매하거나 확장하세요" : splitLayout ? "다음 생산: " + Palette.FlavorName(game.PreparedFlavor) + " · " + SizeName(game.PreparedMap) + " · " + (game.PreparedStyle == DrivingStyle.Kart ? "카트" : "다운힐") : "선택한 맛으로 제작 · 한 바퀴 완주 시 완성\n1번: 작은 60g / 2번: 큰 120g";
         }
         void UpdateRaceOrder()
         {

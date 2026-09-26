@@ -6,7 +6,16 @@ namespace CottonCircuit
 {
     public class SaveStore
     {
-        [Serializable] public class Envelope { public int Version = 3; public Economy State; }
+        [Serializable] public class Envelope
+        {
+            public int Version = 8;
+            public Economy State;
+            // Unity's inline class serialization replaces null with a default object.
+            // Keep presence outside the inline data so legacy mode and customer gaps survive a reload.
+            public bool HasBusiness;
+            public bool HasCustomer;
+            public bool HasProgression;
+        }
         readonly string directory;
         public string DirectoryPath { get { return directory; } }
         string FilePath => Path.Combine(directory, "cotton-circuit.json");
@@ -18,13 +27,36 @@ namespace CottonCircuit
             if (!File.Exists(FilePath)) return new Economy();
             try
             {
-                if (new FileInfo(FilePath).Length > 8 * 1024 * 1024) throw new InvalidDataException();
-                var envelope = JsonUtility.FromJson<Envelope>(File.ReadAllText(FilePath));
-                if (!Upgrade(envelope)) throw new InvalidDataException();
-                return envelope.State;
+                return Read(FilePath);
             }
             catch (Exception e) when (e is IOException || e is InvalidDataException || e is ArgumentException || e is UnauthorizedAccessException)
-            { Error = "저장 파일을 읽지 못했어요. 원본을 보관하고 새로 시작할 수 있어요."; CanSave = false; return new Economy(); }
+            {
+                try
+                {
+                    var backup = FilePath + ".bak";
+                    if (File.Exists(backup))
+                    {
+                        Economy recovered = Read(backup);
+                        // Keep the damaged payload for diagnosis and retain the good backup.
+                        File.Move(FilePath, FilePath + ".invalid-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff"));
+                        File.Copy(backup, FilePath);
+                        Error = "백업 저장 파일을 복구했어요.";
+                        return recovered;
+                    }
+                }
+                catch (Exception backupError) when (backupError is IOException || backupError is InvalidDataException ||
+                    backupError is ArgumentException || backupError is UnauthorizedAccessException) { }
+                Error = "저장 파일을 읽지 못했어요. 원본을 보관하고 새로 시작할 수 있어요.";
+                CanSave = false;
+                return new Economy();
+            }
+        }
+        static Economy Read(string path)
+        {
+            if (new FileInfo(path).Length > 8 * 1024 * 1024) throw new InvalidDataException();
+            var envelope = JsonUtility.FromJson<Envelope>(File.ReadAllText(path));
+            if (!RestoreOptionalState(envelope) || !Upgrade(envelope)) throw new InvalidDataException();
+            return envelope.State;
         }
         public bool Save(Economy state)
         {
@@ -35,7 +67,12 @@ namespace CottonCircuit
             {
                 Directory.CreateDirectory(directory);
                 var temporary = FilePath + ".tmp";
-                File.WriteAllText(temporary, JsonUtility.ToJson(new Envelope { State = state }, true));
+                File.WriteAllText(temporary, JsonUtility.ToJson(new Envelope {
+                    State = state,
+                    HasBusiness = state.Business != null,
+                    HasCustomer = false,
+                    HasProgression = state.Progression != null
+                }, true));
                 if (File.Exists(FilePath)) File.Replace(temporary, FilePath, FilePath + ".bak");
                 else File.Move(temporary, FilePath);
                 Error = null;
@@ -57,7 +94,7 @@ namespace CottonCircuit
         }
         public static bool Valid(Economy e)
         { return Valid(e, CustomerOrder.Patience, true); }
-        static bool Valid(Economy e, double patience, bool validateQuality)
+        static bool Valid(Economy e, double patience, bool validateQuality, bool legacyBusiness = false, bool legacyVehicle = false)
         {
             if (e == null || e.ShelfLevel < 0 || e.ShelfLevel > 2 ||
                 e.Orders == null || e.Orders.Count > 2 || e.OrderSerial < 0 ||
@@ -80,7 +117,209 @@ namespace CottonCircuit
                     !int.TryParse(order.Id.Substring(6), out serial) || serial <= 0 ||
                     order.Id != "order-" + serial || serial > e.OrderSerial) return false;
             }
+            return e.Progression == null ? ValidBusiness(e, legacyBusiness) :
+                ValidProgression(e, legacyVehicle) && ValidBusiness(e, false);
+        }
+        static bool ValidBusiness(Economy e, bool legacy)
+        {
+            var business = e.Business;
+            bool progression = e.Progression != null;
+            if (business == null) return !progression || e.Progression.Phase == BusinessPhase.Preparation;
+            double daySeconds = progression ? Progression.DaySeconds(e) : ShopShift.DayDuration;
+            double arrivalSeconds = progression ? Progression.ArrivalSeconds(e) : ShopShift.ArrivalDelay;
+            double customerPatience = progression ? Progression.PatienceSeconds(e) : ShopShift.CustomerPatience;
+            if (e.Orders.Count != 0 ||
+                !Finite(business.RemainingSeconds) || business.RemainingSeconds < 0 || business.RemainingSeconds > daySeconds ||
+                (!progression && business.Closed != (business.RemainingSeconds == 0)) ||
+                (progression && (e.Progression.Phase == BusinessPhase.Operating && business.Closed ||
+                    e.Progression.Phase == BusinessPhase.Results && (!business.Closed || business.RemainingSeconds != 0) ||
+                    e.Progression.Phase == BusinessPhase.Preparation && business.RemainingSeconds != daySeconds)) ||
+                !Finite(business.SugarGrams) || business.SugarGrams < 0 || business.SugarGrams > ShopShift.SugarCapacity ||
+                business.SugarFlavor < -1 || business.SugarFlavor > 2 ||
+                (business.SugarGrams > 0 && business.SugarFlavor < 0) ||
+                !Finite(business.BatchMeters) || business.BatchMeters < 0 ||
+                business.BatchFlavor < -1 || business.BatchFlavor > 2 ||
+                (business.BatchMeters == 0) != (business.BatchFlavor == -1) ||
+                (legacy && business.BatchMeters > 0 && business.SugarGrams > 0 && business.BatchFlavor != business.SugarFlavor) ||
+                business.BatchQuality < 0 || business.BatchQuality > 100 ||
+                business.DayRevenue < 0 || business.DayRevenue > e.LifetimeRevenue ||
+                business.DaySold < 0 || business.DaySold > e.TotalSold ||
+                business.DayMissed < 0 || business.DayMissed > e.MissedOrders ||
+                business.DayWrong < 0 || business.DayWrong > e.OrderSerial || business.DayTrashed < 0 ||
+                !Finite(business.NextCustomerIn) || business.NextCustomerIn < 0 || business.NextCustomerIn > (legacy ? 2 : arrivalSeconds) ||
+                (progression && (business.DayMaterialCost < 0 || business.DayMaterialCost > 1000000000 ||
+                    business.BatchSugarGrade < 1 || business.BatchSugarGrade > Progression.MaxSugarGrade(e))))
+                return false;
+            if (!legacy && !string.IsNullOrEmpty(business.BatchProductId) &&
+                (business.BatchMeters <= 0 || !e.CompletedIds.Contains(business.BatchProductId) ||
+                 e.Inventory.Exists(product => product.Id == business.BatchProductId))) return false;
+            if (business.Customer != null || business.Customers == null || business.Customers.Count > ShopShift.CustomerCapacity)
+                return false;
+            if (progression && e.Progression.Phase == BusinessPhase.Preparation &&
+                (business.Customers.Count != 0 || business.NextCustomerIn != 0 || e.Inventory.Count != 0 ||
+                 business.SugarGrams != 0 || business.BatchMeters != 0 || !string.IsNullOrEmpty(business.BatchProductId))) return false;
+            if (business.Closed) return business.Customers.Count == 0 && business.NextCustomerIn == 0 &&
+                (!progression || ValidMachines(e));
+            var ids = new HashSet<string>();
+            var slots = new HashSet<int>();
+            int unaccountedCustomers = 0, happyCustomers = 0, timedOutCustomers = 0;
+            foreach (var customer in business.Customers)
+            {
+                if (customer == null || customer.Slot < 0 || customer.Slot >= ShopShift.CustomerCapacity || !slots.Add(customer.Slot) ||
+                    customer.Flavor < 0 || customer.Flavor > 2 || customer.Size < 0 || customer.Size > 2 ||
+                    string.IsNullOrEmpty(customer.Id) || !ids.Add(customer.Id) || !Finite(customer.ReactionRemaining) ||
+                    ((customer.Angry || !legacy && customer.Happy) ? customer.ReactionRemaining <= 0 || customer.ReactionRemaining > ShopShift.ReactionDuration : customer.ReactionRemaining != 0)) return false;
+                if (!legacy && (customer.Angry && customer.Happy || customer.TimedOut && !customer.Angry ||
+                    !Finite(customer.PatienceRemaining) || customer.PatienceRemaining < 0 || customer.PatienceRemaining > customerPatience ||
+                    (!customer.Angry && !customer.Happy && customer.PatienceRemaining <= 0) ||
+                    (customer.TimedOut && customer.PatienceRemaining != 0))) return false;
+                if (legacy || !customer.Happy && !customer.TimedOut) unaccountedCustomers++;
+                if (customer.Happy) happyCustomers++;
+                if (customer.TimedOut) timedOutCustomers++;
+                int serial;
+                if (!customer.Id.StartsWith("shop-", StringComparison.Ordinal) ||
+                    !int.TryParse(customer.Id.Substring(5), out serial) || serial <= 0 || serial > e.OrderSerial ||
+                    customer.Id != "shop-" + serial) return false;
+            }
+            if (!legacy && (happyCustomers > business.DaySold || timedOutCustomers > business.DayMissed)) return false;
+            if ((long)e.OrdersServed + e.MissedOrders + unaccountedCustomers > e.OrderSerial) return false;
+            return (!legacy || business.Customers.Count != ShopShift.CustomerCapacity || business.NextCustomerIn == 0) &&
+                (!progression || ValidMachines(e));
+        }
+        static bool ValidProgression(Economy e, bool legacyVehicle)
+        {
+            var state = e.Progression;
+            if (state == null || state.Purchases == null || state.Purchases.Count > Progression.Nodes.Length ||
+                state.Phase < BusinessPhase.Preparation || state.Phase > BusinessPhase.Results ||
+                state.SelectedMachine < 0 || state.SelectedMachine >= Progression.OwnedMachines(e) ||
+                state.SelectedLocation < 0 || state.SelectedLocation > 3 || !Progression.HasLocation(e, state.SelectedLocation) ||
+                (legacyVehicle ? state.CartStyle < 0 || state.CartStyle > 1 ||
+                    state.CartStyle == 1 && Progression.Level(e, "coupe") == 0 :
+                    !Progression.HasCartStyle(e, state.CartStyle)) ||
+                state.Phase == BusinessPhase.Operating && (e.Business == null || e.Business.Closed) ||
+                state.Phase == BusinessPhase.Results && (e.Business == null || !e.Business.Closed))
+                return false;
+            var ids = new HashSet<string>();
+            foreach (var purchase in state.Purchases)
+            {
+                if (purchase == null || string.IsNullOrEmpty(purchase.Id) || !ids.Add(purchase.Id)) return false;
+                var node = Progression.Find(purchase.Id);
+                if (node == null || purchase.Level < 1 || purchase.Level > node.MaxLevel) return false;
+            }
+            foreach (var purchase in state.Purchases)
+                foreach (var parent in Progression.Find(purchase.Id).Parents)
+                    if (Progression.Level(e, parent) < 1) return false;
             return true;
+        }
+        static bool ValidMachines(Economy e)
+        {
+            var business = e.Business;
+            if (business.Machines == null || business.Machines.Count != 3) return false;
+            int workers = 0;
+            for (int i = 0; i < business.Machines.Count; i++)
+            {
+                var machine = business.Machines[i];
+                if (machine == null || !Finite(machine.SugarGrams) || machine.SugarGrams < 0 || machine.SugarGrams > ShopShift.SugarCapacity ||
+                    machine.SugarFlavor < -1 || machine.SugarFlavor > 2 || machine.SugarGrams > 0 && machine.SugarFlavor < 0 ||
+                    !Finite(machine.BatchMeters) || machine.BatchMeters < 0 ||
+                    machine.BatchFlavor < -1 || machine.BatchFlavor > 2 || (machine.BatchMeters == 0) != (machine.BatchFlavor == -1) ||
+                    machine.BatchQuality < 0 || machine.BatchQuality > 100 ||
+                    machine.SugarGrade < 1 || machine.SugarGrade > Progression.MaxSugarGrade(e) ||
+                    machine.BatchSugarGrade < 1 || machine.BatchSugarGrade > Progression.MaxSugarGrade(e) ||
+                    machine.BatchMeters > 0 && machine.BatchSugarGrade > machine.SugarGrade ||
+                    machine.RecipeFlavor < 0 || machine.RecipeFlavor > 2 || machine.RecipeSize < 0 || machine.RecipeSize > 2)
+                    return false;
+                bool owned = i < Progression.OwnedMachines(e);
+                if (e.Progression.Phase == BusinessPhase.Preparation &&
+                    (machine.SugarGrams != 0 || machine.BatchMeters != 0 || !string.IsNullOrEmpty(machine.BatchProductId))) return false;
+                if ((!owned && (machine.WorkerAssigned || machine.SugarGrams > 0 || machine.BatchMeters > 0 ||
+                    !string.IsNullOrEmpty(machine.BatchProductId))) ||
+                    machine.WorkerAssigned && (i + 1 > Progression.WorkerGrade(e) || ++workers > Progression.WorkerCount(e)) ||
+                    !Progression.HasFlavor(e, machine.RecipeFlavor) ||
+                    Progression.FlavorMachineTier(machine.RecipeFlavor) > Progression.MachineTier(i) ||
+                    machine.RecipeSize >= Math.Min(Progression.MachineTier(i), machine.SugarGrade) ||
+                    machine.SugarFlavor >= 0 && (!Progression.HasFlavor(e, machine.SugarFlavor) ||
+                        Progression.FlavorMachineTier(machine.SugarFlavor) > Progression.MachineTier(i)) ||
+                    machine.BatchFlavor >= 0 && (!Progression.HasFlavor(e, machine.BatchFlavor) ||
+                        Progression.FlavorMachineTier(machine.BatchFlavor) > Progression.MachineTier(i)) ||
+                    machine.BatchMeters > ShopShift.MetersForSize(Math.Min(machine.BatchSugarGrade,
+                        Progression.MachineTier(i)) - 1) + 1e-6 ||
+                    !string.IsNullOrEmpty(machine.BatchProductId) &&
+                        (machine.BatchMeters <= 0 || !e.CompletedIds.Contains(machine.BatchProductId) ||
+                         e.Inventory.Exists(product => product.Id == machine.BatchProductId)))
+                    return false;
+            }
+            var active = business.Machines[e.Progression.SelectedMachine];
+            if (business.SugarGrams != active.SugarGrams || business.SugarFlavor != active.SugarFlavor ||
+                business.BatchMeters != active.BatchMeters || business.BatchFlavor != active.BatchFlavor ||
+                business.BatchQuality != active.BatchQuality || business.BatchProductId != active.BatchProductId ||
+                business.BatchSugarGrade != active.BatchSugarGrade) return false;
+            return true;
+        }
+        static bool RestoreOptionalState(Envelope envelope)
+        {
+            if (envelope == null || envelope.State == null || envelope.Version < 1 || envelope.Version > 8) return false;
+            if (envelope.Version < 7 || !envelope.HasProgression)
+            {
+                if (envelope.HasProgression || !AbsentProgressionPlaceholder(envelope.State.Progression)) return false;
+                envelope.State.Progression = null;
+            }
+            else if (envelope.State.Progression == null) return false;
+            var business = envelope.State.Business;
+            if (envelope.Version < 4 || !envelope.HasBusiness)
+            {
+                // Old versions have no business state. Accept only absent data or the precise
+                // placeholder Unity writes for null, never discard a meaningful or corrupt payload.
+                if (envelope.HasBusiness || envelope.HasCustomer || !AbsentBusinessPlaceholder(business)) return false;
+                envelope.State.Business = null;
+                return true;
+            }
+            if (business == null) return false;
+            if (envelope.Version == 4)
+            {
+                if (envelope.HasCustomer)
+                {
+                    if (business.Customer == null || business.Customers != null && business.Customers.Count != 0) return false;
+                    business.Customer.Slot = 0;
+                    business.Customers = new List<ShopCustomer> { business.Customer };
+                    business.Customer = null;
+                    if (!business.Closed && business.NextCustomerIn == 0) business.NextCustomerIn = 2;
+                }
+                else
+                {
+                    if (!AbsentCustomerPlaceholder(business.Customer)) return false;
+                    business.Customer = null;
+                    business.Customers = new List<ShopCustomer>();
+                }
+                return true;
+            }
+            if (envelope.HasCustomer || !AbsentCustomerPlaceholder(business.Customer)) return false;
+            business.Customer = null;
+            if (business.Customers == null) return false;
+            return true;
+        }
+        static bool AbsentBusinessPlaceholder(BusinessState business)
+        {
+            return business == null ||
+                (business.RemainingSeconds == ShopShift.DayDuration && !business.Closed &&
+                business.SugarGrams == 0 && business.SugarFlavor == -1 &&
+                business.BatchMeters == 0 && business.BatchFlavor == -1 && business.BatchQuality == 50 && string.IsNullOrEmpty(business.BatchProductId) &&
+                business.DayMissed == 0 && business.DayRevenue == 0 && business.DaySold == 0 && business.DayWrong == 0 && business.DayTrashed == 0 &&
+                business.NextCustomerIn == 0 && AbsentCustomerPlaceholder(business.Customer) &&
+                (business.Customers == null || business.Customers.Count == 0));
+        }
+        static bool AbsentProgressionPlaceholder(ProgressionState state)
+        {
+            return state == null || (state.Phase == BusinessPhase.Preparation &&
+                (state.Purchases == null || state.Purchases.Count == 0) &&
+                state.SelectedMachine == 0 && state.SelectedLocation == 0 &&
+                (state.CartStyle == 0 || state.CartStyle == 1));
+        }
+        static bool AbsentCustomerPlaceholder(ShopCustomer customer)
+        {
+            return customer == null || (string.IsNullOrEmpty(customer.Id) && customer.Flavor == 0 &&
+                customer.Size == 0 && !customer.Angry && !customer.Happy && !customer.TimedOut &&
+                (customer.PatienceRemaining == 0 || customer.PatienceRemaining == ShopShift.CustomerPatience) && customer.ReactionRemaining == 0 && customer.Slot == 0);
         }
         static bool Upgrade(Envelope envelope)
         {
@@ -97,11 +336,39 @@ namespace CottonCircuit
                 if (!Valid(state, 120, false)) return false;
                 foreach (var order in state.Orders) order.Remaining *= CustomerOrder.Patience / 120;
             }
-            else if (envelope.Version != 3) return false;
+            else if (envelope.Version != 3 && envelope.Version != 4 && envelope.Version != 5 && envelope.Version != 6 &&
+                envelope.Version != 7 && envelope.Version != 8) return false;
             if (envelope.Version < 3)
                 foreach (var product in state.Inventory) product.Quality = 0;
+            if (envelope.Version < 7)
+                foreach (var product in state.Inventory) if (product.SugarGrade == 0) product.SugarGrade = 1;
+            if (envelope.Version >= 4 && envelope.Version < 6 && state.Business != null)
+            {
+                // Validate old constraints before migration; never normalize corrupt old data.
+                if (!Valid(state, CustomerOrder.Patience, true, true)) return false;
+                var business = state.Business;
+                business.BatchProductId = null;
+                business.DayMissed = 0;
+                if (!business.Closed)
+                    business.NextCustomerIn = business.Customers.Count == ShopShift.CustomerCapacity ?
+                        ShopShift.ArrivalDelay : business.NextCustomerIn / 2 * ShopShift.ArrivalDelay;
+                foreach (var customer in business.Customers)
+                {
+                    customer.Happy = customer.TimedOut = false;
+                    customer.PatienceRemaining = ShopShift.CustomerPatience;
+                }
+            }
+            if (envelope.Version == 7 && state.Progression != null)
+            {
+                // In V7, kart was free and downhill required the coupe node. Validate those
+                // original rules before moving an automatic default to the new free vehicle.
+                // Owners of the alternate vehicle retain either explicitly available choice.
+                if (!Valid(state, CustomerOrder.Patience, true, false, true)) return false;
+                if (state.Progression.CartStyle == 0 && Progression.Level(state, "coupe") == 0)
+                    state.Progression.CartStyle = 1;
+            }
             if (!Valid(state)) return false;
-            envelope.Version = 3;
+            envelope.Version = 8;
             return true;
         }
         static void MigrateLegacy(Economy e)
@@ -125,12 +392,23 @@ namespace CottonCircuit
             foreach (var product in e.Inventory)
             {
                 if (product == null || string.IsNullOrEmpty(product.Id) || !ids.Add(product.Id) || product.Samples == null ||
-                    product.Samples.Count == 0 || product.Samples.Count > 230 || product.Grams != product.Samples.Count * 2 ||
+                    product.Samples.Count == 0 || product.Samples.Count > (product.DistanceBased ? ShopShift.MaximumPreviewSamples : 230) ||
+                    product.Grams != product.Samples.Count * 2 ||
+                    (e.Progression != null && (product.SugarGrade < 1 || product.SugarGrade > Progression.MaxSugarGrade(e))) ||
+                    (e.Progression != null && product.DistanceBased &&
+                        (!Progression.HasFlavor(e, product.FlavorIndex) ||
+                         Progression.FlavorMachineTier(product.FlavorIndex) > Progression.OwnedMachines(e) ||
+                         product.DistanceMeters > ShopShift.MetersForSize(
+                             Math.Min(Progression.OwnedMachines(e), product.SugarGrade) - 1) + 1e-6)) ||
+                    (product.DistanceBased && (!Finite(product.DistanceMeters) || product.DistanceMeters <= 0 ||
+                        product.FlavorIndex < 0 || product.FlavorIndex > 2)) ||
                     (validateQuality && (product.Quality < 0 || product.Quality > 100))) return false;
                 double previous = 0;
                 foreach (var sample in product.Samples)
                 {
-                    if (sample == null || sample.Flavor < 0 || sample.Flavor > 2 || !Finite(sample.Radius) || sample.Radius < 7 || sample.Radius > 13 ||
+                    if (sample == null || sample.Flavor < 0 || sample.Flavor > 2 ||
+                        (product.DistanceBased && sample.Flavor != product.FlavorIndex) ||
+                        !Finite(sample.Radius) || sample.Radius < 7 || sample.Radius > 13 ||
                         !Finite(sample.Angle) || sample.Angle <= previous || sample.Angle > 100) return false;
                     previous = sample.Angle;
                 }

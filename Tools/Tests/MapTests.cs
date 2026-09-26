@@ -21,7 +21,7 @@ public static class MapTests
             Math.Max(-1, Math.Min(1, Turn(desired - drive.Heading) * 2.2)),
             drive.Speed > speed + .8, false, .02);
     }
-    static void VerifyShortcut(RaceCourse course, DrivingStyle style)
+    static void VerifyShortcut(RaceCourse course, DrivingStyle style, double laneOffset = 0)
     {
         var drive = new ArcadeDrive(course) { Style = style };
         double entry = course.Project(course.ShortcutPoints[0]).Progress;
@@ -34,7 +34,7 @@ public static class MapTests
             Steer(drive, course.Sample(drive.Sample.Progress + 8).Position, 8);
         Check(drive.Sample.Progress >= entry - 10 && drive.WallHits == 0, "shortcut approach hit a wall");
         bool entered = false, merged = false;
-        double largestReward = 0;
+        double largestReward = 0, distanceInNewLane = 0;
         for (int step = 0; step < 9000; step++)
         {
             int nearest = 0; double distance = double.PositiveInfinity;
@@ -51,13 +51,24 @@ public static class MapTests
             }
             RoadPoint target = ahead == course.ShortcutPoints.Length - 1
                 ? course.Sample(exit + 6).Position : course.ShortcutPoints[ahead];
+            if (ahead < course.ShortcutPoints.Length - 1 && laneOffset != 0)
+            {
+                var tangent = course.ShortcutPoints[ahead + 1] - course.ShortcutPoints[ahead - 1];
+                double length = Distance(tangent, new RoadPoint(0, 0));
+                double taper = Math.Min(1, Math.Min(ahead / 18.0, (course.ShortcutPoints.Length - 1 - ahead) / 18.0));
+                target += new RoadPoint(tangent.Z, -tangent.X) * (laneOffset * taper / length);
+            }
+            var before = drive.Position;
             Steer(drive, target, 8);
             entered |= drive.Sample.IsShortcut;
+            if (drive.Sample.IsShortcut && laneOffset != 0 && drive.Sample.Lateral * Math.Sign(laneOffset) > 1.6)
+                distanceInNewLane += Distance(before, drive.Position);
             largestReward = Math.Max(largestReward, drive.LastRewardDistance);
             Check(drive.WallHits == 0, "shortcut traversal hit a wall at " + drive.Sample.Progress.ToString("F2"));
             if (entered && !drive.Sample.IsShortcut && drive.Sample.Progress > exit + 3) { merged = true; break; }
         }
         Check(entered && merged, "kart failed to enter and merge from shortcut");
+        if (laneOffset != 0) Check(distanceInNewLane > 8, "kart did not traverse the newly opened shortcut lane");
         Check(largestReward < .6, "shortcut awarded a discontinuous progress pulse");
         Check(drive.TotalProgress > exit - 4 && drive.TotalProgress <= drive.Sample.Progress + .1,
             "shortcut lost or awarded free progress: " + drive.TotalProgress + " at " + drive.Sample.Progress);
@@ -82,7 +93,9 @@ public static class MapTests
         Check(drive.BestLapSeconds >= 16 && drive.BestLapSeconds <= 32,
             "lap time outside expected race duration: " + drive.BestLapSeconds);
         Check(drive.WallHits == 0, "main course follower hit " + drive.WallHits + " walls");
-        Check(drive.TotalProgress >= drive.Course.Length - 1, "main course lost progress before finish");
+        Check(drive.TotalProgress >= drive.Course.Length - 1,
+            "main course lost progress before finish: " + drive.TotalProgress.ToString("F2") +
+            " of " + drive.Course.Length.ToString("F2") + " at sample " + drive.Sample.Progress.ToString("F2"));
         if (style == DrivingStyle.Downhill) Check(peak > 32 && braked, "downhill did not use sustained acceleration and corner braking");
         Console.WriteLine("  " + style + ", motor " + motor + ", length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s, peak " + peak.ToString("F1") + "m/s");
     }
@@ -94,8 +107,9 @@ public static class MapTests
                 "starter course must be 520..620m, got " + RaceCourse.Shared.Length);
         });
         Test("maps select different full circuits and reject unsupported indices", () => {
-            var small = RaceCourse.ForMap(0); var large = RaceCourse.ForMap(1);
+            var small = RaceCourse.ForMap(0); var large = RaceCourse.ForMap(1); var third = RaceCourse.ForMap(2);
             Check(ReferenceEquals(small, RaceCourse.Shared), "legacy default changed away from map 1");
+            Check(RaceCourse.MapCount == 3 && third.MapIndex == 2, "third course missing");
             Check(large.Length >= 640 && large.Length <= 750,
                 "large course must be 640..750m, got " + large.Length);
             double difference = 0;
@@ -103,7 +117,7 @@ public static class MapTests
                 difference += Distance(small.Sample(small.Length * i / 16).Position * (1 / small.Length),
                     large.Sample(large.Length * i / 16).Position * (1 / large.Length));
             Check(difference > .3, "second layout is only a scaled first layout");
-            foreach (int invalid in new[] { -1, 2, int.MaxValue })
+            foreach (int invalid in new[] { -1, 3, int.MaxValue })
             {
                 bool rejected = false;
                 try { RaceCourse.ForMap(invalid); }
@@ -111,7 +125,7 @@ public static class MapTests
                 Check(rejected, "unsupported map silently used a valid course");
             }
         });
-        for (int map = 0; map < 2; map++)
+        for (int map = 0; map < RaceCourse.MapCount; map++)
         {
             int selected = map;
             Test("map " + (map + 1) + " road and shortcut form finite, connected drivable ribbons", () => {
@@ -156,6 +170,12 @@ public static class MapTests
                     () => VerifyLap(RaceCourse.ForMap(selected), selectedStyle));
                 Test("map " + (map + 1) + " " + style + " shortcut saves distance and drives a clean counted lap",
                     () => VerifyShortcut(RaceCourse.ForMap(selected), selectedStyle));
+                foreach (int side in new[] { -1, 1 })
+                {
+                    int selectedSide = side;
+                    Test("map " + (map + 1) + " " + style + " drives the expanded shortcut lane on side " + side,
+                        () => VerifyShortcut(RaceCourse.ForMap(selected), selectedStyle, selectedSide * 2.1));
+                }
             }
             Test("map " + (map + 1) + " upgraded downhill handles high speed with corner braking",
                 () => VerifyLap(RaceCourse.ForMap(selected), DrivingStyle.Downhill, 38.5));

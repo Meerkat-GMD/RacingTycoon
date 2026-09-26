@@ -55,6 +55,11 @@ namespace CottonCircuit
         {
             DriveModel = new ArcadeDrive(course); ResetPosition();
         }
+        public void RestoreDrive(ArcadeDrive model)
+        {
+            if (model == null) return;
+            DriveModel = model; ImpactFlash = 0; ClearTrails(); ApplyPose(0);
+        }
         public void SetStyle(DrivingStyle style, GameObject coupePrefab)
         {
             DriveModel.Style = style;

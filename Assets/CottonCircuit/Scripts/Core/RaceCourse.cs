@@ -20,10 +20,11 @@ namespace CottonCircuit
 
     public sealed class RaceCourse
     {
-        public const double MainHalfWidth = 4.8;
-        public const double ShortcutHalfWidth = 2.2;
+        public const double MainHalfWidth = 7.2;
+        public const double ShortcutHalfWidth = 3.3;
         const int StepsPerAnchor = 24;
-        static readonly RaceCourse[] Maps = { new RaceCourse(0), new RaceCourse(1) };
+        static readonly RaceCourse[] Maps = { new RaceCourse(0), new RaceCourse(1), new RaceCourse(2) };
+        public static int MapCount { get { return Maps.Length; } }
         public static readonly RaceCourse Shared = Maps[0];
         public static RaceCourse ForMap(int map)
         {
@@ -43,21 +44,28 @@ namespace CottonCircuit
         RaceCourse(int map)
         {
             MapIndex = map;
-            // Tighten corner spacing while retaining the two layouts: an east
-            // sweep and rolling north on map 1, north chicane and southwest dogleg on map 2.
+            // Three separate paths share the same machine ring and road widths.
+            // The third path bends across the south and enters a long northeast shortcut.
             RoadPoint[] anchors = map == 0 ? new[] {
                 new RoadPoint(0, -66.5), new RoadPoint(49, -66.5), new RoadPoint(81.2, -47.6),
                 new RoadPoint(93.1, -15.4), new RoadPoint(83.3, 16.1), new RoadPoint(90, 49),
                 new RoadPoint(70, 73.5), new RoadPoint(36.4, 81.2), new RoadPoint(10.5, 67.9),
                 new RoadPoint(-16.8, 74.9), new RoadPoint(-60.9, 68.6), new RoadPoint(-86.8, 39.9),
                 new RoadPoint(-85.4, 0), new RoadPoint(-58.1, -51.8), new RoadPoint(-29.4, -66.5)
-            } : new[] {
+            } : map == 1 ? new[] {
                 new RoadPoint(-21, -94.2), new RoadPoint(30, -94.2), new RoadPoint(69, -76.2),
                 new RoadPoint(98.4, -37.8), new RoadPoint(96, 12), new RoadPoint(82, 39),
                 new RoadPoint(83, 69), new RoadPoint(51.6, 96), new RoadPoint(9.6, 106.8),
                 new RoadPoint(-22.2, 87), new RoadPoint(-62.4, 90.6), new RoadPoint(-94.2, 61.2),
                 new RoadPoint(-105, 14.4), new RoadPoint(-90, -26.4), new RoadPoint(-81, -42),
                 new RoadPoint(-76, -63), new RoadPoint(-55.2, -94.2)
+            } : new[] {
+                new RoadPoint(0, -105), new RoadPoint(38, -105), new RoadPoint(75, -87),
+                new RoadPoint(105, -56), new RoadPoint(118, -20), new RoadPoint(100, 13),
+                new RoadPoint(110, 47), new RoadPoint(92, 80), new RoadPoint(61, 104),
+                new RoadPoint(25, 95), new RoadPoint(-5, 108), new RoadPoint(-43, 93),
+                new RoadPoint(-75, 65), new RoadPoint(-106, 34), new RoadPoint(-115, -10),
+                new RoadPoint(-93, -47), new RoadPoint(-64, -79), new RoadPoint(-33, -104)
             };
             MainPoints = new RoadPoint[anchors.Length * StepsPerAnchor];
             for (int i = 0; i < MainPoints.Length; i++)
@@ -72,10 +80,11 @@ namespace CottonCircuit
             for (int i = 0; i < MainPoints.Length; i++)
                 mainDistances[i + 1] = mainDistances[i] + Distance(MainPoints[i], MainPoints[(i + 1) % MainPoints.Length]);
             Length = mainDistances[MainPoints.Length];
-            int entry = map == 0 ? 4 : 9, exit = map == 0 ? 7 : 12;
+            int entry = map == 0 ? 4 : map == 1 ? 9 : 5;
+            int exit = map == 0 ? 7 : map == 1 ? 12 : 9;
             shortcutStart = mainDistances[entry * StepsPerAnchor];
             shortcutEnd = mainDistances[exit * StepsPerAnchor];
-            double handle = map == 0 ? 28 : 33;
+            double handle = map == 0 ? 28 : map == 1 ? 33 : 34;
             RoadPoint entryControl = anchors[entry] + Unit(anchors[entry + 1] - anchors[entry - 1]) * handle;
             RoadPoint exitControl = anchors[exit] - Unit(anchors[exit + 1] - anchors[exit - 1]) * handle;
             ShortcutPoints = new RoadPoint[StepsPerAnchor * 3 + 1];

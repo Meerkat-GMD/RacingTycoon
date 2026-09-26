@@ -64,7 +64,9 @@ public static class DrivingTests
                 "shortcut is not connected to main progress");
         });
         Test("kart clearance selects the wider valid ribbon at a shortcut overlap", () => {
-            var p = new RoadPoint(80.9, 19.0);
+            // Independently measured segment distances: main 5.026m, shortcut 2.942m.
+            // The closer shortcut fits a point, but only the main fits the .8m kart.
+            var p = new RoadPoint(79.4, 25.0);
             var withoutClearance = RaceCourse.Shared.Project(p);
             Check(withoutClearance.IsShortcut && Math.Abs(withoutClearance.Lateral) > RaceCourse.ShortcutHalfWidth - .8,
                 "fixture no longer overlaps a narrow shortcut edge");
@@ -72,6 +74,40 @@ public static class DrivingTests
             Check(!s.IsShortcut && Math.Abs(s.Lateral) < s.HalfWidth - .8,
                 "narrow shortcut displaced a valid main-road position");
         });
+        foreach (int map in new[] { 0, 1 })
+        foreach (DrivingStyle style in new[] { DrivingStyle.Kart, DrivingStyle.Downhill })
+        foreach (int side in new[] { -1, 1 })
+        {
+            int selectedMap = map, selectedSide = side;
+            DrivingStyle selectedStyle = style;
+            Test("map " + (map + 1) + " " + style + " drives the expanded main lane on side " + side, () => {
+                var drive = new ArcadeDrive(RaceCourse.ForMap(selectedMap)) { Style = selectedStyle };
+                double distanceInNewLane = 0;
+                for (int step = 0; step < 1600 && drive.Sample.Progress < 65; step++)
+                {
+                    var ahead = drive.Course.Sample(drive.Sample.Progress + 8);
+                    var right = new RoadPoint(ahead.Tangent.Z, -ahead.Tangent.X);
+                    var before = drive.Position;
+                    SteerToward(drive, ahead.Position + right * (selectedSide * 5.5), 8);
+                    Check(drive.WallHits == 0, "expanded main lane hit a wall at lateral " + drive.Sample.Lateral);
+                    if (drive.Sample.Lateral * selectedSide > 5)
+                        distanceInNewLane += Distance(before, drive.Position);
+                }
+                Check(distanceInNewLane > 20, "kart did not traverse the newly opened main lane");
+            });
+            Test("map " + (map + 1) + " " + style + " still collides beyond the expanded main edge on side " + side, () => {
+                var drive = new ArcadeDrive(RaceCourse.ForMap(selectedMap)) { Style = selectedStyle };
+                for (int step = 0; step < 700 && drive.WallHits == 0; step++)
+                {
+                    var ahead = drive.Course.Sample(drive.Sample.Progress + 8);
+                    var right = new RoadPoint(ahead.Tangent.Z, -ahead.Tangent.X);
+                    SteerToward(drive, ahead.Position + right * (selectedSide * 8.5), 8);
+                }
+                Check(drive.WallHits > 0, "kart escaped the expanded road without a wall collision");
+                Near(drive.Sample.Lateral * selectedSide, 6.4, .04,
+                    "wall did not keep the kart's .8m half-width inside the 7.2m road edge");
+            });
+        }
         Test("throttle moves freely and right steering turns clockwise", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);
             var start = d.Position;

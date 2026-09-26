@@ -12,7 +12,18 @@ namespace CottonCircuit
         public double Speed { get; private set; }
         public RoadPoint Velocity { get; private set; }
         public double MaximumSpeed { get; set; }
-        public DrivingStyle Style { get; set; }
+        public double SteeringMultiplier = 1;
+        DrivingStyle style;
+        public DrivingStyle Style
+        {
+            get { return style; }
+            set
+            {
+                style = value;
+                if (style != DrivingStyle.Downhill) return;
+                ClearBoost(); StoredBoosts = 0; LastBoostedRewardDistance = 0;
+            }
+        }
         public double SteeringInput { get; private set; }
         public double DriftCharge { get; private set; }
         public double BoostRemaining { get; private set; }
@@ -157,12 +168,17 @@ namespace CottonCircuit
                 if (BoostRemaining < 1e-9) ClearBoost();
             }
 
-            Speed = DriveAcceleration.Advance(Speed, throttle, brake, Style, speedLimit, boosted ? activeTier : 0, dt);
+            double previousSpeed = Speed;
+            Speed = DriveAcceleration.Advance(Speed, throttle, brake, Style, speedLimit, boosted ? activeTier : 0, dt, drift);
+            // Slow the existing road motion as well as the target speed, retaining
+            // the slip direction instead of waiting for the low drift grip to catch up.
+            if (downhill && drift && Speed < previousSpeed)
+                Velocity = Velocity * Clamp(Speed / previousSpeed, 0, 1);
             double rollingSteer = Speed / (Speed + 4);
             double highSpeedStability = 1 - .18 * Clamp(Speed / 26, 0, 1);
             double steeringRate = (slideInput ? (downhill ? 2.6 : 2.85) : 2.45) * highSpeedStability *
                 (.25 * throttle + (1 - .25 * throttle) * rollingSteer);
-            Heading += SteeringInput * steeringRate * dt;
+            Heading += SteeringInput * steeringRate * dt * SteeringMultiplier;
             RoadPoint facing = new RoadPoint(Math.Sin(Heading), Math.Cos(Heading));
             RoadPoint desiredVelocity = facing * Speed;
             double grip = slideInput ? (downhill ? 2.2 : 2.7) : (downhill ? 7.5 : 13);
