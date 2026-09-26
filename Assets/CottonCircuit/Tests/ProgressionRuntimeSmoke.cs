@@ -176,7 +176,7 @@ namespace CottonCircuit.Tests
                 "optional classic kart selection swaps the vehicle visual");
             yield return ClickProgression("SelectCart_1");
             Check(e.Progression.CartStyle == 1, "downhill can be reselected after unlocking the classic kart");
-            CheckDefaultShiftDriving("reselected progression downhill");
+            CheckDefaultShiftDriving("reselected progression downhill", true);
             Check(GameObject.Find("RecipeFlavor_1")==null && GameObject.Find("RecipeSize_1")==null,
                 "worker recipe controls stay hidden until a worker is assigned");
             yield return ClickProgression("AssignWorker_1"); yield return null;
@@ -196,12 +196,12 @@ namespace CottonCircuit.Tests
             CaptureShift("07-starlight.png"); yield return ClickProgression("BeginBusiness"); yield return null;
             Check(e.Day==2 && e.Business.RemainingSeconds==Progression.DaySeconds(e),"next day applies duration and clears shelf");
             Check(game.World.Kart.DriveModel.Course==RaceCourse.ForMap(2),"third machine opens third physical map");
-            CheckDefaultShiftDriving("third machine business");
+            CheckDefaultShiftDriving("third machine business", true);
             PourGesture(2,2); game.Tick(0,0,false,2); double batch=e.Business.BatchMeters;
             var drive=game.World.Kart.DriveModel;
             game.ChooseMachine(0); game.Tick(0,0,false,1); game.ChooseMachine(2);
             Check(object.ReferenceEquals(drive,game.World.Kart.DriveModel) && Math.Abs(batch-e.Business.BatchMeters)<1e-7,"switch restores track and candy");
-            CheckDefaultShiftDriving("return to third machine");
+            CheckDefaultShiftDriving("return to third machine", true);
             game.TogglePause(); double clock=e.Business.RemainingSeconds; game.Tick(0,0,false,10);
             Check(e.Business.RemainingSeconds==clock,"pause freezes all machines"); game.TogglePause();
             game.Tick(0,0,false,100); Check(e.Inventory.Count>0,"assigned worker creates shelf products while player drives");
@@ -241,8 +241,13 @@ namespace CottonCircuit.Tests
             yield return ClickProgression("SelectCart_0");
             yield return ClickProgression("OpenLocations");
             yield return ClickProgression("BeginBusiness");
-            yield return ClickProgression("Auto drive toggle");
             var kartMeter=FindProgressionUI("Drift meter");
+            Check(!game.AutoDrive && kartMeter.activeInHierarchy,
+                "manual optional kart shows its booster meter");
+            yield return ClickProgression("Auto drive toggle");
+            Check(game.AutoDrive && !kartMeter.activeInHierarchy,
+                "automatic optional kart hides its booster meter");
+            yield return ClickProgression("Auto drive toggle");
             Check(!game.AutoDrive && kartMeter.activeInHierarchy,
                 "manual optional kart restores its visible booster meter");
             game.TogglePause();
@@ -252,7 +257,6 @@ namespace CottonCircuit.Tests
             game.Shift.Advance(1000,0); game.UI.Refresh(); game.ReturnToPreparation();
             yield return null; yield return ClickProgression("OpenEquipment");
             yield return ClickProgression("SelectCart_1");
-            if (!game.AutoDrive) game.ToggleAutoDrive();
             CheckDefaultShiftDriving("after optional kart UI regression");
             Check(SaveStore.Valid(e),"booster regression leaves a valid downhill preparation save");
             yield return CheckInspectorSugarShake();
@@ -281,10 +285,6 @@ namespace CottonCircuit.Tests
         IEnumerator CheckDownhillBoosterUI()
         {
             var meter=FindProgressionUI("Drift meter");
-            Check(game.AutoDrive && !meter.activeSelf && !meter.activeInHierarchy,
-                "automatic downhill hides the booster meter");
-            CheckVisibleDownhillText("automatic downhill");
-            yield return ClickProgression("Auto drive toggle");
             Check(!game.AutoDrive && !meter.activeSelf && !meter.activeInHierarchy,
                 "manual downhill hides the booster meter");
             CheckVisibleDownhillText("manual downhill");
@@ -301,8 +301,12 @@ namespace CottonCircuit.Tests
             Check(controls.activeInHierarchy && !HasBoosterWords(controls.GetComponent<Text>().text),
                 "downhill pause help omits booster controls");
             game.TogglePause();
+            // The production checks after this regression use the automatic driver.
             yield return ClickProgression("Auto drive toggle");
-            CheckDefaultShiftDriving("after manual downhill UI regression");
+            Check(game.AutoDrive && !meter.activeSelf && !meter.activeInHierarchy,
+                "automatic downhill hides the booster meter");
+            CheckVisibleDownhillText("automatic downhill");
+            CheckDefaultShiftDriving("after manual downhill UI regression", true);
         }
 
         void CheckShakeStrength(string resolution, bool capture)

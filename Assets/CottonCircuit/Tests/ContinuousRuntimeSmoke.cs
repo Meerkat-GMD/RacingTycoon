@@ -16,17 +16,19 @@ namespace CottonCircuit.Tests
             game.Initialize(saveDirectory, true, false);
             Screen.SetResolution(1600, 900, false);
             yield return new WaitForSecondsRealtime(.5f);
-            Check(game.ContinuousMode && game.AutoDrive && game.RaceVisible &&
+            Check(game.ContinuousMode && !game.AutoDrive && game.RaceVisible &&
                 game.Session.Mode == GameMode.Racing && game.Session.RecipeMode,
-                "default game starts continuous production with automatic driving");
+                "default game starts continuous production with manual driving");
             Check(game.Orders.Orders.Count == 1 && game.RunMap == 0 && game.RunFlavor == 0,
                 "continuous fresh game starts the first customer's recipe");
 
-            ClickObject("Auto drive toggle");
-            Check(!game.AutoDrive, "automatic driving can be switched to manual with its button");
             game.Tick(0, 0, false, .5f);
             Check(game.Session.Production.Grams == 0 && game.World.Kart.Speed < .01f,
                 "manual driving waits for input rather than producing while stationary");
+            ClickObject("Auto drive toggle");
+            Check(game.AutoDrive, "manual driving can be switched to automatic with its button");
+            ClickObject("Auto drive toggle");
+            Check(!game.AutoDrive, "automatic driving can be switched back to manual with its button");
             ClickObject("Auto drive toggle");
             Check(game.AutoDrive, "automatic driving can be resumed with its button");
             game.Tick(0, 0, false, 3);

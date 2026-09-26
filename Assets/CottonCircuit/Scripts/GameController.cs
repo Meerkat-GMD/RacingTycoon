@@ -21,7 +21,7 @@ namespace CottonCircuit
         public int RunTargetGrams { get; private set; } = 60;
         public int RunFlavor { get; private set; } = -1;
         public bool ContinuousMode { get; private set; }
-        public bool AutoDrive { get; private set; } = true;
+        public bool AutoDrive { get; private set; }
         public bool RaceVisible => ContinuousMode || Session?.Mode == GameMode.Racing;
         public double RunProgress => Session == null || Session.ProductionWaiting || World.Kart.DriveModel == null
             ? 0 : World.Kart.DriveModel.Sample.Progress / World.Kart.DriveModel.Course.Length;
@@ -43,7 +43,7 @@ namespace CottonCircuit
                 Progression.Enable(Session.Economy);
                 Session.Economy.Business = null; Session.Economy.Inventory.Clear(); Session.Economy.CompletedIds.Clear();
             }
-            ContinuousMode = continuous; AutoDrive = true;
+            ContinuousMode = continuous; AutoDrive = false;
             Shift = continuous && businessDay ? new ShopShift(Session.Economy) : null;
             Orders = Shift == null ? new OrderManager(Session.Economy) : null;
             orderRevision = Orders == null ? 0 : Orders.Revision;

@@ -28,6 +28,9 @@ namespace CottonCircuit.Tests
             CheckShiftRoadWidths();
             checks += ShopShiftSaveChecks.Run(Path.Combine(output, "save-checks"));
             CaptureShift("01-open.png");
+            // The production checks below measure the automatic driver's travel.
+            game.ToggleAutoDrive();
+            Check(game.AutoDrive, "fresh day can switch to automatic driving");
             int coinsBefore = game.Session.Economy.Coins;
             DriveShiftSeconds(59.9);
             Check(game.Shift.State.Customers.Count == 1, "only the first customer waits before the sixty-second arrival");
@@ -196,7 +199,6 @@ namespace CottonCircuit.Tests
             // manual-input check independent of their measured travel and sugar use.
             game.Initialize(saveDirectory, true, true, false);
             CheckDefaultShiftDriving("open-day reload");
-            game.ToggleAutoDrive();
             var manualDrive = game.World.Kart.DriveModel;
             game.Tick(1, 0, false, 1);
             double launchSpeed = manualDrive.Speed;
@@ -237,7 +239,6 @@ namespace CottonCircuit.Tests
         void CheckEmptySugarButton()
         {
             game.Initialize(Path.Combine(output, "empty-sugar-" + Guid.NewGuid().ToString("N")), true, true, false);
-            game.ToggleAutoDrive();
             game.PourSugar(0); game.PourSugar(0);
             game.Shift.Advance(1, ShopShift.LapMeters * .1);
             AddRackStock(1, 1);
@@ -548,10 +549,10 @@ namespace CottonCircuit.Tests
             return product;
         }
 
-        void CheckDefaultShiftDriving(string context)
+        void CheckDefaultShiftDriving(string context, bool autoDrive = false)
         {
             var kart = game.World.Kart;
-            Check(game.AutoDrive, context + " opens with auto driving enabled");
+            Check(game.AutoDrive == autoDrive, context + (autoDrive ? " keeps automatic driving" : " opens with manual driving"));
             Check(game.PreparedStyle == DrivingStyle.Downhill && game.RunStyle == DrivingStyle.Downhill &&
                 kart.DriveModel.Style == DrivingStyle.Downhill, context + " uses the downhill driving model");
             Check(kart.DriveModel.StoredBoosts == 0, context + " has no inherited kart booster");
