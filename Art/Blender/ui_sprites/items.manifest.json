@@ -1,0 +1,2178 @@
+{
+  "category": "items",
+  "module": "Art/Blender/ui_sprites/items.py",
+  "source_spec": "docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md",
+  "blender_version": "5.2.2 LTS",
+  "blend": "Art/Blender/ui_sprites/items.blend",
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "adaptive_sampling": false,
+    "seed": 260927,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1.0,
+    "format": "PNG",
+    "color_mode": "RGBA",
+    "bit_depth": 8
+  },
+  "palette": {
+    "Strawberry": "#F48DAB",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Cream": "#FFF1D4",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Wood": "#D59C79",
+    "Tire": "#414059",
+    "Base": "#9DBBAF",
+    "Skin1": "#F1C6A6",
+    "Skin2": "#B87A65",
+    "Skin3": "#E8AF88",
+    "Hair1": "#574F59",
+    "Hair2": "#8D5B4A",
+    "Hair3": "#45475B",
+    "Pants1": "#7C789D",
+    "Pants2": "#65688B",
+    "Pants3": "#5F968F",
+    "Magenta": "#C2577E"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "material_recipe": {
+    "roughness": 0.85,
+    "specular_ior_level": 0.08
+  },
+  "coordinate_system": {
+    "up": "+Z",
+    "front": "-Y",
+    "units": "meters"
+  },
+  "passes": "Art/Blender/ui-sprite-passes/items",
+  "assets": [
+    {
+      "id": "CottonCandy_Strawberry_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Small.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Strawberry",
+        "size": "Small",
+        "floss_scale": 1.0,
+        "floss_seed": "260927:Strawberry",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Strawberry_Small_Cream_Paper_Stick",
+        "CottonCandy_Strawberry_Small_Floss_Core",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_01",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_02",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_03",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_04",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_05",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_06",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_07",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_08",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_09",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_10",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_11",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_12",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_13",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_14",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_15",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_16",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_17",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_18",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_19",
+        "CottonCandy_Strawberry_Small_Floss_Lobe_20",
+        "CottonCandy_Strawberry_Small_Strawberry_Stick_Stripe_01",
+        "CottonCandy_Strawberry_Small_Strawberry_Stick_Stripe_02",
+        "CottonCandy_Strawberry_Small_Strawberry_Stick_Stripe_03",
+        "CottonCandy_Strawberry_Small_Strawberry_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Strawberry_Small_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Strawberry_Small_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Strawberry_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Strawberry",
+        "size": "Medium",
+        "floss_scale": 1.1619,
+        "floss_seed": "260927:Strawberry",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Strawberry_Medium_Cream_Paper_Stick",
+        "CottonCandy_Strawberry_Medium_Floss_Core",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_01",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_02",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_03",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_04",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_05",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_06",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_07",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_08",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_09",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_10",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_11",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_12",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_13",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_14",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_15",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_16",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_17",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_18",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_19",
+        "CottonCandy_Strawberry_Medium_Floss_Lobe_20",
+        "CottonCandy_Strawberry_Medium_Strawberry_Stick_Stripe_01",
+        "CottonCandy_Strawberry_Medium_Strawberry_Stick_Stripe_02",
+        "CottonCandy_Strawberry_Medium_Strawberry_Stick_Stripe_03",
+        "CottonCandy_Strawberry_Medium_Strawberry_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Strawberry_Medium_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Strawberry_Medium_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Strawberry_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Large.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Strawberry",
+        "size": "Large",
+        "floss_scale": 1.35,
+        "floss_seed": "260927:Strawberry",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Strawberry_Large_Cream_Paper_Stick",
+        "CottonCandy_Strawberry_Large_Floss_Core",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_01",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_02",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_03",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_04",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_05",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_06",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_07",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_08",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_09",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_10",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_11",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_12",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_13",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_14",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_15",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_16",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_17",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_18",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_19",
+        "CottonCandy_Strawberry_Large_Floss_Lobe_20",
+        "CottonCandy_Strawberry_Large_Strawberry_Stick_Stripe_01",
+        "CottonCandy_Strawberry_Large_Strawberry_Stick_Stripe_02",
+        "CottonCandy_Strawberry_Large_Strawberry_Stick_Stripe_03",
+        "CottonCandy_Strawberry_Large_Strawberry_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Strawberry_Large_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Strawberry_Large_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Soda_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Soda_Small.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Soda",
+        "size": "Small",
+        "floss_scale": 1.0,
+        "floss_seed": "260927:Soda",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Soda_Small_Cream_Paper_Stick",
+        "CottonCandy_Soda_Small_Floss_Core",
+        "CottonCandy_Soda_Small_Floss_Lobe_01",
+        "CottonCandy_Soda_Small_Floss_Lobe_02",
+        "CottonCandy_Soda_Small_Floss_Lobe_03",
+        "CottonCandy_Soda_Small_Floss_Lobe_04",
+        "CottonCandy_Soda_Small_Floss_Lobe_05",
+        "CottonCandy_Soda_Small_Floss_Lobe_06",
+        "CottonCandy_Soda_Small_Floss_Lobe_07",
+        "CottonCandy_Soda_Small_Floss_Lobe_08",
+        "CottonCandy_Soda_Small_Floss_Lobe_09",
+        "CottonCandy_Soda_Small_Floss_Lobe_10",
+        "CottonCandy_Soda_Small_Floss_Lobe_11",
+        "CottonCandy_Soda_Small_Floss_Lobe_12",
+        "CottonCandy_Soda_Small_Floss_Lobe_13",
+        "CottonCandy_Soda_Small_Floss_Lobe_14",
+        "CottonCandy_Soda_Small_Floss_Lobe_15",
+        "CottonCandy_Soda_Small_Floss_Lobe_16",
+        "CottonCandy_Soda_Small_Floss_Lobe_17",
+        "CottonCandy_Soda_Small_Floss_Lobe_18",
+        "CottonCandy_Soda_Small_Floss_Lobe_19",
+        "CottonCandy_Soda_Small_Floss_Lobe_20",
+        "CottonCandy_Soda_Small_Soda_Stick_Stripe_01",
+        "CottonCandy_Soda_Small_Soda_Stick_Stripe_02",
+        "CottonCandy_Soda_Small_Soda_Stick_Stripe_03",
+        "CottonCandy_Soda_Small_Soda_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Soda_Small_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Soda_Small_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Soda_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Soda_Medium.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Soda",
+        "size": "Medium",
+        "floss_scale": 1.1619,
+        "floss_seed": "260927:Soda",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Soda_Medium_Cream_Paper_Stick",
+        "CottonCandy_Soda_Medium_Floss_Core",
+        "CottonCandy_Soda_Medium_Floss_Lobe_01",
+        "CottonCandy_Soda_Medium_Floss_Lobe_02",
+        "CottonCandy_Soda_Medium_Floss_Lobe_03",
+        "CottonCandy_Soda_Medium_Floss_Lobe_04",
+        "CottonCandy_Soda_Medium_Floss_Lobe_05",
+        "CottonCandy_Soda_Medium_Floss_Lobe_06",
+        "CottonCandy_Soda_Medium_Floss_Lobe_07",
+        "CottonCandy_Soda_Medium_Floss_Lobe_08",
+        "CottonCandy_Soda_Medium_Floss_Lobe_09",
+        "CottonCandy_Soda_Medium_Floss_Lobe_10",
+        "CottonCandy_Soda_Medium_Floss_Lobe_11",
+        "CottonCandy_Soda_Medium_Floss_Lobe_12",
+        "CottonCandy_Soda_Medium_Floss_Lobe_13",
+        "CottonCandy_Soda_Medium_Floss_Lobe_14",
+        "CottonCandy_Soda_Medium_Floss_Lobe_15",
+        "CottonCandy_Soda_Medium_Floss_Lobe_16",
+        "CottonCandy_Soda_Medium_Floss_Lobe_17",
+        "CottonCandy_Soda_Medium_Floss_Lobe_18",
+        "CottonCandy_Soda_Medium_Floss_Lobe_19",
+        "CottonCandy_Soda_Medium_Floss_Lobe_20",
+        "CottonCandy_Soda_Medium_Soda_Stick_Stripe_01",
+        "CottonCandy_Soda_Medium_Soda_Stick_Stripe_02",
+        "CottonCandy_Soda_Medium_Soda_Stick_Stripe_03",
+        "CottonCandy_Soda_Medium_Soda_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Soda_Medium_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Soda_Medium_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Soda_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Soda_Large.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Soda",
+        "size": "Large",
+        "floss_scale": 1.35,
+        "floss_seed": "260927:Soda",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Soda_Large_Cream_Paper_Stick",
+        "CottonCandy_Soda_Large_Floss_Core",
+        "CottonCandy_Soda_Large_Floss_Lobe_01",
+        "CottonCandy_Soda_Large_Floss_Lobe_02",
+        "CottonCandy_Soda_Large_Floss_Lobe_03",
+        "CottonCandy_Soda_Large_Floss_Lobe_04",
+        "CottonCandy_Soda_Large_Floss_Lobe_05",
+        "CottonCandy_Soda_Large_Floss_Lobe_06",
+        "CottonCandy_Soda_Large_Floss_Lobe_07",
+        "CottonCandy_Soda_Large_Floss_Lobe_08",
+        "CottonCandy_Soda_Large_Floss_Lobe_09",
+        "CottonCandy_Soda_Large_Floss_Lobe_10",
+        "CottonCandy_Soda_Large_Floss_Lobe_11",
+        "CottonCandy_Soda_Large_Floss_Lobe_12",
+        "CottonCandy_Soda_Large_Floss_Lobe_13",
+        "CottonCandy_Soda_Large_Floss_Lobe_14",
+        "CottonCandy_Soda_Large_Floss_Lobe_15",
+        "CottonCandy_Soda_Large_Floss_Lobe_16",
+        "CottonCandy_Soda_Large_Floss_Lobe_17",
+        "CottonCandy_Soda_Large_Floss_Lobe_18",
+        "CottonCandy_Soda_Large_Floss_Lobe_19",
+        "CottonCandy_Soda_Large_Floss_Lobe_20",
+        "CottonCandy_Soda_Large_Soda_Stick_Stripe_01",
+        "CottonCandy_Soda_Large_Soda_Stick_Stripe_02",
+        "CottonCandy_Soda_Large_Soda_Stick_Stripe_03",
+        "CottonCandy_Soda_Large_Soda_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Soda_Large_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Soda_Large_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Vanilla_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Vanilla_Small.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Vanilla",
+        "size": "Small",
+        "floss_scale": 1.0,
+        "floss_seed": "260927:Vanilla",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Vanilla_Small_Cream_Paper_Stick",
+        "CottonCandy_Vanilla_Small_Floss_Core",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_01",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_02",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_03",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_04",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_05",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_06",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_07",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_08",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_09",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_10",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_11",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_12",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_13",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_14",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_15",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_16",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_17",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_18",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_19",
+        "CottonCandy_Vanilla_Small_Floss_Lobe_20",
+        "CottonCandy_Vanilla_Small_Vanilla_Stick_Stripe_01",
+        "CottonCandy_Vanilla_Small_Vanilla_Stick_Stripe_02",
+        "CottonCandy_Vanilla_Small_Vanilla_Stick_Stripe_03",
+        "CottonCandy_Vanilla_Small_Vanilla_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Vanilla_Small_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Vanilla_Small_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Vanilla_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Vanilla_Medium.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Vanilla",
+        "size": "Medium",
+        "floss_scale": 1.1619,
+        "floss_seed": "260927:Vanilla",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Vanilla_Medium_Cream_Paper_Stick",
+        "CottonCandy_Vanilla_Medium_Floss_Core",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_01",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_02",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_03",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_04",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_05",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_06",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_07",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_08",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_09",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_10",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_11",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_12",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_13",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_14",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_15",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_16",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_17",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_18",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_19",
+        "CottonCandy_Vanilla_Medium_Floss_Lobe_20",
+        "CottonCandy_Vanilla_Medium_Vanilla_Stick_Stripe_01",
+        "CottonCandy_Vanilla_Medium_Vanilla_Stick_Stripe_02",
+        "CottonCandy_Vanilla_Medium_Vanilla_Stick_Stripe_03",
+        "CottonCandy_Vanilla_Medium_Vanilla_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Vanilla_Medium_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Vanilla_Medium_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "CottonCandy_Vanilla_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Vanilla_Large.png",
+      "kind": "prop",
+      "canvas": [
+        156,
+        176
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.444444,
+        "target": [
+          0.09521,
+          0.261586,
+          1.038907
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "loose",
+        "flavor": "Vanilla",
+        "size": "Large",
+        "floss_scale": 1.35,
+        "floss_seed": "260927:Vanilla",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.06
+        ],
+        "pivot_world": [
+          0,
+          0,
+          0
+        ],
+        "pivot_feature": "stick base",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot"
+      },
+      "objects": [
+        "CottonCandy_Vanilla_Large_Cream_Paper_Stick",
+        "CottonCandy_Vanilla_Large_Floss_Core",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_01",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_02",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_03",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_04",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_05",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_06",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_07",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_08",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_09",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_10",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_11",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_12",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_13",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_14",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_15",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_16",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_17",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_18",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_19",
+        "CottonCandy_Vanilla_Large_Floss_Lobe_20",
+        "CottonCandy_Vanilla_Large_Vanilla_Stick_Stripe_01",
+        "CottonCandy_Vanilla_Large_Vanilla_Stick_Stripe_02",
+        "CottonCandy_Vanilla_Large_Vanilla_Stick_Stripe_03",
+        "CottonCandy_Vanilla_Large_Vanilla_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "CottonCandy_Vanilla_Large_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "CottonCandy_Vanilla_Large_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Strawberry_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Strawberry_Small.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Strawberry",
+        "size": "Small",
+        "floss_scale": 1.0,
+        "floss_seed": "260927:Strawberry",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Strawberry_Small_Cellophane_Bag",
+        "BaggedCandy_Strawberry_Small_Cellophane_Tail",
+        "BaggedCandy_Strawberry_Small_Cream_Paper_Stick",
+        "BaggedCandy_Strawberry_Small_Floss_Core",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_01",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_02",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_03",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_04",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_05",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_06",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_07",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_08",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_09",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_10",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_11",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_12",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_13",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_14",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_15",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_16",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_17",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_18",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_19",
+        "BaggedCandy_Strawberry_Small_Floss_Lobe_20",
+        "BaggedCandy_Strawberry_Small_Strawberry_Ribbon_Knot",
+        "BaggedCandy_Strawberry_Small_Strawberry_Ribbon_Loop_Left",
+        "BaggedCandy_Strawberry_Small_Strawberry_Ribbon_Loop_Right",
+        "BaggedCandy_Strawberry_Small_Strawberry_Ribbon_Tail_Left",
+        "BaggedCandy_Strawberry_Small_Strawberry_Ribbon_Tail_Right",
+        "BaggedCandy_Strawberry_Small_Strawberry_Ribbon_Wrap",
+        "BaggedCandy_Strawberry_Small_Strawberry_Stick_Stripe_01",
+        "BaggedCandy_Strawberry_Small_Strawberry_Stick_Stripe_02",
+        "BaggedCandy_Strawberry_Small_Strawberry_Stick_Stripe_03",
+        "BaggedCandy_Strawberry_Small_Strawberry_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Strawberry_Small_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Strawberry_Small_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Strawberry_Small_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Strawberry_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Strawberry_Medium.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Strawberry",
+        "size": "Medium",
+        "floss_scale": 1.1619,
+        "floss_seed": "260927:Strawberry",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Strawberry_Medium_Cellophane_Bag",
+        "BaggedCandy_Strawberry_Medium_Cellophane_Tail",
+        "BaggedCandy_Strawberry_Medium_Cream_Paper_Stick",
+        "BaggedCandy_Strawberry_Medium_Floss_Core",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_01",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_02",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_03",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_04",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_05",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_06",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_07",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_08",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_09",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_10",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_11",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_12",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_13",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_14",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_15",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_16",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_17",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_18",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_19",
+        "BaggedCandy_Strawberry_Medium_Floss_Lobe_20",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Ribbon_Knot",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Ribbon_Loop_Left",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Ribbon_Loop_Right",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Ribbon_Tail_Left",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Ribbon_Tail_Right",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Ribbon_Wrap",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Stick_Stripe_01",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Stick_Stripe_02",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Stick_Stripe_03",
+        "BaggedCandy_Strawberry_Medium_Strawberry_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Strawberry_Medium_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Strawberry_Medium_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Strawberry_Medium_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Strawberry_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Strawberry_Large.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Strawberry",
+        "size": "Large",
+        "floss_scale": 1.35,
+        "floss_seed": "260927:Strawberry",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Strawberry_Large_Cellophane_Bag",
+        "BaggedCandy_Strawberry_Large_Cellophane_Tail",
+        "BaggedCandy_Strawberry_Large_Cream_Paper_Stick",
+        "BaggedCandy_Strawberry_Large_Floss_Core",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_01",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_02",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_03",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_04",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_05",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_06",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_07",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_08",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_09",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_10",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_11",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_12",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_13",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_14",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_15",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_16",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_17",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_18",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_19",
+        "BaggedCandy_Strawberry_Large_Floss_Lobe_20",
+        "BaggedCandy_Strawberry_Large_Strawberry_Ribbon_Knot",
+        "BaggedCandy_Strawberry_Large_Strawberry_Ribbon_Loop_Left",
+        "BaggedCandy_Strawberry_Large_Strawberry_Ribbon_Loop_Right",
+        "BaggedCandy_Strawberry_Large_Strawberry_Ribbon_Tail_Left",
+        "BaggedCandy_Strawberry_Large_Strawberry_Ribbon_Tail_Right",
+        "BaggedCandy_Strawberry_Large_Strawberry_Ribbon_Wrap",
+        "BaggedCandy_Strawberry_Large_Strawberry_Stick_Stripe_01",
+        "BaggedCandy_Strawberry_Large_Strawberry_Stick_Stripe_02",
+        "BaggedCandy_Strawberry_Large_Strawberry_Stick_Stripe_03",
+        "BaggedCandy_Strawberry_Large_Strawberry_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Strawberry_Large_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Strawberry_Large_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Strawberry_Large_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Soda_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Soda_Small.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Soda",
+        "size": "Small",
+        "floss_scale": 1.0,
+        "floss_seed": "260927:Soda",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Soda_Small_Cellophane_Bag",
+        "BaggedCandy_Soda_Small_Cellophane_Tail",
+        "BaggedCandy_Soda_Small_Cream_Paper_Stick",
+        "BaggedCandy_Soda_Small_Floss_Core",
+        "BaggedCandy_Soda_Small_Floss_Lobe_01",
+        "BaggedCandy_Soda_Small_Floss_Lobe_02",
+        "BaggedCandy_Soda_Small_Floss_Lobe_03",
+        "BaggedCandy_Soda_Small_Floss_Lobe_04",
+        "BaggedCandy_Soda_Small_Floss_Lobe_05",
+        "BaggedCandy_Soda_Small_Floss_Lobe_06",
+        "BaggedCandy_Soda_Small_Floss_Lobe_07",
+        "BaggedCandy_Soda_Small_Floss_Lobe_08",
+        "BaggedCandy_Soda_Small_Floss_Lobe_09",
+        "BaggedCandy_Soda_Small_Floss_Lobe_10",
+        "BaggedCandy_Soda_Small_Floss_Lobe_11",
+        "BaggedCandy_Soda_Small_Floss_Lobe_12",
+        "BaggedCandy_Soda_Small_Floss_Lobe_13",
+        "BaggedCandy_Soda_Small_Floss_Lobe_14",
+        "BaggedCandy_Soda_Small_Floss_Lobe_15",
+        "BaggedCandy_Soda_Small_Floss_Lobe_16",
+        "BaggedCandy_Soda_Small_Floss_Lobe_17",
+        "BaggedCandy_Soda_Small_Floss_Lobe_18",
+        "BaggedCandy_Soda_Small_Floss_Lobe_19",
+        "BaggedCandy_Soda_Small_Floss_Lobe_20",
+        "BaggedCandy_Soda_Small_Soda_Ribbon_Knot",
+        "BaggedCandy_Soda_Small_Soda_Ribbon_Loop_Left",
+        "BaggedCandy_Soda_Small_Soda_Ribbon_Loop_Right",
+        "BaggedCandy_Soda_Small_Soda_Ribbon_Tail_Left",
+        "BaggedCandy_Soda_Small_Soda_Ribbon_Tail_Right",
+        "BaggedCandy_Soda_Small_Soda_Ribbon_Wrap",
+        "BaggedCandy_Soda_Small_Soda_Stick_Stripe_01",
+        "BaggedCandy_Soda_Small_Soda_Stick_Stripe_02",
+        "BaggedCandy_Soda_Small_Soda_Stick_Stripe_03",
+        "BaggedCandy_Soda_Small_Soda_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Soda_Small_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Soda_Small_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Soda_Small_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Soda_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Soda_Medium.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Soda",
+        "size": "Medium",
+        "floss_scale": 1.1619,
+        "floss_seed": "260927:Soda",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Soda_Medium_Cellophane_Bag",
+        "BaggedCandy_Soda_Medium_Cellophane_Tail",
+        "BaggedCandy_Soda_Medium_Cream_Paper_Stick",
+        "BaggedCandy_Soda_Medium_Floss_Core",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_01",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_02",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_03",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_04",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_05",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_06",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_07",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_08",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_09",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_10",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_11",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_12",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_13",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_14",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_15",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_16",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_17",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_18",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_19",
+        "BaggedCandy_Soda_Medium_Floss_Lobe_20",
+        "BaggedCandy_Soda_Medium_Soda_Ribbon_Knot",
+        "BaggedCandy_Soda_Medium_Soda_Ribbon_Loop_Left",
+        "BaggedCandy_Soda_Medium_Soda_Ribbon_Loop_Right",
+        "BaggedCandy_Soda_Medium_Soda_Ribbon_Tail_Left",
+        "BaggedCandy_Soda_Medium_Soda_Ribbon_Tail_Right",
+        "BaggedCandy_Soda_Medium_Soda_Ribbon_Wrap",
+        "BaggedCandy_Soda_Medium_Soda_Stick_Stripe_01",
+        "BaggedCandy_Soda_Medium_Soda_Stick_Stripe_02",
+        "BaggedCandy_Soda_Medium_Soda_Stick_Stripe_03",
+        "BaggedCandy_Soda_Medium_Soda_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Soda_Medium_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Soda_Medium_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Soda_Medium_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Soda_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Soda_Large.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Soda",
+        "size": "Large",
+        "floss_scale": 1.35,
+        "floss_seed": "260927:Soda",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Soda_Large_Cellophane_Bag",
+        "BaggedCandy_Soda_Large_Cellophane_Tail",
+        "BaggedCandy_Soda_Large_Cream_Paper_Stick",
+        "BaggedCandy_Soda_Large_Floss_Core",
+        "BaggedCandy_Soda_Large_Floss_Lobe_01",
+        "BaggedCandy_Soda_Large_Floss_Lobe_02",
+        "BaggedCandy_Soda_Large_Floss_Lobe_03",
+        "BaggedCandy_Soda_Large_Floss_Lobe_04",
+        "BaggedCandy_Soda_Large_Floss_Lobe_05",
+        "BaggedCandy_Soda_Large_Floss_Lobe_06",
+        "BaggedCandy_Soda_Large_Floss_Lobe_07",
+        "BaggedCandy_Soda_Large_Floss_Lobe_08",
+        "BaggedCandy_Soda_Large_Floss_Lobe_09",
+        "BaggedCandy_Soda_Large_Floss_Lobe_10",
+        "BaggedCandy_Soda_Large_Floss_Lobe_11",
+        "BaggedCandy_Soda_Large_Floss_Lobe_12",
+        "BaggedCandy_Soda_Large_Floss_Lobe_13",
+        "BaggedCandy_Soda_Large_Floss_Lobe_14",
+        "BaggedCandy_Soda_Large_Floss_Lobe_15",
+        "BaggedCandy_Soda_Large_Floss_Lobe_16",
+        "BaggedCandy_Soda_Large_Floss_Lobe_17",
+        "BaggedCandy_Soda_Large_Floss_Lobe_18",
+        "BaggedCandy_Soda_Large_Floss_Lobe_19",
+        "BaggedCandy_Soda_Large_Floss_Lobe_20",
+        "BaggedCandy_Soda_Large_Soda_Ribbon_Knot",
+        "BaggedCandy_Soda_Large_Soda_Ribbon_Loop_Left",
+        "BaggedCandy_Soda_Large_Soda_Ribbon_Loop_Right",
+        "BaggedCandy_Soda_Large_Soda_Ribbon_Tail_Left",
+        "BaggedCandy_Soda_Large_Soda_Ribbon_Tail_Right",
+        "BaggedCandy_Soda_Large_Soda_Ribbon_Wrap",
+        "BaggedCandy_Soda_Large_Soda_Stick_Stripe_01",
+        "BaggedCandy_Soda_Large_Soda_Stick_Stripe_02",
+        "BaggedCandy_Soda_Large_Soda_Stick_Stripe_03",
+        "BaggedCandy_Soda_Large_Soda_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Soda_Large_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Soda_Large_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Soda_Large_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Vanilla_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Vanilla_Small.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Vanilla",
+        "size": "Small",
+        "floss_scale": 1.0,
+        "floss_seed": "260927:Vanilla",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Vanilla_Small_Cellophane_Bag",
+        "BaggedCandy_Vanilla_Small_Cellophane_Tail",
+        "BaggedCandy_Vanilla_Small_Cream_Paper_Stick",
+        "BaggedCandy_Vanilla_Small_Floss_Core",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_01",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_02",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_03",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_04",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_05",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_06",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_07",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_08",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_09",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_10",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_11",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_12",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_13",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_14",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_15",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_16",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_17",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_18",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_19",
+        "BaggedCandy_Vanilla_Small_Floss_Lobe_20",
+        "BaggedCandy_Vanilla_Small_Vanilla_Ribbon_Knot",
+        "BaggedCandy_Vanilla_Small_Vanilla_Ribbon_Loop_Left",
+        "BaggedCandy_Vanilla_Small_Vanilla_Ribbon_Loop_Right",
+        "BaggedCandy_Vanilla_Small_Vanilla_Ribbon_Tail_Left",
+        "BaggedCandy_Vanilla_Small_Vanilla_Ribbon_Tail_Right",
+        "BaggedCandy_Vanilla_Small_Vanilla_Ribbon_Wrap",
+        "BaggedCandy_Vanilla_Small_Vanilla_Stick_Stripe_01",
+        "BaggedCandy_Vanilla_Small_Vanilla_Stick_Stripe_02",
+        "BaggedCandy_Vanilla_Small_Vanilla_Stick_Stripe_03",
+        "BaggedCandy_Vanilla_Small_Vanilla_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Vanilla_Small_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Vanilla_Small_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Vanilla_Small_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Vanilla_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Vanilla_Medium.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Vanilla",
+        "size": "Medium",
+        "floss_scale": 1.1619,
+        "floss_seed": "260927:Vanilla",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Vanilla_Medium_Cellophane_Bag",
+        "BaggedCandy_Vanilla_Medium_Cellophane_Tail",
+        "BaggedCandy_Vanilla_Medium_Cream_Paper_Stick",
+        "BaggedCandy_Vanilla_Medium_Floss_Core",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_01",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_02",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_03",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_04",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_05",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_06",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_07",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_08",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_09",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_10",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_11",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_12",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_13",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_14",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_15",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_16",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_17",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_18",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_19",
+        "BaggedCandy_Vanilla_Medium_Floss_Lobe_20",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Ribbon_Knot",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Ribbon_Loop_Left",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Ribbon_Loop_Right",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Ribbon_Tail_Left",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Ribbon_Tail_Right",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Ribbon_Wrap",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Stick_Stripe_01",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Stick_Stripe_02",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Stick_Stripe_03",
+        "BaggedCandy_Vanilla_Medium_Vanilla_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Vanilla_Medium_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Vanilla_Medium_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Vanilla_Medium_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "BaggedCandy_Vanilla_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Vanilla_Large.png",
+      "kind": "prop",
+      "canvas": [
+        148,
+        184
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.875,
+        "target": [
+          0.062548,
+          0.171849,
+          1.269733
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.28,
+          0.42,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "bagged",
+        "flavor": "Vanilla",
+        "size": "Large",
+        "floss_scale": 1.35,
+        "floss_seed": "260927:Vanilla",
+        "lobes": 20,
+        "pivot": [
+          0.5,
+          0.14
+        ],
+        "pivot_world": [
+          -0.0291,
+          -0.0799,
+          0.27
+        ],
+        "pivot_feature": "ribbon knot",
+        "shadow_note": "default radii and max_alpha; anchor moved back under the floss shadow to fit the low pivot",
+        "cellophane_alpha": 0.35,
+        "cellophane_casts_shadow": false
+      },
+      "objects": [
+        "BaggedCandy_Vanilla_Large_Cellophane_Bag",
+        "BaggedCandy_Vanilla_Large_Cellophane_Tail",
+        "BaggedCandy_Vanilla_Large_Cream_Paper_Stick",
+        "BaggedCandy_Vanilla_Large_Floss_Core",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_01",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_02",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_03",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_04",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_05",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_06",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_07",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_08",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_09",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_10",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_11",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_12",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_13",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_14",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_15",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_16",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_17",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_18",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_19",
+        "BaggedCandy_Vanilla_Large_Floss_Lobe_20",
+        "BaggedCandy_Vanilla_Large_Vanilla_Ribbon_Knot",
+        "BaggedCandy_Vanilla_Large_Vanilla_Ribbon_Loop_Left",
+        "BaggedCandy_Vanilla_Large_Vanilla_Ribbon_Loop_Right",
+        "BaggedCandy_Vanilla_Large_Vanilla_Ribbon_Tail_Left",
+        "BaggedCandy_Vanilla_Large_Vanilla_Ribbon_Tail_Right",
+        "BaggedCandy_Vanilla_Large_Vanilla_Ribbon_Wrap",
+        "BaggedCandy_Vanilla_Large_Vanilla_Stick_Stripe_01",
+        "BaggedCandy_Vanilla_Large_Vanilla_Stick_Stripe_02",
+        "BaggedCandy_Vanilla_Large_Vanilla_Stick_Stripe_03",
+        "BaggedCandy_Vanilla_Large_Vanilla_Stick_Stripe_04"
+      ],
+      "materials": [
+        {
+          "name": "BaggedCandy_Vanilla_Large_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Vanilla_Large_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "BaggedCandy_Vanilla_Large_White_Cellophane",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "SugarBag_Strawberry",
+      "file": "Assets/CottonCircuit/Sprites/Items/SugarBag_Strawberry.png",
+      "kind": "prop",
+      "canvas": [
+        164,
+        200
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.666667,
+        "target": [
+          0,
+          0,
+          0.62
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          -0.05,
+          -0.2,
+          0
+        ],
+        "radii": [
+          0.5,
+          0.08
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "sugar bag",
+        "flavor": "Strawberry",
+        "emblem": "strawberry",
+        "shadow_note": "larger ellipse, default max_alpha; anchor on the pouch footprint near the front edge so the shadow shows under the base instead of hiding behind the pouch"
+      },
+      "objects": [
+        "SugarBag_Strawberry_Cream_Label",
+        "SugarBag_Strawberry_Mint_Emblem_Leaf_01",
+        "SugarBag_Strawberry_Mint_Emblem_Leaf_02",
+        "SugarBag_Strawberry_Mint_Emblem_Leaf_03",
+        "SugarBag_Strawberry_Mint_Emblem_Leaf_04",
+        "SugarBag_Strawberry_Mint_Emblem_Leaf_05",
+        "SugarBag_Strawberry_Mint_Emblem_Stem",
+        "SugarBag_Strawberry_Paper_Folded_Flap",
+        "SugarBag_Strawberry_Paper_Pouch",
+        "SugarBag_Strawberry_Paper_Top_Roll",
+        "SugarBag_Strawberry_Strawberry_Emblem_Berry"
+      ],
+      "materials": [
+        {
+          "name": "SugarBag_Strawberry_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "SugarBag_Strawberry_Mint",
+          "palette_name": "Mint",
+          "palette_srgb": "#99C4AE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "SugarBag_Strawberry_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "SugarBag_Soda",
+      "file": "Assets/CottonCircuit/Sprites/Items/SugarBag_Soda.png",
+      "kind": "prop",
+      "canvas": [
+        164,
+        200
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.666667,
+        "target": [
+          0,
+          0,
+          0.62
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          -0.05,
+          -0.2,
+          0
+        ],
+        "radii": [
+          0.5,
+          0.08
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "sugar bag",
+        "flavor": "Soda",
+        "emblem": "three bubbles",
+        "shadow_note": "larger ellipse, default max_alpha; anchor on the pouch footprint near the front edge so the shadow shows under the base instead of hiding behind the pouch"
+      },
+      "objects": [
+        "SugarBag_Soda_Cream_Label",
+        "SugarBag_Soda_Paper_Folded_Flap",
+        "SugarBag_Soda_Paper_Pouch",
+        "SugarBag_Soda_Paper_Top_Roll",
+        "SugarBag_Soda_Soda_Emblem_Bubble_01",
+        "SugarBag_Soda_Soda_Emblem_Bubble_02",
+        "SugarBag_Soda_Soda_Emblem_Bubble_03"
+      ],
+      "materials": [
+        {
+          "name": "SugarBag_Soda_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "SugarBag_Soda_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "SugarBag_Vanilla",
+      "file": "Assets/CottonCircuit/Sprites/Items/SugarBag_Vanilla.png",
+      "kind": "prop",
+      "canvas": [
+        164,
+        200
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.666667,
+        "target": [
+          0,
+          0,
+          0.62
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          -0.05,
+          -0.2,
+          0
+        ],
+        "radii": [
+          0.5,
+          0.08
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "kind": "sugar bag",
+        "flavor": "Vanilla",
+        "emblem": "small flower",
+        "shadow_note": "larger ellipse, default max_alpha; anchor on the pouch footprint near the front edge so the shadow shows under the base instead of hiding behind the pouch"
+      },
+      "objects": [
+        "SugarBag_Vanilla_Cream_Label",
+        "SugarBag_Vanilla_Gold_Emblem_Petal_01",
+        "SugarBag_Vanilla_Gold_Emblem_Petal_02",
+        "SugarBag_Vanilla_Gold_Emblem_Petal_03",
+        "SugarBag_Vanilla_Gold_Emblem_Petal_04",
+        "SugarBag_Vanilla_Gold_Emblem_Petal_05",
+        "SugarBag_Vanilla_Paper_Folded_Flap",
+        "SugarBag_Vanilla_Paper_Pouch",
+        "SugarBag_Vanilla_Paper_Top_Roll",
+        "SugarBag_Vanilla_Wood_Emblem_Flower_Centre"
+      ],
+      "materials": [
+        {
+          "name": "SugarBag_Vanilla_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "SugarBag_Vanilla_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "SugarBag_Vanilla_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "SugarBag_Vanilla_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    }
+  ]
+}
