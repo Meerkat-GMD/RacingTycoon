@@ -329,3 +329,34 @@ def build_head(col):
     _hair(col)
     _rear_flaps(col)
     _cap(col)
+
+
+def _brow_outline(side, center, y, length=.14, thickness=.045, tilt=25):
+    """Corners of a straight brow slab whose inner end (toward the nose) sits lower."""
+    t = math.radians(tilt)
+    cx, cz = center
+    dx, dz = side*math.cos(t)*length/2, math.sin(t)*length/2
+    nx, nz = -side*math.sin(t)*thickness/2, math.cos(t)*thickness/2
+    return [(cx-dx-nx, y, cz-dz-nz), (cx+dx-nx, y, cz+dz-nz),
+            (cx+dx+nx, y, cz+dz+nz), (cx-dx+nx, y, cz-dz+nz)]
+
+
+def build_angry_face(col):
+    """Angry-sprite face marks: two tilted Navy brows and a down-turned frown.
+
+    Authored coordinates like build_head; the caller applies the .48 model
+    scale and hides the smile. The brows sit between the eye tops (z 4.366)
+    and the swept fringe, and the frown spans the same width as Face_SoftSmile.
+    """
+    marks = []
+    for side, suffix in ((-1, 'L'), (1, 'R')):
+        marks.append(_slab(col, 'Face_Angry_Brow_' + suffix,
+                           _brow_outline(side, (side*.205, 4.425), -.397),
+                           'Navy', .012))
+    marks.append(_strip(col, 'Face_Angry_Frown',
+                        [(-.083, -.409, 4.040), (-.037, -.414, 4.062),
+                         (.037, -.414, 4.062), (.093, -.409, 4.042)],
+                        [(-.080, -.409, 4.024), (-.036, -.414, 4.046),
+                         (.039, -.414, 4.046), (.090, -.409, 4.026)],
+                        'Navy', .010))
+    return marks

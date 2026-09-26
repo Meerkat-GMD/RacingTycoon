@@ -1,0 +1,302 @@
+{
+  "script": "Art/Blender/render_customer_sprites.py",
+  "blender_version": "5.2.2 LTS",
+  "renderer": "ui_sprite_render.render_sprite",
+  "canvas": [
+    164,
+    280
+  ],
+  "large": [
+    656,
+    1120
+  ],
+  "sprites": {
+    "Customer_V0_Angry": {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V0_Angry.png",
+      "variant": 0,
+      "expression": "Angry",
+      "blend": "Art/Blender/GameCustomerFaceted/GameCustomerFaceted.blend",
+      "scene": "Game_Customer_Faceted",
+      "size": [
+        164,
+        280
+      ],
+      "threads": 8,
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "visible_face_marks": [
+        "GC_Face_Angry_Brow_L",
+        "GC_Face_Angry_Brow_R",
+        "GC_Face_Angry_Frown"
+      ],
+      "hidden_face_marks": [
+        "GC_Face_TinySmile"
+      ],
+      "passes": [
+        "Art/Blender/ui-sprite-passes/customers/Customer_V0_Angry-catcher.png",
+        "Art/Blender/ui-sprite-passes/customers/Customer_V0_Angry-beauty.png"
+      ],
+      "large": "Art/Blender/GameCustomerFaceted/review/Customer_V0_Angry-large.png",
+      "sha256": "b75e5efb09463b9a8ad71edb9c4329862ced3697323014792de3baedfaa35c5b"
+    },
+    "Customer_V0_Neutral": {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V0_Neutral.png",
+      "variant": 0,
+      "expression": "Neutral",
+      "blend": "Art/Blender/GameCustomerFaceted/GameCustomerFaceted.blend",
+      "scene": "Game_Customer_Faceted",
+      "size": [
+        164,
+        280
+      ],
+      "threads": 8,
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "visible_face_marks": [
+        "GC_Face_TinySmile"
+      ],
+      "hidden_face_marks": [
+        "GC_Face_Angry_Brow_L",
+        "GC_Face_Angry_Brow_R",
+        "GC_Face_Angry_Frown"
+      ],
+      "passes": [
+        "Art/Blender/ui-sprite-passes/customers/Customer_V0_Neutral-catcher.png",
+        "Art/Blender/ui-sprite-passes/customers/Customer_V0_Neutral-beauty.png"
+      ],
+      "neutral_source": "rendered from Art/Blender/GameCustomerFaceted/GameCustomerFaceted.blend with angry marks hidden; pixel-identical to Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png",
+      "large": "Art/Blender/GameCustomerFaceted/review/Customer_V0_Neutral-large.png",
+      "sha256": "d5f1717cc87194580a921d1463352e3fb22ae189e001c131bec61357b8ab136a"
+    },
+    "Customer_V1_Angry": {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Angry.png",
+      "variant": 1,
+      "expression": "Angry",
+      "blend": "Art/Blender/GameCustomerChild/GameCustomerChild.blend",
+      "scene": "Game_Customer_Child",
+      "size": [
+        164,
+        280
+      ],
+      "threads": 8,
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "visible_face_marks": [
+        "CH_Face_Angry_Brow_L",
+        "CH_Face_Angry_Brow_R",
+        "CH_Face_Angry_Frown"
+      ],
+      "hidden_face_marks": [
+        "CH_Face_Smile"
+      ],
+      "passes": [
+        "Art/Blender/ui-sprite-passes/customers/Customer_V1_Angry-catcher.png",
+        "Art/Blender/ui-sprite-passes/customers/Customer_V1_Angry-beauty.png"
+      ],
+      "sha256": "da422d1d9a53c0a7e6eb6c475b38c0363145e44cfb2510a6123a29c991f8419a",
+      "large": "Art/Blender/GameCustomerChild/review/Customer_V1_Angry-large.png"
+    },
+    "Customer_V1_Neutral": {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Neutral.png",
+      "variant": 1,
+      "expression": "Neutral",
+      "blend": "Art/Blender/GameCustomerChild/GameCustomerChild.blend",
+      "scene": "Game_Customer_Child",
+      "size": [
+        164,
+        280
+      ],
+      "threads": 8,
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "visible_face_marks": [
+        "CH_Face_Smile"
+      ],
+      "hidden_face_marks": [
+        "CH_Face_Angry_Brow_L",
+        "CH_Face_Angry_Brow_R",
+        "CH_Face_Angry_Frown"
+      ],
+      "passes": [
+        "Art/Blender/ui-sprite-passes/customers/Customer_V1_Neutral-catcher.png",
+        "Art/Blender/ui-sprite-passes/customers/Customer_V1_Neutral-beauty.png"
+      ],
+      "neutral_source": "rendered from Art/Blender/GameCustomerChild/GameCustomerChild.blend with angry marks hidden",
+      "sha256": "d92c5213a6295984ec9ef08379ae06cbea8a0afa8e064a875d9139b8f06efd3e",
+      "large": "Art/Blender/GameCustomerChild/review/Customer_V1_Neutral-large.png"
+    },
+    "Customer_V2_Angry": {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V2_Angry.png",
+      "variant": 2,
+      "expression": "Angry",
+      "blend": "Art/Blender/GameCustomerFemaleExplorer/GameCustomerFemaleExplorer.blend",
+      "scene": "Game_Customer_Female_Explorer",
+      "size": [
+        164,
+        280
+      ],
+      "threads": 8,
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "visible_face_marks": [
+        "EX_Face_Angry_Brow_L",
+        "EX_Face_Angry_Brow_R",
+        "EX_Face_Angry_Frown"
+      ],
+      "hidden_face_marks": [
+        "EX_Face_SoftSmile"
+      ],
+      "passes": [
+        "Art/Blender/ui-sprite-passes/customers/Customer_V2_Angry-catcher.png",
+        "Art/Blender/ui-sprite-passes/customers/Customer_V2_Angry-beauty.png"
+      ],
+      "large": "Art/Blender/GameCustomerFemaleExplorer/review/Customer_V2_Angry-large.png",
+      "sha256": "6292e3a0e45ad4777c04017303c7725dbfb2dd2f011bcbd65ce06cdaa6fdd188"
+    },
+    "Customer_V2_Neutral": {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V2_Neutral.png",
+      "variant": 2,
+      "expression": "Neutral",
+      "blend": "Art/Blender/GameCustomerFemaleExplorer/GameCustomerFemaleExplorer.blend",
+      "scene": "Game_Customer_Female_Explorer",
+      "size": [
+        164,
+        280
+      ],
+      "threads": 8,
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "visible_face_marks": [
+        "EX_Face_SoftSmile"
+      ],
+      "hidden_face_marks": [
+        "EX_Face_Angry_Brow_L",
+        "EX_Face_Angry_Brow_R",
+        "EX_Face_Angry_Frown"
+      ],
+      "passes": [
+        "Art/Blender/ui-sprite-passes/customers/Customer_V2_Neutral-catcher.png",
+        "Art/Blender/ui-sprite-passes/customers/Customer_V2_Neutral-beauty.png"
+      ],
+      "neutral_source": "rendered from Art/Blender/GameCustomerFemaleExplorer/GameCustomerFemaleExplorer.blend with angry marks hidden; pixel-identical to Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer.png",
+      "large": "Art/Blender/GameCustomerFemaleExplorer/review/Customer_V2_Neutral-large.png",
+      "sha256": "e974dcaa1fa42f72da4483451f429da457a8492c1cb21501df46202619751ea2"
+    }
+  },
+  "angry_marks": {
+    "V0": {
+      "angry_objects": [
+        "GC_Face_Angry_Brow_L",
+        "GC_Face_Angry_Brow_R",
+        "GC_Face_Angry_Frown"
+      ],
+      "saved": {
+        "blend": "Art/Blender/GameCustomerFaceted/GameCustomerFaceted.blend",
+        "replaced": [
+          "GC_Face_Angry_Brow_L",
+          "GC_Face_Angry_Brow_R",
+          "GC_Face_Angry_Frown"
+        ],
+        "objects_unchanged": 83,
+        "fingerprint_sha256": "414843a3092e079087f34dc5f85730885c88c0d6ec8c6adf913ef328a4b9862a",
+        "reopened_identical": true
+      }
+    },
+    "V1": {
+      "angry_objects": [
+        "CH_Face_Angry_Brow_L",
+        "CH_Face_Angry_Brow_R",
+        "CH_Face_Angry_Frown"
+      ],
+      "saved": {
+        "blend": "Art/Blender/GameCustomerChild/GameCustomerChild.blend",
+        "replaced": [
+          "CH_Face_Angry_Brow_L",
+          "CH_Face_Angry_Brow_R",
+          "CH_Face_Angry_Frown"
+        ],
+        "objects_unchanged": 72,
+        "fingerprint_sha256": "a39a46fcb84b65c0814ec3abdb7166c3ac0ef2435ea790ff2aecd89d175e6640",
+        "reopened_identical": true
+      }
+    },
+    "V2": {
+      "angry_objects": [
+        "EX_Face_Angry_Brow_L",
+        "EX_Face_Angry_Brow_R",
+        "EX_Face_Angry_Frown"
+      ],
+      "saved": {
+        "blend": "Art/Blender/GameCustomerFemaleExplorer/GameCustomerFemaleExplorer.blend",
+        "replaced": [
+          "EX_Face_Angry_Brow_L",
+          "EX_Face_Angry_Brow_R",
+          "EX_Face_Angry_Frown"
+        ],
+        "objects_unchanged": 125,
+        "fingerprint_sha256": "708f907b0de12f28e33f97a2f2961e611a812db575d308676ed0fe964e88b8ab",
+        "reopened_identical": true
+      }
+    }
+  }
+}

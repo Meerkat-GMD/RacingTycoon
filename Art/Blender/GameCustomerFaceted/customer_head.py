@@ -3,6 +3,8 @@
 Standalone part builder.  Z is up, -Y faces forward; all colors come from
 the approved game palette supplied by customer_lib.
 """
+import math
+
 import customer_lib as a
 
 
@@ -188,3 +190,34 @@ def build_head(col):
     ]
     for name, outline, ridge, colors in fringe:
         _lock(col, name, outline, ridge, colors, .15)
+
+
+def _brow_outline(side, center, y, length=.14, thickness=.045, tilt=25):
+    """Corners of a straight brow slab whose inner end (toward the nose) sits lower."""
+    t = math.radians(tilt)
+    cx, cz = center
+    dx, dz = side*math.cos(t)*length/2, math.sin(t)*length/2
+    nx, nz = -side*math.sin(t)*thickness/2, math.cos(t)*thickness/2
+    return [(cx-dx-nx, y, cz-dz-nz), (cx+dx-nx, y, cz+dz-nz),
+            (cx+dx+nx, y, cz+dz+nz), (cx-dx+nx, y, cz-dz+nz)]
+
+
+def build_angry_face(col):
+    """Angry-sprite face marks: two tilted Navy brows and a down-turned frown.
+
+    Authored coordinates like build_head; the caller applies the .5 model scale
+    and hides the smile. The brows sit between the eye tops (z 4.036) and the
+    fringe, and the frown spans the same .114 width as Face_TinySmile.
+    """
+    marks = []
+    for side, suffix in ((-1, 'L'), (1, 'R')):
+        marks.append(_flat_mark(col, 'Face_Angry_Brow_' + suffix,
+                                _brow_outline(side, (side*.205, 4.095), -.392),
+                                'Navy', .012))
+    marks.append(_flat_mark(col, 'Face_Angry_Frown',
+                            [(-.057, -.399, 3.779), (-.028, -.401, 3.797),
+                             (.028, -.401, 3.797), (.057, -.399, 3.779),
+                             (.057, -.399, 3.759), (.028, -.401, 3.777),
+                             (-.028, -.401, 3.777), (-.057, -.399, 3.759)],
+                            'Navy', .009))
+    return marks

@@ -1,0 +1,223 @@
+{
+  "scope": "Customer_V1 child street customer for the Unity customer sprites (Variant % 3 == 1)",
+  "identity": "Strawberry hoodie with a lowered hood, two round hood ears and Cream drawstrings; Hair2 short bowl cut with a small cowlick; Skin2 face with Hair2 neck shadow; Pants2 shorts; Cream/Strawberry striped socks; Navy sneakers with Cream soles; small Mint coin purse on a Cream strap across the body",
+  "style_reference": [
+    "../GameCustomerFaceted/",
+    "../GameCustomerFemaleExplorer/"
+  ],
+  "proportion": "About 3 heads: head scaled 1.00 about the chin (chin at z 2.29 authored) on a short body; top of hair about 75% of the approved male, feet on his baseline",
+  "face": {
+    "eyes": "approved male dot eyes: Navy box .075 x .020 x .106 at x = +-.205, bevel .006, head scale 1",
+    "head_scale": 1.0,
+    "blush": "Strawberry",
+    "mouth": "CH_Face_Smile (Navy)",
+    "angry": "CH_Face_Angry_Brow_L/R and CH_Face_Angry_Frown, hidden by default"
+  },
+  "model_scale": 0.5,
+  "palette": {
+    "Cream": "#FFF1D4",
+    "Gold": "#DBAE61",
+    "Hair2": "#8D5B4A",
+    "Mint": "#99C4AE",
+    "Navy": "#29324D",
+    "Pants2": "#65688B",
+    "Skin2": "#B87A65",
+    "Strawberry": "#F48DAB"
+  },
+  "material_recipe": {
+    "roughness": 0.85,
+    "specular_ior_level": 0.08,
+    "shader": "Principled BSDF"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "camera": {
+    "yaw_deg": -20,
+    "elevation_deg": 15,
+    "orthographic_scale": 2.85,
+    "target": [
+      0,
+      -0.015,
+      1.22
+    ]
+  },
+  "seed": 260927,
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "adaptive_sampling": false,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1,
+    "film_transparent": true,
+    "color_mode": "RGBA",
+    "threads": 8
+  },
+  "display_size": [
+    82,
+    140
+  ],
+  "outputs": [
+    {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Neutral.png",
+      "size": [
+        164,
+        280
+      ]
+    },
+    {
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Angry.png",
+      "size": [
+        164,
+        280
+      ]
+    },
+    {
+      "file": "Art/Blender/GameCustomerChild/review/Customer_V1_Neutral-large.png",
+      "size": [
+        656,
+        1120
+      ]
+    },
+    {
+      "file": "Art/Blender/GameCustomerChild/review/Customer_V1_Angry-large.png",
+      "size": [
+        656,
+        1120
+      ]
+    },
+    {
+      "file": "Art/Blender/GameCustomerChild/Customer_V1-large.png",
+      "size": [
+        656,
+        1120
+      ]
+    }
+  ],
+  "renderer": "Art/Blender/render_customer_sprites.py -- --only V1 --large",
+  "shadow": "Real Cycles catcher, navy tint, alpha <=0.32, soft elliptical contact falloff (DEFAULT_SHADOW)",
+  "creation_transport": "blender -b",
+  "collections": {
+    "Head_Hair": [
+      "CH_Face_Angry_Brow_L",
+      "CH_Face_Angry_Brow_R",
+      "CH_Face_Angry_Frown",
+      "CH_Face_Blush_L",
+      "CH_Face_Blush_R",
+      "CH_Face_Eye_L",
+      "CH_Face_Eye_R",
+      "CH_Face_Smile",
+      "CH_Hair_BowlDome",
+      "CH_Hair_Cowlick",
+      "CH_Hair_Fringe_InnerL",
+      "CH_Hair_Fringe_InnerR",
+      "CH_Hair_Fringe_OuterL",
+      "CH_Hair_Fringe_OuterR",
+      "CH_Head_ChubbyFace",
+      "CH_Head_Ear_L",
+      "CH_Head_Ear_R",
+      "CH_Head_Neck_Shadow"
+    ],
+    "Hoodie": [
+      "CH_Hoodie_Hem_Rib",
+      "CH_Kangaroo_Pocket",
+      "CH_Left_Cream_Drawstring",
+      "CH_Left_Drawstring_Aglet",
+      "CH_Left_Hood_Ear",
+      "CH_Left_Hood_Ear_Inner",
+      "CH_Left_Pocket_Opening",
+      "CH_Lowered_Hood_Roll",
+      "CH_Right_Cream_Drawstring",
+      "CH_Right_Drawstring_Aglet",
+      "CH_Right_Hood_Ear",
+      "CH_Right_Hood_Ear_Inner",
+      "CH_Right_Pocket_Opening",
+      "CH_Strawberry_Hoodie_Torso"
+    ],
+    "Arms_Hands": [
+      "CH_Left_Hand",
+      "CH_Left_Lower_Sleeve",
+      "CH_Left_Sleeve_Cuff",
+      "CH_Left_Thumb",
+      "CH_Left_Upper_Sleeve",
+      "CH_Right_Hand",
+      "CH_Right_Lower_Sleeve",
+      "CH_Right_Sleeve_Cuff",
+      "CH_Right_Thumb",
+      "CH_Right_Upper_Sleeve"
+    ],
+    "Shorts_Shoes": [
+      "CH_Left_Bare_Leg",
+      "CH_Left_Cream_Sock",
+      "CH_Left_Cream_Sole",
+      "CH_Left_Lace_0",
+      "CH_Left_Lace_1",
+      "CH_Left_Navy_Sneaker",
+      "CH_Left_Shorts_Cuff",
+      "CH_Left_Shorts_Leg",
+      "CH_Left_Sock_Stripe_0",
+      "CH_Left_Sock_Stripe_1",
+      "CH_Left_Strawberry_Heel_Tab",
+      "CH_Right_Bare_Leg",
+      "CH_Right_Cream_Sock",
+      "CH_Right_Cream_Sole",
+      "CH_Right_Lace_0",
+      "CH_Right_Lace_1",
+      "CH_Right_Navy_Sneaker",
+      "CH_Right_Shorts_Cuff",
+      "CH_Right_Shorts_Leg",
+      "CH_Right_Sock_Stripe_0",
+      "CH_Right_Sock_Stripe_1",
+      "CH_Right_Strawberry_Heel_Tab",
+      "CH_Shorts_Waist"
+    ],
+    "Purse": [
+      "CH_Cream_Purse_Strap",
+      "CH_Mint_Coin_Purse",
+      "CH_Purse_Gold_Clasp_0",
+      "CH_Purse_Gold_Clasp_1",
+      "CH_Purse_Gold_Frame"
+    ]
+  }
+}

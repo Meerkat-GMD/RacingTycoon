@@ -126,6 +126,9 @@ def build():
     import customer_head
     importlib.reload(customer_head)
     customer_head.build_head(cols['Head_Hair'])
+    # Angry brows/frown for the Customer_V0_Angry sprite; hidden so the neutral render is unchanged.
+    for ob in customer_head.build_angry_face(cols['Head_Hair']):
+        ob.hide_render=True;ob.hide_viewport=True
     # Model at half authored scale so the original shared light rig remains valid.
     for col in cols.values():
         for ob in col.objects:ob.location*=.5;ob.scale*=.5

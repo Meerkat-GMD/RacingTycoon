@@ -147,6 +147,9 @@ def build():
     legs_boots(cols['Legs_Boots']);backpack(cols['Backpack'])
     import explorer_head
     importlib.reload(explorer_head);explorer_head.build_head(cols['Head_Cap_Eyes'])
+    # Angry brows/frown for the Customer_V2_Angry sprite; hidden so the neutral render is unchanged.
+    for ob in explorer_head.build_angry_face(cols['Head_Cap_Eyes']):
+        ob.hide_render=True;ob.hide_viewport=True
     for col in cols.values():
         for ob in col.objects:
             ob.location*=.48;ob.scale*=.48
