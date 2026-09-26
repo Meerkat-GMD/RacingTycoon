@@ -35,3 +35,101 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3fbb811124995ca48b15ff89e2cd2396, type: 2}
   - {fileID: 2100000, guid: 15429cc5f3522664f83eb04bba31c360, type: 2}
   - {fileID: 2100000, guid: 511105d6752c64a448950e9816d0a562, type: 2}
+  CustomerNeutral:
+  - {fileID: 21300000, guid: 63ace0d4aae88b64285bb7ee58a6bc96, type: 3}
+  - {fileID: 21300000, guid: 981b55f506a2a2545bd8a62483a87fd9, type: 3}
+  - {fileID: 21300000, guid: ab31f5194a7126e46837f58b0f94e397, type: 3}
+  CustomerAngry:
+  - {fileID: 21300000, guid: 21e3320bcba267e438ddac210d473053, type: 3}
+  - {fileID: 21300000, guid: aa845124f01459845ae7012bcd16ff57, type: 3}
+  - {fileID: 21300000, guid: dbdc09afa48d7a944a575f49504f80b3, type: 3}
+  Storefront: {fileID: 21300000, guid: a74606502ad5ece4885c2ebb23eb1b9c, type: 3}
+  Trash: {fileID: 21300000, guid: 618c4ae10ca399341b4b80025a92cde0, type: 3}
+  HeartEmote: {fileID: 21300000, guid: 75723b334f9074a4c83784b7b207ecb9, type: 3}
+  AngryEmote: {fileID: 21300000, guid: e727b9660b2235d44a51bdbf77388fe3, type: 3}
+  MinaPortrait: {fileID: 21300000, guid: d970e9a012a8795428e2e1b7f6091d71, type: 3}
+  LocationPrep:
+  - {fileID: 21300000, guid: 3e674054a12facc4ba8c627804c331ba, type: 3}
+  - {fileID: 21300000, guid: 79a05b217090dde4682f1dd2e2dec0bc, type: 3}
+  - {fileID: 21300000, guid: 6a0da47bd34d1334ea03d41c4c83b697, type: 3}
+  - {fileID: 21300000, guid: 3c71747a6d2392e459ed454b31003f87, type: 3}
+  LocationStreet:
+  - {fileID: 21300000, guid: db99d87a1583928409d8a3cd34fd7ca7, type: 3}
+  - {fileID: 21300000, guid: ad0c2f112df79ff43a712166fe5668e9, type: 3}
+  - {fileID: 21300000, guid: a260dadfc129c0c44a8fc8922336ebe3, type: 3}
+  - {fileID: 21300000, guid: 2bc0b8d4f7921ad498b64eee1bdc66fc, type: 3}
+  CottonCandy:
+  - {fileID: 21300000, guid: ebc3a0fbf11ea0b42afe2a06be0a45a6, type: 3}
+  - {fileID: 21300000, guid: 2fadd4265186b2b4c898b7a9c412a0c0, type: 3}
+  - {fileID: 21300000, guid: f065ab8c847c2ec47a8bf653818c3784, type: 3}
+  - {fileID: 21300000, guid: bfb53fabb1532404bbb744d4180cf33e, type: 3}
+  - {fileID: 21300000, guid: 09c1f259a8780c84f8016b7adda1bcce, type: 3}
+  - {fileID: 21300000, guid: 1f338697e9547714eaa30283a7a11636, type: 3}
+  - {fileID: 21300000, guid: 97b1c9ab16b04fb45bceb409b738a55d, type: 3}
+  - {fileID: 21300000, guid: e5eac868159e5bc47b750997f71abcac, type: 3}
+  - {fileID: 21300000, guid: 3d3367af2a5290c408a4b0e80e249650, type: 3}
+  BaggedCandy:
+  - {fileID: 21300000, guid: 7d4e84081bdca204f91504025b4c84ca, type: 3}
+  - {fileID: 21300000, guid: 71250a4c633bbd04581cf632a22a6902, type: 3}
+  - {fileID: 21300000, guid: 2c1073ccb2b595344b13ba9ac5ff149c, type: 3}
+  - {fileID: 21300000, guid: e4869327a697d3545b68793e94715636, type: 3}
+  - {fileID: 21300000, guid: d199c8299fd342843bbb7b7d47a11123, type: 3}
+  - {fileID: 21300000, guid: 20eb19a7971c4004e92125bce6435278, type: 3}
+  - {fileID: 21300000, guid: 25f4bf6bd3bc0464ab315525f7e149ae, type: 3}
+  - {fileID: 21300000, guid: c68c63e7ec4089646837e4e44d130acc, type: 3}
+  - {fileID: 21300000, guid: 2956b14245701924ca4d8baa9b7fa1d3, type: 3}
+  SugarBags:
+  - {fileID: 21300000, guid: 56ef8a41965db6d4dbf0b6d6e5258884, type: 3}
+  - {fileID: 21300000, guid: f450de95bcc0d3647a4aa26a9487cace, type: 3}
+  - {fileID: 21300000, guid: 58630a20bf8c08b44a6fb4b4e5d06128, type: 3}
+  Machines:
+  - {fileID: 21300000, guid: 3495932d9d643fc44961709f163044a9, type: 3}
+  - {fileID: 21300000, guid: c342b6d578fc71249a960ec03867702e, type: 3}
+  - {fileID: 21300000, guid: 56b224789affd5f4da9d100ce12a6237, type: 3}
+  TraitIcons:
+  - Id: Trait_Hours
+    Sprite: {fileID: 21300000, guid: ecab024b3bc6ccc49bcb1bbb098a4c16, type: 3}
+  - Id: Trait_Patience
+    Sprite: {fileID: 21300000, guid: 12dcbed5be4ef474c903b6b26ee2f6dd, type: 3}
+  - Id: Trait_Ads
+    Sprite: {fileID: 21300000, guid: f7b396c9c8f3d2f41bbffddcfdb8982a, type: 3}
+  - Id: Trait_RepeatAds
+    Sprite: {fileID: 21300000, guid: 4218c782f66d672408098dc01e518fb9, type: 3}
+  - Id: Trait_Shelf
+    Sprite: {fileID: 21300000, guid: 62181462b09c3c8499e48c31f52b4c07, type: 3}
+  - Id: Trait_Sales
+    Sprite: {fileID: 21300000, guid: db78e3bde9ad6ea4ca5284ddd3813777, type: 3}
+  - Id: Trait_PriceTag
+    Sprite: {fileID: 21300000, guid: 9dbeeb31cefd4604cb9d1ad5c80ddfd7, type: 3}
+  - Id: Trait_Engine
+    Sprite: {fileID: 21300000, guid: 8421d3130df5d73449bf566c33e0cd00, type: 3}
+  - Id: Trait_Handling
+    Sprite: {fileID: 21300000, guid: 89abec88daa17d14a989339594c76835, type: 3}
+  - Id: Trait_Kart
+    Sprite: {fileID: 21300000, guid: 4d3800fd2b8710c4680c7ef964f86de2, type: 3}
+  - Id: Trait_StickSpeed
+    Sprite: {fileID: 21300000, guid: 70975717bf09a1b40b8fe01e25403e4b, type: 3}
+  - Id: Trait_Spoon
+    Sprite: {fileID: 21300000, guid: f3915313a7b92f54982c8b8529884be9, type: 3}
+  - Id: Trait_Ribbon
+    Sprite: {fileID: 21300000, guid: 85b75394bf7972141b23afc4750fdc9f, type: 3}
+  - Id: Trait_Sugar2
+    Sprite: {fileID: 21300000, guid: 3b95d96720a32f2428793c98de4369b8, type: 3}
+  - Id: Trait_Sugar3
+    Sprite: {fileID: 21300000, guid: 7212686b13f06dc44bcf969da644bcda, type: 3}
+  - Id: Trait_Machine
+    Sprite: {fileID: 21300000, guid: 161ad6d8e81079e49be97549d8b5c300, type: 3}
+  - Id: Trait_FlavorSoda
+    Sprite: {fileID: 21300000, guid: d955c26e9ab9f9d429a66ca80645002f, type: 3}
+  - Id: Trait_FlavorVanilla
+    Sprite: {fileID: 21300000, guid: 82aa5c854a99c1442b695a9b3157e6d9, type: 3}
+  - Id: Trait_Worker
+    Sprite: {fileID: 21300000, guid: ebca9fc7fb6b30a47b2019ed4a245a3e, type: 3}
+  - Id: Trait_GradCap
+    Sprite: {fileID: 21300000, guid: 4118b3605ec2f874190c1cef71b134de, type: 3}
+  - Id: Trait_Glove
+    Sprite: {fileID: 21300000, guid: b17ef5b0e912182419a349e53d4bbee4, type: 3}
+  - Id: Trait_MapPin
+    Sprite: {fileID: 21300000, guid: 3ea0a08e74c3994429d9647f87173a2e, type: 3}
+  - Id: Trait_Group
+    Sprite: {fileID: 21300000, guid: b108987d73f8b7740838fe2546803e08, type: 3}
