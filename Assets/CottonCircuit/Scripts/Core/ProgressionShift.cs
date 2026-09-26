@@ -53,14 +53,14 @@ namespace CottonCircuit
             SyncSugarGrades();
             var m = State.Machines[SelectedMachine];
             m.SugarGrams = State.SugarGrams; m.SugarFlavor = State.SugarFlavor;
-            m.BatchMeters = State.BatchMeters; m.BatchFlavor = State.BatchFlavor; m.BatchQuality = State.BatchQuality;
+            m.BatchMeters = State.BatchMeters; m.BatchOverflowMeters = State.BatchOverflowMeters; m.BatchFlavor = State.BatchFlavor; m.BatchQuality = State.BatchQuality;
             m.BatchProductId = State.BatchProductId; m.BatchSugarGrade = State.BatchSugarGrade;
         }
         void LoadActive()
         {
             var m = State.Machines[SelectedMachine];
             State.SugarGrams = m.SugarGrams; State.SugarFlavor = m.SugarFlavor;
-            State.BatchMeters = m.BatchMeters; State.BatchFlavor = m.BatchFlavor; State.BatchQuality = m.BatchQuality;
+            State.BatchMeters = m.BatchMeters; State.BatchOverflowMeters = m.BatchOverflowMeters; State.BatchFlavor = m.BatchFlavor; State.BatchQuality = m.BatchQuality;
             State.BatchProductId = m.BatchProductId; State.BatchSugarGrade = m.BatchSugarGrade;
         }
         public bool SelectMachine(int index)
@@ -108,8 +108,7 @@ namespace CottonCircuit
         {
             if (!Finite(grams) || grams <= 1e-7) return false;
             var m = State.Machines[index];
-            if (!CanMakeFlavor(index, flavor) || m.BatchMeters > 0 && m.BatchFlavor != flavor ||
-                m.BatchMeters >= MetersForSize(EffectiveMaxSize(index)) - 1e-7) return false;
+            if (!CanMakeFlavor(index, flavor) || m.BatchMeters > 0 && m.BatchFlavor != flavor) return false;
             double existing = m.SugarFlavor == flavor ? m.SugarGrams : 0;
             double accepted = Math.Min(Math.Min(PourAmount, grams), SugarCapacity - existing);
             if (accepted <= 1e-7) return false;
@@ -131,10 +130,14 @@ namespace CottonCircuit
             int cap = Math.Min(Progression.MachineTier(index), grade) - 1;
             double needed = Math.Max(0, MetersForSize(cap) - m.BatchMeters);
             double sugarRate = SugarPerMeter * Progression.SugarMultiplier(economy);
-            double growth = Math.Min(needed, Math.Min(meters * Progression.GrowthMultiplier(economy), m.SugarGrams / sugarRate));
+            // Winding never stops at the size cap: sugar keeps draining and laps keep counting,
+            // but only the part below the cap makes the candy bigger.
+            double growth = Math.Min(meters * Progression.GrowthMultiplier(economy), m.SugarGrams / sugarRate);
             if (growth <= 0) return;
             if (m.BatchMeters == 0) { m.BatchFlavor = m.SugarFlavor; m.BatchQuality = (int)Math.Min(100, 50 + Progression.QualityBonus(economy)); m.BatchSugarGrade = grade; }
-            m.BatchMeters += growth;
+            double sized = Math.Min(needed, growth);
+            m.BatchMeters += sized;
+            m.BatchOverflowMeters += growth - sized;
             for (int size = 0; size < 3; size++) if (Math.Abs(m.BatchMeters - MetersForSize(size)) < 1e-7) m.BatchMeters = MetersForSize(size);
             m.SugarGrams = Math.Max(0, m.SugarGrams - growth * sugarRate);
             if (m.SugarGrams < 1e-9) { m.SugarGrams = 0; m.SugarFlavor = -1; }
@@ -170,7 +173,7 @@ namespace CottonCircuit
                         p.Id = string.IsNullOrEmpty(m.BatchProductId) ? Guid.NewGuid().ToString("N") : m.BatchProductId;
                         p.Quality = m.BatchQuality; p.SugarGrade = m.BatchSugarGrade;
                         economy.Inventory.Add(p); if (!economy.CompletedIds.Contains(p.Id)) economy.CompletedIds.Add(p.Id);
-                        m.BatchMeters = 0; m.BatchFlavor = -1; m.BatchQuality = 50; m.BatchProductId = null; m.BatchSugarGrade = 1;
+                        m.ClearBatch();
                     }
                 }
             }

@@ -142,6 +142,20 @@ public static class ProgressionSaveTests
             Check(e.Progression.Phase == BusinessPhase.Results && SaveStore.Valid(e), "results rejected");
             Check(shift.ReturnToPreparation() && SaveStore.Valid(e), "next preparation rejected");
         });
+        Test("overflow winding saves only with a batch and matching active copy", () => {
+            var e = Operating(); var m = e.Business.Machines[0];
+            m.BatchMeters = ShopShift.LapMeters; m.BatchFlavor = 0; m.BatchOverflowMeters = 30;
+            e.Business.BatchMeters = ShopShift.LapMeters; e.Business.BatchFlavor = 0; e.Business.BatchOverflowMeters = 30;
+            Check(SaveStore.Valid(e), "capped batch with overflow rejected");
+            e.Business.BatchOverflowMeters = 31; Check(!SaveStore.Valid(e), "active overflow mismatch accepted");
+            e.Business.BatchOverflowMeters = 30; m.BatchOverflowMeters = e.Business.BatchOverflowMeters = -1;
+            Check(!SaveStore.Valid(e), "negative overflow accepted");
+            m.BatchOverflowMeters = e.Business.BatchOverflowMeters = double.NaN;
+            Check(!SaveStore.Valid(e), "non-finite overflow accepted");
+            m.BatchMeters = e.Business.BatchMeters = 0; m.BatchFlavor = e.Business.BatchFlavor = -1;
+            m.BatchOverflowMeters = e.Business.BatchOverflowMeters = 5;
+            Check(!SaveStore.Valid(e), "overflow without a batch accepted");
+        });
         Test("active batch grade cannot exceed selected machine grade", () => {
             var e = Operating(); Buy(e, "sugar_2");
             var m = e.Business.Machines[0]; m.BatchMeters = 1; m.BatchFlavor = 0; m.BatchSugarGrade = 2;

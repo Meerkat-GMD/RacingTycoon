@@ -10,6 +10,7 @@ namespace CottonCircuit
         public double SugarGrams;
         public int SugarFlavor = -1;
         public double BatchMeters;
+        public double BatchOverflowMeters;
         public int BatchFlavor = -1;
         public int BatchQuality = 50;
         public string BatchProductId;
@@ -193,6 +194,7 @@ namespace CottonCircuit
             if (!economy.CompletedIds.Contains(product.Id)) economy.CompletedIds.Add(product.Id);
             State.BatchProductId = null;
             State.BatchMeters = 0;
+            State.BatchOverflowMeters = 0;
             State.BatchFlavor = -1;
             State.BatchQuality = 50;
             State.BatchSugarGrade = 1;
@@ -226,6 +228,7 @@ namespace CottonCircuit
                 if (!economy.CompletedIds.Contains(outgoing.Id)) economy.CompletedIds.Add(outgoing.Id);
             }
             State.BatchMeters = selected.DistanceMeters;
+            State.BatchOverflowMeters = 0;
             State.BatchFlavor = selected.FlavorIndex;
             State.BatchQuality = selected.Quality;
             State.BatchProductId = selected.Id;
