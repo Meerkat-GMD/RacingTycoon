@@ -130,7 +130,7 @@ namespace CottonCircuit
             shiftSizeLimits = Label(p, "소 1바퀴 · 중 1.5바퀴 · 대 2바퀴", 594, 164, 333, 23, 12, Palette.Ink, FontStyle.Bold);
             if (!game.HasProgression) Label(p, "설탕 50g / 바퀴", 594, 190, 333, 20, 12, Palette.Muted);
             machine.raycastTarget = true;
-            HoverHint.Attach(machine.gameObject, () => game.HasProgression ? "설탕 봉지를 주행 화면으로 끌고 위아래로 흔들어요.\n같은 맛으로 성장하며, 최대 크기에서는 설탕을 쓰지 않아요.\nF로 꺼내어 진열대에 보관해요." : "설탕 50g / 바퀴.\n같은 맛 설탕을 넣고 달리면 자라요.");
+            HoverHint.Attach(machine.gameObject, () => game.HasProgression ? "설탕 봉지를 주행 화면으로 끌고 위아래로 흔들어요.\n같은 맛으로 성장해요. 최대 크기 뒤에도 설탕은 계속 감기지만\n크기는 그대로예요. F로 꺼내어 진열대에 보관해요." : "설탕 50g / 바퀴.\n같은 맛 설탕을 넣고 달리면 자라요.");
             HoverHint.Attach(shiftExtractButton.gameObject, "F로 현재 제품을 꺼내요.\n1바퀴 이상 감아야 판매할 수 있어요.", true);
             HoverHint.Attach(shiftEmptySugarButton.gameObject, "기계의 남은 설탕을 비워요.\n환급되지 않아요.", true);
 
@@ -197,7 +197,7 @@ namespace CottonCircuit
             shiftSugar.text = state.SugarGrams > .00001 ? "설탕 · " + Palette.FlavorName(state.SugarFlavor) + "  " + state.SugarGrams.ToString("0.0") + " / 100 g" : progression ? "설탕  0 / 100 g" : "설탕이 없어요 · 봉지를 흔들어 주세요";
             shiftSugarFill.rectTransform.sizeDelta = new Vector2(340 * Mathf.Clamp01((float)(state.SugarGrams / 100)), 5);
             shiftSugarFill.color = Time.unscaledTime < shiftPourFlashUntil ? Palette.Yellow : state.SugarFlavor < 0 ? Palette.Soda : Palette.Flavor(state.SugarFlavor);
-            shiftBatch.text = ShiftDistanceLabel(state.BatchMeters);
+            shiftBatch.text = ShiftDistanceLabel(state.BatchMeters + state.BatchOverflowMeters);
             shiftTier.text = state.BatchMeters <= 0 ? "생산 준비" : Palette.FlavorName(state.BatchFlavor) + (sizedProducts ? " · " + ShiftTierName(batchTier) : batchTier < 0 ? " · 미완성" : "") + (batchTier < 0 ? " (판매 불가)" : "");
             double nextMeters = ShopShift.MetersForSize(Math.Min(maxSize, batchTier + 1));
             double previousMeters = batchTier < 0 ? 0 : ShopShift.MetersForSize(batchTier);
@@ -369,10 +369,7 @@ namespace CottonCircuit
             {
                 shiftPourFlashUntil = Time.unscaledTime + .7f;
                 var state = game.Shift.State;
-                int cap = game.Shift.MaxSize(game.Shift.SelectedMachine);
-                if (state.BatchMeters > 0) cap = Math.Min(cap, Math.Max(0, state.BatchSugarGrade - 1));
-                shiftPourHint.text = state.BatchMeters >= ShopShift.MetersForSize(cap) - .001 ? "최대 크기  ·  F 꺼내기"
-                    : state.BatchMeters > 0 && state.BatchFlavor != item.FlavorIndex ? "제작 중인 맛과 달라요"
+                shiftPourHint.text = state.BatchMeters > 0 && state.BatchFlavor != item.FlavorIndex ? "제작 중인 맛과 달라요"
                     : state.SugarGrams >= 100 ? "설탕 가득" : "재료비 부족";
             }
             else if (Time.unscaledTime >= shiftPourFlashUntil) shiftPourHint.text = inside ? "↕" : "←";

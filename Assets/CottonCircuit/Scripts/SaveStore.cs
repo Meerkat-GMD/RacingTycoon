@@ -138,6 +138,8 @@ namespace CottonCircuit
                 business.SugarFlavor < -1 || business.SugarFlavor > 2 ||
                 (business.SugarGrams > 0 && business.SugarFlavor < 0) ||
                 !Finite(business.BatchMeters) || business.BatchMeters < 0 ||
+                !Finite(business.BatchOverflowMeters) || business.BatchOverflowMeters < 0 ||
+                business.BatchOverflowMeters > 0 && business.BatchMeters == 0 ||
                 business.BatchFlavor < -1 || business.BatchFlavor > 2 ||
                 (business.BatchMeters == 0) != (business.BatchFlavor == -1) ||
                 (legacy && business.BatchMeters > 0 && business.SugarGrams > 0 && business.BatchFlavor != business.SugarFlavor) ||
@@ -157,7 +159,8 @@ namespace CottonCircuit
                 return false;
             if (progression && e.Progression.Phase == BusinessPhase.Preparation &&
                 (business.Customers.Count != 0 || business.NextCustomerIn != 0 || e.Inventory.Count != 0 ||
-                 business.SugarGrams != 0 || business.BatchMeters != 0 || !string.IsNullOrEmpty(business.BatchProductId))) return false;
+                 business.SugarGrams != 0 || business.BatchMeters != 0 || business.BatchOverflowMeters != 0 ||
+                 !string.IsNullOrEmpty(business.BatchProductId))) return false;
             if (business.Closed) return business.Customers.Count == 0 && business.NextCustomerIn == 0 &&
                 (!progression || ValidMachines(e));
             var ids = new HashSet<string>();
@@ -222,6 +225,8 @@ namespace CottonCircuit
                 if (machine == null || !Finite(machine.SugarGrams) || machine.SugarGrams < 0 || machine.SugarGrams > ShopShift.SugarCapacity ||
                     machine.SugarFlavor < -1 || machine.SugarFlavor > 2 || machine.SugarGrams > 0 && machine.SugarFlavor < 0 ||
                     !Finite(machine.BatchMeters) || machine.BatchMeters < 0 ||
+                    !Finite(machine.BatchOverflowMeters) || machine.BatchOverflowMeters < 0 ||
+                    machine.BatchOverflowMeters > 0 && machine.BatchMeters == 0 ||
                     machine.BatchFlavor < -1 || machine.BatchFlavor > 2 || (machine.BatchMeters == 0) != (machine.BatchFlavor == -1) ||
                     machine.BatchQuality < 0 || machine.BatchQuality > 100 ||
                     machine.SugarGrade < 1 || machine.SugarGrade > Progression.MaxSugarGrade(e) ||
@@ -251,7 +256,8 @@ namespace CottonCircuit
             }
             var active = business.Machines[e.Progression.SelectedMachine];
             if (business.SugarGrams != active.SugarGrams || business.SugarFlavor != active.SugarFlavor ||
-                business.BatchMeters != active.BatchMeters || business.BatchFlavor != active.BatchFlavor ||
+                business.BatchMeters != active.BatchMeters || business.BatchOverflowMeters != active.BatchOverflowMeters ||
+                business.BatchFlavor != active.BatchFlavor ||
                 business.BatchQuality != active.BatchQuality || business.BatchProductId != active.BatchProductId ||
                 business.BatchSugarGrade != active.BatchSugarGrade) return false;
             return true;
@@ -303,7 +309,7 @@ namespace CottonCircuit
             return business == null ||
                 (business.RemainingSeconds == ShopShift.DayDuration && !business.Closed &&
                 business.SugarGrams == 0 && business.SugarFlavor == -1 &&
-                business.BatchMeters == 0 && business.BatchFlavor == -1 && business.BatchQuality == 50 && string.IsNullOrEmpty(business.BatchProductId) &&
+                business.BatchMeters == 0 && business.BatchOverflowMeters == 0 && business.BatchFlavor == -1 && business.BatchQuality == 50 && string.IsNullOrEmpty(business.BatchProductId) &&
                 business.DayMissed == 0 && business.DayRevenue == 0 && business.DaySold == 0 && business.DayWrong == 0 && business.DayTrashed == 0 &&
                 business.NextCustomerIn == 0 && AbsentCustomerPlaceholder(business.Customer) &&
                 (business.Customers == null || business.Customers.Count == 0));

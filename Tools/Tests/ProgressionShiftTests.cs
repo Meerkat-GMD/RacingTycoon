@@ -40,10 +40,17 @@ class ProgressionShiftTests
             int coins = e.Coins; Check(s.Pour(0) && e.Coins == coins, "basic strawberry pour is free");
             Check(!s.Pour(1), "locked flavor rejected");
             for (int i=0;i<10;i++) s.Pour(0);
-            s.Advance(1, ShopShift.LapMeters * 3);
+            s.Advance(1, ShopShift.LapMeters * 1.5);
             Check(Math.Abs(s.State.BatchMeters - ShopShift.MetersForSize(0)) < .001, "grade one caps at standard");
-            double sugar = s.State.SugarGrams; s.Advance(1, 100);
-            Check(s.State.SugarGrams == sugar, "capped candy does not consume more sugar");
+            Check(Math.Abs(s.State.BatchOverflowMeters - ShopShift.LapMeters * .5) < .001 &&
+                Math.Abs(s.State.SugarGrams - 25) < .001, "winding past the cap keeps draining sugar and counting laps");
+            s.Advance(1, ShopShift.LapMeters);
+            Check(s.State.SugarGrams == 0 && Math.Abs(s.State.BatchMeters - ShopShift.MetersForSize(0)) < .001 &&
+                Math.Abs(s.State.BatchOverflowMeters - ShopShift.LapMeters) < .001, "size stays at the cap until the sugar runs out");
+            Check(s.Pour(0) && s.State.SugarGrams == 10, "sugar can still be poured into a capped batch");
+            s.Advance(1, ShopShift.LapMeters * .1);
+            Check(Math.Abs(s.State.BatchOverflowMeters - ShopShift.LapMeters * 1.1) < .001 &&
+                ShopShift.SizeForDistance(s.State.BatchMeters) == 0, "poured sugar winds overflow without growing the size");
             var p = s.Extract(); Check(p != null && ShopShift.SizeOf(p) == 0, "extract standard candy");
             var customer = s.State.Customers[0]; Check(s.Deliver(p.Id, customer.Id) == DeliveryResult.Sold, "initial sale succeeds");
             int earned = e.Coins; Check(s.Deliver(p.Id, customer.Id) == DeliveryResult.Rejected && e.Coins == earned, "sale pays once");
@@ -83,7 +90,11 @@ class ProgressionShiftTests
                 "worker honors inherited material cap instead of waiting forever");
             s.SelectMachine(1); s.Extract(); s.EmptySugar();
             Check(s.ResumeProduct("low-grade"),"completed basic candy can be inspected on upgraded machine");
-            coins=e.Coins; Check(!s.Pour(0) && e.Coins==coins,"old material cap rejects paid pour on completed candy");
+            coins=e.Coins; Check(s.Pour(0) && e.Coins<coins,"completed candy still accepts paid sugar for overflow winding");
+            s.Advance(1, ShopShift.LapMeters*.1);
+            Check(ShopShift.SizeForDistance(s.State.BatchMeters)==0 && s.State.BatchOverflowMeters>0,
+                "old material cap keeps the resumed candy at its original size");
+            s.EmptySugar();
             p=ShopShift.Preview(ShopShift.LapMeters*.1,0); p.Id="premium"; p.SugarGrade=3; e.Inventory.Add(p);
             s.SelectMachine(0); Check(!s.ResumeProduct("premium") && e.Inventory.Exists(product=>product.Id=="premium"),
                 "free-grade basic machine cannot resume premium product and bypass material costs");
