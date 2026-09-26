@@ -46,7 +46,7 @@ namespace CottonCircuit
             }
             World.AnimationPaused = false;
             var drive = World.Kart.DriveModel;
-            int skills = drive.SkillCount, hits = drive.WallHits, boosts = drive.BoostCount;
+            int hits = drive.WallHits, boosts = drive.BoostCount;
             World.Kart.MaximumSpeed = Session.Economy.MaxSpeed;
             World.Kart.ConfiguredFlavor = Shift.State.SugarFlavor;
             drive.SteeringMultiplier = HasProgression ? Progression.SteeringMultiplier(Session.Economy) : 1;
@@ -56,7 +56,7 @@ namespace CottonCircuit
             double speedYield = ShopShift.SpeedYield(drive.Speed);
             double normalizedMeters = drive.LastRewardDistance * speedYield *
                 (HasProgression ? ShopShift.LapMeters / drive.Course.Length : 1);
-            Shift.Advance(dt, normalizedMeters, drive.SkillCount - skills, drive.WallHits - hits);
+            Shift.Advance(dt, normalizedMeters, drive.WallHits - hits);
             if (drive.BoostCount > boosts) Audio.PlayBoost(drive.BoostTier);
             RefreshShiftPreview();
             World.UpdateOrders(Session.Economy, dt);
@@ -154,7 +154,7 @@ namespace CottonCircuit
         {
             if (!ShiftActionsAllowed) return DeliveryResult.Rejected;
             var product = Session.Economy.Inventory.Find(p => p.Id == productId);
-            int before = Session.Economy.Coins;
+            int before = Session.Economy.Coins, starBonus = Session.Economy.StarBonus(product);
             var delivery = Shift.Deliver(productId, customerId);
             if (delivery == DeliveryResult.Rejected)
             {
@@ -165,7 +165,8 @@ namespace CottonCircuit
             if (delivery == DeliveryResult.Sold)
             {
                 Audio.Play(1);
-                Notify("주문 전달 완료! +" + (Session.Economy.Coins - before) + " 코인");
+                Notify("주문 전달 완료! +" + (Session.Economy.Coins - before) + " 코인  ·  " + ShopShift.StarText(product.Quality) +
+                    (starBonus > 0 ? " 보너스 +" + starBonus : " 보너스 없음"));
             }
             World.ShowInventory(Session.Economy); Save(); UI.Refresh(); return delivery;
         }

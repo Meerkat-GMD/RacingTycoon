@@ -28,6 +28,9 @@ namespace CottonCircuit.Tests
             CheckShiftRoadWidths();
             checks += ShopShiftSaveChecks.Run(Path.Combine(output, "save-checks"));
             CaptureShift("01-open.png");
+            // The production checks below measure the automatic driver's travel.
+            game.ToggleAutoDrive();
+            Check(game.AutoDrive, "fresh day can switch to automatic driving");
             int coinsBefore = game.Session.Economy.Coins;
             DriveShiftSeconds(59.9);
             Check(game.Shift.State.Customers.Count == 1, "only the first customer waits before the sixty-second arrival");
@@ -90,9 +93,14 @@ namespace CottonCircuit.Tests
             Check(correct != null && ShopShift.SizeOf(correct) == order.Size, "actual driving reaches ordered tier");
             CaptureShift("03-stock-ready.png");
             int salePrice = game.Session.Economy.Price(correct);
+            int starBonus = game.Session.Economy.StarBonus(correct);
+            Check(ShopShift.Stars(correct.Quality) == 3 && starBonus > 0,
+                "clean automatic driving keeps three stars and earns a star bonus");
             var soldId = correct.Id;
             DragStock(0, "CustomerDropTarget0");
             Check(game.Session.Economy.Inventory.Count == 0 && game.Session.Economy.Coins == coinsBefore + salePrice, "matching drag sale pays exact price");
+            Check(game.Notice != null && game.Notice.Contains("+" + salePrice + " 코인") && game.Notice.Contains("★★★ 보너스 +" + starBonus),
+                "sale notice shows the price and its star bonus: " + game.Notice);
             Check(game.Shift.CustomerAt(0) == order && order.Happy && !order.Angry &&
                 Math.Abs(order.ReactionRemaining - ShopShift.ReactionDuration) < .001,
                 "matching sale keeps its customer for the heart reaction");
@@ -196,7 +204,6 @@ namespace CottonCircuit.Tests
             // manual-input check independent of their measured travel and sugar use.
             game.Initialize(saveDirectory, true, true, false);
             CheckDefaultShiftDriving("open-day reload");
-            game.ToggleAutoDrive();
             var manualDrive = game.World.Kart.DriveModel;
             game.Tick(1, 0, false, 1);
             double launchSpeed = manualDrive.Speed;
@@ -232,12 +239,42 @@ namespace CottonCircuit.Tests
             CheckStreetCustomers();
             yield return CandyRackScenario();
             CheckEmptySugarButton();
+            CheckWallHitStars();
+        }
+
+        static string StarText(int stars) => new string('★', stars) + new string('☆', ShopShift.MaxStars - stars);
+
+        void CheckWallHitStars()
+        {
+            game.Initialize(Path.Combine(output, "wall-stars-" + Guid.NewGuid().ToString("N")), true, true, false);
+            game.UI.Refresh(); Canvas.ForceUpdateCanvases();
+            var stars = GameObject.Find("Batch stars").GetComponent<Text>();
+            Check(stars.text == "", "batch stars stay hidden before any candy exists");
+            game.PourSugar(0); game.PourSugar(0);
+            game.Tick(1, 0, false, 1.5f);
+            Check(game.Shift.State.BatchMeters > 0 && ShopShift.Stars(game.Shift.State.BatchQuality) == 3 && stars.text == StarText(3),
+                "a fresh candy shows three stars: " + stars.text);
+            var drive = game.World.Kart.DriveModel;
+            int hits = drive.WallHits;
+            for (int guard = 0; drive.WallHits == hits && guard < 400; guard++) game.Tick(1, 1, false, .05f);
+            Check(drive.WallHits == hits + 1, "steering hard right reaches the wall");
+            Check(ShopShift.Stars(game.Shift.State.BatchQuality) == 2 && stars.text == StarText(2),
+                "one wall hit removes one visible star: " + stars.text);
+            var crash = GameObject.Find("Shift race event").GetComponent<Text>();
+            Check(crash.text.Contains(StarText(2)), "the crash message shows the candy's remaining stars: " + crash.text);
+            CaptureShift("26-wall-hit-stars.png");
+            game.Session.Economy.Inventory.Clear();
+            for (int count = 0; count <= ShopShift.MaxStars; count++)
+                AddRackStock(count % 3, 1).Quality = ShopShift.QualityForStars(count);
+            game.UI.Refresh(); Canvas.ForceUpdateCanvases();
+            CheckRackProducts();
+            CaptureShift("27-rack-stars.png");
+            game.Initialize(saveDirectory, true, true, false);
         }
 
         void CheckEmptySugarButton()
         {
             game.Initialize(Path.Combine(output, "empty-sugar-" + Guid.NewGuid().ToString("N")), true, true, false);
-            game.ToggleAutoDrive();
             game.PourSugar(0); game.PourSugar(0);
             game.Shift.Advance(1, ShopShift.LapMeters * .1);
             AddRackStock(1, 1);
@@ -548,10 +585,10 @@ namespace CottonCircuit.Tests
             return product;
         }
 
-        void CheckDefaultShiftDriving(string context)
+        void CheckDefaultShiftDriving(string context, bool autoDrive = false)
         {
             var kart = game.World.Kart;
-            Check(game.AutoDrive, context + " opens with auto driving enabled");
+            Check(game.AutoDrive == autoDrive, context + (autoDrive ? " keeps automatic driving" : " opens with manual driving"));
             Check(game.PreparedStyle == DrivingStyle.Downhill && game.RunStyle == DrivingStyle.Downhill &&
                 kart.DriveModel.Style == DrivingStyle.Downhill, context + " uses the downhill driving model");
             Check(kart.DriveModel.StoredBoosts == 0, context + " has no inherited kart booster");

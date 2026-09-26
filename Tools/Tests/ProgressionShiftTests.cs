@@ -138,6 +138,30 @@ class ProgressionShiftTests
             e.Progression.Purchases.Add(new NodePurchase { Id = "sugar_3", Level = 1 });
             Check(s.SugarGrade(2) == 3 && s.MaxSize(2) == 2 && s.SizeLimitNote(2) == "특급 기계는 대까지",
                 "top sugar unlocks the top size on the top machine");
+
+            // Stars follow wall hits only; quality traits raise the sale bonus instead of the start.
+            e = Fresh(); All(e); e.Coins = 10000; s = new ShopShift(e);
+            s.Machine(1).WorkerAssigned = true; s.Machine(1).RecipeFlavor = 0; s.Machine(1).RecipeSize = 0;
+            s.BeginBusiness(); s.Pour(0); s.Advance(1, 5);
+            Check(ShopShift.Stars(s.State.BatchQuality) == 3 && s.State.BatchQuality == ShopShift.QualityForStars(3),
+                "a clean progression batch starts at three stars even with every quality trait");
+            s.Advance(1, 5, 1);
+            Check(ShopShift.Stars(s.State.BatchQuality) == 2, "a wall hit removes one star from the driven machine");
+            s.EmptySugar(); s.Advance(1, 5, 1);
+            Check(ShopShift.Stars(s.State.BatchQuality) == 1, "a wall hit costs a star while the stalled candy stays on the stick");
+            s.Advance(1, 5, 4);
+            Check(s.State.BatchQuality == 0, "progression stars stop at zero");
+            s.Advance(120, 0, 3);
+            var worker = e.Inventory.Find(product => product.FlavorIndex == 0 && product.Id != s.State.BatchProductId);
+            Check(worker != null && ShopShift.Stars(worker.Quality) == 3,
+                "a worker's candy keeps three stars when the player hits walls on another machine");
+            var fresh = Fresh();
+            Check(Math.Abs(Progression.StarBonus(fresh) - .05) < 1e-9 && Math.Abs(Progression.StarBonus(e) - .078) < 1e-9,
+                "star bonus starts at five percent and quality traits raise it to 7.8 percent");
+            var starred = ShopShift.Preview(ShopShift.LapMeters, 0); starred.Quality = ShopShift.QualityForStars(3);
+            var bare = ShopShift.Preview(ShopShift.LapMeters, 0); bare.Quality = 0;
+            Check(Math.Abs(e.Price(starred) - e.Price(bare) * 1.234) <= 1,
+                "three stars with every quality trait add 23.4 percent to the sale price");
             Console.WriteLine(passed+" passed, 0 failed"); return 0;
         } catch(Exception ex) { Console.Error.WriteLine(ex); return 1; }
     }

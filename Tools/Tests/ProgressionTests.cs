@@ -124,14 +124,14 @@ public static class ProgressionTests
             var e = Fresh();
             double patience = Progression.PatienceSeconds(e), arrival = Progression.ArrivalSeconds(e);
             double growth = Progression.GrowthMultiplier(e), sugar = Progression.SugarMultiplier(e);
-            double quality = Progression.QualityBonus(e), speed = Progression.SpeedMultiplier(e);
+            double quality = Progression.StarBonus(e), speed = Progression.SpeedMultiplier(e);
             double steering = Progression.SteeringMultiplier(e), worker = Progression.WorkerMetersPerSecond(e);
             BuyPath(e, "patience"); BuyPath(e, "ads"); BuyPath(e, "stick_speed");
             BuyPath(e, "stick_saving"); BuyPath(e, "stick_quality"); BuyPath(e, "handling");
             BuyPath(e, "worker_speed"); BuyPath(e, "engine");
             Check(Progression.PatienceSeconds(e) > patience && Progression.ArrivalSeconds(e) < arrival &&
                 Progression.GrowthMultiplier(e) > growth && Progression.SugarMultiplier(e) < sugar &&
-                Progression.QualityBonus(e) > quality && Progression.SpeedMultiplier(e) > speed &&
+                Progression.StarBonus(e) > quality && Progression.SpeedMultiplier(e) > speed &&
                 Progression.SteeringMultiplier(e) > steering &&
                 Progression.WorkerMetersPerSecond(e) > worker && e.MaxSpeed > 26f,
                 "stat effect absent");

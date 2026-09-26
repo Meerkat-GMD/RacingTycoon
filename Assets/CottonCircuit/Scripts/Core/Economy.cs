@@ -38,15 +38,7 @@ namespace CottonCircuit
         public int Price(Product product)
         {
             if (product == null || product.Grams <= 0) return 0;
-            if (product.DistanceBased)
-            {
-                int size = ShopShift.SizeOf(product);
-                if (size < 0) return 0;
-                double quality = 1 + Math.Max(0, Math.Min(100, product.Quality)) * .003;
-                double multiplier = Progression == null ? (1 + Levels[2] * .25) :
-                    CottonCircuit.Progression.SalesMultiplier(this) * CottonCircuit.Progression.FlavorPriceMultiplier(this, product.FlavorIndex);
-                return (int)Math.Round(ShopShift.TierPrice * (size + 1) * multiplier * quality);
-            }
+            if (product.DistanceBased) return DistancePrice(product, ShopShift.Stars(product.Quality));
             var flavors = new HashSet<int>();
             foreach (var sample in product.Samples) flavors.Add(sample.Flavor);
             double qualityMultiplier = 1 + Math.Max(0, Math.Min(100, product.Quality)) * .003;
@@ -54,6 +46,20 @@ namespace CottonCircuit
                 CottonCircuit.Progression.SalesMultiplier(this) * CottonCircuit.Progression.FlavorPriceMultiplier(this, product.FlavorIndex);
             return (int)Math.Round((20 + product.Grams * .75 + flavors.Count * 8) *
                 legacyMultiplier * qualityMultiplier);
+        }
+        // The coins a distance product's stars add on top of its starless price.
+        public int StarBonus(Product product)
+        {
+            if (product == null || product.Grams <= 0 || !product.DistanceBased) return 0;
+            return Price(product) - DistancePrice(product, 0);
+        }
+        int DistancePrice(Product product, int stars)
+        {
+            int size = ShopShift.SizeOf(product);
+            if (size < 0) return 0;
+            double multiplier = Progression == null ? (1 + Levels[2] * .25) :
+                CottonCircuit.Progression.SalesMultiplier(this) * CottonCircuit.Progression.FlavorPriceMultiplier(this, product.FlavorIndex);
+            return (int)Math.Round(ShopShift.TierPrice * (size + 1) * multiplier * (1 + stars * CottonCircuit.Progression.StarBonus(this)));
         }
         public int SellNext()
         {
