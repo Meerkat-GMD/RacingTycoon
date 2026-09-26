@@ -1,0 +1,631 @@
+{
+  "category": "machines",
+  "module": "Art/Blender/ui_sprites/machines.py",
+  "source_spec": "docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md",
+  "blender_version": "5.2.2 LTS",
+  "blend": "Art/Blender/ui_sprites/machines.blend",
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "adaptive_sampling": false,
+    "seed": 260927,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1.0,
+    "format": "PNG",
+    "color_mode": "RGBA",
+    "bit_depth": 8
+  },
+  "palette": {
+    "Strawberry": "#F48DAB",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Cream": "#FFF1D4",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Wood": "#D59C79",
+    "Tire": "#414059",
+    "Base": "#9DBBAF",
+    "Skin1": "#F1C6A6",
+    "Skin2": "#B87A65",
+    "Skin3": "#E8AF88",
+    "Hair1": "#574F59",
+    "Hair2": "#8D5B4A",
+    "Hair3": "#45475B",
+    "Pants1": "#7C789D",
+    "Pants2": "#65688B",
+    "Pants3": "#5F968F",
+    "Magenta": "#C2577E"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "material_recipe": {
+    "roughness": 0.85,
+    "specular_ior_level": 0.08
+  },
+  "coordinate_system": {
+    "up": "+Z",
+    "front": "-Y",
+    "units": "meters"
+  },
+  "passes": "Art/Blender/ui-sprite-passes/machines",
+  "assets": [
+    {
+      "id": "Machine_0",
+      "file": "Assets/CottonCircuit/Sprites/Machines/Machine_0.png",
+      "kind": "prop",
+      "canvas": [
+        252,
+        252
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.86,
+        "target": [
+          0,
+          0,
+          1.16
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "tier": "basic",
+        "size": 1.38,
+        "pedestal": {
+          "radius": 0.34,
+          "height": 0.4,
+          "taper": 0.04,
+          "body": "Cream",
+          "plinth": "Tire",
+          "collar": "Strawberry",
+          "knobs": [
+            "Strawberry"
+          ]
+        },
+        "neck": {
+          "radius": 0.13,
+          "height": 0.1,
+          "color": "Tire"
+        },
+        "bowl": {
+          "radius": 0.4,
+          "height": 0.26,
+          "color": "Strawberry",
+          "rim": null,
+          "sides": 10
+        },
+        "head": {
+          "radius": 0.15,
+          "drum": 0.22,
+          "rise": 0.09,
+          "color": "Strawberry",
+          "band": "Tire",
+          "cap": "Tire"
+        },
+        "floss": {
+          "color": "White",
+          "core": [
+            0.23,
+            0.16
+          ],
+          "lift": 0.04,
+          "lobes": 22,
+          "lobe": 0.1,
+          "crater": 40
+        },
+        "dome": null,
+        "star": null
+      },
+      "objects": [
+        "Machine_0_Bowl",
+        "Machine_0_Control_Plate",
+        "Machine_0_Drive_Neck",
+        "Machine_0_Floss_Core",
+        "Machine_0_Floss_Lobe_01",
+        "Machine_0_Floss_Lobe_02",
+        "Machine_0_Floss_Lobe_03",
+        "Machine_0_Floss_Lobe_04",
+        "Machine_0_Floss_Lobe_05",
+        "Machine_0_Floss_Lobe_06",
+        "Machine_0_Floss_Lobe_07",
+        "Machine_0_Floss_Lobe_08",
+        "Machine_0_Floss_Lobe_09",
+        "Machine_0_Floss_Lobe_10",
+        "Machine_0_Floss_Lobe_11",
+        "Machine_0_Floss_Lobe_12",
+        "Machine_0_Floss_Lobe_13",
+        "Machine_0_Floss_Lobe_14",
+        "Machine_0_Floss_Lobe_15",
+        "Machine_0_Floss_Lobe_16",
+        "Machine_0_Floss_Lobe_17",
+        "Machine_0_Floss_Lobe_18",
+        "Machine_0_Floss_Lobe_19",
+        "Machine_0_Floss_Lobe_20",
+        "Machine_0_Floss_Lobe_21",
+        "Machine_0_Floss_Lobe_22",
+        "Machine_0_Knob_01",
+        "Machine_0_Pedestal_Body",
+        "Machine_0_Pedestal_Collar",
+        "Machine_0_Pedestal_Plinth",
+        "Machine_0_Spinner_Head",
+        "Machine_0_Spinner_Head_Band",
+        "Machine_0_Spinner_Head_Cap"
+      ],
+      "materials": [
+        {
+          "name": "Machine_0_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_0_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_0_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_0_Tire",
+          "palette_name": "Tire",
+          "palette_srgb": "#414059",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_0_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Machine_1",
+      "file": "Assets/CottonCircuit/Sprites/Machines/Machine_1.png",
+      "kind": "prop",
+      "canvas": [
+        252,
+        252
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.86,
+        "target": [
+          0,
+          0,
+          1.16
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "tier": "soda",
+        "size": 1.06,
+        "pedestal": {
+          "radius": 0.44,
+          "height": 0.52,
+          "taper": 0.05,
+          "body": "Mint",
+          "plinth": "Tire",
+          "collar": "White",
+          "knobs": [
+            "Soda",
+            "Strawberry"
+          ]
+        },
+        "neck": {
+          "radius": 0.15,
+          "height": 0.1,
+          "color": "Tire"
+        },
+        "bowl": {
+          "radius": 0.6,
+          "height": 0.3,
+          "color": "Soda",
+          "rim": null,
+          "sides": 10
+        },
+        "head": {
+          "radius": 0.16,
+          "drum": 0.24,
+          "rise": 0.1,
+          "color": "Strawberry",
+          "band": "Tire",
+          "cap": "Soda"
+        },
+        "floss": {
+          "color": "Soda",
+          "core": [
+            0.3,
+            0.22
+          ],
+          "lift": 0.05,
+          "lobes": 26,
+          "lobe": 0.12,
+          "crater": 40
+        },
+        "dome": {
+          "sectors": 10,
+          "bands": [
+            0,
+            24,
+            48,
+            70,
+            90
+          ],
+          "stretch": 1.08,
+          "ring": "Soda",
+          "cap": "Soda",
+          "glints": [
+            [
+              -47,
+              2,
+              7,
+              26,
+              66
+            ],
+            [
+              -34,
+              1.5,
+              4,
+              48,
+              64
+            ]
+          ],
+          "bubbles": 6
+        },
+        "star": null
+      },
+      "objects": [
+        "Machine_1_Bowl",
+        "Machine_1_Bubble_01",
+        "Machine_1_Bubble_02",
+        "Machine_1_Bubble_03",
+        "Machine_1_Bubble_04",
+        "Machine_1_Bubble_05",
+        "Machine_1_Bubble_06",
+        "Machine_1_Control_Plate",
+        "Machine_1_Dome_Base_Ring",
+        "Machine_1_Dome_Glints",
+        "Machine_1_Dome_Knob",
+        "Machine_1_Dome_Shell",
+        "Machine_1_Dome_Vent",
+        "Machine_1_Drive_Neck",
+        "Machine_1_Floss_Core",
+        "Machine_1_Floss_Lobe_01",
+        "Machine_1_Floss_Lobe_02",
+        "Machine_1_Floss_Lobe_03",
+        "Machine_1_Floss_Lobe_04",
+        "Machine_1_Floss_Lobe_05",
+        "Machine_1_Floss_Lobe_06",
+        "Machine_1_Floss_Lobe_07",
+        "Machine_1_Floss_Lobe_08",
+        "Machine_1_Floss_Lobe_09",
+        "Machine_1_Floss_Lobe_10",
+        "Machine_1_Floss_Lobe_11",
+        "Machine_1_Floss_Lobe_12",
+        "Machine_1_Floss_Lobe_13",
+        "Machine_1_Floss_Lobe_14",
+        "Machine_1_Floss_Lobe_15",
+        "Machine_1_Floss_Lobe_16",
+        "Machine_1_Floss_Lobe_17",
+        "Machine_1_Floss_Lobe_18",
+        "Machine_1_Floss_Lobe_19",
+        "Machine_1_Floss_Lobe_20",
+        "Machine_1_Floss_Lobe_21",
+        "Machine_1_Floss_Lobe_22",
+        "Machine_1_Floss_Lobe_23",
+        "Machine_1_Floss_Lobe_24",
+        "Machine_1_Floss_Lobe_25",
+        "Machine_1_Floss_Lobe_26",
+        "Machine_1_Knob_01",
+        "Machine_1_Knob_02",
+        "Machine_1_Pedestal_Body",
+        "Machine_1_Pedestal_Collar",
+        "Machine_1_Pedestal_Plinth",
+        "Machine_1_Spinner_Head",
+        "Machine_1_Spinner_Head_Band",
+        "Machine_1_Spinner_Head_Cap"
+      ],
+      "materials": [
+        {
+          "name": "Machine_1_Mint",
+          "palette_name": "Mint",
+          "palette_srgb": "#99C4AE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_1_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_1_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_1_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_1_Tire",
+          "palette_name": "Tire",
+          "palette_srgb": "#414059",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_1_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Machine_2",
+      "file": "Assets/CottonCircuit/Sprites/Machines/Machine_2.png",
+      "kind": "prop",
+      "canvas": [
+        252,
+        252
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 2.86,
+        "target": [
+          0,
+          0,
+          1.16
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0.07,
+          0.1,
+          0
+        ],
+        "radii": [
+          0.3,
+          0.068
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "tier": "premium",
+        "size": 1.1,
+        "pedestal": {
+          "radius": 0.52,
+          "height": 0.62,
+          "taper": 0.06,
+          "body": "Plum",
+          "plinth": "Gold",
+          "collar": "Gold",
+          "knobs": [
+            "Gold",
+            "Gold",
+            "Gold"
+          ]
+        },
+        "neck": {
+          "radius": 0.18,
+          "height": 0.11,
+          "color": "Gold"
+        },
+        "bowl": {
+          "radius": 0.72,
+          "height": 0.34,
+          "color": "Cream",
+          "rim": "Gold",
+          "sides": 10
+        },
+        "head": {
+          "radius": 0.17,
+          "drum": 0.24,
+          "rise": 0.08,
+          "color": "Plum",
+          "band": "Gold",
+          "cap": "Gold"
+        },
+        "floss": {
+          "color": "Strawberry",
+          "core": [
+            0.36,
+            0.36
+          ],
+          "lift": 0.1,
+          "lobes": 32,
+          "lobe": 0.16,
+          "crater": 40
+        },
+        "dome": null,
+        "star": {
+          "outer": 0.25,
+          "inner": 0.11,
+          "depth": 0.08,
+          "rise": 0.16,
+          "spire": "Gold",
+          "color": "Gold"
+        }
+      },
+      "objects": [
+        "Machine_2_Bowl",
+        "Machine_2_Bowl_Rim_Trim",
+        "Machine_2_Control_Plate",
+        "Machine_2_Drive_Neck",
+        "Machine_2_Floss_Core",
+        "Machine_2_Floss_Lobe_01",
+        "Machine_2_Floss_Lobe_02",
+        "Machine_2_Floss_Lobe_03",
+        "Machine_2_Floss_Lobe_04",
+        "Machine_2_Floss_Lobe_05",
+        "Machine_2_Floss_Lobe_06",
+        "Machine_2_Floss_Lobe_07",
+        "Machine_2_Floss_Lobe_08",
+        "Machine_2_Floss_Lobe_09",
+        "Machine_2_Floss_Lobe_10",
+        "Machine_2_Floss_Lobe_11",
+        "Machine_2_Floss_Lobe_12",
+        "Machine_2_Floss_Lobe_13",
+        "Machine_2_Floss_Lobe_14",
+        "Machine_2_Floss_Lobe_15",
+        "Machine_2_Floss_Lobe_16",
+        "Machine_2_Floss_Lobe_17",
+        "Machine_2_Floss_Lobe_18",
+        "Machine_2_Floss_Lobe_19",
+        "Machine_2_Floss_Lobe_20",
+        "Machine_2_Floss_Lobe_21",
+        "Machine_2_Floss_Lobe_22",
+        "Machine_2_Floss_Lobe_23",
+        "Machine_2_Floss_Lobe_24",
+        "Machine_2_Floss_Lobe_25",
+        "Machine_2_Floss_Lobe_26",
+        "Machine_2_Floss_Lobe_27",
+        "Machine_2_Floss_Lobe_28",
+        "Machine_2_Floss_Lobe_29",
+        "Machine_2_Floss_Lobe_30",
+        "Machine_2_Floss_Lobe_31",
+        "Machine_2_Floss_Lobe_32",
+        "Machine_2_Knob_01",
+        "Machine_2_Knob_02",
+        "Machine_2_Knob_03",
+        "Machine_2_Pedestal_Body",
+        "Machine_2_Pedestal_Collar",
+        "Machine_2_Pedestal_Plinth",
+        "Machine_2_Spinner_Head",
+        "Machine_2_Spinner_Head_Band",
+        "Machine_2_Spinner_Head_Cap",
+        "Machine_2_Star",
+        "Machine_2_Star_Spire"
+      ],
+      "materials": [
+        {
+          "name": "Machine_2_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_2_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_2_Navy",
+          "palette_name": "Navy",
+          "palette_srgb": "#29324D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_2_Plum",
+          "palette_name": "Plum",
+          "palette_srgb": "#6C577F",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Machine_2_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    }
+  ]
+}
