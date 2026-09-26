@@ -4,26 +4,11 @@ Blender coordinates: +Z up, -Y front. HEX values are sRGB, node values linear.
 No textures, outlines, smooth normals or subdivision-surface modifiers.
 """
 import math
+import os
 import bpy
 from mathutils import Vector
 
-PALETTE = {
-    'Strawberry': '#F48DAB', 'Soda': '#7ACDCE', 'Vanilla': '#F9D27D',
-    'Navy': '#29324D', 'Cream': '#FFF1D4', 'White': '#FFF9ED',
-    'Mint': '#99C4AE', 'Plum': '#6C577F', 'Gold': '#DBAE61',
-    'Wood': '#D59C79', 'Tire': '#414059', 'Base': '#9DBBAF',
-    'Skin1': '#F1C6A6', 'Skin2': '#B87A65', 'Skin3': '#E8AF88',
-    'Hair1': '#574F59', 'Hair2': '#8D5B4A', 'Hair3': '#45475B',
-    'Pants1': '#7C789D', 'Pants2': '#65688B', 'Pants3': '#5F968F',
-}
-LIGHTING = {
-    'key': {'location': [-2, -3, 7], 'power_w': 900, 'size': 4, 'color': '#FFF1DD'},
-    'fill': {'location': [4.5, -3.5, 3], 'power_w': 250, 'size': 5, 'color': '#DDE6FF'},
-    'rim': {'location': [1.5, 3, 5], 'power_w': 70, 'size': 3, 'color': '#FFFFFF'},
-    'environment': {'color': '#F3ECF7', 'strength': .75},
-    'aim': [0, 0, 1.25],
-}
-EXPOSURE = -1.8
+from ui_sprite_spec import PALETTE, LIGHTING, EXPOSURE, MATERIAL  # noqa: re-exported for the approved generators
 
 
 def linear(hex_color):
@@ -142,7 +127,9 @@ def studio():
 
 def setup_scene(name, rig, world, size, seed):
     scene = bpy.data.scenes.new(name)
-    bpy.context.window.scene = scene
+    window = bpy.context.window or (bpy.context.window_manager.windows[0] if bpy.context.window_manager.windows else None)
+    if window:
+        window.scene = scene
     scene.collection.children.link(rig)
     scene.world = world
     scene.render.engine = 'CYCLES'
@@ -163,7 +150,7 @@ def setup_scene(name, rig, world, size, seed):
     scene.view_settings.exposure = EXPOSURE
     scene.view_settings.gamma = 1
     scene.render.threads_mode = 'FIXED'
-    scene.render.threads = 8
+    scene.render.threads = int(os.environ.get('UI_SPRITE_THREADS', '8'))
     return scene
 
 

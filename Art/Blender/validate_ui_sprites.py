@@ -1,242 +1,246 @@
-"""Validate the three initial Blender UI sprite samples with Pillow.
+"""Validate the pastel-toy UI sprites against the catalog in ui_sprite_spec.py (Pillow + numpy).
 
-Run from any directory: python Art/Blender/validate_ui_sprites.py
-The JSON report is written even when a source file is missing or invalid.
+    python Art/Blender/validate_ui_sprites.py [--complete] [--owner NAME[,NAME...]] [--report PATH]
+
+For every catalog entry whose PNG exists: RGBA, size == canvas and the kind rules
+(transparent kinds keep >= margin fully transparent pixels on every edge and an
+alpha >= 128 occupancy inside the kind's range; opaque kinds are alpha 255
+everywhere). Shadowed sprites whose Art/Blender/ui-sprite-passes/<owner>/<id>-beauty.png
+exists must keep every opaque beauty pixel unchanged. Every
+Art/Blender/ui_sprites/*.manifest.json must match the shared render settings,
+palette and material recipe. PNGs under the sprite folder that are not in the
+catalog fail. --complete also fails for every missing PNG.
+--owner NAME (repeatable, or comma-separated) restricts every check above to the
+catalog entries owned by those owners (ui_sprite_spec.owned_by), so one art task's
+unfinished sprites cannot fail another task's validation run; an unknown owner
+exits 2. Prints `UI_SPRITES_VALID <present>/66` (or `.../<owned count> owner=<names>`
+when --owner is given) or the failures; exits 1 on failure.
 """
-
 from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
+import numpy as np
 from PIL import Image
 
+ART = Path(__file__).resolve().parent
+ROOT = ART.parents[1]
+if str(ART) not in sys.path:
+    sys.path.insert(0, str(ART))
+import ui_sprite_spec as spec
 
-ROOT = Path(__file__).resolve().parents[2]
-ART = ROOT / "Art" / "Blender"
-EXPECTED = {
-    "CottonCandy_Strawberry_Medium": {
-        "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
-        "display_size": [77, 88],
-        "render_size": [154, 176],
-        "shadow": True,
-    },
-    "Customer_01_Neutral": {
-        "file": "Assets/CottonCircuit/Sprites/Customers/Customer_01_Neutral.png",
-        "display_size": [82, 140],
-        "render_size": [164, 280],
-        "shadow": True,
-    },
-    "Trait_Hours": {
-        "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
-        "display_size": [42, 42],
-        "render_size": [84, 84],
-        "shadow": False,
-    },
-}
-EXPECTED_RENDER = {
-    "engine": "CYCLES",
-    "samples": 64,
-    "denoise": True,
-    "view_transform": "Standard",
-    "look": "None",
-}
-APPROVED_COLORS = {
-    "#F48DAB", "#7ACDCE", "#F9D27D", "#29324D", "#FFF1D4", "#FFF9ED",
-    "#99C4AE", "#6C577F", "#DBAE61", "#D59C79", "#414059", "#9DBBAF",
-    "#F1C6A6", "#B87A65", "#E8AF88", "#574F59", "#8D5B4A", "#45475B",
-    "#7C789D", "#65688B", "#5F968F",
-}
+SPRITES = 'Assets/CottonCircuit/Sprites'
+PASSES = 'Art/Blender/ui-sprite-passes'
+MANIFESTS = 'Art/Blender/ui_sprites'
+PALETTE_HEX = {value.upper() for value in spec.PALETTE.values()}
+OWNERS = sorted({entry['owner'] for entry in spec.CATALOG})
 
 
-def pixel_data(image: Image.Image):
-    """Prefer Pillow 12's replacement while supporting older Pillow versions."""
-    return getattr(image, "get_flattened_data", image.getdata)()
+def load_rgba(path: Path) -> tuple[str, tuple[int, int], np.ndarray]:
+    with Image.open(path) as image:
+        image.load()
+        return image.mode, image.size, np.asarray(image.convert('RGBA'), dtype=np.uint8)
 
 
-def inspect_png(path: Path, expected: dict) -> tuple[dict, list[str], list[str]]:
-    """Use rendered pixels only; metadata does not establish visual correctness."""
-    failures: list[str] = []
-    warnings: list[str] = []
-    metrics: dict = {"file": path.relative_to(ROOT).as_posix(), "exists": path.is_file()}
-    if not path.is_file():
-        return metrics, ["PNG is missing"], warnings
+def check_sprite(entry: dict, root: Path) -> dict:
+    """Pixel checks for one catalog entry; metadata alone never passes a sprite."""
+    path = root/spec.sprite_path(entry)
+    result = {'id': entry['id'], 'file': spec.sprite_path(entry), 'kind': entry['kind'],
+              'exists': path.is_file(), 'errors': [], 'warnings': [], 'metrics': {}}
+    if not result['exists']:
+        return result
+    errors, metrics = result['errors'], result['metrics']
     try:
-        with Image.open(path) as source:
-            source.load()
-            metrics.update(format=source.format, mode=source.mode, size=list(source.size))
-            if source.format != "PNG":
-                failures.append("File is not a PNG")
-            if source.mode != "RGBA":
-                failures.append(f"PNG mode must be RGBA, got {source.mode}")
-            if list(source.size) != expected["render_size"]:
-                failures.append(f"Render size must be {expected['render_size']}, got {list(source.size)}")
-            rgba = source.convert("RGBA")
+        mode, size, rgba = load_rgba(path)
     except (OSError, ValueError) as error:
-        return metrics, [f"Cannot decode PNG: {error}"], warnings
-
-    width, height = rgba.size
-    alpha = rgba.getchannel("A")
-    bounds = alpha.getbbox()
-    metrics["alpha_bbox"] = list(bounds) if bounds else None
-    metrics["alpha_extrema"] = list(alpha.getextrema())
-    if bounds is None:
-        failures.append("Sprite is entirely transparent")
-        return metrics, failures, warnings
-    left, top, right, bottom = bounds
-    margins = {"left": left, "top": top, "right": width - right, "bottom": height - bottom}
-    metrics["transparent_edge_pixels"] = margins
-    if min(margins.values()) < 2:
-        failures.append(f"At least 2 fully transparent edge pixels are required: {margins}")
-
-    pixels = list(pixel_data(rgba))
-    solid = [(r, g, b) for r, g, b, a in pixels if a >= 128]
-    opaque = [(r, g, b) for r, g, b, a in pixels if a >= 250]
-    occupancy = len(solid) / (width * height)
-    metrics["solid_pixel_fraction"] = round(occupancy, 5)
-    metrics["visible_pixel_fraction"] = round(sum(a > 0 for *_, a in pixels) / (width * height), 5)
-    metrics["alpha_weighted_coverage"] = round(sum(a for *_, a in pixels) / (255 * width * height), 5)
-    if not 0.06 <= occupancy <= 0.9:
-        failures.append(f"Meaningful solid occupancy must be 6–90%, got {occupancy:.2%}")
-    solid_bounds = alpha.point(lambda a: 255 if a >= 128 else 0).getbbox()
-    metrics["solid_bbox"] = list(solid_bounds) if solid_bounds else None
-    if solid_bounds:
-        solid_width = solid_bounds[2] - solid_bounds[0]
-        solid_height = solid_bounds[3] - solid_bounds[1]
-        if solid_width < width * 0.25 or solid_height < height * 0.45:
-            failures.append("Solid subject occupies too little of its canvas width or height")
-
-    # A clipped red channel alone is expected for the approved cream and white.
-    # Count all-channel neutral whites separately; lighting correctness still
-    # requires inspecting the Blender source and the light/dark preview board.
-    denominator = max(1, len(opaque))
-    metrics["opaque_pixel_count"] = len(opaque)
-    metrics["neutral_near_white_fraction"] = round(sum(min(rgb) >= 250 for rgb in opaque) / denominator, 6)
-    metrics["neutral_clipped_white_fraction"] = round(sum(min(rgb) >= 254 for rgb in opaque) / denominator, 6)
-    metrics["any_channel_255_fraction"] = round(sum(max(rgb) == 255 for rgb in opaque) / denominator, 6)
-    metrics["opaque_unique_rgb_count"] = len(set(opaque))
-    if metrics["neutral_near_white_fraction"] > 0.01:
-        warnings.append("More than 1% of opaque pixels are neutral near-white; inspect highlights for lost facets")
-    if opaque:
-        luminance = [(0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 for r, g, b in opaque]
-        metrics["opaque_luminance_range"] = [round(min(luminance), 4), round(max(luminance), 4)]
-
-    native = rgba.resize(tuple(expected["display_size"]), Image.Resampling.LANCZOS)
-    metrics["native_solid_pixel_count"] = sum(a >= 128 for a in pixel_data(native.getchannel("A")))
-    if expected["shadow"]:
-        beauty_path = ART / "ui-sprite-passes" / f"{path.stem}-beauty.png"
-        metrics["beauty_pass_comparison_available"] = beauty_path.is_file()
+        errors.append('cannot decode PNG: %s' % error)
+        return result
+    metrics.update(mode=mode, size=list(size))
+    if mode != 'RGBA':
+        errors.append('mode must be RGBA, got %s' % mode)
+    if tuple(size) != tuple(entry['canvas']):
+        errors.append('size must be %dx%d, got %dx%d' % (*entry['canvas'], *size))
+        return result
+    rules = spec.KIND_RULES[entry['kind']]
+    alpha = rgba[..., 3]
+    if rules['opaque']:
+        metrics['min_alpha'] = int(alpha.min())
+        if metrics['min_alpha'] != 255:
+            errors.append('opaque kind needs alpha 255 everywhere; %d pixels are not' % int((alpha != 255).sum()))
+        return result
+    height, width = alpha.shape
+    rows, cols = np.nonzero(alpha)
+    if rows.size == 0:
+        errors.append('sprite is entirely transparent')
+        return result
+    margins = {'left': int(cols.min()), 'top': int(rows.min()),
+               'right': int(width-1-cols.max()), 'bottom': int(height-1-rows.max())}
+    metrics['transparent_margins'] = margins
+    if min(margins.values()) < rules['margin']:
+        errors.append('needs >= %d fully transparent px on every edge, got %s' % (rules['margin'], margins))
+    occupancy = float((alpha >= 128).mean())
+    metrics['occupancy'] = round(occupancy, 5)
+    low, high = rules['occupancy']
+    if not low <= occupancy <= high:
+        errors.append('alpha>=128 occupancy must be %.0f-%.0f%%, got %.2f%%' % (low*100, high*100, occupancy*100))
+    opaque = rgba[alpha >= 250][:, :3]
+    if len(opaque):
+        near_white = float((opaque.min(axis=1) >= 250).mean())
+        metrics['neutral_near_white_fraction'] = round(near_white, 6)
+        if near_white > .01:
+            result['warnings'].append('%.1f%% of opaque pixels are neutral near-white; check for clipped facets'
+                                      % (near_white*100))
+    if entry['shadow']:
+        beauty_path = root/PASSES/entry['owner']/(entry['id']+'-beauty.png')
+        metrics['beauty_pass'] = beauty_path.is_file()
         if beauty_path.is_file():
             try:
-                with Image.open(beauty_path) as beauty:
-                    if beauty.mode != "RGBA" or beauty.size != rgba.size:
-                        failures.append("Beauty pass must have the same RGBA mode and dimensions as the final sprite")
-                    else:
-                        pairs = [(a, b) for a, b in zip(pixel_data(beauty), pixels) if a[3] == 255]
-                        metrics["beauty_opaque_pixel_count"] = len(pairs)
-                        metrics["beauty_opaque_changed_pixel_count"] = sum(a != b for a, b in pairs)
-                        metrics["beauty_opaque_max_channel_difference"] = max((abs(x - y) for a, b in pairs for x, y in zip(a, b)), default=0)
-                        if metrics["beauty_opaque_changed_pixel_count"]:
-                            failures.append("Shadow compositing changed opaque subject pixels from the original beauty pass")
+                _, beauty_size, beauty = load_rgba(beauty_path)
             except (OSError, ValueError) as error:
-                failures.append(f"Cannot decode beauty pass: {error}")
-    if expected["display_size"] == [77, 88]:
-        # An additional existing UI slot is shorter than the nominal sample size.
-        scale = min(80 / width, 77 / height)
-        metrics["optional_80x77_contain_size"] = [round(width * scale), round(height * scale)]
-        metrics["optional_80x77_note"] = "Contain scaling preserves aspect ratio; slot integration is outside this sample task."
-    return metrics, failures, warnings
+                errors.append('cannot decode beauty pass: %s' % error)
+                return result
+            if beauty_size != size:
+                errors.append('beauty pass is %dx%d, sprite is %dx%d' % (*beauty_size, *size))
+            else:
+                solid = beauty[..., 3] == 255
+                changed = int((beauty[solid] != rgba[solid]).any(axis=1).sum())
+                metrics['beauty_opaque_pixels'] = int(solid.sum())
+                metrics['beauty_opaque_changed'] = changed
+                if changed:
+                    errors.append('shadow compositing changed %d opaque beauty pixels' % changed)
+    return result
 
 
-def validate(manifest_path: Path) -> dict:
-    report: dict = {
-        "scope": "Three Blender UI sprite samples; visual readability is reviewed in the preview board.",
-        "passed": False,
-        "errors": [],
-        "warnings": [],
-        "assets": [],
-    }
-    blend = ART / "UiSprites.blend"
-    report["blend"] = {"file": blend.relative_to(ROOT).as_posix(), "exists": blend.is_file()}
-    if not blend.is_file():
-        report["errors"].append("Editable source Art/Blender/UiSprites.blend is missing")
-    elif blend.stat().st_size == 0:
-        report["errors"].append("Editable Blender source is empty")
-    else:
-        report["blend"]["bytes"] = blend.stat().st_size
+def check_manifest(path: Path) -> list[str]:
     try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+        manifest = json.loads(path.read_text(encoding='utf-8-sig'))
     except (OSError, ValueError) as error:
-        report["errors"].append(f"Cannot load manifest: {error}")
-        return report
-    if not isinstance(manifest, dict):
-        report["errors"].append("Manifest root must be an object")
-        return report
+        return ['cannot read manifest: %s' % error]
+    errors = []
+    render = manifest.get('render') or {}
+    for key, value in spec.RENDER.items():
+        actual = render.get(key)
+        same = abs(actual-value) < 1e-4 if isinstance(value, (int, float)) and not isinstance(value, bool) \
+            and isinstance(actual, (int, float)) else actual == value
+        if not same:
+            errors.append('render.%s must be %r, got %r' % (key, value, actual))
+    if render.get('seed') != spec.SEED or render.get('adaptive_sampling', False):
+        errors.append('render must use seed %d without adaptive sampling' % spec.SEED)
+    for name, value in (manifest.get('palette') or {}).items():
+        if not isinstance(value, str) or value.upper() not in PALETTE_HEX:
+            errors.append('palette %s=%r is not a palette colour' % (name, value))
+    catalog = spec.by_id()
+    for asset in manifest.get('assets') or []:
+        asset_id = asset.get('id')
+        entry = catalog.get(asset_id)
+        if entry is None:
+            errors.append('%s: not in the sprite catalog' % asset_id)
+            continue
+        if asset.get('file') != spec.sprite_path(entry):
+            errors.append('%s: file must be %s' % (asset_id, spec.sprite_path(entry)))
+        if list(asset.get('canvas') or []) != list(entry['canvas']):
+            errors.append('%s: canvas must be %s' % (asset_id, list(entry['canvas'])))
+        max_yaw = spec.KIND_RULES[entry['kind']].get('max_yaw')
+        yaw = (asset.get('camera') or {}).get('yaw_deg')
+        if max_yaw is not None and (yaw is None or abs(yaw) > max_yaw):
+            errors.append('%s: camera |yaw| must be <= %s, got %r' % (asset_id, max_yaw, yaw))
+        for material in asset.get('materials') or []:
+            hex_value = material.get('palette_srgb')
+            if not isinstance(hex_value, str) or hex_value.upper() not in PALETTE_HEX \
+                    or spec.PALETTE.get(material.get('palette_name')) != hex_value:
+                errors.append('%s: material %s has no palette colour (%r)' % (asset_id, material.get('name'), hex_value))
+            for key, value in spec.MATERIAL.items():
+                actual = material.get(key)
+                if not isinstance(actual, (int, float)) or abs(actual-value) > 1e-4:
+                    errors.append('%s: material %s needs a Principled BSDF with %s %s, got %r'
+                                  % (asset_id, material.get('name'), key, value, actual))
+    return errors
 
-    render = manifest.get("render", {})
-    for key, value in EXPECTED_RENDER.items():
-        if not isinstance(render, dict) or render.get(key) != value:
-            report["errors"].append(f"Manifest render.{key} must equal {value!r}")
-    palette = manifest.get("palette", {})
-    if not isinstance(palette, dict) or not palette:
-        report["errors"].append("Manifest must record its named palette")
+
+def manifest_category(path: Path):
+    try:
+        data = json.loads(path.read_text(encoding='utf-8-sig'))
+    except (OSError, ValueError):
+        return None
+    return data.get('category') if isinstance(data, dict) else None
+
+
+def validate(root: Path = ROOT, complete: bool = False, owners=None) -> dict:
+    root = Path(root)
+    catalog = [entry for entry in spec.CATALOG if owners is None or entry['owner'] in owners]
+    sprites = [check_sprite(entry, root) for entry in catalog]
+    manifest_paths = sorted((root/MANIFESTS).glob('*.manifest.json'))
+    if owners is not None:
+        manifest_paths = [path for path in manifest_paths if manifest_category(path) in owners]
+    manifests = [{'file': path.relative_to(root).as_posix(), 'errors': check_manifest(path)}
+                 for path in manifest_paths]
+    known = {spec.sprite_path(entry) for entry in spec.CATALOG}
+    if owners is None:
+        scan_dirs = [root/SPRITES] if (root/SPRITES).is_dir() else []
     else:
-        for name, value in palette.items():
-            if not isinstance(value, str) or value.upper() not in APPROVED_COLORS:
-                report["errors"].append(f"Palette {name!r} has a color outside the approved spec: {value!r}")
-
-    assets = manifest.get("assets", [])
-    if not isinstance(assets, list):
-        report["errors"].append("Manifest assets must be a list")
-        return report
-    ids = [asset.get("id") if isinstance(asset, dict) else None for asset in assets]
-    report["manifest_asset_count"] = len(assets)
-    if len(assets) != 3 or set(str(asset_id) for asset_id in ids) != set(EXPECTED):
-        report["errors"].append(f"Expected exactly the three sample asset IDs, got {ids}")
-    by_id = {asset.get("id"): asset for asset in assets if isinstance(asset, dict) and isinstance(asset.get("id"), str)}
-    for asset_id, expected in EXPECTED.items():
-        entry = by_id.get(asset_id, {})
-        for key in ("file", "display_size", "render_size", "shadow"):
-            if entry.get(key) != expected[key]:
-                report["errors"].append(f"{asset_id}: manifest {key} must equal {expected[key]!r}")
-        for key in ("scene", "collection"):
-            if not isinstance(entry.get(key), str) or not entry.get(key):
-                report["errors"].append(f"{asset_id}: manifest must name its Blender {key}")
-        camera = entry.get("camera", {})
-        if not isinstance(camera, dict) or not all(isinstance(camera.get(key), (int, float)) for key in ("yaw_deg", "elevation_deg", "orthographic_scale")):
-            report["errors"].append(f"{asset_id}: manifest must record numeric camera yaw, elevation, and orthographic scale")
-        elif camera["orthographic_scale"] <= 0:
-            report["errors"].append(f"{asset_id}: orthographic scale must be positive")
-        metrics, errors, warnings = inspect_png(ROOT / expected["file"], expected)
-        report["assets"].append({"id": asset_id, "passed": not errors, "metrics": metrics, "errors": errors, "warnings": warnings})
-        report["errors"].extend(f"{asset_id}: {message}" for message in errors)
-        report["warnings"].extend(f"{asset_id}: {message}" for message in warnings)
-    report["png_files_found"] = sum(asset["metrics"]["exists"] for asset in report["assets"])
-    report["passed"] = not report["errors"]
-    return report
+        owned_folders = sorted({entry['folder'] for entry in spec.CATALOG if entry['owner'] in owners})
+        scan_dirs = [root/SPRITES/folder for folder in owned_folders if (root/SPRITES/folder).is_dir()]
+    stray = sorted(path.relative_to(root).as_posix() for scan_dir in scan_dirs for path in scan_dir.rglob('*.png'))
+    stray = [path for path in stray if path not in known]
+    errors = ['%s: %s' % (s['id'], message) for s in sprites for message in s['errors']]
+    errors += ['%s: %s' % (m['file'], message) for m in manifests for message in m['errors']]
+    errors += ['%s: PNG is not in the sprite catalog' % path for path in stray]
+    missing = [s['id'] for s in sprites if not s['exists']]
+    if complete:
+        errors += ['%s: PNG is missing' % sprite_id for sprite_id in missing]
+    for sprite in sprites:
+        sprite['passed'] = sprite['exists'] and not sprite['errors']
+    return {
+        'source_spec': 'docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md',
+        'complete_required': complete,
+        'owners': sorted(owners) if owners is not None else None,
+        'passed': not errors,
+        'total': len(catalog),
+        'present': sum(s['exists'] for s in sprites),
+        'missing': missing,
+        'errors': errors,
+        'warnings': ['%s: %s' % (s['id'], message) for s in sprites for message in s['warnings']],
+        'manifests': manifests,
+        'stray_pngs': stray,
+        'sprites': sprites,
+    }
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, default=ART / "ui-sprites-manifest.json")
-    parser.add_argument("--output", type=Path, default=ART / "ui-sprites-validation.json")
-    args = parser.parse_args()
-    report = validate(args.manifest)
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"UI sprite validation: {'PASS' if report['passed'] else 'FAIL'}")
-    for message in report["errors"]:
-        print(f"ERROR: {message}")
-    for message in report["warnings"]:
-        print(f"NOTE: {message}")
-    for asset in report["assets"]:
-        metrics = asset["metrics"]
-        print(f"{asset['id']}: size={metrics.get('size')} edges={metrics.get('transparent_edge_pixels')} occupancy={metrics.get('solid_pixel_fraction')} neutral-near-white={metrics.get('neutral_near_white_fraction')}")
-    print(f"Report: {args.output}")
-    return 0 if report["passed"] else 1
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('--complete', action='store_true', help='fail for every missing catalog PNG')
+    parser.add_argument('--owner', action='append', default=[], metavar='NAME',
+                        help='only check this catalog owner (repeatable, or comma-separated); '
+                             'owners: %s' % ', '.join(OWNERS))
+    parser.add_argument('--report', type=Path, default=ART/'ui-sprites-validation.json',
+                        help='JSON report path (default: Art/Blender/ui-sprites-validation.json)')
+    parser.add_argument('--root', type=Path, default=ROOT, help=argparse.SUPPRESS)
+    args = parser.parse_args(argv)
+    requested = [name for group in args.owner for name in group.split(',') if name]
+    owners = sorted(set(requested)) if requested else None
+    if owners is not None:
+        unknown = sorted(set(owners) - set(OWNERS))
+        if unknown:
+            parser.error('unknown --owner %s; choose from %s' % (', '.join(unknown), ', '.join(OWNERS)))
+    report = validate(args.root, args.complete, owners)
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    for message in report['warnings']:
+        print('NOTE:', message)
+    suffix = ' owner=%s' % ','.join(owners) if owners is not None else ''
+    if report['passed']:
+        print('UI_SPRITES_VALID %d/%d%s' % (report['present'], report['total'], suffix))
+    else:
+        print('UI_SPRITES_INVALID %d/%d present, %d failures%s'
+              % (report['present'], report['total'], len(report['errors']), suffix))
+        for message in report['errors']:
+            print('FAIL:', message)
+    print('Report:', args.report)
+    return 0 if report['passed'] else 1
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

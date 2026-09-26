@@ -1,181 +1,741 @@
 {
-  "scope": "Three Blender UI sprite samples; visual readability is reviewed in the preview board.",
+  "source_spec": "docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md",
+  "complete_required": false,
   "passed": true,
+  "total": 66,
+  "present": 0,
+  "missing": [
+    "Customer_V0_Neutral",
+    "Customer_V0_Angry",
+    "Customer_V1_Neutral",
+    "Customer_V1_Angry",
+    "Customer_V2_Neutral",
+    "Customer_V2_Angry",
+    "Mina_Portrait",
+    "CottonCandy_Strawberry_Small",
+    "CottonCandy_Strawberry_Medium",
+    "CottonCandy_Strawberry_Large",
+    "CottonCandy_Soda_Small",
+    "CottonCandy_Soda_Medium",
+    "CottonCandy_Soda_Large",
+    "CottonCandy_Vanilla_Small",
+    "CottonCandy_Vanilla_Medium",
+    "CottonCandy_Vanilla_Large",
+    "BaggedCandy_Strawberry_Small",
+    "BaggedCandy_Strawberry_Medium",
+    "BaggedCandy_Strawberry_Large",
+    "BaggedCandy_Soda_Small",
+    "BaggedCandy_Soda_Medium",
+    "BaggedCandy_Soda_Large",
+    "BaggedCandy_Vanilla_Small",
+    "BaggedCandy_Vanilla_Medium",
+    "BaggedCandy_Vanilla_Large",
+    "SugarBag_Strawberry",
+    "SugarBag_Soda",
+    "SugarBag_Vanilla",
+    "Storefront",
+    "Trash",
+    "Emote_Heart",
+    "Emote_Angry",
+    "Location_0_Prep",
+    "Location_1_Prep",
+    "Location_2_Prep",
+    "Location_3_Prep",
+    "Location_0_Street",
+    "Location_1_Street",
+    "Location_2_Street",
+    "Location_3_Street",
+    "Machine_0",
+    "Machine_1",
+    "Machine_2",
+    "Trait_Hours",
+    "Trait_Patience",
+    "Trait_Ads",
+    "Trait_RepeatAds",
+    "Trait_Shelf",
+    "Trait_Sales",
+    "Trait_PriceTag",
+    "Trait_Engine",
+    "Trait_Handling",
+    "Trait_Kart",
+    "Trait_StickSpeed",
+    "Trait_Spoon",
+    "Trait_Ribbon",
+    "Trait_Sugar2",
+    "Trait_Sugar3",
+    "Trait_Machine",
+    "Trait_FlavorSoda",
+    "Trait_FlavorVanilla",
+    "Trait_Worker",
+    "Trait_GradCap",
+    "Trait_Glove",
+    "Trait_MapPin",
+    "Trait_Group"
+  ],
   "errors": [],
   "warnings": [],
-  "assets": [
+  "manifests": [],
+  "stray_pngs": [],
+  "sprites": [
     {
-      "id": "CottonCandy_Strawberry_Medium",
-      "passed": true,
-      "metrics": {
-        "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
-        "exists": true,
-        "format": "PNG",
-        "mode": "RGBA",
-        "size": [
-          154,
-          176
-        ],
-        "alpha_bbox": [
-          29,
-          14,
-          119,
-          169
-        ],
-        "alpha_extrema": [
-          0,
-          255
-        ],
-        "transparent_edge_pixels": {
-          "left": 29,
-          "top": 14,
-          "right": 35,
-          "bottom": 7
-        },
-        "solid_pixel_fraction": 0.24151,
-        "visible_pixel_fraction": 0.30888,
-        "alpha_weighted_coverage": 0.2474,
-        "solid_bbox": [
-          30,
-          15,
-          116,
-          160
-        ],
-        "opaque_pixel_count": 6201,
-        "neutral_near_white_fraction": 0.0,
-        "neutral_clipped_white_fraction": 0.0,
-        "any_channel_255_fraction": 0.0,
-        "opaque_unique_rgb_count": 3729,
-        "opaque_luminance_range": [
-          0.2298,
-          0.6159
-        ],
-        "native_solid_pixel_count": 1660,
-        "beauty_pass_comparison_available": true,
-        "beauty_opaque_pixel_count": 6149,
-        "beauty_opaque_changed_pixel_count": 0,
-        "beauty_opaque_max_channel_difference": 0,
-        "optional_80x77_contain_size": [
-          67,
-          77
-        ],
-        "optional_80x77_note": "Contain scaling preserves aspect ratio; slot integration is outside this sample task."
-      },
+      "id": "Customer_V0_Neutral",
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V0_Neutral.png",
+      "kind": "character",
+      "exists": false,
       "errors": [],
-      "warnings": []
+      "warnings": [],
+      "metrics": {},
+      "passed": false
     },
     {
-      "id": "Customer_01_Neutral",
-      "passed": true,
-      "metrics": {
-        "file": "Assets/CottonCircuit/Sprites/Customers/Customer_01_Neutral.png",
-        "exists": true,
-        "format": "PNG",
-        "mode": "RGBA",
-        "size": [
-          164,
-          280
-        ],
-        "alpha_bbox": [
-          25,
-          24,
-          133,
-          265
-        ],
-        "alpha_extrema": [
-          0,
-          255
-        ],
-        "transparent_edge_pixels": {
-          "left": 25,
-          "top": 24,
-          "right": 31,
-          "bottom": 15
-        },
-        "solid_pixel_fraction": 0.39072,
-        "visible_pixel_fraction": 0.43125,
-        "alpha_weighted_coverage": 0.39281,
-        "solid_bbox": [
-          26,
-          25,
-          132,
-          257
-        ],
-        "opaque_pixel_count": 17227,
-        "neutral_near_white_fraction": 0.0,
-        "neutral_clipped_white_fraction": 0.0,
-        "any_channel_255_fraction": 0.0,
-        "opaque_unique_rgb_count": 5772,
-        "opaque_luminance_range": [
-          0.012,
-          0.7813
-        ],
-        "native_solid_pixel_count": 4507,
-        "beauty_pass_comparison_available": true,
-        "beauty_opaque_pixel_count": 17084,
-        "beauty_opaque_changed_pixel_count": 0,
-        "beauty_opaque_max_channel_difference": 0
-      },
+      "id": "Customer_V0_Angry",
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V0_Angry.png",
+      "kind": "character",
+      "exists": false,
       "errors": [],
-      "warnings": []
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Customer_V1_Neutral",
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Neutral.png",
+      "kind": "character",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Customer_V1_Angry",
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Angry.png",
+      "kind": "character",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Customer_V2_Neutral",
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V2_Neutral.png",
+      "kind": "character",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Customer_V2_Angry",
+      "file": "Assets/CottonCircuit/Sprites/Customers/Customer_V2_Angry.png",
+      "kind": "character",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Mina_Portrait",
+      "file": "Assets/CottonCircuit/Sprites/Characters/Mina_Portrait.png",
+      "kind": "portrait",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Strawberry_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Small.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Strawberry_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Strawberry_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Large.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Soda_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Soda_Small.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Soda_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Soda_Medium.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Soda_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Soda_Large.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Vanilla_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Vanilla_Small.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Vanilla_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Vanilla_Medium.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "CottonCandy_Vanilla_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Vanilla_Large.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Strawberry_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Strawberry_Small.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Strawberry_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Strawberry_Medium.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Strawberry_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Strawberry_Large.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Soda_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Soda_Small.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Soda_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Soda_Medium.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Soda_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Soda_Large.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Vanilla_Small",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Vanilla_Small.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Vanilla_Medium",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Vanilla_Medium.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "BaggedCandy_Vanilla_Large",
+      "file": "Assets/CottonCircuit/Sprites/Items/BaggedCandy_Vanilla_Large.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "SugarBag_Strawberry",
+      "file": "Assets/CottonCircuit/Sprites/Items/SugarBag_Strawberry.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "SugarBag_Soda",
+      "file": "Assets/CottonCircuit/Sprites/Items/SugarBag_Soda.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "SugarBag_Vanilla",
+      "file": "Assets/CottonCircuit/Sprites/Items/SugarBag_Vanilla.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Storefront",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Storefront.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trash",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Trash.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Emote_Heart",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Emote_Heart.png",
+      "kind": "emote",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Emote_Angry",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Emote_Angry.png",
+      "kind": "emote",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_0_Prep",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_0_Prep.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_1_Prep",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_1_Prep.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_2_Prep",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_2_Prep.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_3_Prep",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_3_Prep.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_0_Street",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_0_Street.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_1_Street",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_1_Street.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_2_Street",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_2_Street.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Location_3_Street",
+      "file": "Assets/CottonCircuit/Sprites/Locations/Location_3_Street.png",
+      "kind": "scene",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Machine_0",
+      "file": "Assets/CottonCircuit/Sprites/Machines/Machine_0.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Machine_1",
+      "file": "Assets/CottonCircuit/Sprites/Machines/Machine_1.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Machine_2",
+      "file": "Assets/CottonCircuit/Sprites/Machines/Machine_2.png",
+      "kind": "prop",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
     },
     {
       "id": "Trait_Hours",
-      "passed": true,
-      "metrics": {
-        "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
-        "exists": true,
-        "format": "PNG",
-        "mode": "RGBA",
-        "size": [
-          84,
-          84
-        ],
-        "alpha_bbox": [
-          12,
-          12,
-          72,
-          71
-        ],
-        "alpha_extrema": [
-          0,
-          255
-        ],
-        "transparent_edge_pixels": {
-          "left": 12,
-          "top": 12,
-          "right": 12,
-          "bottom": 13
-        },
-        "solid_pixel_fraction": 0.36465,
-        "visible_pixel_fraction": 0.39101,
-        "alpha_weighted_coverage": 0.36479,
-        "solid_bbox": [
-          13,
-          13,
-          71,
-          70
-        ],
-        "opaque_pixel_count": 2428,
-        "neutral_near_white_fraction": 0.0,
-        "neutral_clipped_white_fraction": 0.0,
-        "any_channel_255_fraction": 0.0,
-        "opaque_unique_rgb_count": 1369,
-        "opaque_luminance_range": [
-          0.123,
-          0.8516
-        ],
-        "native_solid_pixel_count": 642
-      },
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
+      "kind": "icon",
+      "exists": false,
       "errors": [],
-      "warnings": []
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Patience",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Patience.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Ads",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Ads.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_RepeatAds",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_RepeatAds.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Shelf",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Shelf.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Sales",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Sales.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_PriceTag",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_PriceTag.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Engine",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Engine.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Handling",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Handling.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Kart",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Kart.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_StickSpeed",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_StickSpeed.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Spoon",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Spoon.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Ribbon",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Ribbon.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Sugar2",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Sugar2.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Sugar3",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Sugar3.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Machine",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Machine.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_FlavorSoda",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_FlavorSoda.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_FlavorVanilla",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_FlavorVanilla.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Worker",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Worker.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_GradCap",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_GradCap.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Glove",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Glove.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_MapPin",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_MapPin.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
+    },
+    {
+      "id": "Trait_Group",
+      "file": "Assets/CottonCircuit/Sprites/Icons/Trait_Group.png",
+      "kind": "icon",
+      "exists": false,
+      "errors": [],
+      "warnings": [],
+      "metrics": {},
+      "passed": false
     }
-  ],
-  "blend": {
-    "file": "Art/Blender/UiSprites.blend",
-    "exists": true,
-    "bytes": 172434
-  },
-  "manifest_asset_count": 3,
-  "png_files_found": 3
+  ]
 }

@@ -1,82 +1,154 @@
-# UI 스프라이트 대표 샘플 3종
+# UI 스프라이트 파이프라인
 
-2026-09-27. 기준은 `docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md`이며, 참고 이미지 A는 형태와 분위기만 참고했다. 공식 Blender MCP의 `get_scene_info`와 `execute_blender_code`를 통해 장면 확인, 생성, 렌더, 원본 재열기 검증을 실행했다.
+2026-09-27. 기준 문서는 `docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md`(명세)이며, 명세와 이 문서가 다르면 명세를 따른다. 게임의 2D 그림 66장을 승인된 두 손님(`GameCustomerFaceted/`, `GameCustomerFemaleExplorer/`)과 같은 "파스텔 토이" 로우폴리 렌더로 만든다. 모든 명령은 프로젝트 루트에서 실행한다.
 
-## 결과물
+## 구성
 
-| 샘플 | 표시 슬롯 | RGBA PNG | 파일 |
-|---|---|---|---|
-| 딸기 맛 중간 솜사탕 | 77×88 | 154×176 | `Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png` |
-| 기본 손님 01 | 82×140 | 164×280 | `Assets/CottonCircuit/Sprites/Customers/Customer_01_Neutral.png` |
-| 영업시간 벽시계 | 42×42 | 84×84 | `Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png` |
+| 파일 | 역할 |
+|---|---|
+| `ui_sprite_spec.py` | bpy 없이 읽는 기준값: 팔레트 22색, 조명, 노출 -1.8, seed 260927, 재질 레시피, 종류별 규칙(`KIND_RULES`), 66장 `CATALOG`, `TRAIT_ICONS`, 경로 함수 |
+| `ui_sprite_common.py` | Blender 공용 함수: `studio()` 조명·환경, `setup_scene()`, `camera()`, `catcher()`. 기준값은 `ui_sprite_spec`에서 가져와 다시 내보낸다 |
+| `ui_sprite_render.py` | `render_sprite()`: 그림자 없는 단일 렌더, 또는 접지 그림자 합성 렌더. `DEFAULT_SHADOW` |
+| `toy_kit.py` | `Kit(prefix)`: 승인본 `customer_lib.py`와 같은 서명의 도형 함수(`mat`, `collection`, `place`, `mesh`, `box`, `ico`, `segment`, `loft`, `panel`, `band`, `buckle`). 재질은 Roughness 0.85, Specular IOR Level 0.08 |
+| `build_ui_sprites.py` | 분류 하나를 만들고 렌더하는 드라이버 |
+| `ui_sprites/<분류>.py` | 분류별 에셋 목록과 형태 코드(작업 4–8에서 추가) |
+| `ui_sprites/<분류>.blend`, `ui_sprites/<분류>.manifest.json` | 드라이버가 저장하는 편집용 원본과 목록 파일 |
+| `ui-sprite-passes/<분류>/` | 그림자 합성 전 `-catcher.png`, `-beauty.png` 렌더 패스 |
+| `validate_ui_sprites.py` | 카탈로그 기준 PNG·목록 파일 검사 |
+| `preview_ui_sprites.py` | `previews/<분류>.png`, `previews/all.png` 검토 보드 |
+| `create_ui_sprites.py` | 승인된 두 손님 생성기가 쓰는 호환용 `render_contact_sprite()`와 `ART` 전역값 |
+| `tests/` | 카탈로그·검사기 단위 시험, 드라이버 시험, 렌더 동일성 시험 |
 
-- `UiSprites.blend`: 편집 가능한 일반 Blender 문서. `UI_CottonCandy`, `UI_Customer`, `UI_Clock` 세 장면. 장면마다 이름 있는 에셋 컬렉션이 있고 `UI_Common_Studio` 조명과 환경을 공유한다.
-- `create_ui_sprites.py`, `ui_sprite_common.py`: 재생성 스크립트. 같은 스크립트가 `.blend`의 Text 데이터에도 들어 있다.
-- `ui-sprites-manifest.json`: 공용 팔레트, 카메라, 조명, 출력 경로와 렌더 설정.
-- `ui-sprites-preview.png`: 확대 보기와 두 배경의 실제 표시 크기 비교.
-- `ui-sprites-native.png`: 816×304 비교 이미지. 100%로 보면 각 슬롯이 실제 표시 크기다.
-- `ui-sprite-passes/`: 손님과 솜사탕의 원본 beauty / shadow catcher 렌더 패스.
+초기 대표 샘플 3종(`UiSprites.blend`, `ui-sprites-manifest.json`, 감사·재현 기록, `audit_ui_sprite_scene.py`, `ui-sprites-native.png`, 샘플 패스와 PNG)은 삭제했다. 솜사탕과 벽시계 샘플의 형태 코드는 `git show 966cf73:Art/Blender/create_ui_sprites.py`의 `cotton()`, `clock()`에서 볼 수 있다. `ui-sprites-preview.png`는 초기 샘플 기록으로만 남는다.
 
-## 유지한 특징과 크기
+## 카탈로그
 
-솜사탕은 중심 아이코스피어 1개와 작은 아이코스피어 20개, 크림 막대와 딸기색 띠 4개로 구성했다. 형태와 꼭짓점 변형 seed는 **260927**이다. 성장 슬롯 77×88은 `ShiftUI.cs:121`, 주문 슬롯 80×77은 `ShopStreetUI.cs:48`에서 확인했다. 중간 크기 시작은 1.5바퀴이며 기존 구름의 아래로 내려오는 실루엣과 노출된 막대를 유지했다. 118×124 드래그 그림은 실제 코드에서 포장 솜사탕이므로 이번 샘플에 포함하지 않았다.
+`ui_sprite_spec.CATALOG`가 유일한 기준이다. 캔버스는 대표 표시 크기의 2배를 4의 배수로 올린 값이다. 파일은 `Assets/CottonCircuit/Sprites/<폴더>/<id>.png`에 둔다.
 
-손님은 `ShopStreetGraphic.DrawCustomer`의 variant 0을 따른다. 소다색 셔츠, 크림 배지, Hair1 머리, Skin1 피부, Pants1 바지, 분리된 다리와 짙은 신발/크림색 윗부분을 유지했다. 점 눈, 볼 터치, 작은 미소를 모두 메시로 만들었다. 실제 메시 높이 기준 머리 비율은 **2.495등신**이다.
+| 분류(owner) | id | 폴더 | 종류 | 캔버스 | 표시 크기 |
+|---|---|---|---|---|---|
+| customers | `Customer_V{0,1,2}_{Neutral,Angry}` | Customers | character | 164×280 | 82×140 |
+| mina | `Mina_Portrait` | Characters | portrait | 808×784 | 404×391 |
+| items | `CottonCandy_{Strawberry,Soda,Vanilla}_{Small,Medium,Large}` | Items | prop | 156×176 | 77×88, 80×77 |
+| items | `BaggedCandy_{맛}_{크기}` | Items | prop | 148×184 | 74×92, 84×98, 62×86, 118×124 |
+| items | `SugarBag_{Strawberry,Soda,Vanilla}` | Items | prop | 164×200 | 82×100, 118×124 |
+| shop | `Storefront` | Shop | prop | 340×460 | 169×230 |
+| shop | `Trash` | Shop | prop | 136×164 | 68×82 |
+| shop | `Emote_Heart`, `Emote_Angry` | Shop | emote | 144×132 | 72×66 |
+| locations | `Location_{0..3}_Prep` | Locations | scene | 1176×708 | 588×354 |
+| locations | `Location_{0..3}_Street` | Locations | scene | 1192×628 | 596×314 |
+| machines | `Machine_{0,1,2}` | Machines | prop | 252×252 | 126×126 |
+| icons | `Trait_*` 23장 (`TRAIT_ICONS`) | Icons | icon | 84×84 | 42×42 |
 
-벽시계는 위쪽과 오른쪽 아래를 가리키는 두 바늘을 유지했다. 42×42 슬롯 안에 시계 지름은 약 29px이며 기존 약 28px 그림에 가깝다. 분류 원판과 선택 원은 포함하지 않았다. 아이콘에는 바닥과 접지 그림자가 없다.
+- 기준점(왼쪽 아래 원점 정규화): `CottonCandy_*` 막대 아래 끝 (0.5, 0.06), `BaggedCandy_*` 묶은 매듭 (0.5, 0.14). 나머지는 없음.
+- 손님 변형: V0 승인 남자(소다 재킷), V1 새 어린이(딸기색, 머리 2, 피부 2, 바지 2), V2 승인 여자 탐험가(모자).
+- 지역 번호: 0 동네 골목, 1 시장 앞, 2 강변 축제, 3 별빛 광장. 기계 번호: 0 기본, 1 소다, 2 특급.
 
-주문 슬롯 80×77에서 같은 솜사탕 PNG를 비율 유지로 맞추면 약 67×77이 된다. 기존 절차형 그림은 전체 슬롯 비율로 그려지므로, 이 수치는 추후 UI 적용 시 확인할 사항이다. 이번 결과는 3개 샘플 제작이며 기존 Unity UI 바인딩·배치·동작과 레이싱 3D를 수정하지 않았다.
+## 종류별 규칙 (`KIND_RULES`)
+
+| 종류 | 접지 그림자 | 배경 | 가장자리 투명 여백 | 알파 128 이상 면적 | 카메라 좌우 각 |
+|---|---|---|---|---|---|
+| character | 있음 | 투명 | 2px 이상 | 8–85% | -20° |
+| prop | 있음 | 투명 | 2px 이상 | 6–90% | -20° |
+| emote | 없음 | 투명 | 2px 이상 | 15–90% | 절댓값 10° 이하 |
+| icon | 없음 | 투명 | 2px 이상 | 15–90% | 절댓값 10° 이하 |
+| scene | 없음 | 불투명(알파 255) | – | – | -20° |
+| portrait | 없음 | 불투명(알파 255) | – | – | -20° |
+
+불투명 종류는 월드 색에 기대지 않고 형상으로 화면을 꽉 채운 뒤 모듈이 `asset['opaque_backdrop'] = True`를 설정한다. 그때만 드라이버가 `film_transparent`를 끈다.
 
 ## 공통 설정
 
 | 항목 | 값 |
 |---|---|
-| 색 | 명세의 21개 HEX 공용 팔레트. sRGB를 scene-linear로 변환하여 Principled Base Color에 입력 |
-| 셰이딩 | 모든 메시 flat. 둥근 부분은 ico subdivision 1–2, 상자는 1단계 작은 bevel |
-| 키 | (-2, -3, 7), 900W, 크기4, #FFF1DD |
-| 필 | (4.5, -3.5, 3), 250W, 크기5, #DDE6FF |
-| 림 | **(1.5, 3, 5), 70W, 크기3, #FFFFFF** |
-| 환경 | #F3ECF7, strength0.75 |
-| 면광원 | DISK, 공통 조준점 (0, 0, 1.25) |
-| 카메라 | 직교, 정면 -Y에서 좌측20°, 내려다보기15°. 시계 좌측6°, 내려다보기15° |
-| 렌더 | Cycles, CPU8 threads, 64 samples, denoise, adaptive sampling 끔 |
-| 컬러 관리 | Standard / None, **exposure -1.8**, gamma1 |
-| 출력 | 투명 film, RGBA8 PNG, 표시 슬롯의 정확히2배 캔버스 |
-| 비교 배경 | 실제 UI 크림 #FFF6E7 / 명세 잉크 #29324D |
+| 색 | `PALETTE` 22색만 사용. sRGB HEX를 선형값으로 바꿔 Principled Base Color에 넣는다. 자홍 `#C2577E`은 미나의 머리카락 전용 |
+| 재질 | Principled BSDF, Roughness 0.85, Specular IOR Level 0.08 (`toy_kit.Kit.mat`) |
+| 키 라이트 | (-2, -3, 7), 900W, 크기 4, `#FFF1DD` |
+| 필 라이트 | (4.5, -3.5, 3), 250W, 크기 5, `#DDE6FF` |
+| 림 라이트 | (1.5, 3, 5), 70W, 크기 3, `#FFFFFF` |
+| 환경 | `#F3ECF7`, 세기 0.75. 세 조명 모두 DISK 면광원이며 (0, 0, 1.25)를 향한다 |
+| 카메라 | 직교, 정면(-Y)에서 왼쪽 20°, 내려다보기 15° (`ui_sprite_common.camera`) |
+| 렌더 | Cycles 64 샘플, 노이즈 제거, 적응 샘플링 끔, seed 260927, Standard / None, 노출 -1.8, 감마 1, RGBA 8비트 PNG |
+| 스레드 | 기본 8. 환경 변수 `UI_SPRITE_THREADS`로 바꾼다(작업 2의 손님 렌더 외에는 4 사용) |
+| 검토 배경 | 크림 `#FFF6E7`, 잉크 `#29324D`, 특성 원판 6색(`DISC_COLORS`) |
 
-노출은 딸기색 한 채널이 포화되는 문제를 제거하기 위해 공통으로 -1.8로 정했다. 최종 세 PNG의 불투명 픽셀에는 255로 잘린 색 채널이 없다. 시험 이미지보다 차분한 색이며, 재질 기준색은 시험 이미지에서 추출하지 않았다. 크림 재질은 명세 #FFF1D4를 사용하고, 비교용 밝은 배경만 실제 UI #FFF6E7을 썼다.
+## 접지 그림자 합성
 
-손님과 솜사탕은 실제 Cycles shadow catcher 패스와 별도 beauty 패스를 렌더한다. 캐처의 그림자 알파에서 오브젝트 알파를 분리하고, 접지점 주변 타원형 smoothstep 감쇠와 최대 알파0.32를 적용해 짧게 합성한다. 그림자 색은 공용 Navy다. 이 처리는 무한 캐처 평면에 남는 미세한 알파/긴 그림자만 정리하며 불투명 오브젝트 픽셀은 beauty 패스와 완전히 같다. 모든 합성은 Blender 스크립트에서 수행하며, Pillow는 검증과 비교 이미지 배치에만 쓴다.
+`render_sprite(scene, sprite_id, output, passes_dir, shadow, size)`는 `shadow`가 `None`이면 한 번 렌더해 그대로 저장한다. 그림자가 있으면 장면의 그림자 캐처를 켠 렌더(`-catcher.png`)와 끈 렌더(`-beauty.png`)를 `passes_dir`에 저장하고 다음을 합성한다.
 
-## 재생성
+- 캔버스 픽셀 중심 `(x+0.5, y+0.5)`(Blender의 아래에서 위 순서)과 `anchor`를 카메라에 투영한 점 사이의 타원 거리 `d`, 반지름은 `radii × 캔버스`.
+- `t = clamp((d-0.25)/0.75)`, `falloff = 1 - t²(3-2t)`.
+- `shadow = min(max_alpha, max(0, (캐처 알파 - a)/max(1-a, 1e-5))) × falloff`, `final = a + shadow(1-a)`.
+- 색은 `(c·a + Navy선형값·shadow·(1-a)) / max(final, 1e-5)`. 불투명 오브젝트 픽셀은 beauty 패스와 같다.
 
-프로젝트 루트에서 전체 재생성:
+`DEFAULT_SHADOW = {'anchor': (.07, .10, 0), 'radii': (.30, .068), 'max_alpha': .32}`이다. numpy float64로 원래 Codex 픽셀 반복문과 같은 연산 순서를 따르므로 승인 PNG와 픽셀이 같다(`tests/test_render_identity.py`). 두 승인 생성기는 계속 `import create_ui_sprites as renderer; renderer.ART = HERE; renderer.render_contact_sprite(scene, entry, output)`를 호출하고, 패스는 `ART/ui-sprite-passes/`에 저장된다.
 
-```powershell
-& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup -t 8 --python-exit-code 1 -P 'Art/Blender/create_ui_sprites.py'
-python Art/Blender/validate_ui_sprites.py
-python Art/Blender/preview_ui_sprites.py
-& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b 'Art/Blender/UiSprites.blend' --python-exit-code 1 -P 'Art/Blender/audit_ui_sprite_scene.py'
-```
-
-수동으로 편집한 모델을 보존하고 다시 렌더하려면 `UiSprites.blend`를 연 뒤 Blender Python Console 또는 MCP의 `execute_blender_code`에서 실행한다:
+## 분류 모듈 계약
 
 ```python
-import runpy
-runpy.run_path('D:/UnityProjects/RacingTycoon/Art/Blender/create_ui_sprites.py',
-              init_globals={'UI_ACTION': 'render'}, run_name='__main__')
+CATEGORY = 'items'                       # 카탈로그 owner와 같다
+ASSETS = [{'id': 'CottonCandy_Strawberry_Small',
+           'camera': {'target': (0, 0, 1.2), 'scale': 2.9, 'yaw': -20, 'elevation': 15},
+           'shadow': {'anchor': (.07, .10, 0), 'radii': (.30, .068), 'max_alpha': .32},  # 또는 None
+           'params': {...}}]               # 자유 형식, 목록 파일에 기록
+def build(asset: dict, col, kit) -> None:  # 에셋 하나의 형상을 col에 추가
 ```
 
-`UI_ACTION='build'`는 모델을 재생성하고, 기본값 `'all'`은 생성과 렌더를 모두 수행한다. 모델을 수동 편집한 후에는 `'render'`를 사용한다. 파일 경로/캔버스는 manifest와 일치시켜야 한다. MCP 연결 실행법과 공식 소스 버전은 `mcp_tools/README.md`에 있다. 태스크 전용 서버를 사용했으며 전역 Codex 설정이나 Blender 시작 파일은 변경하지 않았다.
+드라이버는 에셋마다 장면 `UIS_<id>`를 만들고, `Kit('<id>_')`와 컬렉션 `UIS_<id>`를 넘긴다. 형상을 만든 뒤 모든 메시의 면 방향을 다시 계산하고, `asset['camera']`로 카메라를, 그림자가 있을 때만 캐처를 둔다. 카탈로그에 없는 id, 다른 분류의 id, 종류 규칙과 다른 그림자 여부, 아이콘·감정 표시의 10° 초과 좌우 각은 오류로 멈춘다. 공용 렌더 설정을 바꾸는 모듈도 오류다.
 
-Unity UI에 연결하는 작업은 이번 범위에 포함하지 않았다. 추후 임포트 시 Sprite (2D and UI), mipmap 끔, alpha transparency 켬, 고품질 압축을 적용한다.
+## 명령
 
-## 검증 결과
+Blender는 항상 배경 모드로 실행한다. 실행 중인 Blender MCP 세션에는 연결하지 않는다.
 
-- `validate_ui_sprites.py`: 3/3 PASS, RGBA/크기/알파 여백/개수 검사, 경고0.
-- 최소 투명 여백: 솜사탕7px, 손님15px, 시계12px. 그림자까지 포함한 값이다.
-- `.blend`를 다시 열어 `audit_ui_sprite_scene.py` 실행: **177개 검사 PASS**. 실제 카메라 각도, 공유 조명, HEX→linear 노드값, 플랫 면, ico 분할, 20개 돌기를 검사했다.
-- beauty 패스 대비 불투명 픽셀: 솜사탕6,149개와 손님17,084개 모두 동일, 최대 차이0.
-- 같은 seed로 전체 재생성: 세 이미지의 **디코딩된 RGBA 픽셀 SHA256 동일**. PNG에 기록되는 렌더 시간 메타데이터는 비교에서 제외했다.
-- 밝은 배경/잉크 배경에서 실제 표시 크기를 직접 확인하고 독립 검토했다.
-- 상세 증거: `ui-sprites-validation.json`, `ui-sprites-scene-audit.json`, `ui-sprites-reproducibility.json`.
+```powershell
+$env:UI_SPRITE_THREADS = '4'
+$blender = 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe'
+
+# 분류 하나를 만들고 렌더 (items, shop, locations, machines, icons)
+& $blender -b --factory-startup --python-exit-code 1 -P Art/Blender/build_ui_sprites.py -- --category items
+#   --only id,id       이 id만 렌더 (.blend와 목록 파일은 항상 분류 전체로 저장)
+#   --no-render        .blend와 목록 파일만 저장
+#   --out-root DIR     스프라이트, .blend, 목록 파일, 패스를 DIR 아래 같은 상대 경로에 쓴다
+#   --module-path DIR  DIR/ui_sprites_<분류>.py 또는 DIR/<분류>.py를 모듈로 쓴다
+
+# 검사: 있는 PNG만 검사, --complete는 66장이 모두 있어야 통과
+python Art/Blender/validate_ui_sprites.py
+python Art/Blender/validate_ui_sprites.py --complete
+python Art/Blender/validate_ui_sprites.py --report <다른 경로.json>   # 기본 Art/Blender/ui-sprites-validation.json
+python Art/Blender/validate_ui_sprites.py --owner items --complete   # --owner NAME(반복 또는 쉼표 구분)은 해당 owner(들)의 카탈로그 항목·목록 파일만 검사해, 7개 작업을 병렬로 돌릴 때 한 작업의 미완성 스프라이트가 다른 작업의 검사를 실패시키지 않게 한다; 알 수 없는 owner는 종료 코드 2
+
+# 검토 보드: previews/all.png 또는 previews/<분류>.png
+python Art/Blender/preview_ui_sprites.py
+python Art/Blender/preview_ui_sprites.py --category items
+```
+
+손님(작업 2)과 미나(작업 3)는 각자의 생성기와 `render_sprite`를 쓴다. 승인본 재생성 방법은 명세의 "승인본과 비교 보드 재생성"과 각 폴더의 README를 따른다.
+
+## 검사 항목
+
+`validate_ui_sprites.py`는 카탈로그의 PNG가 있으면 다음을 확인한다.
+
+- RGBA이고 크기가 캔버스와 같다.
+- 투명 종류는 가장자리 네 방향 모두 알파 0인 픽셀이 2px 이상이고(접지 그림자 포함), 알파 128 이상 면적이 종류 범위 안이다. 불투명 종류는 모든 픽셀의 알파가 255다.
+- 그림자 종류는 `ui-sprite-passes/<owner>/<id>-beauty.png`가 있으면 beauty 패스의 불투명 픽셀이 최종 PNG와 같다.
+- `ui_sprites/*.manifest.json`의 렌더 설정(엔진, 샘플, 노이즈 제거, 색 변환, 룩, 노출, 감마, seed, 적응 샘플링)이 기준과 같고, 팔레트와 재질 색이 `PALETTE` 안에 있으며, 재질 레시피가 0.85 / 0.08이다.
+- `Assets/CottonCircuit/Sprites/` 아래에 카탈로그에 없는 PNG가 없다.
+
+통과하면 `UI_SPRITES_VALID <있는 수>/66`을 출력한다. 실패하면 항목을 나열하고 종료 코드 1을 돌려준다. 중립 흰색 픽셀이 1%를 넘으면 참고 메시지를 남긴다.
+
+## 시험
+
+```powershell
+python -m unittest discover -s Art/Blender/tests -p "test_ui_sprite_spec.py" -v      # 카탈로그 8건
+python -m unittest discover -s Art/Blender/tests -p "test_validate_ui_sprites.py" -v # 검사기 10건
+python -m unittest Art/Blender/tests/test_build_driver.py -v                          # 드라이버, Blender 필요
+& $blender -b --factory-startup --python-exit-code 1 -P Art/Blender/tests/test_render_identity.py
+& $blender -b --factory-startup --python-exit-code 1 -P Art/Blender/tests/test_render_identity.py -- --customer explorer --wrapper
+```
+
+동일성 시험은 승인 `.blend`를 읽기만 하고 `%TEMP%/ui_sprite_identity`에 렌더해 `RENDER_IDENTITY max_abs_diff=0 differing_pixels=0`을 확인한다. 드라이버 시험은 `tests/fixtures/`의 두 시험 분류를 임시 폴더에 렌더하며 `ui_sprites/`에는 아무것도 쓰지 않는다.
+
+## 남은 연결
+
+- `update_art_concept_boards.py`는 삭제한 초기 솜사탕·벽시계 PNG를 읽으므로, 작업 4와 8이 `CottonCandy_Strawberry_Medium`과 `Trait_Hours`를 다시 만든 뒤 작업 11에서 새 캔버스(156×176)에 맞춰 고친다.
+- Unity 가져오기 설정, `GameAssets` 연결, 런타임 교체는 작업 9–10에서 한다.
