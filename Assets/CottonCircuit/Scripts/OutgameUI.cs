@@ -26,7 +26,7 @@ namespace CottonCircuit
         sealed class MachineCardView
         {
             public UnityEngine.UI.Image Card;
-            public UnityEngine.UI.Text State, WorkerText, FlavorText, SizeText, GradeText;
+            public UnityEngine.UI.Text State, WorkerText, FlavorText, SizeText, GradeText, RecipeHint, FlavorLabel, SizeLabel;
             public UnityEngine.UI.Button Select, Worker, Flavor, Size, Grade;
             public ProgressionArtGraphic Art;
         }
@@ -94,8 +94,12 @@ namespace CottonCircuit
                 view.Worker = ButtonAt(card, "알바 배치", 176, 274, 140, 39, PrepPaper, PrepInk, () => game.ToggleWorker(machine), 14); view.Worker.name = "AssignWorker_" + i; view.WorkerText = view.Worker.GetComponentInChildren<UnityEngine.UI.Text>();
                 view.Flavor = ButtonAt(card, "딸기", 100, 331, 216, 34, PrepPaper, PrepInk, () => game.CycleRecipeFlavor(machine), 13); view.Flavor.name = "RecipeFlavor_" + i; view.FlavorText = view.Flavor.GetComponentInChildren<UnityEngine.UI.Text>();
                 view.Size = ButtonAt(card, "기본", 100, 378, 216, 34, PrepPaper, PrepInk, () => game.CycleRecipeSize(machine), 13); view.Size.name = "RecipeSize_" + i; view.SizeText = view.Size.GetComponentInChildren<UnityEngine.UI.Text>();
-                view.Grade = ButtonAt(card, "1등급", 100, 425, 216, 34, PrepPaper, PrepInk, () => game.CycleSugarGrade(machine), 13); view.Grade.name = "RecipeGrade_" + i; view.GradeText = view.Grade.GetComponentInChildren<UnityEngine.UI.Text>();
-                Label(card, "맛", 25, 332, 68, 30, 13, PrepMuted); Label(card, "크기", 25, 379, 68, 30, 13, PrepMuted); Label(card, "설탕", 25, 426, 68, 30, 13, PrepMuted);
+                // Sugar grade is automatic: the button only displays it.
+                view.Grade = ButtonAt(card, "1등급", 100, 425, 216, 34, PrepPaper, PrepInk, () => { }, 13); view.Grade.name = "RecipeGrade_" + i; view.GradeText = view.Grade.GetComponentInChildren<UnityEngine.UI.Text>();
+                view.Grade.interactable = false;
+                // Flavor and size are the worker's standing orders, shown only while a worker is assigned here.
+                view.FlavorLabel = Label(card, "알바 맛", 19, 332, 80, 30, 13, PrepMuted); view.SizeLabel = Label(card, "알바 크기", 19, 379, 80, 30, 13, PrepMuted); Label(card, "설탕", 25, 426, 68, 30, 13, PrepMuted);
+                view.RecipeHint = Label(card, "", 20, 331, 300, 81, 12, PrepMuted, FontStyle.Normal, TextAnchor.MiddleCenter);
                 HoverHint.Attach(view.Select.gameObject, () => MachineAvailability(machine), true);
                 HoverHint.Attach(view.Worker.gameObject, () => WorkerDetails(machine), true);
                 HoverHint.Attach(view.Flavor.gameObject, () => RecipeDetails(machine, 0), true);
@@ -198,17 +202,25 @@ namespace CottonCircuit
                 var view = machineCards[i]; var machine = game.Machine(i); bool unlocked = i < owned;
                 bool selected = economy.Progression.SelectedMachine == i;
                 view.Card.color = unlocked ? PrepWhite : Palette.Hex("ECECE4"); view.Art.canvasRenderer.SetAlpha(unlocked ? 1 : .35f);
-                view.State.text = unlocked ? "TIER " + Progression.MachineTier(i) + (selected ? "  ·  직접 운전" : "  ·  보유") : "성장 지도에서 해금";
+                bool sized = Progression.MaxSugarGrade(economy) > 1;
+                view.State.text = unlocked ? "TIER " + Progression.MachineTier(i) + (selected ? "  ·  직접 운전" : "  ·  보유") +
+                    (sized ? "  ·  최대 " + ShiftTierName(game.Shift.MaxSize(i)) : "") : "성장 지도에서 해금";
                 view.Select.interactable = unlocked; view.Select.image.color = selected ? PrepMint : PrepPaper;
                 bool workerAssigned = machine != null && machine.WorkerAssigned;
                 view.Worker.interactable = unlocked && (workerAssigned || assigned < workers && Progression.WorkerGrade(economy) >= Progression.MachineTier(i));
                 view.Worker.image.color = workerAssigned ? PrepPink : PrepPaper; view.WorkerText.text = workerAssigned ? "알바 배치 중" : "알바 배치";
-                view.Flavor.interactable = unlocked && HasAlternateRecipeFlavor(economy, i);
-                view.Size.interactable = unlocked && machine != null && Math.Min(machine.SugarGrade, Progression.MachineTier(i)) > 1;
-                view.Grade.interactable = unlocked && Progression.MaxSugarGrade(economy) > 1;
+                bool showRecipe = unlocked && workerAssigned;
+                view.Flavor.gameObject.SetActive(showRecipe); view.Size.gameObject.SetActive(showRecipe);
+                view.FlavorLabel.gameObject.SetActive(showRecipe); view.SizeLabel.gameObject.SetActive(showRecipe);
+                view.RecipeHint.gameObject.SetActive(!showRecipe);
+                view.RecipeHint.text = !unlocked ? "" : workers == 0 ? "성장 지도에서 알바를 고용하면\n이 기계에 만들 맛과 크기를 맡길 수 있어요."
+                    : "알바를 배치하면 알바가 반복해서 만들\n맛과 크기를 정할 수 있어요.";
+                view.Flavor.interactable = showRecipe && HasAlternateRecipeFlavor(economy, i);
+                view.Size.interactable = showRecipe && game.Shift.MaxSize(i) > 0;
+                view.Grade.interactable = false;
                 view.FlavorText.text = machine == null ? "딸기" : Palette.FlavorName(machine.RecipeFlavor);
                 view.SizeText.text = Progression.MaxSugarGrade(economy) == 1 ? "기본" : machine == null ? "소" : ShiftTierName(machine.RecipeSize);
-                view.GradeText.text = (machine == null ? 1 : machine.SugarGrade) + "등급";
+                view.GradeText.text = (unlocked ? game.Shift.SugarGrade(i) : 1) + "등급 · 자동";
             }
             for (int i = 0; i < 2; i++) { cartChoices[i].interactable = Progression.HasCartStyle(economy, i); cartChoices[i].image.color = economy.Progression.CartStyle == i ? PrepMint : PrepPaper; }
         }
@@ -223,20 +235,28 @@ namespace CottonCircuit
             businessStart.interactable = available && chosen;
             for (int i = 0; i < 4; i++) { locationCards[i].image.color = locationPreview == i ? PrepMint : PrepWhite; locationCardStates[i].text = !Progression.HasLocation(economy, i) ? "잠김" : economy.Progression.SelectedLocation == i ? "선택됨" : "영업 가능"; }
         }
-        string MachineAvailability(int machine) => machine < Progression.OwnedMachines(game.Session.Economy) ? "영업 중 직접 운전할 기계를 선택해요." : "성장 지도에서 " + Progression.MachineName(machine) + " 해금이 필요해요.";
+        string MachineAvailability(int machine)
+        {
+            if (machine >= Progression.OwnedMachines(game.Session.Economy)) return "성장 지도에서 " + Progression.MachineName(machine) + " 해금이 필요해요.";
+            string note = game.Shift.SizeLimitNote(machine);
+            return "영업 중 직접 운전할 기계를 선택해요." + (note.Length > 0 ? "\n크기: " + note : "");
+        }
         string RecipeDetails(int machine, int setting)
         {
             var economy = game.Session.Economy;
             if (machine >= Progression.OwnedMachines(economy)) return MachineAvailability(machine);
             if (setting == 0) return HasAlternateRecipeFlavor(economy, machine) ? "알바가 반복해서 만들 맛.\n클릭하면 다음 가능한 맛을 선택해요." : "현재 이 기계에서는 딸기만 만들 수 있어요.\n특별한 맛에는 상위 기계와 맛 해금이 필요해요.";
-            if (setting == 1) return "알바가 꺼낼 크기.\n기계와 설탕 등급 중 낮은 한도를 적용해요.\n현재 최대 " + ShiftTierName(Math.Min(game.Machine(machine).SugarGrade, Progression.MachineTier(machine)) - 1);
-            return Progression.MaxSugarGrade(economy) > 1 ? "클릭하면 다음 설탕 등급을 선택해요.\n기본 딸기 설탕은 무료예요." : "성장 지도에서 고운 설탕을 해금하면\n설탕 등급을 바꿀 수 있어요.";
+            if (setting == 1) return "알바가 꺼낼 크기.\n" + game.Shift.SizeLimitNote(machine);
+            return "해금한 최고 등급 설탕을 이 기계가 쓸 수 있는 만큼 자동으로 써요.\n" + Progression.MachineName(machine) + "는 " +
+                Progression.MachineTier(machine) + "등급 설탕까지 쓸 수 있어요." +
+                (Progression.MaxSugarGrade(economy) < 3 ? "\n성장 지도에서 더 좋은 설탕을 해금할 수 있어요." : "");
         }
         string WorkerDetails(int machine)
         {
             var economy = game.Session.Economy; var slot = game.Machine(machine);
             if (machine >= Progression.OwnedMachines(economy)) return "먼저 이 기계를 해금하세요.";
-            if (slot != null && slot.WorkerAssigned) return "지정한 레시피를 반복 생산해요. 클릭하면 배치를 해제해요.\n재료비 부족이나 진열대 가득 참에는 기다려요.";
+            if (slot != null && slot.WorkerAssigned) return "지정한 레시피를 반복 생산해요. 클릭하면 배치를 해제해요.\n재료비 부족이나 진열대 가득 참에는 기다려요." +
+                (economy.Progression.SelectedMachine == machine ? "\n내가 직접 운전하는 동안에는 알바가 쉬어요." : "");
             if (Progression.WorkerCount(economy) == 0) return "성장 지도에서 알바를 고용하세요.";
             if (Progression.WorkerGrade(economy) < Progression.MachineTier(machine)) return "이 기계에는 " + Progression.MachineTier(machine) + "등급 알바가 필요해요.";
             int assigned = 0; for (int i = 0; i < 3; i++) if (game.Machine(i) != null && game.Machine(i).WorkerAssigned) assigned++;

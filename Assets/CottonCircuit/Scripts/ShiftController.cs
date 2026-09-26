@@ -51,14 +51,17 @@ namespace CottonCircuit
             World.Kart.ConfiguredFlavor = Shift.State.SugarFlavor;
             drive.SteeringMultiplier = HasProgression ? Progression.SteeringMultiplier(Session.Economy) : 1;
             World.Kart.Drive(throttle, steering, brake, dt, drift, boost);
-            // LastRewardDistance excludes reverse/replayed/recovery progress. No lap or boost multiplier.
-            double normalizedMeters = drive.LastRewardDistance * (HasProgression ? ShopShift.LapMeters / drive.Course.Length : 1);
+            // LastRewardDistance excludes reverse/replayed/recovery progress. Growth per meter
+            // follows speed, so slow driving, wall hits and stops wind little or nothing.
+            double speedYield = ShopShift.SpeedYield(drive.Speed);
+            double normalizedMeters = drive.LastRewardDistance * speedYield *
+                (HasProgression ? ShopShift.LapMeters / drive.Course.Length : 1);
             Shift.Advance(dt, normalizedMeters, drive.SkillCount - skills, drive.WallHits - hits);
             if (drive.BoostCount > boosts) Audio.PlayBoost(drive.BoostTier);
             RefreshShiftPreview();
             World.UpdateOrders(Session.Economy, dt);
             bool active = Shift.IsOpen;
-            World.UpdateThread(active && Shift.State.SugarGrams > 0 && drive.LastRewardDistance > 0 &&
+            World.UpdateThread(active && Shift.State.SugarGrams > 0 && drive.LastRewardDistance > 0 && speedYield > 0 &&
                 (Shift.State.BatchMeters <= 0 || Shift.State.SugarFlavor == Shift.State.BatchFlavor));
             Audio.UpdateDriving(World.Kart, active);
             if (!active)

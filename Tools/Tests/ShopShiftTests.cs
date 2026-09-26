@@ -452,6 +452,19 @@ public static class ShopShiftTests
             shift.Paused = false; shift.Advance(1.5, 0);
             Check(shift.CustomerAt(0) == null && e.MissedOrders == 1 && shift.State.DayWrong == 0, "timeout departed or counted incorrectly");
         });
+        Test("speed yield warms up, grows faster than speed and is capped", () => {
+            Check(ShopShift.SpeedYield(0) == 0 && ShopShift.SpeedYield(-5) == 0 &&
+                ShopShift.SpeedYield(ShopShift.ReferenceSpeed * ShopShift.WarmupSpeedRatio) == 0,
+                "warm-up speed grew candy");
+            Check(Near(ShopShift.SpeedYield(ShopShift.ReferenceSpeed), 1), "base engine speed is not one meter per meter");
+            double half = ShopShift.SpeedYield(ShopShift.ReferenceSpeed * .5);
+            double most = ShopShift.SpeedYield(ShopShift.ReferenceSpeed * .75);
+            Check(half > 0 && half < .5 && most > half && most < .75, "yield is not superlinear in speed");
+            Check(ShopShift.SpeedYield(ShopShift.ReferenceSpeed * 1.24) > 1.24, "engine upgrade speed does not pay extra");
+            Check(ShopShift.SpeedYield(1000) == ShopShift.MaximumSpeedYield, "fast yield is not capped");
+            Check(ShopShift.SpeedYield(double.NaN) == 0 && ShopShift.SpeedYield(double.PositiveInfinity) == 0,
+                "invalid speed grew candy");
+        });
         Console.WriteLine("RESULT: " + passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;
     }

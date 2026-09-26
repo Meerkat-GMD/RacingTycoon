@@ -13,17 +13,44 @@ namespace CottonCircuit
             if (State.Machines == null) State.Machines = new List<MachineProduction>();
             while (State.Machines.Count < 3) State.Machines.Add(new MachineProduction());
             if (fresh) State.RemainingSeconds = Duration;
+            SyncSugarGrades();
             LoadActive();
+        }
+        /// <summary>Every machine uses the best unlocked sugar it can hold; the grade is never chosen by hand.</summary>
+        public int SugarGrade(int index)
+        {
+            if (economy.Progression == null) return 1;
+            return Math.Max(1, Math.Min(Progression.MachineTier(index), Progression.MaxSugarGrade(economy)));
+        }
+        void SyncSugarGrades()
+        {
+            if (economy.Progression == null || State.Machines == null) return;
+            for (int i = 0; i < State.Machines.Count && i < 3; i++) State.Machines[i].SugarGrade = SugarGrade(i);
+        }
+        /// <summary>
+        /// Explains the largest size: machine tiers never change, so a machine at or below the
+        /// unlocked sugar grade is its own limit; otherwise better sugar raises it. Empty before sizes exist.
+        /// </summary>
+        public string SizeLimitNote(int index)
+        {
+            if (economy.Progression == null || index < 0 || index >= 3 || Progression.MaxSugarGrade(economy) <= 1) return "";
+            string[] sizes = { "소", "중", "대" };
+            int max = MaxSize(index);
+            if (Progression.MachineTier(index) <= Progression.MaxSugarGrade(economy))
+                return Progression.MachineName(index) + "는 " + sizes[max] + "까지";
+            return sizes[max] + "까지 · 특급 설탕이면 " + sizes[max + 1];
         }
         public MachineProduction Machine(int index)
         {
             if (index < 0 || index >= State.Machines.Count) return null;
+            SyncSugarGrades();
             if (index == SelectedMachine) SyncActive();
             return State.Machines[index];
         }
         public void SyncActive()
         {
             if (economy.Progression == null || State.Machines == null || State.Machines.Count <= SelectedMachine) return;
+            SyncSugarGrades();
             var m = State.Machines[SelectedMachine];
             m.SugarGrams = State.SugarGrams; m.SugarFlavor = State.SugarFlavor;
             m.BatchMeters = State.BatchMeters; m.BatchFlavor = State.BatchFlavor; m.BatchQuality = State.BatchQuality;
@@ -46,7 +73,7 @@ namespace CottonCircuit
         {
             if (economy.Progression == null || Paused || economy.Progression.Phase != BusinessPhase.Preparation) return false;
             if (State.Closed) economy.Day++;
-            ClearDay(); State.Closed = false; State.RemainingSeconds = Duration;
+            ClearDay(); SyncSugarGrades(); State.Closed = false; State.RemainingSeconds = Duration;
             economy.Progression.Phase = BusinessPhase.Operating; Arrive(false); return true;
         }
         public bool ReturnToPreparation()
@@ -65,7 +92,7 @@ namespace CottonCircuit
         public int MaxSize(int index)
         {
             if (economy.Progression == null) return 2;
-            return Math.Max(0, Math.Min(Progression.MachineTier(index), Math.Min(Progression.MaxSugarGrade(economy), State.Machines[index].SugarGrade)) - 1);
+            return SugarGrade(index) - 1;
         }
         public bool CanMakeFlavor(int index, int flavor)
         {
@@ -74,8 +101,8 @@ namespace CottonCircuit
         }
         public int PourCost(int index, int flavor, double grams = PourAmount)
         {
-            if (economy.Progression == null || flavor == 0 && State.Machines[index].SugarGrade == 1) return 0;
-            return (int)Math.Ceiling(Math.Max(0, grams) / PourAmount * (State.Machines[index].SugarGrade - 1 + flavor * 2));
+            if (economy.Progression == null || flavor == 0 && SugarGrade(index) == 1) return 0;
+            return (int)Math.Ceiling(Math.Max(0, grams) / PourAmount * (SugarGrade(index) - 1 + flavor * 2));
         }
         bool PourMachine(int index, int flavor, double grams = PourAmount)
         {
@@ -100,7 +127,7 @@ namespace CottonCircuit
         {
             var m = State.Machines[index];
             if (!Finite(meters) || meters <= 0 || m.SugarGrams <= 0 || m.BatchMeters > 0 && m.BatchFlavor != m.SugarFlavor) return;
-            int grade = m.BatchMeters > 0 ? m.BatchSugarGrade : m.SugarGrade;
+            int grade = m.BatchMeters > 0 ? m.BatchSugarGrade : SugarGrade(index);
             int cap = Math.Min(Progression.MachineTier(index), grade) - 1;
             double needed = Math.Max(0, MetersForSize(cap) - m.BatchMeters);
             double sugarRate = SugarPerMeter * Progression.SugarMultiplier(economy);

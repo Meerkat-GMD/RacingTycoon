@@ -54,16 +54,17 @@ namespace CottonCircuit.Tests
             PourGesture(0, 1);
             Check(Math.Abs(game.Shift.State.SugarGrams - 10) < .001, "vertical round trip pours ten grams");
             double lapMeters = game.World.Kart.DriveModel.Course.Length;
-            double sugarStartProgress = game.World.Kart.DriveModel.TotalProgress;
-            DriveShiftUnfueledMeters(lapMeters * .05, "first growing-candy sample");
+            double sugarStartGrowth = speedGrownMeters;
+            DriveShiftUnfueledGrowth(lapMeters * .05, "first growing-candy sample");
             var growth = GameObject.Find("Growing candy").GetComponent<ShopArtGraphic>().GrowthScale;
-            DriveShiftUnfueledMeters(lapMeters * .05, "second growing-candy sample");
+            DriveShiftUnfueledGrowth(lapMeters * .05, "second growing-candy sample");
             Check(GameObject.Find("Growing candy").GetComponent<ShopArtGraphic>().GrowthScale > growth, "cotton visibly grows before reaching the next tier");
-            double traveled = game.World.Kart.DriveModel.TotalProgress - sugarStartProgress;
-            Check(Math.Abs(game.Shift.State.SugarGrams - (10 - traveled / lapMeters * 50)) < .00001,
-                "actual driving consumes fifty grams per lap without helper refills" + ShiftProductionDetails());
+            double grown = speedGrownMeters - sugarStartGrowth;
+            Check(Math.Abs(game.Shift.State.SugarGrams - (10 - grown / lapMeters * 50)) < .00001 &&
+                Math.Abs(game.Shift.State.BatchMeters - grown) < .00001,
+                "speed-scaled driving grows candy and consumes fifty grams per grown lap without helper refills" + ShiftProductionDetails());
             CaptureShift("02-growing.png");
-            DriveShiftUnfueledMeters(lapMeters * .15, "single-pour depletion");
+            DriveShiftUnfueledGrowth(lapMeters * .15, "single-pour depletion");
             Check(game.Shift.State.SugarGrams == 0 && Math.Abs(game.Shift.State.BatchMeters - lapMeters * .2) < .00001,
                 "one ten-gram pour runs out after one fifth of a lap" + ShiftProductionDetails());
             double exhaustedBatch = game.Shift.State.BatchMeters;
@@ -612,25 +613,25 @@ namespace CottonCircuit.Tests
         void CheckLapBasedProduction()
         {
             var drive = game.World.Kart.DriveModel;
-            double lapMeters = drive.Course.Length, startProgress = drive.TotalProgress;
+            double lapMeters = drive.Course.Length, startGrowth = speedGrownMeters;
             PourGesture(0, 10);
             Check(game.Shift.State.SugarGrams == 100, "ten pours fill the hundred-gram tank");
             for (int tier = 0; tier < 3; tier++)
             {
                 double threshold = lapMeters * (1 + tier * .5);
                 string size = new[] { "소", "중", "대" }[tier];
-                DriveShiftUnfueledMeters(threshold - lapMeters * .02 - (drive.TotalProgress - startProgress),
+                DriveShiftUnfueledGrowth(threshold - lapMeters * .02 - (speedGrownMeters - startGrowth),
                     "approaching size " + size);
                 Check(game.Shift.State.BatchMeters < threshold && ShopShift.SizeForDistance(game.Shift.State.BatchMeters) == tier - 1,
-                    "actual driving stays below size " + size + " before " + (1 + tier * .5) + " laps" + ShiftProductionDetails());
-                DriveShiftUnfueledMeters(threshold + lapMeters * .005 - (drive.TotalProgress - startProgress),
+                    "actual driving stays below size " + size + " before " + (1 + tier * .5) + " grown laps" + ShiftProductionDetails());
+                DriveShiftUnfueledGrowth(threshold + lapMeters * .005 - (speedGrownMeters - startGrowth),
                     "crossing size " + size);
-                double traveled = drive.TotalProgress - startProgress;
+                double traveled = speedGrownMeters - startGrowth;
                 Check(ShopShift.SizeForDistance(game.Shift.State.BatchMeters) == tier,
                     "actual driving reaches size " + size + " at " + (1 + tier * .5) + " laps" + ShiftProductionDetails());
                 Check(Math.Abs(game.Shift.State.BatchMeters - Math.Min(traveled, lapMeters * 2)) < .00001 &&
                     Math.Abs(game.Shift.State.SugarGrams - Math.Max(0, 100 - traveled / lapMeters * 50)) < .00001,
-                    "size " + size + " production and sugar match actual forward progress without refills" + ShiftProductionDetails());
+                    "size " + size + " production and sugar match speed-scaled forward progress without refills" + ShiftProductionDetails());
             }
             Check(game.Shift.State.SugarGrams == 0 && Math.Abs(game.Shift.State.BatchMeters - lapMeters * 2) < .00001,
                 "a full tank makes two laps of candy before running out" + ShiftProductionDetails());
@@ -639,13 +640,33 @@ namespace CottonCircuit.Tests
             Check(game.TrashCandy(largest.Id), "size calibration stock is removed before the delivery scenario");
         }
 
+        // Mirrors ShiftController: each .05s tick drives once, and growth is the forward
+        // distance of that step scaled by the kart's speed yield.
+        double speedGrownMeters;
+        void TickShiftGrowth()
+        {
+            var drive = game.World.Kart.DriveModel;
+            game.Tick(0, 0, false, .05f);
+            speedGrownMeters += drive.LastRewardDistance * ShopShift.SpeedYield(drive.Speed);
+        }
+
+        void DriveShiftUnfueledGrowth(double meters, string purpose)
+        {
+            double initial = speedGrownMeters;
+            int guard = 20000;
+            while (speedGrownMeters - initial < meters && guard-- > 0 && game.Shift.IsOpen) TickShiftGrowth();
+            Check(guard > 0 && game.Shift.IsOpen && speedGrownMeters - initial >= meters,
+                purpose + " reaches speed-scaled growth " + meters.ToString("F3") + "m" + ShiftProductionDetails());
+            game.UI.Refresh();
+        }
+
         void DriveShiftUnfueledMeters(double meters, string purpose)
         {
             var drive = game.World.Kart.DriveModel;
             double initial = drive.TotalProgress;
             int guard = 10000;
             while (drive.TotalProgress - initial < meters && guard-- > 0 && game.Shift.IsOpen)
-                game.Tick(0, 0, false, .05f);
+                TickShiftGrowth();
             Check(guard > 0 && game.Shift.IsOpen && drive.TotalProgress - initial >= meters,
                 purpose + " reaches actual forward distance " + meters.ToString("F3") + "m" + ShiftProductionDetails());
             game.UI.Refresh();

@@ -85,8 +85,8 @@ class ProgressionShiftTests
             Check(s.ResumeProduct("low-grade"),"completed basic candy can be inspected on upgraded machine");
             coins=e.Coins; Check(!s.Pour(0) && e.Coins==coins,"old material cap rejects paid pour on completed candy");
             p=ShopShift.Preview(ShopShift.LapMeters*.1,0); p.Id="premium"; p.SugarGrade=3; e.Inventory.Add(p);
-            s.SelectMachine(2); Check(!s.ResumeProduct("premium") && e.Inventory.Exists(product=>product.Id=="premium"),
-                "free-grade setup cannot resume premium product and bypass material costs");
+            s.SelectMachine(0); Check(!s.ResumeProduct("premium") && e.Inventory.Exists(product=>product.Id=="premium"),
+                "free-grade basic machine cannot resume premium product and bypass material costs");
             e=Fresh(); s=new ShopShift(e); s.BeginBusiness();
             for (int i=0;i<10;i++) s.Pour(0);
             s.Advance(1, ShopShift.LapMeters*3); p=s.Extract();
@@ -109,6 +109,24 @@ class ProgressionShiftTests
             e.OrderSerial=trio; s=new ShopShift(e); s.BeginBusiness();
             Check(s.State.Customers.Count==3 && s.CustomerAt(0)!=null && s.CustomerAt(1)!=null && s.CustomerAt(2)!=null &&
                 s.State.Customers[0].Id!=s.State.Customers[2].Id && e.OrderSerial==trio+3, "a group arrival fills each free slot with its own order");
+            e = Fresh(); s = new ShopShift(e);
+            Check(s.SugarGrade(0) == 1 && s.MaxSize(0) == 0 && s.SizeLimitNote(0) == "",
+                "before sugar upgrades every machine uses free grade one and sizes stay hidden");
+            e.Progression.Purchases.Add(new NodePurchase { Id = "sugar_2", Level = 1 });
+            e.Progression.Purchases.Add(new NodePurchase { Id = "machine_2", Level = 1 });
+            e.Progression.Purchases.Add(new NodePurchase { Id = "machine_3", Level = 1 });
+            Check(s.SugarGrade(0) == 1 && s.SugarGrade(1) == 2 && s.SugarGrade(2) == 2,
+                "unlocked grade applies automatically up to each machine's tier");
+            Check(s.Machine(0).SugarGrade == 1 && s.Machine(1).SugarGrade == 2 && s.Machine(2).SugarGrade == 2,
+                "stored machine grades follow the automatic grade");
+            Check(s.SizeLimitNote(0) == "기본 기계는 소까지" && s.SizeLimitNote(1) == "소다 기계는 중까지" &&
+                s.SizeLimitNote(2) == "중까지 · 특급 설탕이면 대", "size notes name the machine or sugar limit");
+            s.Machine(1).SugarGrade = 1;
+            Check(s.SugarGrade(1) == 2 && s.PourCost(1, 0) > 0 && s.MaxSize(1) == 1,
+                "a hand-edited low grade cannot buy cheaper sugar on an upgraded machine");
+            e.Progression.Purchases.Add(new NodePurchase { Id = "sugar_3", Level = 1 });
+            Check(s.SugarGrade(2) == 3 && s.MaxSize(2) == 2 && s.SizeLimitNote(2) == "특급 기계는 대까지",
+                "top sugar unlocks the top size on the top machine");
             Console.WriteLine(passed+" passed, 0 failed"); return 0;
         } catch(Exception ex) { Console.Error.WriteLine(ex); return 1; }
     }
