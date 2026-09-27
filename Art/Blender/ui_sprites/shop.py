@@ -1,6 +1,8 @@
 """Shop sprites (Task 5): street storefront, trash bin and the two speech-bubble emotes.
 
-Built and rendered by ../build_ui_sprites.py -- --category shop. Blender only; Z up, -Y front.
+Built and rendered by ../build_ui_sprites.py -- --category shop (Blender; Z up, -Y front).
+Emote check after rendering (plain Python + Pillow, no Blender):
+    python Art/Blender/ui_sprites/shop.py   -> Art/Blender/previews/shop-emotes-bubble.png
 
 Storefront: a cotton-candy kiosk re-authored from the Kiosk in create_assets.py
 (Wood platform, Cream back wall and pillars, Strawberry/Cream striped awning,
@@ -16,17 +18,25 @@ top and platform still recede like every other 3/4 sprite.
 Trash: a Mint bin with Base foot and rim, a Cream swing-lid hood whose flap is
 pushed open by one crumpled Strawberry wrapper.
 
-Emotes: a chunky faceted Strawberry heart with a White highlight facet, and a
-four-armed anger "vein" mark (flat Strawberry tops, Plum side facets) with a small
-Navy steam puff. Emotes use a near-frontal camera (|yaw| <= 10), lean back toward the
-key light and have no shadow.
+Emotes: a chunky faceted Strawberry heart with a White highlight facet, and one
+large, centred four-armed anger "vein" mark (wide flat Strawberry tops, Plum side
+facets, a clear gap between the arms). The mark had a small Navy steam puff that read
+as a dark smudge at 72x66 inside the speech bubble; it is gone and the mark is bigger
+instead. Emotes use a near-frontal camera (|yaw| <= 10), lean back toward the key
+light and have no shadow.
 """
+import argparse
 import math
 import random
+import sys
+from pathlib import Path
 
-from mathutils import Vector
-
-from ui_sprite_spec import SEED
+try:
+    from mathutils import Vector
+except ImportError:  # plain Python: only the emote bubble preview at the end of this file is usable
+    Vector = SEED = None
+else:
+    from ui_sprite_spec import SEED
 
 CATEGORY = 'shop'
 SHOP_YAW = -20
@@ -34,6 +44,9 @@ FLAP_OPEN_DEG = 40
 COUNTER_BOARD_LEAN_DEG = 24
 LABEL_FACE = 'White'
 EMOTE_TILT_DEG = 22
+# Anger vein mark: arm corners `gap` from the centre, arms reaching `arm`, tips flaring `flare` further out;
+# ribbon widths from tip to corner to tip, and the flat Strawberry top as a share of each width.
+VEIN = {'centre': (0, 1.285), 'gap': .12, 'arm': .33, 'flare': .1, 'widths': (.07, .15, .18, .15, .07), 'top': .62}
 KIOSK_FRONT_TURN = math.radians(SHOP_YAW)
 
 ASSETS = [
@@ -59,8 +72,8 @@ ASSETS = [
     {'id': 'Emote_Angry',
      'camera': {'target': (0, 0, 1.29), 'scale': 1.16, 'yaw': -8, 'elevation': 15},
      'shadow': None,
-     'params': {'mark': 'four flared L arms, flat Strawberry tops, Plum side facets',
-                'steam': 'Navy three-lobe cloud with a trailing dot', 'tilt_back_deg': EMOTE_TILT_DEG}},
+     'params': {'mark': 'one centred vein mark: four flared L arms, flat Strawberry tops, Plum side facets, no steam puff',
+                'vein': VEIN, 'tilt_back_deg': EMOTE_TILT_DEG}},
 ]
 
 
@@ -362,20 +375,13 @@ def ribbon(kit, col, name, path, widths, height=.05, depth=.08, top=.46):
 
 
 def angry(asset, col, kit):
-    rng = random.Random(SEED + 11)
-    ox, oz = -.08, 1.33
-    gap, arm, flare = .1, .28, .09
+    (ox, oz), gap, arm, flare = VEIN['centre'], VEIN['gap'], VEIN['arm'], VEIN['flare']
     for q, (sx, sz) in enumerate(((1, 1), (-1, 1), (-1, -1), (1, -1))):
         # corner near the centre, one arm along each gap edge, tips flaring away from the gap
         path = [(sx*(gap + flare*.8), sz*(arm + flare)), (sx*gap, sz*arm), (sx*gap, sz*gap),
                 (sx*arm, sz*gap), (sx*(arm + flare), sz*(gap + flare*.8))]
         path = [(ox + x, oz + z) for x, z in path]
-        ribbon(kit, col, 'Vein_Arm_%d' % (q + 1), path, [.075, .13, .155, .13, .075])
-    # small Navy steam puff trailing up and away at the lower right
-    base = Vector((.33, -.02, .9))
-    for i, (dx, dz, r) in enumerate(((-.065, -.005, .052), (0, .02, .068), (.068, 0, .05), (.135, .045, .026))):
-        puff = kit.ico(col, 'Steam_Puff_%d' % (i + 1), (base.x + dx, base.y, base.z + dz), (r, r*.7, r*.88), 'Navy', 2)
-        jitter(puff, rng, .05)
+        ribbon(kit, col, 'Vein_Arm_%d' % (q + 1), path, list(VEIN['widths']), top=VEIN['top'])
     tilt(col, EMOTE_TILT_DEG, (0, 0, 1.25))
 
 
@@ -384,3 +390,108 @@ BUILDERS = {'Storefront': storefront, 'Trash': trash, 'Emote_Heart': heart, 'Emo
 
 def build(asset, col, kit):
     BUILDERS[asset['id']](asset, col, kit)
+
+
+# ---------------------------------------------------------------- emote bubble preview (no Blender)
+ROOT = Path(__file__).resolve().parents[3]
+SPRITES = 'Assets/CottonCircuit/Sprites'
+INK, WHITE, PINK, CREAM_BG = '#29324D', '#FFF9ED', '#F48DAB', '#FFF6E7'   # ShopStreetGraphic colours, spec review cream
+BUBBLE_SIZE, EMOTE_RECT = (132, 130), (30, 16, 72, 66)                    # ShopStreetUI: bubble and emote rects
+REACTIONS = {'Emote_Heart': (False, '고마워요!'), 'Emote_Angry': (True, '주문이 달라요!')}
+
+
+def _font(size, bold=False):
+    from PIL import ImageFont
+    for name in (('malgunbd.ttf', 'segoeuib.ttf') if bold else ('malgun.ttf', 'segoeui.ttf')):
+        path = Path('C:/Windows/Fonts')/name
+        if path.is_file():
+            return ImageFont.truetype(str(path), size)
+    return ImageFont.load_default(size=size)
+
+
+def _bubble(angry, ss=4):
+    """ShopStreetGraphic.DrawSpeechBubble at 132x130, supersampled; P() takes bottom-up y."""
+    from PIL import Image, ImageDraw
+    w, h = BUBBLE_SIZE[0]*ss, BUBBLE_SIZE[1]*ss
+    img = Image.new('RGBA', (w, h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+
+    def P(x, y):
+        return x*w, (1 - y)*h
+    outline = PINK if angry else INK
+    draw.polygon([P(.22, .17), P(.35, .17), P(.20, .015), P(.20, .17)], fill=outline)
+    draw.rounded_rectangle([P(.035, .975), P(.965, .14)], radius=.13*h, fill=outline)
+    draw.rounded_rectangle([P(.055, .955), P(.945, .16)], radius=.115*h, fill=WHITE)
+    draw.polygon([P(.24, .18), P(.33, .18), P(.215, .055), P(.215, .18)], fill=WHITE)
+    if angry:
+        for a, b in ((P(.075, .825), P(.14, .89)), (P(.89, .84), P(.94, .89))):
+            draw.line([a, b], fill=PINK, width=max(1, round(.012*min(w, h))))   # Line(): thickness x min side
+    return img.resize(BUBBLE_SIZE, Image.Resampling.LANCZOS)
+
+
+def _bubble_tile(emote, sprite_id, background):
+    """One game-size bubble (1x) with the emote at its game rect and the reaction label, on `background`."""
+    from PIL import Image, ImageDraw
+    angry, text = REACTIONS[sprite_id]
+    tile = Image.new('RGBA', (BUBBLE_SIZE[0] + 16, BUBBLE_SIZE[1] + 16), background)
+    tile.alpha_composite(_bubble(angry), (8, 8))
+    x, y, w, h = EMOTE_RECT
+    tile.alpha_composite(emote.resize((w, h), Image.Resampling.LANCZOS), (8 + x, 8 + y))
+    ImageDraw.Draw(tile).text((8 + 66, 8 + 84 + 11), text, fill=INK, font=_font(12, True), anchor='mm')
+    return tile
+
+
+def emote_board(root=ROOT, out=None):
+    """Both emotes in the game speech bubble (1x and 3x nearest) and bare at 72x66 and 144x132, on cream and ink."""
+    from PIL import Image, ImageDraw
+    out = Path(out) if out else root/'Art/Blender/previews/shop-emotes-bubble.png'
+    rows = []
+    for sprite_id in REACTIONS:
+        with Image.open(root/SPRITES/('Shop/%s.png' % sprite_id)) as source:
+            emote = source.convert('RGBA')
+        tiles = []
+        for name, background in (('cream', CREAM_BG), ('ink', INK)):
+            tile = _bubble_tile(emote, sprite_id, background)
+            tiles += [('bubble 1x ' + name, tile),
+                      ('bubble 3x ' + name, tile.resize((tile.width*3, tile.height*3), Image.Resampling.NEAREST))]
+        for size in ((72, 66), (144, 132)):
+            for name, background in (('cream', CREAM_BG), ('ink', INK)):
+                tile = Image.new('RGBA', size, background)
+                tile.alpha_composite(emote.resize(size, Image.Resampling.LANCZOS) if size != emote.size else emote)
+                tiles.append(('%dx%d %s' % (size + (name,)), tile))
+        rows.append((sprite_id, tiles))
+    gap, head, label = 12, 56, 22
+    width = gap + max(sum(t.width + gap for _, t in tiles) for _, tiles in rows)
+    heights = [max(t.height for _, t in tiles) + label + 26 for _, tiles in rows]
+    board = Image.new('RGBA', (width, head + sum(heights) + gap), '#F5F0E7')
+    draw = ImageDraw.Draw(board)
+    draw.text((gap, 12), 'SHOP  |  Emotes in the order speech bubble (ShopStreetUI rects: bubble 132x130, emote 30,16,72,66)',
+              fill='#58796F', font=_font(17, True))
+    draw.text((gap, 36), 'Heart in the neutral bubble, Angry in the angry (Strawberry) bubble. Composited in sRGB; '
+              'Unity blends in linear space.', fill='#737482', font=_font(12))
+    y = head
+    for (sprite_id, tiles), height in zip(rows, heights):
+        draw.text((gap, y), sprite_id, fill=INK, font=_font(14, True))
+        x = gap
+        for name, tile in tiles:
+            board.alpha_composite(tile, (x, y + 22))
+            draw.text((x, y + 26 + tile.height), name, fill='#737482', font=_font(11))
+            x += tile.width + gap
+        y += height
+    out.parent.mkdir(parents=True, exist_ok=True)
+    board.convert('RGB').save(out, optimize=True)
+    print('SHOP_EMOTE_BOARD %s (%d x %d)' % (out, board.width, board.height))
+    return out
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description='Emote speech-bubble preview for the shop sprites (plain Python).')
+    parser.add_argument('--root', type=Path, default=ROOT, help='project root holding Assets/ and Art/')
+    parser.add_argument('--out', type=Path, help='PNG path (default Art/Blender/previews/shop-emotes-bubble.png)')
+    args = parser.parse_args(argv)
+    emote_board(args.root, args.out)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

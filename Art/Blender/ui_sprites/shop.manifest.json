@@ -489,28 +489,33 @@
       "shadow": null,
       "film_transparent": true,
       "params": {
-        "mark": "four flared L arms, flat Strawberry tops, Plum side facets",
-        "steam": "Navy three-lobe cloud with a trailing dot",
+        "mark": "one centred vein mark: four flared L arms, flat Strawberry tops, Plum side facets, no steam puff",
+        "vein": {
+          "centre": [
+            0,
+            1.285
+          ],
+          "gap": 0.12,
+          "arm": 0.33,
+          "flare": 0.1,
+          "widths": [
+            0.07,
+            0.15,
+            0.18,
+            0.15,
+            0.07
+          ],
+          "top": 0.62
+        },
         "tilt_back_deg": 22
       },
       "objects": [
-        "Emote_Angry_Steam_Puff_1",
-        "Emote_Angry_Steam_Puff_2",
-        "Emote_Angry_Steam_Puff_3",
-        "Emote_Angry_Steam_Puff_4",
         "Emote_Angry_Vein_Arm_1",
         "Emote_Angry_Vein_Arm_2",
         "Emote_Angry_Vein_Arm_3",
         "Emote_Angry_Vein_Arm_4"
       ],
       "materials": [
-        {
-          "name": "Emote_Angry_Navy",
-          "palette_name": "Navy",
-          "palette_srgb": "#29324D",
-          "roughness": 0.85,
-          "specular_ior_level": 0.08
-        },
         {
           "name": "Emote_Angry_Plum",
           "palette_name": "Plum",

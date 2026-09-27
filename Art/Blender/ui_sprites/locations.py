@@ -13,16 +13,28 @@ the same -20 deg / 15 deg three-quarter view as the approved characters.
 
 Both cameras look the same way (orthographic, yaw -20, elevation 15), so the
 Prep and Street sprites of one location are two windows on one projection of
-one diorama: a stage point (x, y, z) lands at frame x = x and at frame height
-rise(y, z). Street (596x314 in game) leaves the overlay zones empty, as the spec
-asks ("그 영역을 비워 두고"):
+one diorama (the Street copy is set-dressed for its overlays, below): a stage
+point (x, y, z) lands at frame x = x and at frame height rise(y, z). Street
+(596x314 in game) leaves the overlay zones empty, as the spec asks
+("그 영역을 비워 두고"):
 - storefront zone, left of the first customer target (x < 30 %): ground, hills
   and sky only;
-- customer band (x 30-98 %, heads 44.6 % to feet 89 % from the top): plain
-  lane, square or river with nothing standing on it;
+- customer and bubble band (x 30-98 %, y 15-90 % from the top, STREET_BAND):
+  no dark or detailed prop at all. Only the back-row landmarks (houses, the
+  alley and its lamp post, market hall and stalls, festival booths, ferris
+  wheel) and the calm yard wall or balustrade reach into it, and the ground
+  below them is plain lane, square or river with nothing standing on it;
 - back row: every landmark stands on the footing line BACK_Y, 40 % down the
   frame behind the bubble bottoms, and stays under the top edge;
 - bottom 11 %: a plain Cream sidewalk band for the Navy status text.
+The Street scene therefore leaves out the props that would stand in the band
+(the plaza's lamp posts, crates, pots, laundry, bushes, hedges, trees,
+topiaries, bunting poles, the ticket kiosk), hangs the bunting from the booths'
+raised masts, puts the market hall door (with a narrower pediment), the alley's
+lamp post (set back behind the yard wall, which hides its foot) and a smaller
+ferris wheel under the middle speech bubble, and drops the two house windows
+that showed in the gaps between bubbles. Everything else is built identically
+for both framings (Stage.street), and the Prep scenes are unchanged.
 Prep (588x354) is a closer window on the back row and on the pieces that stand
 right of the Street frame (the riverside bridge, a market crate stack), so it
 shows the landmark prominently. Both frames are filled with geometry (sky wall,
@@ -71,6 +83,8 @@ STREET_ZONES = {'storefront_right': _TARGETS[0][0]/STREET_SIZE[0],
                 'heads_top': (_TARGETS[0][1] + _ART[1])/STREET_SIZE[1],
                 'curb': .80,
                 'feet': (_TARGETS[0][1] + _ART[1] + _ART[3])/STREET_SIZE[1]}
+# Customer and bubble band (x0, x1, y0, y1 as fractions, y from the top): no dark or detailed prop in it.
+STREET_BAND = (.30, .98, .15, .90)
 
 STREET_WIDTH = 9.5        # stage units across the Street frame
 STREET_HEIGHT = STREET_WIDTH*STREET_SIZE[1]/STREET_SIZE[0]
@@ -99,6 +113,7 @@ FRONT_Y = street_ground_y(1.0, SIDEWALK_TOP) - .8                 # the sidewalk
 STOREFRONT_X = street_x(STREET_ZONES['storefront_right'])        # right edge of the storefront zone
 TILE = STREET_WIDTH*(_TARGETS[1][0] - _TARGETS[0][0])/STREET_SIZE[0]              # one customer slot
 TILE_JOINT = street_x((_TARGETS[0][0] + _TARGETS[0][2] + 2)/STREET_SIZE[0])       # joint between slots 0 and 1
+SLOT_X = [street_x((x + w/2)/STREET_SIZE[0]) for x, _, w, _ in _TARGETS]          # centre of each customer slot
 
 # Prep windows on the same projection: (centre x, centre rise, width) in stage units.
 PREP_WINDOWS = {0: (1.75, 1.72, 6.4), 1: (2.45, 1.55, 6.3), 2: (4.9, 1.45, 7.4), 3: (1.6, 1.6, 5.6)}
@@ -142,7 +157,8 @@ def _asset(index, framing):
                        'stage_target': [round(c, 4) for c in target], 'stage_scale': width, 'stage_to_metre': STAGE_SCALE,
                        'stage_turn_deg': STAGE_TURN, 'piece_turn_deg': PIECE_TURN, 'back_row_stage_y': BACK_Y,
                        'overlays': STREET_OVERLAYS if framing == 'street' else None,
-                       'street_zones': {k: round(f, 4) for k, f in STREET_ZONES.items()} if framing == 'street' else None}}
+                       'street_zones': {k: round(f, 4) for k, f in STREET_ZONES.items()} if framing == 'street' else None,
+                       'street_band': list(STREET_BAND) if framing == 'street' else None}}
 
 
 ASSETS = [_asset(i, framing) for framing in ('prep', 'street') for i in range(4)]
@@ -153,8 +169,9 @@ FLAG_FACES = [(0, 2, 1), (3, 4, 5), (0, 1, 4, 3), (1, 2, 5, 4), (2, 0, 3, 5)]
 class Stage:
     """Builds into one turned and scaled root; every coordinate here is in stage units."""
 
-    def __init__(self, col, kit, location):
+    def __init__(self, col, kit, location, framing='prep'):
         self.col, self.kit, self.location = col, kit, location
+        self.street = framing == 'street'   # Street leaves the band props out (module docstring)
         self.rng = random.Random(260927 + location)
         self.used = {}
         self.root = self.empty('Stage', (0, 0, 0), turn=STAGE_TURN, parent=False)
@@ -446,6 +463,11 @@ class Stage:
         return g
 
 
+# Street-only set dressing (module docstring): booth masts that carry the bunting, and the ferris wheel's
+# set-back (stage units behind BACK_Y) and scale.
+BOOTH_MAST = 1.86
+WHEEL_STREET_BACK, WHEEL_STREET_SCALE = 1.02, .92
+
 # Sky bands, top down: (lowest stage z, colour). Street sees the sky wall up to z ~1.05, Prep up to ~1.7.
 DAY_SKY = [(-9, 'Soda')]
 DUSK_SKY = [(.72, 'Navy'), (.36, 'Plum'), (.12, 'Strawberry'), (-9, 'Vanilla')]
@@ -465,7 +487,8 @@ def alley(s):
     s.field('Lane', CURB_Y - .1, BACK_Y - .1, 0, 3, plain('Base'))
     s.field('Yard', BACK_Y - .1, SKY_Y + .6, 0, 4, plain('Mint'), jz=.04)
     s.sidewalk()
-    s.house('HouseA', (-.62, 4.02, 0), 1.8, 1.2, .95, 'Cream', 'Strawberry', windows=2, chimney=True)
+    # Street: one front window, so none shows in the gap between bubbles 1 and 2
+    s.house('HouseA', (-.62, 4.02, 0), 1.8, 1.2, .95, 'Cream', 'Strawberry', windows=1 if s.street else 2, chimney=True)
     s.house('HouseD', (4.95, 4.0, 0), 1.6, 1.2, .95, 'Cream', 'Vanilla', windows=1)
     s.house('HouseE', (6.85, 4.0, 0), 1.6, 1.2, 1.0, 'White', 'Strawberry', windows=2, chimney=True)
     s.house('HouseW', (8.7, 4.0, 0), 1.5, 1.2, .95, 'White', 'Soda', windows=1)
@@ -474,30 +497,39 @@ def alley(s):
     passage = s.empty('Alley', (2.0, 4.27, 0), PIECE_TURN)
     gap = .78
     s.house('HouseB', (-(gap/2 + .78), .22, 0), 1.56, 1.3, .9, 'White', 'Mint', turn=0, roof_h=.5, windows=1, parent=passage)
+    # Street: no side window on HouseC's alley wall, which shows in the gap between bubbles 2 and 3
     s.house('HouseC', (gap/2 + .82, -.05, 0), 1.64, 1.3, .95, 'Vanilla', 'Plum', turn=0, roof_h=.44, windows=2, trim='Cream',
-            parent=passage)
+            side_window=not s.street, parent=passage)
     s.house('HouseFar', (0, 1.0, 0), 1.3, .7, .78, 'White', 'Vanilla', turn=0, windows=1, side_window=False, parent=passage)
     s.box('AlleyPath', (0, -.3, .02), (gap - .08, 1.76, .04), 'Cream', passage, bevel=.01)
     for k in range(3):
         s.box('AlleyStep', (0, .2 + k*.15, .07 + k*.06), (gap - .08, .15, .06), 'White', passage, bevel=.01)
-    s.pot('Pot', (-gap/2 + .12, -.9, 0), 'Strawberry', parent=passage)
-    s.pot('Pot', (gap/2 - .12, -.7, 0), 'Vanilla', parent=passage)
-    s.pot('Pot', (gap/2 - .1, .0, 0), 'Strawberry', parent=passage)
-    line = [Vector((-gap/2, -.1, 1.12)), Vector((gap/2, -.2, 1.16))]
-    s.seg('Laundry_Line', line[0], line[1], .015, .015, 'Navy', passage, bevel=0)
-    for t, color in ((.25, 'Strawberry'), (.5, 'White'), (.75, 'Soda')):
-        q = line[0].lerp(line[1], t)
-        s.box('Laundry', (q.x, q.y, q.z - .11), (.15, .03, .18), color, passage, bevel=.008)
+    if not s.street:   # the pots and the laundry line would peek out between the Street bubbles
+        s.pot('Pot', (-gap/2 + .12, -.9, 0), 'Strawberry', parent=passage)
+        s.pot('Pot', (gap/2 - .12, -.7, 0), 'Vanilla', parent=passage)
+        s.pot('Pot', (gap/2 - .1, .0, 0), 'Strawberry', parent=passage)
+        line = [Vector((-gap/2, -.1, 1.12)), Vector((gap/2, -.2, 1.16))]
+        s.seg('Laundry_Line', line[0], line[1], .015, .015, 'Navy', passage, bevel=0)
+        for t, color in ((.25, 'Strawberry'), (.5, 'White'), (.75, 'Soda')):
+            q = line[0].lerp(line[1], t)
+            s.box('Laundry', (q.x, q.y, q.z - .11), (.15, .03, .18), color, passage, bevel=.008)
     for x0, x1 in ((STOREFRONT_X + .06, 1.98), (2.86, 10.4)):
         s.box('YardWall', ((x0 + x1)/2, BACK_Y + .08, .18), (x1 - x0, .16, .36), 'White', bevel=.02)
         for x in (x0 + .12, x1 - .12):
             s.box('WallPier', (x, BACK_Y + .08, .22), (.24, .22, .44), 'Cream', bevel=.02)
-    s.lamp('Lamp', (1.3, BACK_Y + .02, 0))
+    # the lamp post, the alley's landmark. Street: set back behind the yard wall, which hides the foot that
+    # showed as a dark dot under bubble 2; bubble 2 covers the rest while slot 1 has a customer (its cap
+    # stays 3 px under the bubble's top edge)
+    if s.street:
+        s.lamp('Lamp', (1.3, BACK_Y + .3, 0), height=1.3)
+    else:
+        s.lamp('Lamp', (1.3, BACK_Y + .02, 0))
     s.tree('Tree', (.55, 4.75, 0), .95)
     s.tree('Tree', (3.85, 4.85, 0), .9)
     s.tree('Tree', (7.8, 4.8, 0), .95)
-    s.bush('Bush', (-1.45, BACK_Y + .45, 0), .6)
-    s.bush('Bush', (4.0, BACK_Y + .4, 0), .6, 'Base')
+    if not s.street:
+        s.bush('Bush', (-1.45, BACK_Y + .45, 0), .6)
+        s.bush('Bush', (4.0, BACK_Y + .4, 0), .6, 'Base')
     s.cloud('Cloud', -3.35, .74, .42)
     s.cloud('Cloud', .1, 1.5, .6)
     s.cloud('Cloud', 3.9, 1.38, .5)
@@ -510,20 +542,23 @@ def market(s):
     s.field('Square', CURB_Y - .1, SKY_Y + .6, 0, 6, plain('Cream'))
     s.sidewalk(tile='White', curb='Cream')
     # market hall behind the stalls, from the storefront zone's edge to past the Prep frame
-    hall_x0, hall_x1, door_x = STOREFRONT_X + .3, 10.2, 2.33
+    # the Street door and sign sit behind the middle stall, under the middle bubble, not in a bubble gap
+    hall_x0, hall_x1, door_x = STOREFRONT_X + .3, 10.2, SLOT_X[1] if s.street else 2.33
     hall = s.empty('Hall', ((hall_x0 + hall_x1)/2, 4.75, 0))
     width = hall_x1 - hall_x0
     local = door_x - (hall_x0 + hall_x1)/2
     s.box('Hall_Body', (0, 0, .5), (width, 1.0, 1.0), 'Cream', hall, bevel=.04)
     s.slab('Hall_Roof', (0, -.66, .95), (0, .3, 1.24), width + .3, .08, 'Mint', hall, bevel=.02)
-    # central pediment carrying the market sign, above the gap between the middle stalls
-    tri = [(local - 1.2, -.56, .95), (local + 1.2, -.56, .95), (local, -.56, 1.58)]
+    # central pediment carrying the market sign, above the gap between the middle stalls (Prep); the
+    # Street one is narrower so its trim ends stay behind the middle stall, out of the bubble gaps
+    half = .8 if s.street else 1.2
+    tri = [(local - half, -.56, .95), (local + half, -.56, .95), (local, -.56, 1.58)]
     s.mesh('Hall_Pediment', tri + [(x, y + .5, z) for x, y, z in tri], FLAG_FACES, 'Cream', hall)
-    for a, b in (((local - 1.3, -.6, .92), (local, -.6, 1.63)), ((local + 1.3, -.6, .92), (local, -.6, 1.63))):
+    for a, b in (((local - half - .1, -.6, .92), (local, -.6, 1.63)), ((local + half + .1, -.6, .92), (local, -.6, 1.63))):
         s.seg('Hall_PedimentTrim', a, b, .08, .06, 'Strawberry', hall, bevel=.01)
     s.box('Hall_Sign', (local, -.6, 1.2), (1.0, .05, .34), 'Mint', hall, bevel=.02)
     s.box('Hall_SignBoard', (local, -.64, 1.2), (.84, .04, .2), 'White', hall, bevel=.01)
-    for x in (.12, 4.55, 6.7, 8.85):
+    for x in (() if s.street else (.12, 4.55, 6.7, 8.85)):   # Street: they would show in the bubble gaps
         s.box('Hall_WindowFrame', (x - (hall_x0 + hall_x1)/2, -.5, .62), (.5, .03, .42), 'White', hall, bevel=.01)
         s.box('Hall_Window', (x - (hall_x0 + hall_x1)/2, -.52, .62), (.4, .04, .32), 'Soda', hall, bevel=.01)
     s.box('Hall_Door', (local, -.52, .38), (.72, .05, .72), 'Wood', hall, bevel=.015)
@@ -541,9 +576,10 @@ def market(s):
         for j, fx in enumerate((-.42, .02, .45)):
             s.crate('Stall_Crate', (fx, -.06, .665), fruit if j != 1 else ('Vanilla' if fruit != 'Vanilla' else 'Strawberry'),
                     turn=0, parent=g, size=(.36, .3, .15))
-    for x, fruit in ((.12, 'Strawberry'), (door_x, 'Vanilla')):
-        stack = s.crate('Crate', (x, BACK_Y + .3, 0), None)
-        s.crate('Crate', (0, 0, .28), fruit, turn=10, parent=stack)
+    if not s.street:   # these two stacks peeked out between the Street bubbles
+        for x, fruit in ((.12, 'Strawberry'), (door_x, 'Vanilla')):
+            stack = s.crate('Crate', (x, BACK_Y + .3, 0), None)
+            s.crate('Crate', (0, 0, .28), fruit, turn=10, parent=stack)
     # Prep-only crate stack in front of the fourth stall, right of the Street frame
     stack = s.crate('Crate', (5.25, 2.3, 0), None)
     s.crate('Crate', (0, 0, .28), 'Soda', turn=10, parent=stack)
@@ -588,20 +624,26 @@ def riverside(s):
         base = [(-.68, -.58, .84), (.68, -.58, .84), (.68, .58, .84), (-.68, .58, .84), (0, 0, 1.42)]
         s.mesh('Booth_Roof', base, [(0, 1, 4), (1, 2, 4), (2, 3, 4), (3, 0, 4), (3, 2, 1, 0)],
                [roof, 'Cream', roof, 'Cream', roof], g)
-        s.seg('Booth_Flagpole', (0, 0, 1.38), (0, 0, 1.64), .03, .03, 'Gold', g)
+        s.seg('Booth_Flagpole', (0, 0, 1.38), (0, 0, BOOTH_MAST if s.street else 1.64), .03, .03, 'Gold', g)
         s.mesh('Booth_Flag', [(0, 0, 1.63), (.22, 0, 1.57), (0, 0, 1.51), (0, .02, 1.63), (.22, .02, 1.57), (0, .02, 1.51)],
                FLAG_FACES, 'Soda' if roof != 'Soda' else 'Strawberry', g)
-    # bunting poles stand in the gaps between the booths, on the far bank's front edge
-    poles = [(STOREFRONT_X + .12, BACK_Y + .05)] + [((a + b)/2, BACK_Y + .05) for (a, _), (b, _) in zip(booths, booths[1:])]
-    for x, y in poles:
-        s.prism('BuntingPole', (x, y, .9), .045, 1.8, 'Wood', sides=6, bevel=.008)
-        s.ico('BuntingKnob', (x, y, 1.84), (.07, .07, .07), 'Gold')
-    for (xa, ya), (xb, yb) in zip(poles, poles[1:]):
-        s.pennants('Bunting', (xa, ya - .06, 1.74), (xb, yb - .06, 1.74), ['Strawberry', 'Vanilla', 'Soda', 'White'], 7, sag=.24,
-                   drop=.22)
-    s.tree('Tree', (.1, 4.75, 0), .95)
-    s.tree('Tree', (4.5, 4.8, 0), .9)
-    s.tree('Tree', (8.9, 4.75, 0), .95)
+    bunting = ['Strawberry', 'Vanilla', 'Soda', 'White']
+    if s.street:
+        # Street: the bunting hangs from the booths' raised masts, so no pole stands in a bubble gap
+        masts = [(x, BACK_Y + .62 + .18*(k % 2), BOOTH_MAST - .05) for k, (x, _) in enumerate(booths)]
+        for a, b in zip(masts, masts[1:]):
+            s.pennants('Bunting', a, b, bunting, 7, sag=.2, drop=.2)
+    else:
+        # bunting poles stand in the gaps between the booths, on the far bank's front edge
+        poles = [(STOREFRONT_X + .12, BACK_Y + .05)] + [((a + b)/2, BACK_Y + .05) for (a, _), (b, _) in zip(booths, booths[1:])]
+        for x, y in poles:
+            s.prism('BuntingPole', (x, y, .9), .045, 1.8, 'Wood', sides=6, bevel=.008)
+            s.ico('BuntingKnob', (x, y, 1.84), (.07, .07, .07), 'Gold')
+        for (xa, ya), (xb, yb) in zip(poles, poles[1:]):
+            s.pennants('Bunting', (xa, ya - .06, 1.74), (xb, yb - .06, 1.74), bunting, 7, sag=.24, drop=.22)
+        s.tree('Tree', (.1, 4.75, 0), .95)
+        s.tree('Tree', (4.5, 4.8, 0), .9)
+        s.tree('Tree', (8.9, 4.75, 0), .95)
     s.bush('Reed', (5.15, .12, 0), .5)
     s.bush('Reed', (8.25, .15, 0), .45, 'Base')
     for x, y, color in ((5.2, 1.85, 'Vanilla'), (8.1, 1.3, 'Strawberry'), (7.5, 2.2, 'Soda')):
@@ -627,7 +669,7 @@ def starlight(s):
         s.box('Balustrade_Post', (x, 4.55, .22), (.12, .12, .44), 'White', bevel=.02)
         if k < 12:
             s.box('Balustrade_Rail', (x + .5, 4.55, .42), (1.0, .1, .07), 'Cream', bevel=.015)
-    for x in (-1.55, .6, 3.4, 5.4, 7.4):
+    for x in (() if s.street else (-1.55, .6, 3.4, 5.4, 7.4)):   # Street: they stood in the band
         s.prism('Topiary_Trunk', (x, 4.85, .25), .05, .5, 'Wood', sides=6, bevel=.006)
         s.ico('Topiary', (x, 4.85, .72), (.3, .3, .34), 'Mint')
     s.field('Square', CURB_Y - .1, SKY_Y + .6, 0, 4, plain('Cream'), x1=STOREFRONT_X, nx=3)
@@ -635,7 +677,11 @@ def starlight(s):
     s.field('Plaza', BACK_Y - .1, SKY_Y + .6, 0, 3, lambda i, j, rng: 'Cream' if (i + j) % 2 == 0 else 'White',
             x0=STOREFRONT_X, nx=10, jxy=0)
     s.sidewalk()
-    wheel = s.empty('Wheel', (1.9, BACK_Y + .55, 0), 12)
+    # Street: the wheel stands under the middle bubble, set back and scaled so its Plum base stays
+    # above the bubble bottoms and its rim under the top edge
+    wheel = s.empty('Wheel', (SLOT_X[1], BACK_Y + WHEEL_STREET_BACK, 0) if s.street else (1.9, BACK_Y + .55, 0), 12)
+    if s.street:
+        wheel.scale = (WHEEL_STREET_SCALE,)*3
     hub = Vector((0, 0, 1.1))
     radius, rim_sides = .7, 16
     for x in (-.5, .5):
@@ -658,6 +704,8 @@ def starlight(s):
         s.box('Wheel_Cabin', (p.x, p.y, p.z - .19), (.21, .19, .17), cabins[(i//2) % 4], wheel, bevel=.03)
         s.box('Wheel_CabinRoof', (p.x, p.y, p.z - .09), (.26, .24, .04), 'Cream', wheel, bevel=.01)
     s.box('Wheel_Base', (0, 0, .025), (1.5, .8, .05), 'Plum', wheel, bevel=.02)
+    if s.street:   # the kiosk's Navy window, the lamp feet and the hedges all showed in the band
+        return
     kiosk = s.empty('Ticket', (-.5, BACK_Y + .4, 0), PIECE_TURN)
     s.box('Ticket_Body', (0, 0, .42), (.72, .62, .84), 'White', kiosk, bevel=.03)
     s.box('Ticket_Window', (0, -.33, .52), (.44, .03, .26), 'Navy', kiosk, bevel=.01)
@@ -674,7 +722,7 @@ BUILDERS = {0: alley, 1: market, 2: riverside, 3: starlight}
 
 def build(asset, col, kit):
     location = asset['params']['location']
-    BUILDERS[location](Stage(col, kit, location))
+    BUILDERS[location](Stage(col, kit, location, asset['params']['framing']))
 
 
 # ---------------------------------------------------------------------- Street overlay preview (no Blender)
@@ -683,7 +731,7 @@ SPRITES = 'Assets/CottonCircuit/Sprites'
 APPROVED = {0: 'Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png',
             2: 'Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer.png'}
 ORDERS = (('Strawberry', '딸기'), ('Soda', '소다'), ('Vanilla', '바닐라'))
-INK, BUBBLE, PLACEHOLDER = '#29324D', '#FFFCF4', (150, 150, 150, 200)
+INK, BUBBLE, PLACEHOLDER, BAND = '#29324D', '#FFF9ED', (150, 150, 150, 200), '#C2577E'   # bubble fill = palette White
 
 
 def _font(size, bold=False):
@@ -774,8 +822,18 @@ def overlay_street(street, root=ROOT):
     return img, used
 
 
+def _dashed_box(draw, box, fill, dash=4):
+    x0, y0, x1, y1 = box
+    for x in range(round(x0), round(x1), 2*dash):
+        for y in (y0, y1):
+            draw.line([(x, y), (min(x + dash, x1), y)], fill=fill)
+    for y in range(round(y0), round(y1), 2*dash):
+        for x in (x0, x1):
+            draw.line([(x, y), (x, min(y + dash, y1))], fill=fill)
+
+
 def street_composite(root=ROOT, out=None):
-    """Each Street sprite at game size (596x314), bare on the left and overlaid on the right."""
+    """Each Street sprite at game size (596x314), bare on the left (STREET_BAND dashed) and overlaid on the right."""
     from PIL import Image, ImageDraw
     out = Path(out) if out else root/'Art/Blender/previews/locations-street-composite.png'
     game, gap, top, label = STREET_SIZE, 16, 64, 26
@@ -795,8 +853,10 @@ def street_composite(root=ROOT, out=None):
         sources.update(used)
         board.alpha_composite(street, (gap, y + label))
         board.alpha_composite(composed, (2*gap + game[0], y + label))
-    draw.text((gap, 12), 'LOCATIONS  |  Street sprites at 596x314, bare (left) and under the game overlays (right)',
-              fill='#58796F', font=_font(17, True))
+        bx0, bx1, by0, by1 = STREET_BAND
+        _dashed_box(draw, (gap + bx0*game[0], y + label + by0*game[1], gap + bx1*game[0], y + label + by1*game[1]), BAND)
+    draw.text((gap, 12), 'LOCATIONS  |  Street sprites at 596x314, bare with the customer and bubble band dashed (left) '
+              'and under the game overlays (right)', fill='#58796F', font=_font(17, True))
     draw.text((gap, 38), 'Overlays: %s. Composited in sRGB; Unity blends in linear space.' % ', '.join(sorted(sources)),
               fill='#737482', font=_font(12))
     out.parent.mkdir(parents=True, exist_ok=True)
