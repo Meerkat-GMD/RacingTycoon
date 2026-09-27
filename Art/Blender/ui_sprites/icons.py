@@ -11,8 +11,10 @@ spoon, so they keep enough solid pixels).
 
 Colour rule: the disc colour comes from the node category in
 Assets/CottonCircuit/Scripts/Core/Progression.cs (`ui_sprite_spec.DISC_COLORS`). Each icon
-pairs a Navy, Wood or Gold key shape with light facets so it reads on cream, on ink, on
-its own disc and faded, and no icon is dominated by a colour close to its disc.
+pairs dark key shapes with light facets so it reads on cream, on ink, on its own disc and
+faded, and no icon is dominated by a colour close to its disc. Navy equals the ink
+background, so a Navy part must not carry a silhouette on its own (the hourglass frame and
+the mortarboard are Plum and Wood).
 
 Each builder models its object around the local origin (Z up, -Y towards the camera);
 build() parents every part to one pose empty at the studio aim point (0, 0, 1.25).
@@ -43,7 +45,7 @@ ICONS = [
     ('Trait_Shelf', 'display shelf', ('shelf',), 'business', (-0.001, -0.006, 1.228), 1.745),
     ('Trait_Sales', 'shop signboard', ('sales',), 'sales', (0.001, 0.009, 1.283), 1.939),
     ('Trait_PriceTag', 'price tag', ('flavor_price', 'location_price'), 'sales', (0.089, -0.018, 1.228), 1.745),
-    ('Trait_Engine', 'engine', ('engine',), 'equipment', (0.068, -0.001, 1.283), 2.068),
+    ('Trait_Engine', 'engine', ('engine',), 'equipment', (0.016, -0.016, 1.2), 1.561),
     ('Trait_Handling', 'steering wheel', ('handling',), 'equipment', (0, 0, 1.25), 1.81),
     ('Trait_Kart', 'classic kart', ('coupe',), 'equipment', (0.076, -0.031, 1.174), 2.059),
     ('Trait_StickSpeed', 'spinning stick with motion arcs', ('stick_speed',), 'production',
@@ -51,10 +53,10 @@ ICONS = [
     ('Trait_Spoon', 'measuring spoon', ('stick_saving', 'sugar_saving'), 'production',
      (-0.033, 0.013, 1.281), 1.661),
     ('Trait_Ribbon', 'ribbon cotton candy', ('stick_quality', 'quality_focus'), 'production',
-     (0.024, 0.008, 1.294), 2.638),
+     (0.005, -0.006, 1.232), 2.892),
     ('Trait_Sugar2', 'sugar bag with 2 Gold stars', ('sugar_2',), 'production', (0, -0.003, 1.239), 1.648),
     ('Trait_Sugar3', 'sugar bag with 3 Gold stars', ('sugar_3',), 'production', (0, -0.003, 1.239), 1.648),
-    ('Trait_Machine', 'cotton-candy machine', ('machine_2', 'machine_3'), 'equipment', (0.015, 0.027, 1.359), 2.327),
+    ('Trait_Machine', 'cotton-candy machine', ('machine_2', 'machine_3'), 'equipment', (0.018, 0.039, 1.403), 3.018),
     ('Trait_FlavorSoda', 'Soda cotton candy', ('flavor_soda',), 'production', (0.048, 0.014, 1.326), 2.488),
     ('Trait_FlavorVanilla', 'Vanilla cotton candy', ('flavor_vanilla',), 'production', (0.059, 0.012, 1.326), 2.488),
     ('Trait_Worker', 'worker with apron', ('worker_1', 'worker_2'), 'staff', (0.057, 0.004, 1.293), 1.783),
@@ -190,9 +192,10 @@ def jitter(obj, rng, amount=.03):
         v.co *= rng.uniform(1-amount, 1+amount)
 
 
-def cotton(col, kit, floss, stripe, seed, lobes=None):
+def cotton(col, kit, floss, stripe, seed, lobes=None, stick=(-.38, .82, .052), stripes=(-.70, -.56, -.42)):
     """Spec cotton candy: one core and 20 jittered lobes on a Cream stick with stripes.
-    `lobes` optionally colours the lobes in turn (the floss core keeps `floss`)."""
+    `lobes` optionally colours the lobes in turn (the floss core keeps `floss`);
+    `stick` is the stick's (centre z, length, radius) and `stripes` the stripe heights."""
     rng = random.Random(spec.SEED + seed)
     kit.ico(col, 'Floss_Core', (0, 0, .30), (.44, .38, .48), floss, 2)
     positions = [(math.sin(a)*.40, rng.uniform(-.07, .07), .30+math.cos(a)*.44)
@@ -206,9 +209,10 @@ def cotton(col, kit, floss, stripe, seed, lobes=None):
                        lobes[i % len(lobes)] if lobes else floss, 2)
         lobe.rotation_euler = [rng.uniform(-.3, .3) for _ in range(3)]
         jitter(lobe, rng)
-    cyl(kit, col, 'Stick', (0, 0, -.38), .052, .82, 'Cream', 8, bevel=.01)
-    for i, z in enumerate((-.70, -.56, -.42)):
-        cyl(kit, col, 'Stick_Stripe_%d' % (i+1), (0, 0, z), .056, .06, stripe, 8, bevel=.008)
+    centre, length, radius = stick
+    cyl(kit, col, 'Stick', (0, 0, centre), radius, length, 'Cream', 8, bevel=.01)
+    for i, z in enumerate(stripes):
+        cyl(kit, col, 'Stick_Stripe_%d' % (i+1), (0, 0, z), radius+.004, .06, stripe, 8, bevel=.008)
 
 
 def head(col, kit, name, center, s, skin, hair, cap=None):
@@ -263,10 +267,15 @@ def clock(col, kit):
 
 
 def hourglass(col, kit):
+    """Soda glass and Vanilla sand in a Plum and Wood frame (Navy would vanish on ink)."""
     for name, z in (('Top', .52), ('Bottom', -.52)):
-        cyl(kit, col, name+'_Plate', (0, 0, z), .42, .10, 'Navy', 8, (0, 0, math.pi/8), .025)
-    for side in (-1, 1):
-        cyl(kit, col, 'Post_%s' % ('L' if side < 0 else 'R'), (side*.34, -.06, 0), .04, .96, 'Navy', 6, bevel=0)
+        cyl(kit, col, name+'_Plate', (0, 0, z), .42, .10, 'Plum', 8, (0, 0, math.pi/8), .025)
+    for side in (-1, 1):  # turned spindles with a flat facet towards the camera and key light
+        post = kit.loft(col, 'Post_%s' % ('L' if side < 0 else 'R'),
+                        [(z, 0, 0, r, r) for z, r in ((-.48, .045), (-.36, .062), (-.22, .045),
+                                                        (.22, .045), (.36, .062), (.48, .045))], 'Wood', 6)
+        post.location, post.rotation_euler.z = (side*.34, -.06, 0), math.pi/6
+        chamfer(post, .01)
     kit.loft(col, 'Glass_Upper', [(.24, 0, 0, .22, .22), (.36, 0, 0, .29, .29), (.47, 0, 0, .27, .27)], 'Soda', 8)
     kit.loft(col, 'Sand_Upper', [(.04, 0, 0, .05, .05), (.13, 0, 0, .12, .12), (.24, 0, 0, .22, .22)], 'Vanilla', 8)
     kit.loft(col, 'Glass_Lower', [(-.26, 0, 0, .24, .24), (-.13, 0, 0, .12, .12), (-.04, 0, 0, .05, .05)], 'Soda', 8)
@@ -339,20 +348,29 @@ def price_tag(col, kit):
 
 
 def engine(col, kit):
-    """Side view of the engine pictogram: block, head, top intake, pulley and exhaust."""
-    kit.box(col, 'Block', (0, 0, -.1), (.92, .5, .46), 'Strawberry', .05)
-    kit.box(col, 'Oil_Pan', (.04, 0, -.39), (.7, .42, .14), 'Navy', .03)
-    kit.box(col, 'Cylinder_Head', (0, 0, .2), (.84, .46, .16), 'Navy', .03)
-    kit.box(col, 'Valve_Cover', (0, 0, .32), (.7, .38, .1), 'Cream', .025)
-    kit.box(col, 'Intake_Neck', (0, 0, .43), (.12, .14, .14), 'Navy', .015)
-    kit.box(col, 'Intake_Bar', (0, 0, .52), (.46, .18, .08), 'Navy', .02)
-    kit.box(col, 'Fan_Housing', (-.54, 0, -.06), (.18, .38, .32), 'Navy', .03)
-    cyl(kit, col, 'Pulley', (-.3, -.27, -.14), .14, .05, 'Gold', 12, FRONT, .012)
-    cyl(kit, col, 'Pulley_Hub', (-.3, -.3, -.14), .05, .04, 'Navy', 8, FRONT, .008)
-    for i, x in enumerate((-.02, .14, .30)):
-        cyl(kit, col, 'Bore_Plug_%d' % i, (x, -.265, -.02), .055, .04, 'Cream', 8, FRONT, .008)
-    kit.box(col, 'Exhaust_Port', (.53, 0, -.02), (.16, .32, .22), 'Navy', .03)
-    kit.segment(col, 'Exhaust_Pipe', (.58, 0, -.06), (.74, 0, -.3), .1, .1, 'Gold', .015)
+    """Chunky V engine seen from the front and above: block, two cylinder heads whose valve
+    covers carry Gold bolts, an air cleaner in the V, a front pulley and a Gold exhaust."""
+    before = set(col.objects)
+    kit.box(col, 'Block', (0, 0, -.14), (.86, .52, .44), 'Tire', .06)  # wide chamfers catch the light
+    kit.box(col, 'Oil_Pan', (.03, 0, -.42), (.74, .42, .12), 'Tire', .03)
+    for side in (-1, 1):
+        tag = 'F' if side < 0 else 'B'
+        bank = set(col.objects)
+        kit.box(col, 'Cylinder_Head_'+tag, (0, 0, 0), (.84, .24, .12), 'Tire', .02)
+        kit.box(col, 'Valve_Cover_'+tag, (0, 0, .1), (.8, .2, .1), 'Strawberry', .035)
+        for i, x in enumerate((-.27, -.09, .09, .27)):
+            cyl(kit, col, 'Bolt_%s%d' % (tag, i), (x, 0, .165), .038, .03, 'Gold', 6, bevel=.006)
+        group(col, kit, 'Bank_'+tag, made_since(col, bank), (0, side*.2, .12), (-side*34, 0, 0))
+    kit.box(col, 'Intake', (0, 0, .16), (.5, .16, .16), 'Tire', .02)
+    cyl(kit, col, 'Air_Cleaner', (.04, 0, .34), .19, .09, 'Cream', 12, bevel=.02)
+    cyl(kit, col, 'Air_Cleaner_Nut', (.04, 0, .395), .045, .04, 'Gold', 6, bevel=.008)
+    side_on = (0, math.pi/2, 0)  # axis along X: the discs face the engine front (-X)
+    cyl(kit, col, 'Pulley', (-.46, 0, -.16), .19, .06, 'Cream', 14, side_on, .012)
+    cyl(kit, col, 'Pulley_Hub', (-.5, 0, -.16), .07, .04, 'Gold', 8, side_on, .008)
+    cyl(kit, col, 'Pulley_Top', (-.45, 0, .1), .1, .05, 'Cream', 10, side_on, .01)
+    kit.segment(col, 'Exhaust_Pipe', (-.3, -.33, -.02), (.4, -.33, -.06), .1, .09, 'Gold', .015)
+    turned = group(col, kit, 'Engine_Turn', made_since(col, before), (0, 0, 0), (0, 0, 34))
+    group(col, kit, 'Engine_Tilt', [turned], (0, 0, 0), (26, 0, 0))  # shows the V from above
 
 
 def steering_wheel(col, kit):
@@ -441,15 +459,18 @@ def spoon(col, kit):
 
 
 def ribbon_candy(col, kit):
-    """A decorated candy: plain White/Cream floss tied with a big Navy bow and a Gold knot."""
-    cotton(col, kit, 'White', 'Strawberry', 13, lobes=('White', 'Cream'))
+    """A decorated candy: plain White/Cream floss on a long striped Cream stick, tied under
+    the floss with a Navy bow and a Gold knot; the short tails leave the stick visible."""
+    cotton(col, kit, 'White', 'Strawberry', 13, lobes=('White', 'Cream'),
+           stick=(-.5, 1.06, .066), stripes=(-.96, -.82, -.68))
+    knot = -.36  # tied at the neck of the floss
     for side in (-1, 1):
-        s = side*1.3
-        loop = [(0, .06), (s*.2, .24), (s*.42, .26), (s*.5, .1), (s*.42, -.1), (s*.2, -.14), (0, -.06)]
-        puff(kit, col, 'Bow_Loop_%d' % (side+1), loop, .12, 'Navy', .06, (0, -.26, -.42))
-        tail = [(s*.02, -.02), (s*.2, -.34), (s*.28, -.28), (s*.1, 0)]
-        puff(kit, col, 'Bow_Tail_%d' % (side+1), tail, .07, 'Navy', .02, (0, -.24, -.46))
-    kit.box(col, 'Bow_Knot', (0, -.32, -.42), (.18, .12, .19), 'Gold', .03)
+        s = side*1.2
+        loop = [(0, .06), (s*.2, .22), (s*.42, .24), (s*.5, .08), (s*.42, -.1), (s*.2, -.13), (0, -.06)]
+        puff(kit, col, 'Bow_Loop_%d' % (side+1), loop, .12, 'Navy', .06, (0, -.26, knot))
+        tail = [(s*.03, -.02), (s*.2, -.18), (s*.3, -.13), (s*.12, 0)]
+        puff(kit, col, 'Bow_Tail_%d' % (side+1), tail, .07, 'Navy', .02, (0, -.24, knot-.05))
+    kit.box(col, 'Bow_Knot', (0, -.32, knot), (.18, .12, .19), 'Gold', .03)
     star(kit, col, 'Sparkle', (.52, -.1, .74), .15, 'Gold', .06)
 
 
@@ -469,31 +490,32 @@ def sugar_bag(col, kit, stars):
 
 
 def machine(col, kit):
-    """Cabinet with a control panel under a wide spinning tub (the create_assets.py Spinner
-    structure: base, bowl, spinner), with a candy being wound out of the floss."""
+    """Cotton-candy machine: a wide, flared Strawberry bowl (hollow, with a Cream rim and a
+    White floss web inside) on a short cabinet, the Gold spinner head in its centre and a
+    Cream stick rising from it with Strawberry floss wound on top. The pose tips the bowl
+    towards the camera so its opening shows."""
     before = set(col.objects)
-    kit.box(col, 'Cabinet', (0, 0, -.36), (.74, .56, .42), 'Cream', .04)
-    kit.box(col, 'Control_Panel', (0, -.285, -.36), (.54, .03, .26), 'Navy', .012)
-    cyl(kit, col, 'Dial', (-.12, -.31, -.36), .075, .04, 'Gold', 10, FRONT, .008)
-    kit.box(col, 'Switch', (.14, -.31, -.36), (.12, .05, .08), 'Strawberry', .01)
-    for x in (-.3, .3):
-        kit.box(col, 'Foot_%d' % (x > 0), (x, 0, -.6), (.12, .5, .08), 'Navy', .015)
-    kit.box(col, 'Neck', (0, 0, -.12), (.26, .26, .1), 'Navy', .02)
-    kit.loft(col, 'Tub', [(-.12, 0, 0, .32, .32), (.04, 0, 0, .5, .5), (.22, 0, 0, .6, .6),
-                          (.26, 0, 0, .62, .62)], 'Strawberry', 12)
-    ring(kit, col, 'Tub_Rim', (0, 0, .26), .61, .05, 'Cream', 16, 4, (0, 0, 0))
+    kit.loft(col, 'Cabinet', [(-.72, 0, 0, .42, .38), (-.36, 0, 0, .4, .36), (-.3, 0, 0, .34, .3)], 'Cream', 8)
+    kit.loft(col, 'Foot_Ring', [(-.78, 0, 0, .45, .41), (-.68, 0, 0, .45, .41)], 'Navy', 8)
+    kit.box(col, 'Control_Panel', (0, -.37, -.52), (.34, .04, .15), 'Navy', .012)
+    cyl(kit, col, 'Dial', (-.07, -.395, -.52), .045, .03, 'Gold', 8, FRONT, .006)
+    cyl(kit, col, 'Lamp', (.08, -.395, -.52), .04, .03, 'Strawberry', 8, FRONT, .006)
+    # A hollow bowl: up the outside, over the rim, down the inside to the floor.
+    kit.loft(col, 'Bowl', [(-.34, 0, 0, .26, .26), (-.2, 0, 0, .46, .46), (-.02, 0, 0, .64, .64),
+                           (.1, 0, 0, .72, .72), (.1, 0, 0, .65, .65), (-.04, 0, 0, .56, .56),
+                           (-.24, 0, 0, .26, .26)], 'Strawberry', 16)
+    ring(kit, col, 'Bowl_Rim', (0, 0, .1), .69, .045, 'Cream', 16, 4, (0, 0, 0))
+    cyl(kit, col, 'Spinner_Head', (0, 0, -.2), .14, .12, 'Gold', 10, bevel=.02)
     rng = random.Random(spec.SEED + 16)
-    for i in range(9):  # the floss web that collects against the tub wall
-        a = math.tau*i/9+.2
-        r = rng.uniform(.15, .19)
-        jitter(kit.ico(col, 'Floss_Web_%d' % i, (math.cos(a)*.36, math.sin(a)*.36, .3), (r*1.2, r, r),
-                       'White', 2), rng)
-    # A candy being wound on its stick rises out of the tub.
-    kit.segment(col, 'Candy_Stick', (.02, 0, .2), (.2, -.04, .78), .05, .05, 'Cream', .01)
-    for i, (x, z, r) in enumerate(((.2, .76, .2), (.06, .7, .15), (.33, .7, .15), (.2, .9, .15), (.12, .86, .12),
-                                   (.3, .88, .12))):
-        jitter(kit.ico(col, 'Candy_Floss_%d' % i, (x, -.05-.04*(i % 2), z), (r, r*.9, r), 'Strawberry', 2), rng)
-    group(col, kit, 'Machine_Pose', made_since(col, before), (0, 0, 0), (12, 0, 0))
+    for i in range(16):  # the floss web that collects against the inner bowl wall
+        a = math.tau*i/16+.3
+        jitter(kit.ico(col, 'Floss_Web_%d' % i, (math.cos(a)*.56, math.sin(a)*.56, -.02), (.13, .1, .07),
+                       'White', 1), rng)
+    cyl(kit, col, 'Spinner_Stick', (0, 0, .28), .05, 1.0, 'Cream', 8, bevel=.01)
+    for i, (x, z, r) in enumerate(((0, .9, .25), (-.22, .84, .19), (.22, .85, .19), (0, 1.1, .19),
+                                   (-.17, 1.05, .16), (.18, 1.06, .16), (-.34, .95, .13), (.34, .96, .13))):
+        jitter(kit.ico(col, 'Candy_Floss_%d' % i, (x, -.03*(i % 2), z), (r, r*.9, r), 'Strawberry', 2), rng)
+    group(col, kit, 'Machine_Pose', made_since(col, before), (0, 0, 0), (9, 0, 0))
 
 
 def flavor_candy(flavor, seed):
@@ -518,8 +540,8 @@ def worker(col, kit):
 
 def grad_cap(col, kit):
     before = set(col.objects)
-    kit.loft(col, 'Skull_Cap', [(-.3, 0, 0, .36, .33), (-.02, 0, 0, .38, .35)], 'Navy', 8)
-    board = kit.box(col, 'Board', (0, 0, .025), (.9, .9, .07), 'Navy', .02)
+    kit.loft(col, 'Skull_Cap', [(-.3, 0, 0, .36, .33), (-.02, 0, 0, .38, .35)], 'Plum', 8)
+    board = kit.box(col, 'Board', (0, 0, .025), (.9, .9, .07), 'Plum', .02)
     trim = kit.box(col, 'Board_Gold_Trim', (0, 0, .0), (1.0, 1.0, .05), 'Gold', .015)  # outlines it on ink
     board.rotation_euler.z = trim.rotation_euler.z = math.pi/4
     cyl(kit, col, 'Button', (0, 0, .07), .06, .04, 'Gold', 8, bevel=.01)

@@ -215,9 +215,9 @@
       ],
       "materials": [
         {
-          "name": "Trait_Patience_Navy",
-          "palette_name": "Navy",
-          "palette_srgb": "#29324D",
+          "name": "Trait_Patience_Plum",
+          "palette_name": "Plum",
+          "palette_srgb": "#6C577F",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         },
@@ -232,6 +232,13 @@
           "name": "Trait_Patience_Vanilla",
           "palette_name": "Vanilla",
           "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Patience_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         }
@@ -610,11 +617,11 @@
       "camera": {
         "yaw_deg": -8,
         "elevation_deg": 15,
-        "orthographic_scale": 2.068,
+        "orthographic_scale": 1.561,
         "target": [
-          0.068,
-          -0.001,
-          1.283
+          0.016,
+          -0.016,
+          1.2
         ]
       },
       "shadow": null,
@@ -628,21 +635,32 @@
         "disc": "#B8D9CC"
       },
       "objects": [
+        "Trait_Engine_Air_Cleaner",
+        "Trait_Engine_Air_Cleaner_Nut",
+        "Trait_Engine_Bank_B",
+        "Trait_Engine_Bank_F",
         "Trait_Engine_Block",
-        "Trait_Engine_Bore_Plug_0",
-        "Trait_Engine_Bore_Plug_1",
-        "Trait_Engine_Bore_Plug_2",
-        "Trait_Engine_Cylinder_Head",
+        "Trait_Engine_Bolt_B0",
+        "Trait_Engine_Bolt_B1",
+        "Trait_Engine_Bolt_B2",
+        "Trait_Engine_Bolt_B3",
+        "Trait_Engine_Bolt_F0",
+        "Trait_Engine_Bolt_F1",
+        "Trait_Engine_Bolt_F2",
+        "Trait_Engine_Bolt_F3",
+        "Trait_Engine_Cylinder_Head_B",
+        "Trait_Engine_Cylinder_Head_F",
+        "Trait_Engine_Engine_Tilt",
+        "Trait_Engine_Engine_Turn",
         "Trait_Engine_Exhaust_Pipe",
-        "Trait_Engine_Exhaust_Port",
-        "Trait_Engine_Fan_Housing",
-        "Trait_Engine_Intake_Bar",
-        "Trait_Engine_Intake_Neck",
+        "Trait_Engine_Intake",
         "Trait_Engine_Oil_Pan",
         "Trait_Engine_Pose",
         "Trait_Engine_Pulley",
         "Trait_Engine_Pulley_Hub",
-        "Trait_Engine_Valve_Cover"
+        "Trait_Engine_Pulley_Top",
+        "Trait_Engine_Valve_Cover_B",
+        "Trait_Engine_Valve_Cover_F"
       ],
       "materials": [
         {
@@ -660,16 +678,16 @@
           "specular_ior_level": 0.08
         },
         {
-          "name": "Trait_Engine_Navy",
-          "palette_name": "Navy",
-          "palette_srgb": "#29324D",
+          "name": "Trait_Engine_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         },
         {
-          "name": "Trait_Engine_Strawberry",
-          "palette_name": "Strawberry",
-          "palette_srgb": "#F48DAB",
+          "name": "Trait_Engine_Tire",
+          "palette_name": "Tire",
+          "palette_srgb": "#414059",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         }
@@ -997,11 +1015,11 @@
       "camera": {
         "yaw_deg": -8,
         "elevation_deg": 15,
-        "orthographic_scale": 2.638,
+        "orthographic_scale": 2.892,
         "target": [
-          0.024,
-          0.008,
-          1.294
+          0.005,
+          -0.006,
+          1.232
         ]
       },
       "shadow": null,
@@ -1235,11 +1253,11 @@
       "camera": {
         "yaw_deg": -8,
         "elevation_deg": 15,
-        "orthographic_scale": 2.327,
+        "orthographic_scale": 3.018,
         "target": [
-          0.015,
-          0.027,
-          1.359
+          0.018,
+          0.039,
+          1.403
         ]
       },
       "shadow": null,
@@ -1254,6 +1272,8 @@
         "disc": "#B8D9CC"
       },
       "objects": [
+        "Trait_Machine_Bowl",
+        "Trait_Machine_Bowl_Rim",
         "Trait_Machine_Cabinet",
         "Trait_Machine_Candy_Floss_0",
         "Trait_Machine_Candy_Floss_1",
@@ -1261,11 +1281,18 @@
         "Trait_Machine_Candy_Floss_3",
         "Trait_Machine_Candy_Floss_4",
         "Trait_Machine_Candy_Floss_5",
-        "Trait_Machine_Candy_Stick",
+        "Trait_Machine_Candy_Floss_6",
+        "Trait_Machine_Candy_Floss_7",
         "Trait_Machine_Control_Panel",
         "Trait_Machine_Dial",
         "Trait_Machine_Floss_Web_0",
         "Trait_Machine_Floss_Web_1",
+        "Trait_Machine_Floss_Web_10",
+        "Trait_Machine_Floss_Web_11",
+        "Trait_Machine_Floss_Web_12",
+        "Trait_Machine_Floss_Web_13",
+        "Trait_Machine_Floss_Web_14",
+        "Trait_Machine_Floss_Web_15",
         "Trait_Machine_Floss_Web_2",
         "Trait_Machine_Floss_Web_3",
         "Trait_Machine_Floss_Web_4",
@@ -1273,14 +1300,13 @@
         "Trait_Machine_Floss_Web_6",
         "Trait_Machine_Floss_Web_7",
         "Trait_Machine_Floss_Web_8",
-        "Trait_Machine_Foot_0",
-        "Trait_Machine_Foot_1",
+        "Trait_Machine_Floss_Web_9",
+        "Trait_Machine_Foot_Ring",
+        "Trait_Machine_Lamp",
         "Trait_Machine_Machine_Pose",
-        "Trait_Machine_Neck",
         "Trait_Machine_Pose",
-        "Trait_Machine_Switch",
-        "Trait_Machine_Tub",
-        "Trait_Machine_Tub_Rim"
+        "Trait_Machine_Spinner_Head",
+        "Trait_Machine_Spinner_Stick"
       ],
       "materials": [
         {
@@ -1619,9 +1645,9 @@
           "specular_ior_level": 0.08
         },
         {
-          "name": "Trait_GradCap_Navy",
-          "palette_name": "Navy",
-          "palette_srgb": "#29324D",
+          "name": "Trait_GradCap_Plum",
+          "palette_name": "Plum",
+          "palette_srgb": "#6C577F",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         },
