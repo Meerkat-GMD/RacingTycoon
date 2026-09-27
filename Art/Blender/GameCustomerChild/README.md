@@ -4,9 +4,10 @@
 승인된 남자·여자 손님과 같은 넓은 면의 플랫 셰이딩, 공용 팔레트, 조명, 카메라를 쓰고
 키가 작은 약 3등신 비율로 실루엣부터 구분한다.
 
-- 딸기색(Strawberry) 후드티: 목 뒤로 내린 후드, 후드 옆의 둥근 귀 두 개(Cream 안쪽), Cream 끈, 캥거루 주머니.
-- Hair2 짧은 바가지 머리와 정수리의 작은 삐침 머리.
-- Skin2 얼굴(앞면·옆면 모두 Skin2), 목 그늘만 Hair2. Skin3은 쓰지 않는다.
+- 딸기색(Strawberry) 후드티: 목 뒤로 내린 후드, Cream 끈, 캥거루 주머니. 후드 귀는 없다(아래 참고).
+- Hair2 짧은 어린이 머리: 남자 승인본의 입체 쐐기 다발(`_lock`) 방식으로 만든 두피와 다발 10개.
+  낮고 둥근 정수리, 귀 윗부분에서 끝나는 옆머리, 끝이 +x 쪽으로 쓸린 굵은 앞머리 다발 4개가 이마를 덮는다.
+- Skin2 얼굴(앞면·옆면 모두 Skin2), 목 그늘만 Hair2. Skin3은 쓰지 않는다. 눈 위 이마 면은 28° 뒤로 기울어 있다.
 - 어른과 같은 얼굴 규칙: Navy 점 눈 .075×.020×.106(x = ±.205, 머리 배율 1), Strawberry 볼 터치, 작은 Navy 입(`CH_Face_Smile`).
 - Pants2 반바지, Cream/Strawberry 줄무늬 양말, Cream 밑창의 Navy 운동화(Strawberry 뒤꿈치 탭).
 - Cream 끈으로 몸에 둘러멘 작은 Mint 동전 지갑(Gold 잠금쇠).
@@ -16,6 +17,7 @@
 - `GameCustomerChild.blend`: 컬렉션 `CH_Head_Hair`, `CH_Hoodie`, `CH_Arms_Hands`, `CH_Shorts_Shoes`, `CH_Purse`로 나눈 원본. 장면 `Game_Customer_Child`. 생성 코드도 Text 데이터로 들어 있다.
 - `create_child.py`: 몸·옷·소품과 장면 생성. `child_head.py`: 얼굴·머리와 화난 얼굴 조각(`build_angry_face`).
 - `manifest.json`: 정체성, 비율, 사용 팔레트, 재질 규칙, 조명, 카메라, 렌더 설정, 출력 경로, 오브젝트 목록.
+- `measure_child.py`: 렌더된 PNG로 다듬기 항목을 잰다(표시 크기 눈썹 대비, 키 비율, 후드 귀·바가지 돔 유무). Blender 없이 실행한다.
 - `Customer_V1-large.png`: 기본 표정 656×1120 확대 렌더. `review/`에 기본·화남 확대 렌더가 있다.
 - 게임용 PNG: `Assets/CottonCircuit/Sprites/Customers/Customer_V1_{Neutral,Angry}.png` (164×280, 표시 82×140).
 
@@ -25,10 +27,26 @@ Z 위, -Y 앞. 남자 손님과 같은 작성 단위와 전체 0.5배 모델 배
 `c.camera(scene, (0, -.015, 1.22), 2.85)`과 같은 그림자 캐처를 쓴다. 그래서 발이 남자와
 같은 기준선에 서고 머리 끝은 남자 키의 약 75%에 온다. 머리는 남자 얼굴 좌표로 작성한 뒤
 `child_head._place`가 턱을 기준으로 `HEAD_SCALE`(1.0)만큼 통째로 배율을 주고 턱 높이 2.29로 내린다.
-눈만 따로 키우지 않는다.
+눈만 따로 키우지 않는다. 머리카락 다발은 남자의 곧은 얼굴을 기준으로 그렸고, `_follow_forehead`가
+앞쪽 꼭짓점을 기울어진 이마만큼 뒤로 옮긴다(앞머리 끝 높이 4.25 위로는 그대로 평행 이동).
 
-화난 표정은 Navy 눈썹 두 조각(안쪽이 25° 낮음, .15×.055 — Skin2 위에서 읽히도록 어른의 .14×.045보다 조금 크다)과
-아래로 처진 입(`CH_Face_Angry_*`)이다. 원본에서는 숨겨 두고 렌더 때만 웃는 입과 바꾼다.
+## 화난 표정
+
+Navy 눈썹 블록 두 개(안쪽이 25° 낮음, .17×.08)와 아래로 처진 입(`CH_Face_Angry_*`)이다. 원본에서는 숨겨 두고
+렌더 때만 웃는 입과 바꾼다. Skin2는 Skin1보다 어두워서 곧은 얼굴에 Navy를 붙이면 표시 크기에서 최대
+약 60 회색 단계밖에 어두워지지 않는다(눈썹을 키워도 넘을 수 없는 상한). 그래서 두 가지를 함께 쓴다.
+
+- 이마 면을 28° 뒤로 눕혀 위에서 오는 키 라이트를 더 받게 한다. 눈썹 자리의 기본 표정 이마가 밝아진다
+  (164×280, RGB 평균 중앙값 98 → 113).
+- 눈썹 블록의 앞면을 35° 아래로 돌려 키 라이트를 피하게 하고, 약 2 표시 픽셀 두께로 키워 표시 픽셀을 꽉 채운다.
+
+164×280에서 가장 크게 어두워지는 값은 60 → 85, 82×140에서 눈썹은 박스 축소·RGB 평균 기준 85/80 단계
+어두워진다(V0 99/84, V2 82/85). `measure_child.py`가 이 값을 다시 잰다.
+
+## 후드 귀를 뺀 이유
+
+내린 후드의 귀는 후드 꼭대기, 곧 목 뒤에 놓인다. 3/4 시점에서는 큰 머리가 그 자리를 가리고, 보이는 곳은 턱 옆의
+후드 말림뿐이다. 그곳에 둔 귀는 분홍 공과 귀걸이처럼 읽혀서 뺐다.
 
 ## 재생성
 
@@ -36,10 +54,13 @@ Z 위, -Y 앞. 남자 손님과 같은 작성 단위와 전체 0.5배 모델 배
 
 ```powershell
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerChild/create_child.py
-& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/render_customer_sprites.py -- --only V1 --large
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/render_customer_sprites.py -- --only V1 --large --replace-angry
+python Art/Blender/GameCustomerChild/measure_child.py
 python Art/Blender/validate_ui_sprites.py --owner customers --report <보고서 경로>
 python Art/Blender/preview_ui_sprites.py --category customers
 ```
 
+`--replace-angry`는 생성 스크립트가 넣은 화난 얼굴 조각을 같은 함수로 다시 만들고, 나머지 오브젝트가 그대로인지
+확인한 뒤 .blend를 저장해 `render-manifest.json`에 새 저장 기록을 남긴다.
 `CH_ACTION`의 기본값은 `build`다. `render`는 현재 장면(메모리의 수정 포함)을 `render_customer_sprites.render_customer`로
 다시 렌더하고, `all`은 둘 다 한다. `runpy.run_path(..., init_globals={'CH_ACTION': 'render'}, run_name='__main__')`처럼 전달한다.

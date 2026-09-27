@@ -1,6 +1,6 @@
 {
   "scope": "Customer_V1 child street customer for the Unity customer sprites (Variant % 3 == 1)",
-  "identity": "Strawberry hoodie with a lowered hood, two round hood ears and Cream drawstrings; Hair2 short bowl cut with a small cowlick; Skin2 face with Hair2 neck shadow; Pants2 shorts; Cream/Strawberry striped socks; Navy sneakers with Cream soles; small Mint coin purse on a Cream strap across the body",
+  "identity": "Strawberry hoodie with a lowered hood and Cream drawstrings; short Hair2 haircut of chunky wedge locks with a fringe swept toward +x; Skin2 face with a lit forehead facet and Hair2 neck shadow; Pants2 shorts; Cream/Strawberry striped socks; Navy sneakers with Cream soles; small Mint coin purse on a Cream strap across the body",
   "style_reference": [
     "../GameCustomerFaceted/",
     "../GameCustomerFemaleExplorer/"
@@ -11,7 +11,8 @@
     "head_scale": 1.0,
     "blush": "Strawberry",
     "mouth": "CH_Face_Smile (Navy)",
-    "angry": "CH_Face_Angry_Brow_L/R and CH_Face_Angry_Frown, hidden by default"
+    "forehead_tilt_deg": 28,
+    "angry": "CH_Face_Angry_Brow_L/R (Navy blocks 0.17 x 0.08, 25 deg inner end down, front turned 35 deg down) and CH_Face_Angry_Frown, hidden by default"
   },
   "model_scale": 0.5,
   "palette": {
@@ -148,12 +149,17 @@
       "CH_Face_Eye_L",
       "CH_Face_Eye_R",
       "CH_Face_Smile",
-      "CH_Hair_BowlDome",
-      "CH_Hair_Cowlick",
-      "CH_Hair_Fringe_InnerL",
-      "CH_Hair_Fringe_InnerR",
-      "CH_Hair_Fringe_OuterL",
-      "CH_Hair_Fringe_OuterR",
+      "CH_Hair_Crown_Back",
+      "CH_Hair_Crown_Left",
+      "CH_Hair_Crown_Mid",
+      "CH_Hair_Crown_Right",
+      "CH_Hair_Fringe_1",
+      "CH_Hair_Fringe_2",
+      "CH_Hair_Fringe_3",
+      "CH_Hair_Fringe_4",
+      "CH_Hair_Scalp",
+      "CH_Hair_Side_Left",
+      "CH_Hair_Side_Right",
       "CH_Head_ChubbyFace",
       "CH_Head_Ear_L",
       "CH_Head_Ear_R",
@@ -164,14 +170,10 @@
       "CH_Kangaroo_Pocket",
       "CH_Left_Cream_Drawstring",
       "CH_Left_Drawstring_Aglet",
-      "CH_Left_Hood_Ear",
-      "CH_Left_Hood_Ear_Inner",
       "CH_Left_Pocket_Opening",
       "CH_Lowered_Hood_Roll",
       "CH_Right_Cream_Drawstring",
       "CH_Right_Drawstring_Aglet",
-      "CH_Right_Hood_Ear",
-      "CH_Right_Hood_Ear_Inner",
       "CH_Right_Pocket_Opening",
       "CH_Strawberry_Hoodie_Torso"
     ],

@@ -1,4 +1,4 @@
-"""Child street customer (Customer_V1): Strawberry hoodie, Hair2 bowl cut, Mint coin purse.
+"""Child street customer (Customer_V1): Strawberry hoodie, short Hair2 wedge-lock cut, Mint coin purse.
 
 Background Blender (from the project root):
     blender -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerChild/create_child.py
@@ -38,7 +38,11 @@ k = toy_kit.Kit('CH_')
 
 
 def hood(col):
-    """Lowered hood: a thick rolled horseshoe around the back of the neck with two round ears."""
+    """Lowered hood: a thick rolled horseshoe around the back of the neck with Cream drawstrings.
+
+    No hood ears: on a lowered hood they lie behind the big head in the 3/4 view, and the
+    only visible spots (the roll beside the jaw) made them read as a ball and an earring.
+    """
     cy, rx, ry, sections = .07, .47, .33, 11
     verts = []
     for i in range(sections):
@@ -58,12 +62,6 @@ def hood(col):
     roll.data.materials.append(k.mat('Cream'))
     for i, polygon in enumerate(roll.data.polygons[:4*(sections-1)]):
         polygon.material_index = 1 if i % 4 == 3 else 0
-    # The two round ears sit on the hood's upper sides so they clear the jaw in the 3/4 view.
-    for side, s in (('Left', -1), ('Right', 1)):
-        ear = k.ico(col, side+'_Hood_Ear', (s*.63, .12, 2.47), (.115, .07, .115), 'Strawberry', 1)
-        inner = k.ico(col, side+'_Hood_Ear_Inner', (s*.625, .045, 2.465), (.062, .018, .062), 'Cream', 1)
-        for ob in (ear, inner):
-            ob.rotation_euler.y = s*.45
     # Cream drawstrings hang from the hood opening, each ending in a small aglet.
     for side, s in (('Left', -1), ('Right', 1)):
         k.band(col, side+'_Cream_Drawstring', (s*.09, -.335, 2.19), (s*.11, -.36, 1.87), .038, 'Cream', .02)
@@ -179,7 +177,7 @@ def build():
     scene['display_size'] = [82, 140]
     scene['seed'] = SEED
     scene['variant'] = 1
-    scene['style'] = 'Child street customer: Strawberry hoodie with hood ears, Hair2 bowl cut, Mint coin purse'
+    scene['style'] = 'Child street customer: Strawberry hoodie, short Hair2 wedge-lock cut with fringe, Mint coin purse'
     scene.view_layers[0].update()
     for old in startup:
         if old != scene and old.name in bpy.data.scenes:
@@ -215,8 +213,9 @@ def build():
     used = sorted({m['palette_name'] for o in meshes for m in o.data.materials})
     manifest = {
         'scope': 'Customer_V1 child street customer for the Unity customer sprites (Variant % 3 == 1)',
-        'identity': ('Strawberry hoodie with a lowered hood, two round hood ears and Cream drawstrings; '
-                     'Hair2 short bowl cut with a small cowlick; Skin2 face with Hair2 neck shadow; '
+        'identity': ('Strawberry hoodie with a lowered hood and Cream drawstrings; '
+                     'short Hair2 haircut of chunky wedge locks with a fringe swept toward +x; '
+                     'Skin2 face with a lit forehead facet and Hair2 neck shadow; '
                      'Pants2 shorts; Cream/Strawberry striped socks; Navy sneakers with Cream soles; '
                      'small Mint coin purse on a Cream strap across the body'),
         'style_reference': ['../GameCustomerFaceted/', '../GameCustomerFemaleExplorer/'],
@@ -225,7 +224,10 @@ def build():
                            child_head.HEAD_SCALE, child_head.HEAD_TARGET[2])),
         'face': {'eyes': 'approved male dot eyes: Navy box .075 x .020 x .106 at x = +-.205, bevel .006, head scale 1',
                  'head_scale': child_head.HEAD_SCALE, 'blush': 'Strawberry', 'mouth': 'CH_Face_Smile (Navy)',
-                 'angry': 'CH_Face_Angry_Brow_L/R and CH_Face_Angry_Frown, hidden by default'},
+                 'forehead_tilt_deg': child_head.FOREHEAD_TILT,
+                 'angry': ('CH_Face_Angry_Brow_L/R (Navy blocks %.2f x %.2f, 25 deg inner end down, front turned '
+                           '%d deg down) and CH_Face_Angry_Frown, hidden by default' % (
+                               child_head.BROW_LENGTH, child_head.BROW_THICKNESS, child_head.BROW_LEAN))},
         'model_scale': MODEL_SCALE,
         'palette': {name: spec.PALETTE[name] for name in used},
         'material_recipe': dict(spec.MATERIAL, shader='Principled BSDF'),
