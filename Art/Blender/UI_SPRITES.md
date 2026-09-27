@@ -11,15 +11,20 @@
 | `ui_sprite_render.py` | `render_sprite()`: 그림자 없는 단일 렌더, 또는 접지 그림자 합성 렌더. `DEFAULT_SHADOW` |
 | `toy_kit.py` | `Kit(prefix)`: 승인본 `customer_lib.py`와 같은 서명의 도형 함수(`mat`, `collection`, `place`, `mesh`, `box`, `ico`, `segment`, `loft`, `panel`, `band`, `buckle`). 재질은 Roughness 0.85, Specular IOR Level 0.08 |
 | `build_ui_sprites.py` | 분류 하나를 만들고 렌더하는 드라이버 |
-| `ui_sprites/<분류>.py` | 분류별 에셋 목록과 형태 코드(작업 4–8에서 추가) |
+| `ui_sprites/<분류>.py` | 분류별 에셋 목록과 형태 코드: `items`(21장), `shop`(4), `locations`(8), `machines`(3), `icons`(23) |
 | `ui_sprites/<분류>.blend`, `ui_sprites/<분류>.manifest.json` | 드라이버가 저장하는 편집용 원본과 목록 파일 |
 | `ui-sprite-passes/<분류>/` | 그림자 합성 전 `-catcher.png`, `-beauty.png` 렌더 패스 |
-| `validate_ui_sprites.py` | 카탈로그 기준 PNG·목록 파일 검사 |
+| `validate_ui_sprites.py` | 카탈로그 기준 PNG·목록 파일 검사. 기본 보고서 `ui-sprites-validation.json` |
 | `preview_ui_sprites.py` | `previews/<분류>.png`, `previews/all.png` 검토 보드 |
+| `previews/` | 위 검토 보드와 분류별 추가 확인 이미지(`customers-large`, `icons-states`, `locations-street-composite`, `machines-locked`, `mina-vs-painting`, `shop-emotes-bubble`, `shop-storefront-labels`) |
+| `render_customer_sprites.py` | 손님 세 원본(`GameCustomerFaceted/`, `GameCustomerChild/`, `GameCustomerFemaleExplorer/`)으로 `Customer_V{0,1,2}_{Neutral,Angry}` 6장을 렌더 |
+| `GameCustomerChild/` | 어린이 손님(V1) 원본, 생성 코드, `measure_child.py` |
+| `MinaPortrait/` | `Mina_Portrait` 원본, 생성 코드(`create_mina.py`, `mina_head.py`), 목록 파일, 기존 페인팅 비교 보드 `make_comparison.py` |
+| `update_art_concept_boards.py` | 명세의 비교 보드 두 장(`docs/screenshots/art-concept-*.png`)과 `art-concept-boards-validation.json` |
 | `create_ui_sprites.py` | 승인된 두 손님 생성기가 쓰는 호환용 `render_contact_sprite()`와 `ART` 전역값 |
-| `tests/` | 카탈로그·검사기 단위 시험, 드라이버 시험, 렌더 동일성 시험 |
+| `tests/` | 카탈로그·검사기·손님 스프라이트 단위 시험, 드라이버 시험, 렌더 동일성 시험 |
 
-초기 대표 샘플 3종(`UiSprites.blend`, `ui-sprites-manifest.json`, 감사·재현 기록, `audit_ui_sprite_scene.py`, `ui-sprites-native.png`, 샘플 패스와 PNG)은 삭제했다. 솜사탕과 벽시계 샘플의 형태 코드는 `git show 966cf73:Art/Blender/create_ui_sprites.py`의 `cotton()`, `clock()`에서 볼 수 있다. `ui-sprites-preview.png`는 초기 샘플 기록으로만 남는다.
+초기 대표 샘플 3종(`UiSprites.blend`, `ui-sprites-manifest.json`, 감사·재현 기록, `audit_ui_sprite_scene.py`, `ui-sprites-native.png`, `ui-sprites-preview.png`, 샘플 패스와 PNG)은 삭제했다. 솜사탕과 벽시계 샘플의 형태 코드는 `git show 966cf73:Art/Blender/create_ui_sprites.py`의 `cotton()`, `clock()`에서 볼 수 있다. 전체 검토 보드는 `previews/all.png`다.
 
 ## 카탈로그
 
@@ -139,16 +144,32 @@ python Art/Blender/preview_ui_sprites.py --category items
 ## 시험
 
 ```powershell
+python -m unittest discover -s Art/Blender/tests -p "test_*.py"                      # 전체 29건(렌더 동일성 1건은 건너뜀)
 python -m unittest discover -s Art/Blender/tests -p "test_ui_sprite_spec.py" -v      # 카탈로그 8건
-python -m unittest discover -s Art/Blender/tests -p "test_validate_ui_sprites.py" -v # 검사기 10건
-python -m unittest Art/Blender/tests/test_build_driver.py -v                          # 드라이버, Blender 필요
+python -m unittest discover -s Art/Blender/tests -p "test_validate_ui_sprites.py" -v # 검사기 15건
+python -m unittest discover -s Art/Blender/tests -p "test_customer_sprites.py" -v    # 손님 스프라이트 4건
+python -m unittest Art/Blender/tests/test_build_driver.py -v                          # 드라이버 1건, Blender 필요
 & $blender -b --factory-startup --python-exit-code 1 -P Art/Blender/tests/test_render_identity.py
 & $blender -b --factory-startup --python-exit-code 1 -P Art/Blender/tests/test_render_identity.py -- --customer explorer --wrapper
 ```
 
 동일성 시험은 승인 `.blend`를 읽기만 하고 `%TEMP%/ui_sprite_identity`에 렌더해 `RENDER_IDENTITY max_abs_diff=0 differing_pixels=0`을 확인한다. 드라이버 시험은 `tests/fixtures/`의 두 시험 분류를 임시 폴더에 렌더하며 `ui_sprites/`에는 아무것도 쓰지 않는다.
 
-## 남은 연결
+## 최종 결과 (2026-09-27, 커밋 18eabd1 기준)
 
-- `update_art_concept_boards.py`는 삭제한 초기 솜사탕·벽시계 PNG를 읽으므로, 작업 4와 8이 `CottonCandy_Strawberry_Medium`과 `Trait_Hours`를 다시 만든 뒤 작업 11에서 새 캔버스(156×176)에 맞춰 고친다.
-- Unity 가져오기 설정, `GameAssets` 연결, 런타임 교체는 작업 9–10에서 한다.
+| 항목 | 값 |
+|---|---|
+| 스프라이트 | 66/66 (`customers` 6, `mina` 1, `items` 21, `shop` 4, `locations` 8, `machines` 3, `icons` 23), PNG 합계 9.3MB 중 `Locations` 7.0MB |
+| 검사 | `validate_ui_sprites.py --complete` → `UI_SPRITES_VALID 66/66`, 오류·참고 0건, 목록 파일 5개 통과, 카탈로그 밖 PNG 없음 |
+| 투명 종류 | 가장자리 투명 여백 최소 5px(`BaggedCandy_Soda_Large`), 알파 128 이상 면적 16.5%(`Trait_Kart`)–77.6%(`Storefront`) |
+| 검토 보드 | `previews/all.png` 2400×16340 |
+| 단위 시험 | 29건 중 28건 통과, 1건 건너뜀(렌더 동일성). 렌더 동일성은 Blender에서 따로 실행해 남자·여자 모두 `max_abs_diff=0 differing_pixels=0` |
+| Unity | 에디터 검사 98개 통과(스프라이트 관련 14개 포함), 플레이 스모크 성장 434·영업 3319·레거시 625개 통과 |
+
+전체 검증 기록과 교체 전후 캡처 비교는 `docs/lowpoly-sprites-verification.md`에 있다.
+
+## 알려진 제한
+
+- 미나 초상화는 드라이버 대신 `MinaPortrait/create_mina.py`로 만든다. 이 스크립트는 `build_ui_sprites`의 내부 함수(`recalc_normals`, `relative`, `render_settings`, `material_record`)를 가져다 쓰므로, 드라이버에서 이 이름을 바꾸면 함께 고쳐야 한다.
+- `validate_ui_sprites.py`는 목록 파일로 `ui_sprites/*.manifest.json`만 읽고, `MinaPortrait/manifest.json`과 손님 폴더의 `manifest.json`은 검사하지 않는다. PNG는 66장 모두 검사한다.
+- `previews/icons-states.png`, `previews/machines-locked.png`, `previews/shop-storefront-labels.png`는 작업 중 임시 스크립트로 만든 추가 확인 이미지라 저장소의 명령으로 다시 만들 수 없다. `all.png`와 분류별 보드는 `preview_ui_sprites.py`, `customers-large.png`는 `render_customer_sprites.py`, `locations-street-composite.png`와 `shop-emotes-bubble.png`는 각 분류 모듈, `mina-vs-painting.png`는 `MinaPortrait/make_comparison.py`가 만든다.

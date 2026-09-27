@@ -160,20 +160,30 @@ Blender에서 사전 렌더링한 PNG를 Unity 스프라이트로 쓴다.
 - Unity 안에서 실시간 3D로 그리는 방식은 이미지마다 카메라와 렌더 텍스처가 필요해 구조가 복잡해진다. 커지는 솜사탕도 크기 단계별 스프라이트로 충분히 표현되므로 혼합 방식도 쓰지 않는다.
 
 ## 파일 구조
-- `Art/Blender/GameCustomerFaceted/`, `Art/Blender/GameCustomerFemaleExplorer/`: 위 승인본의 독립 Blender 원본, 생성 코드, 렌더, 설정·검증 기록이다. 현재 캐릭터 제작 기준이며 Unity 참조 연결과는 별도로 관리한다.
-- `Art/Blender/ui_sprite_common.py`: 승인본과 초기 대표 샘플 생성기가 공유하는 팔레트·조명·렌더 설정이다.
-- `Art/Blender/create_ui_sprites.py`: 초기 대표 샘플 3종의 생성·렌더 코드다. 두 승인본 생성기도 이 파일의 접지 그림자 렌더 처리를 재사용한다. 이 파일의 초기 손님 모델은 현재 승인 캐릭터를 재생성하는 소스가 아니다.
-- `Art/Blender/validate_ui_sprites.py`: 목록 파일과 실제 PNG를 대조하고 크기, 투명 여백, 개수를 검사한다.
-- `Art/Blender/UiSprites.blend`: 초기 대표 샘플 3종의 편집 가능한 원본이다. 에셋마다 컬렉션을 나눈다.
-- `Art/Blender/ui-sprites-manifest.json`: 초기 대표 샘플의 이름, 렌더 크기, 조명 값을 기록한다.
-- `Art/Blender/ui-sprites-preview.png`: 초기 대표 샘플을 한 장에 모은 확인용 이미지다. 최신 캐릭터는 위 승인본 보드에서 확인한다.
-- `Art/Blender/update_art_concept_boards.py`: 승인본으로 이 문서의 두 비교 보드를 다시 만든다. 확대에는 `-large.png`, 실제 표시 크기에는 164×280 PNG를 82×140으로 축소한 이미지를 쓴다.
+- `Art/Blender/GameCustomerFaceted/`, `Art/Blender/GameCustomerFemaleExplorer/`: 위 승인본의 독립 Blender 원본, 생성 코드, 렌더, 설정·검증 기록이다. 현재 캐릭터 제작 기준이며, 게임용 `Customer_V0_*`과 `Customer_V2_*`도 이 원본으로 렌더한다. 화난 얼굴 조각은 각 원본에 숨겨 둔다.
+- `Art/Blender/GameCustomerChild/`: 세 번째 손님인 어린이(`V1`)의 Blender 원본, 생성 코드(`create_child.py`, `child_head.py`), 목록 파일, 렌더 측정 스크립트(`measure_child.py`)다.
+- `Art/Blender/render_customer_sprites.py`: 세 손님 원본으로 `Customer_V{0,1,2}_{Neutral,Angry}` 6장을 렌더한다.
+- `Art/Blender/MinaPortrait/`: 미나 초상화 `Mina_Portrait`의 Blender 원본, 생성 코드(`create_mina.py`, `mina_head.py`), 목록 파일, 기존 페인팅과의 비교 보드 생성기(`make_comparison.py`)다. 삭제한 페인팅은 git 기록에서 읽는다.
+- `Art/Blender/ui_sprite_spec.py`: Blender 없이 읽는 기준값이다. 공용 팔레트, 조명, 노출, 재질 레시피, 종류별 규칙, 66장 카탈로그(`CATALOG`), 특성 아이콘 목록을 담는다.
+- `Art/Blender/ui_sprite_common.py`: 승인본 생성기와 새 파이프라인이 공유하는 조명·카메라·렌더 설정 함수다.
+- `Art/Blender/ui_sprite_render.py`: 스프라이트 렌더 함수(`render_sprite`)다. 접지 그림자가 있는 종류는 승인본과 같은 방식으로 합성한다.
+- `Art/Blender/create_ui_sprites.py`: 두 승인본 생성기가 호출하는 호환용 접지 그림자 렌더 함수다. 초기 대표 샘플 3종의 형태 코드는 커밋 `966cf73`에 남아 있다.
+- `Art/Blender/toy_kit.py`: 승인본의 도형 함수와 같은 서명을 쓰는 도형 도구다. 재질은 위 레시피로 만든다.
+- `Art/Blender/build_ui_sprites.py`: 분류 모듈 하나를 읽어 에셋마다 장면을 만들고 렌더한 뒤, 분류별 `.blend`와 목록 파일을 저장하는 드라이버다.
+- `Art/Blender/ui_sprites/<분류>.py`: 제품(`items`), 가게(`shop`), 지역 풍경(`locations`), 기계(`machines`), 특성 아이콘(`icons`)의 형태 코드다. 같은 폴더의 `<분류>.blend`는 에셋마다 장면을 나눈 편집 원본이고, `<분류>.manifest.json`은 에셋 이름, 캔버스, 카메라, 조명, 렌더 설정, 재질을 기록한 목록 파일이다.
+- `Art/Blender/ui-sprite-passes/<분류>/`: 접지 그림자 합성 전의 렌더 패스다.
+- `Art/Blender/validate_ui_sprites.py`: 카탈로그와 실제 PNG·목록 파일을 대조해 개수, 크기, 투명 여백, 불투명 배경, 목록 파일의 렌더 설정과 팔레트를 검사한다. `--complete`는 66장이 모두 있어야 통과하며, 결과는 `Art/Blender/ui-sprites-validation.json`에 쓴다.
+- `Art/Blender/preview_ui_sprites.py`: 모든 스프라이트를 2배 캔버스와 실제 표시 크기로 밝은 배경, 잉크 배경, 특성 원판 색 위에 놓은 검토 보드를 만든다.
+- `Art/Blender/previews/`: 전체 검토 보드 `all.png`, 분류별 보드, 분류별 추가 확인 이미지다.
+- `Art/Blender/tests/`: 카탈로그, 검사기, 손님 스프라이트의 단위 시험과 드라이버·렌더 동일성 시험이다.
+- `Art/Blender/UI_SPRITES.md`: 파이프라인 설정과 명령 안내다.
+- `Art/Blender/update_art_concept_boards.py`: 승인본과 새 스프라이트로 이 문서의 두 비교 보드를 다시 만든다. 확대에는 `-large.png`, 실제 표시 크기에는 164×280 PNG를 82×140으로 축소한 이미지를 쓴다.
 - `Art/Blender/art-concept-boards-validation.json`: 보드에 사용한 원본 경로·해시와 해상도, 실제 크기 합성 및 레이싱 캡처 픽셀 보존 검사 결과다.
 - `Assets/CottonCircuit/Sprites/`: Unity용 PNG를 `Customers`, `Shop`, `Items`, `Icons`, `Locations`, `Machines`, `Characters`로 나누어 둔다.
 
 ## 승인본과 비교 보드 재생성
 
-프로젝트 루트에서 실행한다. 앞의 두 Blender 명령은 현재 생성 코드로 원본과 두 해상도의 렌더를 다시 만든다. 마지막 명령은 해당 렌더를 사용해 문서의 비교 이미지를 갱신한다.
+프로젝트 루트에서 실행한다. 앞의 두 Blender 명령은 현재 생성 코드로 승인본 원본과 두 해상도의 렌더를 다시 만든다. 어린이 손님과 게임 스프라이트는 [어린이 README](../../../Art/Blender/GameCustomerChild/README.md)와 [UI 스프라이트 안내](../../../Art/Blender/UI_SPRITES.md)의 명령으로 다시 만든다. 마지막 명령은 현재 PNG로 이 문서의 두 비교 보드와 검사 기록을 갱신한다. 첫 보드는 승인된 남자·여자와 어린이 손님(`V1`)의 확대 렌더와 82×140 표시 크기, 게임 스프라이트 `CottonCandy_Strawberry_Medium`(156×176)과 `Trait_Hours`(84×84)를 크림·잉크 배경에서 보여 준다. 둘째 보드는 기존 레이싱 캡처 옆에 세 손님을 놓는다.
 
 ```powershell
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerFaceted/create_customer.py

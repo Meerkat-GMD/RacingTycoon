@@ -1,7 +1,7 @@
 {
   "passed": true,
   "date": "2026-09-27",
-  "method": "Exact approved Blender PNGs, resized and alpha-composited only",
+  "method": "Existing Blender PNGs (approved male and female, child V1, game sprites), resized and alpha-composited only",
   "sources": {
     "male": {
       "path": "Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png",
@@ -19,13 +19,21 @@
       "path": "Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer-large.png",
       "sha256": "f2d82aa6551d89c2336288a17212033c029fd95933453ab7c863a56061a13b50"
     },
+    "child": {
+      "path": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Neutral.png",
+      "sha256": "8918d0ca01d4a3adb1a6b513d45dec1277641306c01d66e9a4248c362a291e72"
+    },
+    "child_large": {
+      "path": "Art/Blender/GameCustomerChild/Customer_V1-large.png",
+      "sha256": "308ea4709d788eae247f41569db891e73c34944fd6a9f2a2c5d0c50a94033abd"
+    },
     "candy": {
       "path": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
-      "sha256": "6e92884e2154ab8556f3ef0dfac5a65e2340b0c11a78523483ef03917ca7c313"
+      "sha256": "a2193406b1d29fd8222b3b0eb22ec93661da74940dbf8ee0c1302188b76e1abf"
     },
     "clock": {
       "path": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
-      "sha256": "bbbd3643055a9ffdbf3b39d303c80c0402de6a2d935ff7d7e7e0e57b6e1d98b3"
+      "sha256": "700b82756281d70f43d76f8a844c713ad477acd3966374f872f87da0f094d655"
     },
     "racing": {
       "path": "docs/screenshots/urp-migration-racing.png",
@@ -38,14 +46,14 @@
         2060,
         1220
       ],
-      "sha256": "49f0b920d1c36fdc635df1989db9eb6f483f576a9277e625e298e065fe742268"
+      "sha256": "86c8ed071eabf2424aba0a6e2eaeb6b6872c90f7328f4a43a7ca5988bb80be65"
     },
     "art-concept-vs-racing.png": {
       "size": [
-        1658,
+        1844,
         408
       ],
-      "sha256": "4a3caea910f6336029c801963c91a08d1382ff6129da2702c57949d373ddcf58"
+      "sha256": "988879406e5d56ff2ce387c1102229bcd7730ff2949d1ab8d981ab77be5c2c72"
     }
   },
   "native_panels": [
@@ -56,7 +64,7 @@
         140
       ],
       "xy": [
-        268,
+        208,
         1010
       ],
       "background": "#FFF6E7"
@@ -68,7 +76,19 @@
         140
       ],
       "xy": [
-        410,
+        350,
+        1010
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "child",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        492,
         1010
       ],
       "background": "#FFF6E7"
@@ -80,7 +100,7 @@
         88
       ],
       "xy": [
-        558,
+        637,
         1062
       ],
       "background": "#FFF6E7"
@@ -92,7 +112,7 @@
         42
       ],
       "xy": [
-        713,
+        796,
         1108
       ],
       "background": "#FFF6E7"
@@ -104,7 +124,7 @@
         140
       ],
       "xy": [
-        1262,
+        1202,
         1010
       ],
       "background": "#29324D"
@@ -116,7 +136,19 @@
         140
       ],
       "xy": [
-        1404,
+        1344,
+        1010
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "child",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        1486,
         1010
       ],
       "background": "#29324D"
@@ -128,7 +160,7 @@
         88
       ],
       "xy": [
-        1552,
+        1631,
         1062
       ],
       "background": "#29324D"
@@ -140,7 +172,7 @@
         42
       ],
       "xy": [
-        1707,
+        1790,
         1108
       ],
       "background": "#29324D"

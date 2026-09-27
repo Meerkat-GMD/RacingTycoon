@@ -60,6 +60,17 @@ Unity에서 `Assets/CottonCircuit/Scenes/CottonCircuit.unity`를 열고 Hierarch
 
 ## Blender 원본
 
+- `Art/Blender/ui_sprite_spec.py`, `ui_sprite_render.py`, `toy_kit.py`, `build_ui_sprites.py`: 게임 2D 그림 66장의 파스텔 토이 로우폴리 파이프라인. 카탈로그·팔레트·재질 기준값, 접지 그림자 합성 렌더, 도형 도구, 분류별 빌드 드라이버입니다. [제작 설정·재생성 안내](Art/Blender/UI_SPRITES.md).
+- `Art/Blender/ui_sprites/items.py`, `shop.py`, `locations.py`, `machines.py`, `icons.py`: 제품·가게·지역·기계·특성 아이콘의 형태 코드. 같은 폴더의 `<분류>.blend`와 `<분류>.manifest.json`은 드라이버가 저장한 편집 원본과 목록 파일입니다.
+- `Art/Blender/GameCustomerFaceted/GameCustomerFaceted.blend`: 참고 캐릭터의 다각형 면과 겹옷을 적용한 승인 남자 손님(V0, 소다색 재킷). [렌더·재생성·설정](Art/Blender/GameCustomerFaceted/README.md).
+- `Art/Blender/GameCustomerFemaleExplorer/GameCustomerFemaleExplorer.blend`: 새 참고 이미지의 모자·긴 코트·배낭에 곡선형 머리카락과 작은 점 눈을 적용한 승인 여자 탐험가(V2). [렌더·재생성·설정](Art/Blender/GameCustomerFemaleExplorer/README.md).
+- `Art/Blender/GameCustomerChild/GameCustomerChild.blend`: 같은 규칙으로 만든 어린이 손님(V1, 딸기색 후드). [렌더·재생성·설정](Art/Blender/GameCustomerChild/README.md).
+- `Art/Blender/render_customer_sprites.py`: 세 손님 원본으로 기본·화남 스프라이트 6장을 렌더합니다. V0·V2 기본 표정은 승인 PNG와 픽셀이 같습니다.
+- `Art/Blender/MinaPortrait/MinaPortrait.blend`: 준비 화면의 미나 초상화 원본. 생성 코드와 기존 페인팅 비교 보드 스크립트가 같은 폴더에 있습니다. [설명](Art/Blender/MinaPortrait/README.md).
+- `Art/Blender/create_ui_sprites.py`, `ui_sprite_common.py`: 승인 손님 생성기가 호출하는 호환용 접지 그림자 렌더 함수와, 승인본과 새 파이프라인이 함께 쓰는 조명·카메라·렌더 설정.
+- `Art/Blender/validate_ui_sprites.py`, `preview_ui_sprites.py`, `tests/`: 66장 검사(`--complete`), 실제 표시 크기의 밝은/잉크/특성 원판 배경 검토 보드(`Art/Blender/previews/all.png`), 단위 시험.
+- `Art/Blender/update_art_concept_boards.py`: 아트 명세의 비교 보드 두 장을 현재 렌더로 다시 만듭니다.
+- `Assets/CottonCircuit/Sprites/`: 게임 UI에 연결된 PNG 66장(`Customers`, `Characters`, `Items`, `Shop`, `Locations`, `Machines`, `Icons`). `GameAssets`가 참조하며, 교체 검증 기록은 `docs/lowpoly-sprites-verification.md`에 있습니다.
 - `Art/Blender/CottonCircuit.blend`: 편집 가능한 원본, 에셋별 컬렉션과 프리뷰 장면.
 - `Art/Blender/preview.png`: 에셋 전체 미리보기.
 - `Art/Blender/create_assets.py`: 모델과 FBX를 재생성하는 Blender Python 스크립트.

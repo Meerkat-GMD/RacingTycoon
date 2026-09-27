@@ -1,23 +1,38 @@
-"""Side-by-side board: the painted NpcPortrait.png (cropped exactly as OutgameUI shows it)
+"""Side-by-side board: the painted NpcPortrait.png (cropped exactly as OutgameUI showed it)
 next to the lowpoly Mina_Portrait.png, at 2x (808x784) and at the 404x391 display size.
 
-    python Art/Blender/MinaPortrait/make_comparison.py [--render PNG] [--out PNG]
+    python Art/Blender/MinaPortrait/make_comparison.py [--render PNG] [--painting PNG] [--out PNG]
 
-Default output: Art/Blender/previews/mina-vs-painting.png. OutgameUI.cs crops the
-1448x1086 painting to the 404:391 slot with a centred uvRect; the same crop is used
-here. The display-size pair sits on the portrait frame colour (PrepWhite) of the
-preparation screen. This script only arranges existing PNGs (Pillow).
+Default output: Art/Blender/previews/mina-vs-painting.png.
+
+The painting was deleted from the project when the game switched to Mina_Portrait
+(Task 10, commit af2e25f). By default the script reads it from the last commit that
+holds it,
+
+    git show e8e5987:Assets/CottonCircuit/Resources/Progression/NpcPortrait.png
+
+into a temporary file that is deleted as soon as the board is built, so the painting
+never returns to the working tree. Run it inside the repository with git on PATH, or
+pass --painting with a copy of the painting.
+
+The old OutgameUI.cs cropped the 1448x1086 painting to the 404:391 slot with a centred
+uvRect; the same crop is used here. The display-size pair sits on the portrait frame
+colour (PrepWhite) of the preparation screen. This script only arranges existing PNGs
+(Pillow).
 """
 from __future__ import annotations
 
 import argparse
+import subprocess
+import tempfile
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-PAINTING = ROOT/'Assets/CottonCircuit/Resources/Progression/NpcPortrait.png'
+PAINTING_COMMIT = 'e8e5987'  # last commit that holds the painting; af2e25f deleted it
+PAINTING = 'Assets/CottonCircuit/Resources/Progression/NpcPortrait.png'
 RENDER = ROOT/'Assets/CottonCircuit/Sprites/Characters/Mina_Portrait.png'
 OUT = HERE.parent/'previews'/'mina-vs-painting.png'
 SLOT = (404, 391)
@@ -72,13 +87,25 @@ def board(painting: Image.Image, render: Image.Image) -> Image.Image:
     return canvas
 
 
+def painting_from_git(folder: Path) -> Path:
+    """Write the deleted painting from PAINTING_COMMIT into folder and return its path."""
+    data = subprocess.run(['git', '-C', str(ROOT), 'show', '%s:%s' % (PAINTING_COMMIT, PAINTING)],
+                          capture_output=True, check=True).stdout
+    path = folder/'NpcPortrait.png'
+    path.write_bytes(data)
+    return path
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--render', type=Path, default=RENDER)
+    parser.add_argument('--painting', type=Path, help='painting PNG (default: read from git, see above)')
     parser.add_argument('--out', type=Path, default=OUT)
     args = parser.parse_args(argv)
-    with Image.open(PAINTING) as painting, Image.open(args.render) as render:
-        image = board(painting, render)
+    with tempfile.TemporaryDirectory(prefix='mina-painting-') as folder:
+        painting_path = args.painting or painting_from_git(Path(folder))
+        with Image.open(painting_path) as painting, Image.open(args.render) as render:
+            image = board(painting, render)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     image.save(args.out, optimize=True)
     print('MINA_COMPARISON %s (%d x %d)' % (args.out, image.width, image.height))
