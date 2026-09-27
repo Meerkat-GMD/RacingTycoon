@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "scene_count": 1,
+  "mesh_objects": 149,
+  "flat_shading": true,
+  "reference_packed": true,
+  "camera": "orthographic",
+  "collections": [
+    "RA_Head_Hair",
+    "RA_Coat",
+    "RA_Arms_Gloves",
+    "RA_Scarf",
+    "RA_Belts_Pouches",
+    "RA_Legs_Boots",
+    "RA_Sword",
+    "RA_Contact_Ground",
+    "RA_Studio"
+  ],
+  "vertices": 1501,
+  "base_mesh_triangles": 2376,
+  "creation_transport": "Blender MCP execute_blender_code"
+}

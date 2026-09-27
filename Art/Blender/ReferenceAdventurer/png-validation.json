@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "size": [
+    768,
+    1024
+  ],
+  "mode": "RGBA",
+  "alpha_bbox": [
+    171,
+    49,
+    594,
+    1005
+  ],
+  "clear_edge_pixels": [
+    171,
+    49,
+    174,
+    19
+  ]
+}

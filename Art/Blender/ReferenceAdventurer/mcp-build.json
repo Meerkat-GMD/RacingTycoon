@@ -1,0 +1,23 @@
+{
+  "transport": "MCP stdio JSON-RPC",
+  "server": {
+    "name": "BlenderMCP",
+    "title": null,
+    "version": "1.30.0",
+    "websiteUrl": null,
+    "icons": null
+  },
+  "tool": "execute_blender_code",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Code executed successfully: REFERENCE_ADVENTURER_BUILT 153\nREFERENCE_ADVENTURER_RENDERED D:\\UnityProjects\\RacingTycoon\\Art\\Blender\\ReferenceAdventurer\\ReferenceAdventurer.png\n"
+      }
+    ],
+    "structuredContent": {
+      "result": "Code executed successfully: REFERENCE_ADVENTURER_BUILT 153\nREFERENCE_ADVENTURER_RENDERED D:\\UnityProjects\\RacingTycoon\\Art\\Blender\\ReferenceAdventurer\\ReferenceAdventurer.png\n"
+    },
+    "isError": false
+  }
+}
