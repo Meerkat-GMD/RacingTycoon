@@ -23,6 +23,7 @@ namespace CottonCircuit
         public void Initialize(GameController controller)
         {
             game = controller;
+            UiArt.Use(game.World.Assets);
             if (root)
             {
                 if (splitLayout == game.ContinuousMode && shiftLayout == (game.Shift != null)) { Refresh(); return; }

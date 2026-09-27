@@ -308,7 +308,8 @@ namespace CottonCircuit
         ShopArtGraphic ShiftArt(RectTransform parent, string name, float x, float y, float width, float height, ShopArtKind kind, int flavorIndex = 0)
         {
             var graphic = Rect(parent, name, x, y, width, height).gameObject.AddComponent<ShopArtGraphic>();
-            graphic.raycastTarget = false; graphic.Configure(kind, flavorIndex); return graphic;
+            // Sprites keep their aspect inside the slot; rack bags stretch to their clip instead (BuildCandyRackShelf).
+            graphic.raycastTarget = false; graphic.preserveAspect = true; graphic.Configure(kind, flavorIndex); return graphic;
         }
 
         public bool BeginShiftDrag(ShopDragItem item, PointerEventData data)

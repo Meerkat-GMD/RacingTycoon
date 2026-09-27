@@ -22,7 +22,8 @@ namespace CottonCircuit
             public UpgradeNode Node;
             public int Tab;
             public UnityEngine.UI.Button Button;
-            public ProgressionArtGraphic Disc, Art;
+            public ProgressionArtGraphic Disc;
+            public UnityEngine.UI.Image Art;
             public GameObject Highlight;
             public UnityEngine.UI.Text Rank, Name;
         }
@@ -91,7 +92,7 @@ namespace CottonCircuit
                     highlightedTrait = n.Id; upgradeEdges.PinnedNode = n.Id;
                     outgameFingerprint = int.MinValue;
                 });
-                view.Art = PrepArt(nodeRoot, "NodeIcon", 67, 8, 42, 42, node.Id, PrepInk);
+                view.Art = PrepSprite(nodeRoot, "NodeIcon", 67, 8, 42, 42, UiArt.TraitIcon(node.Id));
                 var badge = Box(nodeRoot, "RankBadge", 70, 49, 36, 19, PrepInk);
                 view.Rank = Label(badge.rectTransform, "", 0, 0, 36, 19, 11, PrepWhite, FontStyle.Bold, TextAnchor.MiddleCenter);
                 Box(nodeRoot, "NodeCaptionPaper", 0, 71, 176, 27, PrepWhite, false);

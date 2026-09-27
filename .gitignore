@@ -12,3 +12,6 @@ UserSettings/
 *.blend1
 *.blend2
 __pycache__/
+
+# Full sprite board is regenerable (preview_ui_sprites.py) and too large to track
+Art/Blender/previews/all.png

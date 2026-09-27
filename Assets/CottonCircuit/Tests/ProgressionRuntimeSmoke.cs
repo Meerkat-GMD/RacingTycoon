@@ -44,7 +44,9 @@ namespace CottonCircuit.Tests
             Check(e.Progression.CartStyle == 1 && Progression.Level(e, "coupe") == 0,
                 "fresh progression owns the default downhill style without a vehicle unlock");
             CheckDefaultShiftDriving("fresh progression preparation");
-            Check(Resources.Load<Texture2D>("Progression/NpcPortrait") != null, "original portrait included");
+            var portraitObject = GameObject.Find("CompanionPortrait");
+            var portrait = portraitObject ? portraitObject.GetComponent<Image>() : null;
+            Check(portrait && portrait.sprite && portrait.sprite.name == "Mina_Portrait", "companion portrait shows the Mina_Portrait sprite");
             CaptureShift("01-preparation.png");
             var graphMap = GameObject.Find("TraitMap").GetComponent<RectTransform>();
             float overviewScale = graphMap.localScale.x;
@@ -237,6 +239,7 @@ namespace CottonCircuit.Tests
             foreach(string parent in Progression.Find("location_3").Parents)
                 Check(completedText.Contains("✓ "+Progression.Find(parent).Name),"completed trait retains prerequisite: "+parent);
             CaptureShift("18-completed-trait-hover-1280.png"); HoverHint.HideAll();
+            yield return ClickProgression("OpenLocations"); yield return null; CaptureShift("26-locations-1280.png");
             yield return ClickProgression("OpenEquipment"); yield return null; CaptureShift("10-equipment-1280.png");
             Check(SaveStore.Valid(e),"final save remains valid");
             // Exercise the optional kart in a separate day after the original

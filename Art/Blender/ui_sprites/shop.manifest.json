@@ -1,0 +1,536 @@
+{
+  "category": "shop",
+  "module": "Art/Blender/ui_sprites/shop.py",
+  "source_spec": "docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md",
+  "blender_version": "5.2.2 LTS",
+  "blend": "Art/Blender/ui_sprites/shop.blend",
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "adaptive_sampling": false,
+    "seed": 260927,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1.0,
+    "format": "PNG",
+    "color_mode": "RGBA",
+    "bit_depth": 8
+  },
+  "palette": {
+    "Strawberry": "#F48DAB",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Cream": "#FFF1D4",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Wood": "#D59C79",
+    "Tire": "#414059",
+    "Base": "#9DBBAF",
+    "Skin1": "#F1C6A6",
+    "Skin2": "#B87A65",
+    "Skin3": "#E8AF88",
+    "Hair1": "#574F59",
+    "Hair2": "#8D5B4A",
+    "Hair3": "#45475B",
+    "Pants1": "#7C789D",
+    "Pants2": "#65688B",
+    "Pants3": "#5F968F",
+    "Magenta": "#C2577E"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "material_recipe": {
+    "roughness": 0.85,
+    "specular_ior_level": 0.08
+  },
+  "coordinate_system": {
+    "up": "+Z",
+    "front": "-Y",
+    "units": "meters"
+  },
+  "passes": "Art/Blender/ui-sprite-passes/shop",
+  "assets": [
+    {
+      "id": "Storefront",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Storefront.png",
+      "kind": "prop",
+      "canvas": [
+        340,
+        460
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 3.4,
+        "target": [
+          0,
+          0,
+          1.607
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0,
+          0.26,
+          0
+        ],
+        "radii": [
+          0.46,
+          0.05
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "source": "Art/Blender/create_assets.py:116-136 Kiosk (structure only)",
+        "label_bands_from_bottom": {
+          "sign": [
+            0.715,
+            0.925
+          ],
+          "counter": [
+            0.18,
+            0.32
+          ]
+        },
+        "label_bands_x": [
+          0.15,
+          0.85
+        ],
+        "label_face_material": "White",
+        "counter_board_lean_deg": 24,
+        "front_turn_deg": -20,
+        "roof_candy": "Strawberry, core + 20 jittered lobes on a Cream stick with Strawberry stripes"
+      },
+      "objects": [
+        "Storefront_Awning_Stripe_01",
+        "Storefront_Awning_Stripe_02",
+        "Storefront_Awning_Stripe_03",
+        "Storefront_Awning_Stripe_04",
+        "Storefront_Awning_Stripe_05",
+        "Storefront_Awning_Stripe_06",
+        "Storefront_Awning_Stripe_07",
+        "Storefront_Awning_Stripe_08",
+        "Storefront_Awning_Valance_01",
+        "Storefront_Awning_Valance_02",
+        "Storefront_Awning_Valance_03",
+        "Storefront_Awning_Valance_04",
+        "Storefront_Awning_Valance_05",
+        "Storefront_Awning_Valance_06",
+        "Storefront_Awning_Valance_07",
+        "Storefront_Awning_Valance_08",
+        "Storefront_Back_Shelf",
+        "Storefront_Back_Wall",
+        "Storefront_Counter",
+        "Storefront_Counter_Board_Ledge",
+        "Storefront_Counter_Jar_1_Candy_Core",
+        "Storefront_Counter_Jar_1_Candy_Lobe_1",
+        "Storefront_Counter_Jar_1_Candy_Lobe_2",
+        "Storefront_Counter_Jar_1_Candy_Lobe_3",
+        "Storefront_Counter_Jar_1_Candy_Lobe_4",
+        "Storefront_Counter_Jar_1_Candy_Lobe_5",
+        "Storefront_Counter_Jar_1_Glass",
+        "Storefront_Counter_Jar_1_Lid_Band",
+        "Storefront_Counter_Jar_2_Candy_Core",
+        "Storefront_Counter_Jar_2_Candy_Lobe_1",
+        "Storefront_Counter_Jar_2_Candy_Lobe_2",
+        "Storefront_Counter_Jar_2_Candy_Lobe_3",
+        "Storefront_Counter_Jar_2_Candy_Lobe_4",
+        "Storefront_Counter_Jar_2_Candy_Lobe_5",
+        "Storefront_Counter_Jar_2_Glass",
+        "Storefront_Counter_Jar_2_Lid_Band",
+        "Storefront_Counter_Jar_3_Candy_Core",
+        "Storefront_Counter_Jar_3_Candy_Lobe_1",
+        "Storefront_Counter_Jar_3_Candy_Lobe_2",
+        "Storefront_Counter_Jar_3_Candy_Lobe_3",
+        "Storefront_Counter_Jar_3_Candy_Lobe_4",
+        "Storefront_Counter_Jar_3_Candy_Lobe_5",
+        "Storefront_Counter_Jar_3_Glass",
+        "Storefront_Counter_Jar_3_Lid_Band",
+        "Storefront_Counter_Kick",
+        "Storefront_Counter_Label_Board",
+        "Storefront_Counter_Top",
+        "Storefront_Left_Pillar",
+        "Storefront_Left_Pillar_Foot",
+        "Storefront_Left_Side_Wall",
+        "Storefront_Platform",
+        "Storefront_Right_Pillar",
+        "Storefront_Right_Pillar_Foot",
+        "Storefront_Right_Side_Wall",
+        "Storefront_Roof",
+        "Storefront_Roof_Candy_Floss_Core",
+        "Storefront_Roof_Candy_Floss_Lobe_01",
+        "Storefront_Roof_Candy_Floss_Lobe_02",
+        "Storefront_Roof_Candy_Floss_Lobe_03",
+        "Storefront_Roof_Candy_Floss_Lobe_04",
+        "Storefront_Roof_Candy_Floss_Lobe_05",
+        "Storefront_Roof_Candy_Floss_Lobe_06",
+        "Storefront_Roof_Candy_Floss_Lobe_07",
+        "Storefront_Roof_Candy_Floss_Lobe_08",
+        "Storefront_Roof_Candy_Floss_Lobe_09",
+        "Storefront_Roof_Candy_Floss_Lobe_10",
+        "Storefront_Roof_Candy_Floss_Lobe_11",
+        "Storefront_Roof_Candy_Floss_Lobe_12",
+        "Storefront_Roof_Candy_Floss_Lobe_13",
+        "Storefront_Roof_Candy_Floss_Lobe_14",
+        "Storefront_Roof_Candy_Floss_Lobe_15",
+        "Storefront_Roof_Candy_Floss_Lobe_16",
+        "Storefront_Roof_Candy_Floss_Lobe_17",
+        "Storefront_Roof_Candy_Floss_Lobe_18",
+        "Storefront_Roof_Candy_Floss_Lobe_19",
+        "Storefront_Roof_Candy_Floss_Lobe_20",
+        "Storefront_Roof_Candy_Stick",
+        "Storefront_Roof_Candy_Stick_Stripe_1",
+        "Storefront_Roof_Candy_Stick_Stripe_2",
+        "Storefront_Roof_Candy_Stick_Stripe_3",
+        "Storefront_Shelf_Candy_1_Floss_Core",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_01",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_02",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_03",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_04",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_05",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_06",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_07",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_08",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_09",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_10",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_11",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_12",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_13",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_14",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_15",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_16",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_17",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_18",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_19",
+        "Storefront_Shelf_Candy_1_Floss_Lobe_20",
+        "Storefront_Shelf_Candy_1_Stick",
+        "Storefront_Shelf_Candy_1_Stick_Stripe_1",
+        "Storefront_Shelf_Candy_1_Stick_Stripe_2",
+        "Storefront_Shelf_Candy_1_Stick_Stripe_3",
+        "Storefront_Shelf_Candy_2_Floss_Core",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_01",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_02",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_03",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_04",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_05",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_06",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_07",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_08",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_09",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_10",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_11",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_12",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_13",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_14",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_15",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_16",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_17",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_18",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_19",
+        "Storefront_Shelf_Candy_2_Floss_Lobe_20",
+        "Storefront_Shelf_Candy_2_Stick",
+        "Storefront_Shelf_Candy_2_Stick_Stripe_1",
+        "Storefront_Shelf_Candy_2_Stick_Stripe_2",
+        "Storefront_Shelf_Candy_2_Stick_Stripe_3",
+        "Storefront_Shelf_Stand_1",
+        "Storefront_Shelf_Stand_2",
+        "Storefront_Sign_Backing",
+        "Storefront_Sign_Label_Face"
+      ],
+      "materials": [
+        {
+          "name": "Storefront_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Storefront_Gold",
+          "palette_name": "Gold",
+          "palette_srgb": "#DBAE61",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Storefront_Soda",
+          "palette_name": "Soda",
+          "palette_srgb": "#7ACDCE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Storefront_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Storefront_Vanilla",
+          "palette_name": "Vanilla",
+          "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Storefront_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Storefront_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Trash",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Trash.png",
+      "kind": "prop",
+      "canvas": [
+        136,
+        164
+      ],
+      "camera": {
+        "yaw_deg": -20,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.58,
+        "target": [
+          0,
+          0,
+          0.6
+        ]
+      },
+      "shadow": {
+        "anchor": [
+          0,
+          0,
+          0
+        ],
+        "radii": [
+          0.36,
+          0.075
+        ],
+        "max_alpha": 0.32
+      },
+      "film_transparent": true,
+      "params": {
+        "body": "Mint",
+        "trim": "Base",
+        "lid": "Cream swing hood, flap pushed open 40 deg",
+        "wrapper": "crumpled Strawberry"
+      },
+      "objects": [
+        "Trash_Body",
+        "Trash_Foot",
+        "Trash_Front_Rib_1",
+        "Trash_Front_Rib_2",
+        "Trash_Hinge_Pin",
+        "Trash_Hood",
+        "Trash_Hood_Knob",
+        "Trash_Mouth",
+        "Trash_Rim",
+        "Trash_Swing_Flap",
+        "Trash_Wrapper_Crumple_1",
+        "Trash_Wrapper_Crumple_2"
+      ],
+      "materials": [
+        {
+          "name": "Trash_Base",
+          "palette_name": "Base",
+          "palette_srgb": "#9DBBAF",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trash_Cream",
+          "palette_name": "Cream",
+          "palette_srgb": "#FFF1D4",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trash_Mint",
+          "palette_name": "Mint",
+          "palette_srgb": "#99C4AE",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trash_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trash_Tire",
+          "palette_name": "Tire",
+          "palette_srgb": "#414059",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Emote_Heart",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Emote_Heart.png",
+      "kind": "emote",
+      "canvas": [
+        144,
+        132
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.24,
+        "target": [
+          0,
+          0,
+          1.25
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "heart": "Strawberry, 14-point hand-authored outline, raised bevel ring and centre fan",
+        "highlight": "one White bevel facet on the upper-left lobe",
+        "tilt_back_deg": 22
+      },
+      "objects": [
+        "Emote_Heart_Heart"
+      ],
+      "materials": [
+        {
+          "name": "Emote_Heart_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Emote_Heart_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    },
+    {
+      "id": "Emote_Angry",
+      "file": "Assets/CottonCircuit/Sprites/Shop/Emote_Angry.png",
+      "kind": "emote",
+      "canvas": [
+        144,
+        132
+      ],
+      "camera": {
+        "yaw_deg": -8,
+        "elevation_deg": 15,
+        "orthographic_scale": 1.16,
+        "target": [
+          0,
+          0,
+          1.29
+        ]
+      },
+      "shadow": null,
+      "film_transparent": true,
+      "params": {
+        "mark": "one centred vein mark: four flared L arms, flat Strawberry tops, Plum side facets, no steam puff",
+        "vein": {
+          "centre": [
+            0,
+            1.285
+          ],
+          "gap": 0.12,
+          "arm": 0.33,
+          "flare": 0.1,
+          "widths": [
+            0.07,
+            0.15,
+            0.18,
+            0.15,
+            0.07
+          ],
+          "top": 0.62
+        },
+        "tilt_back_deg": 22
+      },
+      "objects": [
+        "Emote_Angry_Vein_Arm_1",
+        "Emote_Angry_Vein_Arm_2",
+        "Emote_Angry_Vein_Arm_3",
+        "Emote_Angry_Vein_Arm_4"
+      ],
+      "materials": [
+        {
+          "name": "Emote_Angry_Plum",
+          "palette_name": "Plum",
+          "palette_srgb": "#6C577F",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Emote_Angry_Strawberry",
+          "palette_name": "Strawberry",
+          "palette_srgb": "#F48DAB",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        }
+      ]
+    }
+  ]
+}

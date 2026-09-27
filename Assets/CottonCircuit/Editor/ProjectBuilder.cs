@@ -42,6 +42,7 @@ namespace CottonCircuit.Editor
             foreach (var filter in puff.GetComponentsInChildren<MeshFilter>()) combine.Add(new CombineInstance { mesh = filter.sharedMesh, transform = puff.transform.worldToLocalMatrix * filter.transform.localToWorldMatrix });
             assets.PuffMesh = new Mesh { name = "Blender puff combined" }; assets.PuffMesh.CombineMeshes(combine.ToArray());
             ReplaceAsset(assets.PuffMesh, Root + "/Meshes/Puff.asset"); assets.PuffMesh = AssetDatabase.LoadAssetAtPath<Mesh>(Root + "/Meshes/Puff.asset"); UnityEngine.Object.DestroyImmediate(puff);
+            SpriteCatalog.Assign(assets);
             ReplaceAsset(assets, Root + "/Data/GameAssets.asset");
             assets = AssetDatabase.LoadAssetAtPath<GameAssets>(Root + "/Data/GameAssets.asset");
             var gameObject = new GameObject("Cotton Circuit");

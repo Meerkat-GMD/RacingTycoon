@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "assets": [
+    {
+      "file": "Customer_01_Faceted.png",
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "metrics": {
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          164,
+          280
+        ],
+        "alpha_bbox": [
+          35,
+          23,
+          132,
+          270
+        ],
+        "transparent_edge_pixels": {
+          "left": 35,
+          "top": 23,
+          "right": 32,
+          "bottom": 10
+        },
+        "solid_pixel_fraction": 0.29972,
+        "opaque_pixel_count": 12957,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 6849,
+        "native_display_size": [
+          82,
+          140
+        ],
+        "native_solid_pixel_count": 3439,
+        "native_contrast": {
+          "cream": {
+            "median_opaque_contrast_ratio": 4.321,
+            "opaque_fraction_contrast_at_least_1_5": 0.9958
+          },
+          "ink": {
+            "median_opaque_contrast_ratio": 2.736,
+            "opaque_fraction_contrast_at_least_1_5": 0.6753
+          }
+        },
+        "native_contrast_note": "Descriptive pixel metrics only; face readability and silhouette separation require visual review of customer-style-comparison.png at 100%."
+      }
+    },
+    {
+      "file": "Customer_01_Faceted-large.png",
+      "passed": true,
+      "errors": [],
+      "warnings": [],
+      "metrics": {
+        "format": "PNG",
+        "mode": "RGBA",
+        "size": [
+          656,
+          1120
+        ],
+        "alpha_bbox": [
+          145,
+          93,
+          525,
+          1080
+        ],
+        "transparent_edge_pixels": {
+          "left": 145,
+          "top": 93,
+          "right": 131,
+          "bottom": 40
+        },
+        "solid_pixel_fraction": 0.29898,
+        "opaque_pixel_count": 216442,
+        "neutral_near_white_fraction": 0.0,
+        "neutral_clipped_white_fraction": 0.0,
+        "any_channel_255_fraction": 0.0,
+        "opaque_unique_rgb_count": 31642,
+        "native_display_size": [
+          82,
+          140
+        ],
+        "native_solid_pixel_count": 3436,
+        "native_contrast": {
+          "cream": {
+            "median_opaque_contrast_ratio": 4.39,
+            "opaque_fraction_contrast_at_least_1_5": 0.9962
+          },
+          "ink": {
+            "median_opaque_contrast_ratio": 2.692,
+            "opaque_fraction_contrast_at_least_1_5": 0.672
+          }
+        },
+        "native_contrast_note": "Descriptive pixel metrics only; face readability and silhouette separation require visual review of customer-style-comparison.png at 100%."
+      }
+    }
+  ]
+}

@@ -202,6 +202,11 @@ namespace CottonCircuit.Tests
                 var item = RackItemFor(product.Id);
                 Check(found.Add(item), "each rack product has its own drag source");
                 Check(RackHasBagArt(item.gameObject), "rack product is visibly bagged: " + item.name);
+                int clipSlot = int.Parse(item.name.Substring("StockItem".Length));
+                Vector2 clip = CandyRackGraphic.ClipPoint(clipSlot, game.Session.Economy.StockCapacity);
+                Vector3 knot = stand.InverseTransformPoint(item.GetComponentInChildren<ShopArtGraphic>().rectTransform.position);
+                Check(Mathf.Abs(knot.x - clip.x) < .5f && Mathf.Abs(knot.y + clip.y) < .5f,
+                    "bag sprite's tie knot sits on its rack clip: " + item.name + " knot=" + (Vector2)knot + " clip=" + clip);
                 int tier = ShopShift.SizeOf(product);
                 string tierLabel = tier < 0 ? "미완성" : tier == 0 ? "소" : tier == 1 ? "중" : "대";
                 bool tagged = false;

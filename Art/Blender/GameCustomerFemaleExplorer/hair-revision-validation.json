@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "non_hair_objects_unchanged": 124,
+  "non_hair_sha256_before": "6c12ba060848f824d309abdae40cafdb990476390f64591724f974b27bd2c97d",
+  "non_hair_sha256_after": "6c12ba060848f824d309abdae40cafdb990476390f64591724f974b27bd2c97d",
+  "replaced": [
+    "EX_Hair_ConnectedScalp",
+    "EX_Hair_SweptFront_Main",
+    "EX_Hair_SweptFront_Left",
+    "EX_Hair_SweptFront_UnderCurl",
+    "EX_Hair_SweptFront_Right",
+    "EX_Hair_Temple_Left_Main",
+    "EX_Hair_Temple_Left_Companion",
+    "EX_Hair_Temple_Right_Main",
+    "EX_Hair_Temple_Right_Companion",
+    "EX_Hair_BehindEar_Left",
+    "EX_Hair_BehindEar_Right",
+    "EX_Hair_Nape_Left",
+    "EX_Hair_Nape_Right"
+  ],
+  "hair_objects": [
+    "EX_Hair_ConnectedScalp",
+    "EX_Hair_SweptFront_Main",
+    "EX_Hair_SweptFront_Left",
+    "EX_Hair_SweptFront_UnderCurl",
+    "EX_Hair_SweptFront_Right",
+    "EX_Hair_Temple_Left_Main",
+    "EX_Hair_Temple_Left_Companion",
+    "EX_Hair_Temple_Right_Main",
+    "EX_Hair_Temple_Right_Companion",
+    "EX_Hair_BehindEar_Left",
+    "EX_Hair_BehindEar_Right",
+    "EX_Hair_Nape_Left",
+    "EX_Hair_Nape_Right"
+  ],
+  "palette": "Navy #29324D",
+  "construction": "12 curved tapered solid locks plus one continuous scalp",
+  "creation_transport": "Blender MCP execute_blender_code"
+}

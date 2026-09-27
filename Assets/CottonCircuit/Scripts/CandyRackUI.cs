@@ -38,7 +38,13 @@ namespace CottonCircuit
                     return Palette.FlavorName(product.FlavorIndex) + size + "\n" + ShiftDistanceLabel(product.DistanceMeters) + " · " + ShopShift.StarText(product.Quality) + "\n" +
                         (tier < 0 ? "판매 불가" : game.Session.Economy.Price(product).ToString("N0") + " C · 별 보너스 +" + game.Session.Economy.StarBonus(product) + " C") + "\n손님에게 건네거나 주행 화면에서 이어 만드세요.";
                 });
-                shiftStockArt[i] = ShiftArt(hit.rectTransform, "Bagged shelf cotton candy", 0, 0, 74, 92, ShopArtKind.BaggedCottonCandy);
+                var art = ShiftArt(hit.rectTransform, "Bagged shelf cotton candy", 0, 0, 74, 92, ShopArtKind.BaggedCottonCandy);
+                // The bag fills its pickup rect at every capacity without keeping the sprite's
+                // aspect, so the tie knot (the art pivot) lands on CandyRackGraphic.ClipPoint.
+                art.preserveAspect = false;
+                art.rectTransform.anchorMin = Vector2.zero; art.rectTransform.anchorMax = Vector2.one;
+                art.rectTransform.sizeDelta = Vector2.zero; art.rectTransform.anchoredPosition = Vector2.zero;
+                shiftStockArt[i] = art;
                 var tag = Box(hit.rectTransform, "Paper grade tag", 43, 68, 21, 20, Palette.Cream, false);
                 tag.rectTransform.localRotation = Quaternion.Euler(0, 0, -8);
                 shiftStockTags[i] = tag;
@@ -72,7 +78,6 @@ namespace CottonCircuit
 
                 int tier = ShopShift.SizeOf(product);
                 shiftStock[i].FlavorIndex = product.FlavorIndex;
-                art.rectTransform.sizeDelta = placement.size;
                 art.Configure(ShopArtKind.BaggedCottonCandy, product.FlavorIndex, tier);
                 art.SetDistance(product.DistanceMeters);
                 bool selected = product.Id == game.SelectedProductId || product.Id == shiftHoveredProductId;

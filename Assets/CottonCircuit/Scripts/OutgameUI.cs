@@ -13,7 +13,7 @@ namespace CottonCircuit
         UnityEngine.UI.Text preparationWallet, preparationDay, preparationSpeech, preparationCount, equipmentSummary, locationName, locationDetail, locationIndex;
         UnityEngine.UI.Button locationSelect, businessStart;
         UnityEngine.UI.Text locationSelectText;
-        ProgressionArtGraphic locationArt;
+        UnityEngine.UI.Image locationArt;
         readonly UnityEngine.UI.Button[] locationCards = new UnityEngine.UI.Button[4];
         readonly UnityEngine.UI.Text[] locationCardStates = new UnityEngine.UI.Text[4];
         readonly UnityEngine.UI.Button[] cartChoices = new UnityEngine.UI.Button[2];
@@ -28,7 +28,7 @@ namespace CottonCircuit
             public UnityEngine.UI.Image Card;
             public UnityEngine.UI.Text State, WorkerText, FlavorText, SizeText, GradeText, RecipeHint, FlavorLabel, SizeLabel;
             public UnityEngine.UI.Button Select, Worker, Flavor, Size, Grade;
-            public ProgressionArtGraphic Art;
+            public UnityEngine.UI.Image Art;
         }
 
         void BuildOutgame()
@@ -52,15 +52,8 @@ namespace CottonCircuit
             Label(p, "SUGAR & COMPANY", 1160, 34, 330, 23, 13, PrepInk, FontStyle.Bold);
             Label(p, "작은 가게, 커다란 꿈", 1160, 67, 386, 34, 22, PrepInk, FontStyle.Bold);
             var portraitFrame = Box(p, "CompanionPortraitFrame", 1154, 122, 418, 405, PrepWhite);
-            var texture = Resources.Load<Texture2D>("Progression/NpcPortrait");
-            if (texture)
-            {
-                var portrait = Rect(portraitFrame.rectTransform, "CompanionPortrait", 7, 7, 404, 391).gameObject.AddComponent<UnityEngine.UI.RawImage>();
-                portrait.texture = texture; portrait.raycastTarget = false;
-                float ratio = 404f / 391f / ((float)texture.width / texture.height);
-                portrait.uvRect = ratio <= 1 ? new Rect((1 - ratio) * .5f, 0, ratio, 1) : new Rect(0, (1 - 1 / ratio) * .5f, 1, 1 / ratio);
-            }
-            else PrepArt(portraitFrame.rectTransform, "CompanionPortraitFallback", 7, 7, 404, 391, "portrait", PrepPink);
+            var portrait = PrepSprite(portraitFrame.rectTransform, "CompanionPortrait", 7, 7, 404, 391, UiArt.MinaPortrait);
+            portrait.preserveAspect = false; // the 808x784 render fills the 404x391 frame edge to edge
             Label(p, "M I N A   /   가게 친구", 1168, 545, 380, 22, 12, PrepMuted, FontStyle.Bold);
             preparationSpeech = Label(p, "작은 한 걸음부터 시작해 볼까요?", 1168, 578, 372, 67, 21, PrepInk, FontStyle.Bold);
             string[] nav = { "01     성장 지도", "02     기계와 레시피", "03     오늘의 장사" };
@@ -87,7 +80,7 @@ namespace CottonCircuit
                 var view = new MachineCardView(); machineCards[i] = view;
                 view.Card = Box(p, "MachineCard_" + i, x, 83, 340, 487, PrepWhite); var card = view.Card.rectTransform;
                 Label(card, "MACHINE  /  " + (i + 1).ToString("00"), 22, 21, 296, 22, 11, PrepMuted, FontStyle.Bold);
-                view.Art = PrepArt(card, "MachineIllustration", 107, 60, 126, 126, "machine", i == 0 ? PrepPink : i == 1 ? PrepMint : Palette.Hex("D0C5E4"));
+                view.Art = PrepSprite(card, "MachineIllustration", 107, 60, 126, 126, UiArt.Machine(i));
                 Label(card, Progression.MachineName(i), 19, 196, 302, 36, 21, PrepInk, FontStyle.Bold, TextAnchor.MiddleCenter);
                 view.State = Label(card, "", 20, 233, 300, 23, 12, PrepMuted, FontStyle.Normal, TextAnchor.MiddleCenter);
                 view.Select = ButtonAt(card, "직접 운전", 24, 274, 140, 39, PrepMint, PrepInk, () => game.ChooseMachine(machine), 14); view.Select.name = "SelectMachine_" + i;
@@ -122,7 +115,7 @@ namespace CottonCircuit
             Label(p, "오늘의 장사", 15, 14, 510, 45, 27, PrepInk, FontStyle.Bold);
             locationIndex = Label(p, "01 / 04", 861, 23, 200, 27, 14, PrepMuted, FontStyle.Bold, TextAnchor.MiddleRight);
             var hero = Box(p, "LocationPreview", 12, 82, 1052, 378, PrepWhite);
-            locationArt = PrepArt(hero.rectTransform, "LocationScenery", 12, 12, 588, 354, "scene", PrepPink);
+            locationArt = PrepSprite(hero.rectTransform, "LocationScenery", 12, 12, 588, 354, UiArt.LocationPrep(0));
             Label(hero.rectTransform, "TODAY'S DESTINATION", 634, 43, 383, 23, 11, PrepMuted, FontStyle.Bold);
             locationName = Label(hero.rectTransform, "", 633, 89, 381, 63, 29, PrepInk, FontStyle.Bold);
             locationDetail = Label(hero.rectTransform, "", 635, 160, 371, 69, 16, PrepMuted);
@@ -229,7 +222,7 @@ namespace CottonCircuit
         void RefreshLocationPage(Economy economy)
         {
             locationIndex.text = (locationPreview + 1).ToString("00") + " / 04"; locationName.text = Progression.LocationName(locationPreview); locationDetail.text = Progression.LocationDescription(locationPreview);
-            locationArt.Variant = locationPreview; locationArt.Accent = locationPreview == 1 ? PrepMint : locationPreview == 2 ? Palette.Hex("C8B6D8") : PrepPink; locationArt.SetVerticesDirty();
+            locationArt.sprite = UiArt.LocationPrep(locationPreview);
             bool available = Progression.HasLocation(economy, locationPreview), chosen = economy.Progression.SelectedLocation == locationPreview;
             locationSelect.interactable = available && !chosen; locationSelectText.text = !available ? "아직 잠겨 있어요" : chosen ? "선택한 장소" : "이곳에서 장사";
             businessStart.interactable = available && chosen;
@@ -264,7 +257,12 @@ namespace CottonCircuit
         }
         ProgressionArtGraphic PrepArt(RectTransform parent, string name, float x, float y, float width, float height, string kind, Color tint)
         {
-            var art = Rect(parent, name, x, y, width, height).gameObject.AddComponent<ProgressionArtGraphic>(); art.Kind = kind; art.Accent = tint; art.color = kind == "disc" ? tint : Color.white; art.raycastTarget = false; return art;
+            var art = Rect(parent, name, x, y, width, height).gameObject.AddComponent<ProgressionArtGraphic>(); art.Kind = kind; art.color = tint; art.raycastTarget = false; return art;
+        }
+        UnityEngine.UI.Image PrepSprite(RectTransform parent, string name, float x, float y, float w, float h, Sprite sprite)
+        {
+            var image = Rect(parent, name, x, y, w, h).gameObject.AddComponent<UnityEngine.UI.Image>();
+            image.sprite = sprite; image.raycastTarget = false; image.preserveAspect = true; return image;
         }
         static Color CategoryColor(string category)
         {

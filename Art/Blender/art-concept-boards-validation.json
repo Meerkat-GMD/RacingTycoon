@@ -1,0 +1,196 @@
+{
+  "passed": true,
+  "date": "2026-09-27",
+  "method": "Existing Blender PNGs (approved male and female, child V1, game sprites), resized and alpha-composited only",
+  "sources": {
+    "male": {
+      "path": "Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png",
+      "sha256": "d5f1717cc87194580a921d1463352e3fb22ae189e001c131bec61357b8ab136a"
+    },
+    "male_large": {
+      "path": "Art/Blender/GameCustomerFaceted/Customer_01_Faceted-large.png",
+      "sha256": "814b6f7e77f3138cae91604eb30833ae576145a94017931941eb6030c4332867"
+    },
+    "female": {
+      "path": "Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer.png",
+      "sha256": "e974dcaa1fa42f72da4483451f429da457a8492c1cb21501df46202619751ea2"
+    },
+    "female_large": {
+      "path": "Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer-large.png",
+      "sha256": "f2d82aa6551d89c2336288a17212033c029fd95933453ab7c863a56061a13b50"
+    },
+    "child": {
+      "path": "Assets/CottonCircuit/Sprites/Customers/Customer_V1_Neutral.png",
+      "sha256": "8918d0ca01d4a3adb1a6b513d45dec1277641306c01d66e9a4248c362a291e72"
+    },
+    "child_large": {
+      "path": "Art/Blender/GameCustomerChild/Customer_V1-large.png",
+      "sha256": "308ea4709d788eae247f41569db891e73c34944fd6a9f2a2c5d0c50a94033abd"
+    },
+    "candy": {
+      "path": "Assets/CottonCircuit/Sprites/Items/CottonCandy_Strawberry_Medium.png",
+      "sha256": "a2193406b1d29fd8222b3b0eb22ec93661da74940dbf8ee0c1302188b76e1abf"
+    },
+    "clock": {
+      "path": "Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png",
+      "sha256": "700b82756281d70f43d76f8a844c713ad477acd3966374f872f87da0f094d655"
+    },
+    "racing": {
+      "path": "docs/screenshots/urp-migration-racing.png",
+      "sha256": "56a8c889f293a86df83f54779472fbdae369a6e4a111a0da46a62fbd2fc9526a"
+    }
+  },
+  "outputs": {
+    "art-concept-lowpoly-test.png": {
+      "size": [
+        2060,
+        1220
+      ],
+      "sha256": "86c8ed071eabf2424aba0a6e2eaeb6b6872c90f7328f4a43a7ca5988bb80be65"
+    },
+    "art-concept-vs-racing.png": {
+      "size": [
+        1844,
+        408
+      ],
+      "sha256": "988879406e5d56ff2ce387c1102229bcd7730ff2949d1ab8d981ab77be5c2c72"
+    }
+  },
+  "native_panels": [
+    {
+      "key": "male",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        208,
+        1010
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "female",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        350,
+        1010
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "child",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        492,
+        1010
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "candy",
+      "size": [
+        77,
+        88
+      ],
+      "xy": [
+        637,
+        1062
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "clock",
+      "size": [
+        42,
+        42
+      ],
+      "xy": [
+        796,
+        1108
+      ],
+      "background": "#FFF6E7"
+    },
+    {
+      "key": "male",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        1202,
+        1010
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "female",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        1344,
+        1010
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "child",
+      "size": [
+        82,
+        140
+      ],
+      "xy": [
+        1486,
+        1010
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "candy",
+      "size": [
+        77,
+        88
+      ],
+      "xy": [
+        1631,
+        1062
+      ],
+      "background": "#29324D"
+    },
+    {
+      "key": "clock",
+      "size": [
+        42,
+        42
+      ],
+      "xy": [
+        1790,
+        1108
+      ],
+      "background": "#29324D"
+    }
+  ],
+  "native_panels_match_source_pixels": true,
+  "racing_pixels_unchanged": true,
+  "racing_source_crop": [
+    962,
+    200,
+    1920,
+    538
+  ],
+  "racing_board_destination": [
+    0,
+    60,
+    958,
+    398
+  ],
+  "source_assets_unchanged": true
+}

@@ -60,6 +60,65 @@ namespace CottonCircuit.Editor
                 Check(clear, "map " + map + " roadside meshes leave drivable lanes clear");
             }
         }
+        static string[] Names(int count, Func<int, string> name)
+        {
+            var names = new string[count];
+            for (int i = 0; i < count; i++) names[i] = name(i);
+            return names;
+        }
+        static void CheckSpriteSlots(Sprite[] sprites, string[] expected, string label, List<Sprite> found)
+        {
+            var problems = new List<string>();
+            if (sprites == null || sprites.Length != expected.Length)
+                problems.Add("length " + (sprites == null ? "null" : sprites.Length.ToString()) + " instead of " + expected.Length);
+            else
+                for (int i = 0; i < expected.Length; i++)
+                {
+                    if (!sprites[i]) problems.Add("[" + i + "] missing");
+                    else if (sprites[i].name != expected[i]) problems.Add("[" + i + "] is " + sprites[i].name + " instead of " + expected[i]);
+                    else found.Add(sprites[i]);
+                }
+            Check(problems.Count == 0, label + " holds " + expected.Length + " catalog sprites in order" +
+                (problems.Count == 0 ? "" : ": " + string.Join(", ", problems)));
+        }
+        static void CheckSprites(GameAssets assets)
+        {
+            string[] flavors = { "Strawberry", "Soda", "Vanilla" }, sizes = { "Small", "Medium", "Large" };
+            var found = new List<Sprite>();
+            CheckSpriteSlots(assets.CustomerNeutral, Names(3, i => "Customer_V" + i + "_Neutral"), "GameAssets.CustomerNeutral", found);
+            CheckSpriteSlots(assets.CustomerAngry, Names(3, i => "Customer_V" + i + "_Angry"), "GameAssets.CustomerAngry", found);
+            CheckSpriteSlots(new[] { assets.Storefront, assets.Trash, assets.HeartEmote, assets.AngryEmote, assets.MinaPortrait },
+                new[] { "Storefront", "Trash", "Emote_Heart", "Emote_Angry", "Mina_Portrait" },
+                "GameAssets Storefront/Trash/HeartEmote/AngryEmote/MinaPortrait", found);
+            CheckSpriteSlots(assets.LocationPrep, Names(4, i => "Location_" + i + "_Prep"), "GameAssets.LocationPrep", found);
+            CheckSpriteSlots(assets.LocationStreet, Names(4, i => "Location_" + i + "_Street"), "GameAssets.LocationStreet", found);
+            CheckSpriteSlots(assets.CottonCandy, Names(9, i => "CottonCandy_" + flavors[i / 3] + "_" + sizes[i % 3]), "GameAssets.CottonCandy", found);
+            CheckSpriteSlots(assets.BaggedCandy, Names(9, i => "BaggedCandy_" + flavors[i / 3] + "_" + sizes[i % 3]), "GameAssets.BaggedCandy", found);
+            CheckSpriteSlots(assets.SugarBags, Names(3, i => "SugarBag_" + flavors[i]), "GameAssets.SugarBags", found);
+            CheckSpriteSlots(assets.Machines, Names(3, i => "Machine_" + i), "GameAssets.Machines", found);
+            var icons = assets.TraitIcons ?? new TraitIconSprite[0];
+            bool iconIds = icons.Length == TraitIcons.All.Length;
+            for (int i = 0; iconIds && i < icons.Length; i++) iconIds = icons[i].Id == TraitIcons.All[i];
+            Check(iconIds, "GameAssets.TraitIcons ids follow TraitIcons.All");
+            CheckSpriteSlots(Array.ConvertAll(icons, icon => icon.Sprite), TraitIcons.All, "GameAssets.TraitIcons", found);
+            var missing = new List<string>();
+            foreach (var node in Progression.Nodes) if (assets.TraitIcon(TraitIcons.For(node.Id)) == null) missing.Add(node.Id);
+            Check(missing.Count == 0, "all " + Progression.Nodes.Length + " trait nodes resolve to an icon sprite" +
+                (missing.Count == 0 ? "" : ": missing " + string.Join(", ", missing)));
+            var badImports = new List<string>();
+            foreach (var sprite in found)
+            {
+                string path = AssetDatabase.GetAssetPath(sprite);
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (!importer || importer.textureType != TextureImporterType.Sprite || importer.spriteImportMode != SpriteImportMode.Single ||
+                    importer.mipmapEnabled || !importer.alphaIsTransparency || importer.textureCompression != TextureImporterCompression.CompressedHQ)
+                    badImports.Add(path);
+            }
+            Check(found.Count == 66 && badImports.Count == 0, found.Count + " UI sprites import as single sprites without mipmaps, with alpha transparency and HQ compression" +
+                (badImports.Count == 0 ? "" : ": wrong settings " + string.Join(", ", badImports)));
+            Check(!AssetDatabase.IsValidFolder("Assets/CottonCircuit/Resources") && !Directory.Exists("Assets/CottonCircuit/Resources"),
+                "Assets/CottonCircuit/Resources is gone; the Mina portrait comes from GameAssets.MinaPortrait");
+        }
         static void CheckRenderPipeline()
         {
             var pipeline = AssetDatabase.LoadAssetAtPath<UniversalRenderPipelineAsset>(ProjectBuilder.PipelinePath);
@@ -195,6 +254,7 @@ namespace CottonCircuit.Editor
             Check(assets.DisplayRack && assets.OrderBoard && assets.QueuePost && game.World.DisplayRacks.Length == 3, "three Blender shop props and expandable racks wired");
             Check(assets.CandyTunnel && assets.FinishMarker, "two new Blender map landmarks imported");
             Check(assets.DownhillCoupe && assets.DownhillCoupe.GetComponentsInChildren<Renderer>().Length > 0, "Blender downhill coupe imported for style comparison");
+            CheckSprites(assets);
             Check(game.World.CourseRoots != null && game.World.CourseRoots.Length == RaceCourse.MapCount &&
                 game.World.CourseRoots[0].Find("Racing surface 1") && game.World.CourseRoots[1].Find("Racing surface 2") &&
                 game.World.CourseRoots[2].Find("Racing surface 3"), "three maps rendered from their physics courses");

@@ -1,0 +1,269 @@
+{
+  "scope": "Female character redesign based on new attached explorer reference; no Unity behavior changes",
+  "reference": "reference.png",
+  "preserved_cues": [
+    "large white/brown eyes",
+    "cream cap and warm visor",
+    "pink scarf",
+    "cream jacket and separate long pink tails",
+    "green skirt",
+    "bare legs and folded boots",
+    "large brown backpack",
+    "raised hand gripping strap"
+  ],
+  "palette": {
+    "Strawberry": "#F48DAB",
+    "Soda": "#7ACDCE",
+    "Vanilla": "#F9D27D",
+    "Navy": "#29324D",
+    "Cream": "#FFF1D4",
+    "White": "#FFF9ED",
+    "Mint": "#99C4AE",
+    "Plum": "#6C577F",
+    "Gold": "#DBAE61",
+    "Wood": "#D59C79",
+    "Tire": "#414059",
+    "Base": "#9DBBAF",
+    "Skin1": "#F1C6A6",
+    "Skin2": "#B87A65",
+    "Skin3": "#E8AF88",
+    "Hair1": "#574F59",
+    "Hair2": "#8D5B4A",
+    "Hair3": "#45475B",
+    "Pants1": "#7C789D",
+    "Pants2": "#65688B",
+    "Pants3": "#5F968F"
+  },
+  "lighting": {
+    "key": {
+      "location": [
+        -2,
+        -3,
+        7
+      ],
+      "power_w": 900,
+      "size": 4,
+      "color": "#FFF1DD"
+    },
+    "fill": {
+      "location": [
+        4.5,
+        -3.5,
+        3
+      ],
+      "power_w": 250,
+      "size": 5,
+      "color": "#DDE6FF"
+    },
+    "rim": {
+      "location": [
+        1.5,
+        3,
+        5
+      ],
+      "power_w": 70,
+      "size": 3,
+      "color": "#FFFFFF"
+    },
+    "environment": {
+      "color": "#F3ECF7",
+      "strength": 0.75
+    },
+    "aim": [
+      0,
+      0,
+      1.25
+    ]
+  },
+  "camera": {
+    "yaw_deg": -20,
+    "elevation_deg": 15,
+    "orthographic_scale": 2.97,
+    "target": [
+      -0.035,
+      0.015,
+      1.275
+    ]
+  },
+  "seed": 260927,
+  "render": {
+    "engine": "CYCLES",
+    "samples": 64,
+    "denoise": true,
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": -1.8,
+    "gamma": 1,
+    "film_transparent": true,
+    "color_mode": "RGBA"
+  },
+  "display_size": [
+    82,
+    140
+  ],
+  "outputs": [
+    {
+      "file": "Customer_02_Explorer.png",
+      "size": [
+        164,
+        280
+      ]
+    },
+    {
+      "file": "Customer_02_Explorer-large.png",
+      "size": [
+        656,
+        1120
+      ]
+    }
+  ],
+  "shadow": "Real Cycles contact catcher; navy tinted soft ellipse, maximum alpha 0.32",
+  "creation_transport": "Blender MCP execute_blender_code",
+  "collections": {
+    "Head_Cap_Eyes": [
+      "EX_Head_PeachAngularFace",
+      "EX_Head_Neck",
+      "EX_Head_Ear_L",
+      "EX_Head_EarInner_L",
+      "EX_Head_Ear_R",
+      "EX_Head_EarInner_R",
+      "EX_Face_EyeWhite_L",
+      "EX_Face_BrownIris_L",
+      "EX_Face_EyePupil_L",
+      "EX_Face_IrisWarmLower_L",
+      "EX_Face_EyeCatchlight_L",
+      "EX_Face_UpperLash_L",
+      "EX_Face_Brow_L",
+      "EX_Face_PinkCheek_L",
+      "EX_Face_EyeWhite_R",
+      "EX_Face_BrownIris_R",
+      "EX_Face_EyePupil_R",
+      "EX_Face_IrisWarmLower_R",
+      "EX_Face_EyeCatchlight_R",
+      "EX_Face_UpperLash_R",
+      "EX_Face_Brow_R",
+      "EX_Face_PinkCheek_R",
+      "EX_Face_SmallPeachNose",
+      "EX_Face_SoftSmile",
+      "EX_Cap_PlumRearFlap_L",
+      "EX_Cap_LavenderFlapInset_L",
+      "EX_Cap_PlumRearFlap_R",
+      "EX_Cap_MintSideFlap_L",
+      "EX_Cap_MintSideFlap_R",
+      "EX_Cap_SoftFacetedCreamCrown",
+      "EX_Cap_StrawberryBrowBand",
+      "EX_Cap_WhiteBandPiping",
+      "EX_Cap_VanillaGoldenFrontCurl",
+      "EX_Cap_GoldenForelock",
+      "EX_Cap_FrontGoldBadge",
+      "EX_Cap_FrontBadgeCreamInset",
+      "EX_Hair_ConnectedScalp",
+      "EX_Hair_SweptFront_Main",
+      "EX_Hair_SweptFront_Left",
+      "EX_Hair_SweptFront_UnderCurl",
+      "EX_Hair_SweptFront_Right",
+      "EX_Hair_Temple_Left_Main",
+      "EX_Hair_Temple_Left_Companion",
+      "EX_Hair_Temple_Right_Main",
+      "EX_Hair_Temple_Right_Companion",
+      "EX_Hair_BehindEar_Left",
+      "EX_Hair_BehindEar_Right",
+      "EX_Hair_Nape_Left",
+      "EX_Hair_Nape_Right"
+    ],
+    "Layered_Coat_Skirt": [
+      "EX_Cream_Jacket_Torso",
+      "EX_Dark_Inner_Top",
+      "EX_Rear_Pink_Coat",
+      "EX_Separate_Green_Skirt",
+      "EX_Skirt_Front_Facet",
+      "EX_Waist_Belt",
+      "EX_Waist_Buckle_Frame",
+      "EX_Waist_Buckle_Pin",
+      "EX_Left_Long_Pink_Coat_Tail",
+      "EX_Left_Tail_Outer_Facet",
+      "EX_Left_Cream_Coat_Front",
+      "EX_Left_Plum_Coat_Edge",
+      "EX_Right_Long_Pink_Coat_Tail",
+      "EX_Right_Tail_Outer_Facet",
+      "EX_Right_Cream_Coat_Front",
+      "EX_Right_Plum_Coat_Edge",
+      "EX_Left_Chest_Patch"
+    ],
+    "Pink_Scarf": [
+      "EX_High_Pink_Scarf",
+      "EX_Scarf_Diagonal_Fold",
+      "EX_Scarf_Cream_Upper_Trim",
+      "EX_Scarf_Front_End",
+      "EX_Scarf_Cream_Check_0",
+      "EX_Scarf_Cream_Check_1",
+      "EX_Scarf_Gold_Fastening"
+    ],
+    "Arms_Pose": [
+      "EX_Left_Cream_Upper_Sleeve",
+      "EX_Left_Plum_Shoulder",
+      "EX_Left_Forearm_Sleeve",
+      "EX_Left_Plum_Sleeve_Band",
+      "EX_Left_Green_Cuff",
+      "EX_Left_Hand_Down",
+      "EX_Left_Thumb",
+      "EX_Right_Upper_Sleeve",
+      "EX_Right_Plum_Elbow",
+      "EX_Right_Raised_Forearm",
+      "EX_Right_Cream_Cuff",
+      "EX_Right_Hand_On_Strap",
+      "EX_Right_Grip_Thumb",
+      "EX_Right_Grip_Finger_0",
+      "EX_Right_Grip_Finger_1"
+    ],
+    "Legs_Boots": [
+      "EX_Left_Bare_Leg",
+      "EX_Left_Dark_Boot_Shaft",
+      "EX_Left_Boot_Sole",
+      "EX_Left_Boot_Foot",
+      "EX_Left_Pink_Toe",
+      "EX_Left_Toe_Cream_Trim",
+      "EX_Left_Pink_Boot_Wrap",
+      "EX_Left_Mint_Folded_Cuff",
+      "EX_Left_Cuff_Split",
+      "EX_Right_Bare_Leg",
+      "EX_Right_Dark_Boot_Shaft",
+      "EX_Right_Boot_Sole",
+      "EX_Right_Boot_Foot",
+      "EX_Right_Pink_Toe",
+      "EX_Right_Toe_Cream_Trim",
+      "EX_Right_Pink_Boot_Wrap",
+      "EX_Right_Mint_Folded_Cuff",
+      "EX_Right_Cuff_Split"
+    ],
+    "Backpack": [
+      "EX_Wood_Backpack",
+      "EX_Backpack_Dark_Side",
+      "EX_Backpack_Left_Edge",
+      "EX_Backpack_Bottom_Edge",
+      "EX_Backpack_Top_Flap",
+      "EX_Pack_Side_Cream_Patch_00",
+      "EX_Pack_Side_Cream_Patch_01",
+      "EX_Pack_Side_Cream_Patch_02",
+      "EX_Pack_Side_Cream_Patch_03",
+      "EX_Pack_Side_Cream_Patch_04",
+      "EX_Left_Backpack_Strap_0",
+      "EX_Left_Backpack_Strap_1",
+      "EX_Left_Backpack_Strap_2",
+      "EX_Left_Backpack_Strap_3",
+      "EX_Left_Backpack_Strap_4",
+      "EX_Left_Pack_Buckle_Frame",
+      "EX_Left_Pack_Buckle_Pin",
+      "EX_Right_Backpack_Strap_0",
+      "EX_Right_Backpack_Strap_1",
+      "EX_Right_Backpack_Strap_2",
+      "EX_Right_Backpack_Strap_3",
+      "EX_Right_Backpack_Strap_4",
+      "EX_Right_Pack_Buckle_Frame",
+      "EX_Right_Pack_Buckle_Pin",
+      "EX_Right_Wood_Hip_Pouch",
+      "EX_Pouch_Cream_Flap"
+    ]
+  },
+  "hair_revision": "Connected dark scalp, swept forehead tufts and twelve curved tapered locks; exposed ears and short nape"
+}
