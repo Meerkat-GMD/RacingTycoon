@@ -121,7 +121,7 @@ def build(module, out_root):
         entry = catalog.get(asset['id'])
         check_asset(asset, entry, owner)
         sprite_id = asset['id']
-        scene = c.setup_scene('UIS_' + sprite_id, rig, world, entry['canvas'], spec.SEED)
+        scene = c.thread_override(c.setup_scene('UIS_' + sprite_id, rig, world, entry['canvas'], spec.SEED))
         kit = toy_kit.Kit(sprite_id + '_')
         col = kit.collection(scene, 'UIS_' + sprite_id)
         module.build(asset, col, kit)

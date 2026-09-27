@@ -8,14 +8,15 @@ APPROVED = {0: ROOT / 'Art/Blender/GameCustomerFaceted/Customer_01_Faceted.png',
             2: ROOT / 'Art/Blender/GameCustomerFemaleExplorer/Customer_02_Explorer.png'}
 
 def rgba(path):
-    return np.asarray(Image.open(path).convert('RGBA'), dtype=np.int16)
+    with Image.open(path) as image:
+        return np.asarray(image.convert('RGBA'), dtype=np.int16)
 
 class CustomerSpriteTests(unittest.TestCase):
     def test_all_six_exist_with_canvas(self):
         for v in range(3):
             for x in ('Neutral', 'Angry'):
-                img = Image.open(OUT / ('Customer_V%d_%s.png' % (v, x)))
-                self.assertEqual((img.mode, img.size), ('RGBA', (164, 280)))
+                with Image.open(OUT / ('Customer_V%d_%s.png' % (v, x))) as img:
+                    self.assertEqual((img.mode, img.size), ('RGBA', (164, 280)))
 
     def test_approved_neutrals_are_pixel_identical(self):
         for v, path in APPROVED.items():

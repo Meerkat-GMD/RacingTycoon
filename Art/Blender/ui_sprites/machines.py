@@ -18,11 +18,17 @@ centre, so the size step between the tiers is real and the ground line matches o
 """
 import math
 import random
+import sys
+from pathlib import Path
+
+ART = Path(__file__).resolve().parents[1]
+if str(ART) not in sys.path:
+    sys.path.insert(0, str(ART))
+from ui_sprite_spec import SEED  # noqa: E402
 
 CATEGORY = 'machines'
 CAMERA = {'target': (0, 0, 1.16), 'scale': 2.86, 'yaw': -20, 'elevation': 15}
 SHADOW = {'anchor': (.07, .10, 0), 'radii': (.30, .068), 'max_alpha': .32}
-SEED = 260927
 TURN = math.pi/8  # rotates an 8-sided loft so one flat face points to the front (-Y)
 
 MACHINES = [

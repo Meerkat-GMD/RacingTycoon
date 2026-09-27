@@ -6,7 +6,7 @@ Spec: docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md, section "
 OutgameTraitsUI shows each icon at 42x42 on a 64 px category disc (84x84 canvas), at 55 %
 alpha while the node is unreachable. Every icon is one faceted toy object seen from yaw
 -8 deg and elevation 15 deg, without a shadow. Each camera frames the larger side of the
-silhouette at 70 % of the canvas (78 % for the long kart, megaphone, spinning stick and
+silhouette at 70 % of the canvas (78 % for the kart, megaphone, spinning stick and
 spoon, so they keep enough solid pixels).
 
 Colour rule: the disc colour comes from the node category in
@@ -47,7 +47,7 @@ ICONS = [
     ('Trait_PriceTag', 'price tag', ('flavor_price', 'location_price'), 'sales', (0.089, -0.018, 1.228), 1.745),
     ('Trait_Engine', 'engine', ('engine',), 'equipment', (0.016, -0.016, 1.2), 1.561),
     ('Trait_Handling', 'steering wheel', ('handling',), 'equipment', (0, 0, 1.25), 1.81),
-    ('Trait_Kart', 'classic kart', ('coupe',), 'equipment', (0.076, -0.031, 1.174), 2.059),
+    ('Trait_Kart', 'classic kart', ('coupe',), 'equipment', (-0.002, -0.013, 1.152), 2.025),
     ('Trait_StickSpeed', 'spinning stick with motion arcs', ('stick_speed',), 'production',
      (-0.02, 0.018, 1.305), 1.943),
     ('Trait_Spoon', 'measuring spoon', ('stick_saving', 'sugar_saving'), 'production',
@@ -387,27 +387,33 @@ def steering_wheel(col, kit):
 
 
 def kart(col, kit):
+    """Short classic go-kart on big wheels, turned three-quarter and tipped towards the camera
+    so it is nearly as tall as it is wide. Each wheel has a Plum tread around a Tire sidewall
+    and a large White hub, the seat is Wood and the chassis Plum, so no Navy or Tire part
+    carries the silhouette on ink."""
     before = set(col.objects)
-    kit.box(col, 'Chassis', (0, 0, -.22), (1.22, .56, .06), 'Navy', .015)
-    kit.box(col, 'Body', (-.08, 0, -.1), (.92, .5, .2), 'Strawberry', .04)
-    nose = [(.38, -.25, -.2), (.38, .25, -.2), (.38, .25, .0), (.38, -.25, .0),
-            (.74, -.17, -.2), (.74, .17, -.2), (.74, .17, -.12), (.74, -.17, -.12)]
+    kit.box(col, 'Chassis', (0, 0, -.19), (1.0, .6, .05), 'Plum', .015)
+    kit.box(col, 'Body', (-.08, 0, -.07), (.76, .5, .22), 'Strawberry', .05)
+    nose = [(.3, -.25, -.18), (.3, .25, -.18), (.3, .25, .04), (.3, -.25, .04),
+            (.64, -.17, -.18), (.64, .17, -.18), (.64, .17, -.1), (.64, -.17, -.1)]
     chamfer(kit.mesh(col, 'Nose', nose, [(0, 1, 2, 3), (4, 7, 6, 5), (0, 4, 5, 1), (1, 5, 6, 2), (2, 6, 7, 3),
                                          (3, 7, 4, 0)], 'Strawberry'), .02)
-    kit.box(col, 'Bumper', (.78, 0, -.18), (.08, .62, .07), 'Cream', .02)
-    kit.box(col, 'Seat_Back', (-.26, 0, .12), (.1, .34, .34), 'Navy', .03).rotation_euler.y = math.radians(-18)
-    kit.box(col, 'Seat', (-.14, 0, .02), (.3, .34, .08), 'Navy', .02)
-    kit.segment(col, 'Steering_Column', (.36, 0, -.02), (.16, 0, .22), .05, .05, 'Tire', .01)
-    ring(kit, col, 'Steering_Wheel', (.16, 0, .24), .1, .025, 'Tire', 10, 4, (0, math.radians(-70), 0))
-    kit.box(col, 'Engine', (-.5, .05, .02), (.2, .3, .2), 'Vanilla', .03)
-    cyl(kit, col, 'Exhaust', (-.64, .1, .06), .04, .14, 'Gold', 8, (0, math.pi/2, 0), .008)
-    cyl(kit, col, 'Number_Plate', (.05, -.26, -.1), .09, .02, 'Cream', 10, FRONT, 0)
-    for x in (-.42, .44):
-        for y in (-.36, .36):
-            tag = '%s%s' % ('R' if x < 0 else 'F', 'L' if y < 0 else 'R')
-            cyl(kit, col, 'Wheel_'+tag, (x, y, -.2), .2 if x < 0 else .17, .16, 'Tire', 12, FRONT, .03)
-            cyl(kit, col, 'Hubcap_'+tag, (x, y*1.24, -.2), .08, .03, 'Cream', 8, FRONT, .008)
-    group(col, kit, 'Kart_Pose', made_since(col, before), (0, 0, 0), (0, 0, -24))
+    kit.box(col, 'Bumper', (.68, 0, -.15), (.08, .66, .08), 'Cream', .02)
+    kit.box(col, 'Seat_Back', (-.27, 0, .17), (.1, .38, .38), 'Wood', .03).rotation_euler.y = math.radians(-18)
+    kit.box(col, 'Seat', (-.14, 0, .06), (.28, .38, .08), 'Wood', .02)
+    kit.segment(col, 'Steering_Column', (.3, 0, .02), (.14, 0, .25), .05, .05, 'Tire', .01)
+    ring(kit, col, 'Steering_Wheel', (.14, 0, .27), .12, .03, 'Tire', 10, 4, (0, math.radians(-70), 0))
+    kit.box(col, 'Engine', (-.47, .06, .04), (.2, .3, .22), 'Vanilla', .03)
+    cyl(kit, col, 'Exhaust', (-.61, .12, .08), .045, .14, 'Gold', 8, (0, math.pi/2, 0), .008)
+    cyl(kit, col, 'Number_Plate', (.04, -.26, -.07), .09, .02, 'Cream', 10, FRONT, 0)
+    for x, radius in ((-.36, .25), (.4, .21)):
+        for side in (-1, 1):
+            tag = '%s%s' % ('R' if x < 0 else 'F', 'L' if side < 0 else 'R')
+            cyl(kit, col, 'Wheel_'+tag, (x, side*.4, -.2), radius, .18, 'Plum', 12, FRONT, .03)
+            cyl(kit, col, 'Sidewall_'+tag, (x, side*.495, -.2), radius*.78, .03, 'Tire', 12, FRONT, .008)
+            cyl(kit, col, 'Hubcap_'+tag, (x, side*.515, -.2), radius*.5, .03, 'White', 8, FRONT, .008)
+    turned = group(col, kit, 'Kart_Turn', made_since(col, before), (0, 0, 0), (0, 0, -38))
+    group(col, kit, 'Kart_Tilt', [turned], (0, 0, 0), (14, 0, 0))  # shows the seat and deck from above
 
 
 def prism(kit, col, name, pts, z, height, material):

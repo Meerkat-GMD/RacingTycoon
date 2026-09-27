@@ -781,11 +781,11 @@
       "camera": {
         "yaw_deg": -8,
         "elevation_deg": 15,
-        "orthographic_scale": 2.059,
+        "orthographic_scale": 2.025,
         "target": [
-          0.076,
-          -0.031,
-          1.174
+          -0.002,
+          -0.013,
+          1.152
         ]
       },
       "shadow": null,
@@ -808,12 +808,17 @@
         "Trait_Kart_Hubcap_FR",
         "Trait_Kart_Hubcap_RL",
         "Trait_Kart_Hubcap_RR",
-        "Trait_Kart_Kart_Pose",
+        "Trait_Kart_Kart_Tilt",
+        "Trait_Kart_Kart_Turn",
         "Trait_Kart_Nose",
         "Trait_Kart_Number_Plate",
         "Trait_Kart_Pose",
         "Trait_Kart_Seat",
         "Trait_Kart_Seat_Back",
+        "Trait_Kart_Sidewall_FL",
+        "Trait_Kart_Sidewall_FR",
+        "Trait_Kart_Sidewall_RL",
+        "Trait_Kart_Sidewall_RR",
         "Trait_Kart_Steering_Column",
         "Trait_Kart_Steering_Wheel",
         "Trait_Kart_Wheel_FL",
@@ -837,9 +842,9 @@
           "specular_ior_level": 0.08
         },
         {
-          "name": "Trait_Kart_Navy",
-          "palette_name": "Navy",
-          "palette_srgb": "#29324D",
+          "name": "Trait_Kart_Plum",
+          "palette_name": "Plum",
+          "palette_srgb": "#6C577F",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         },
@@ -861,6 +866,20 @@
           "name": "Trait_Kart_Vanilla",
           "palette_name": "Vanilla",
           "palette_srgb": "#F9D27D",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_White",
+          "palette_name": "White",
+          "palette_srgb": "#FFF9ED",
+          "roughness": 0.85,
+          "specular_ior_level": 0.08
+        },
+        {
+          "name": "Trait_Kart_Wood",
+          "palette_name": "Wood",
+          "palette_srgb": "#D59C79",
           "roughness": 0.85,
           "specular_ior_level": 0.08
         }

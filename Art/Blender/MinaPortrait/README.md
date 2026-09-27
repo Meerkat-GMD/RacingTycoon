@@ -1,7 +1,8 @@
 # 미나 초상화 — Mina_Portrait
 
 준비 화면의 가게 친구 초상화(`Resources/Progression/NpcPortrait.png`의 페인팅)를 승인된 두 손님과 같은
-"파스텔 토이" 로우폴리 상반신 렌더로 바꾼 원본이다. 기준 문서는
+"파스텔 토이" 로우폴리 상반신 렌더로 바꾼 원본이다. 페인팅 파일은 커밋 `af2e25f`에서 삭제했다.
+`make_comparison.py`는 `git show e8e5987:Assets/CottonCircuit/Resources/Progression/NpcPortrait.png`로 읽는다. 기준 문서는
 `docs/superpowers/specs/2026-09-26-lowpoly-art-concept-design.md`이며, 공용 설정은 `../UI_SPRITES.md`를 따른다.
 
 - `create_mina.py`: 몸, 앞치마, 팔과 손, 솜사탕, 가게 배경을 만들고 검사·저장·렌더한다.
@@ -37,7 +38,7 @@ python Art/Blender/MinaPortrait/make_comparison.py
 
 - 남자 손님과 같은 작성 단위(얼굴 링 3.55–4.36)로 만들고 모든 오브젝트를 0.5배 해 공용 조명(목표점 (0,0,1.25))을 그대로 쓴다.
 - 재질은 `toy_kit.Kit('MN_')`만 쓴다: 팔레트 색, Principled BSDF, Roughness 0.85, Specular IOR Level 0.08. 이미지 텍스처, 윤곽선, 부드러운 셰이딩 없음.
-- 공용 `ui_sprite_common.studio()`, `setup_scene()`, `camera()`를 바꾸지 않고 쓴다: Cycles 64샘플, 노이즈 제거, 적응 샘플링 끔, seed 260927, Standard / None, 노출 -1.8, 감마 1.
+- 공용 `ui_sprite_common.studio()`, `setup_scene()`, `camera()`를 바꾸지 않고 쓰고, `thread_override()`로 `UI_SPRITE_THREADS`를 적용한다: Cycles 64샘플, 노이즈 제거, 적응 샘플링 끔, seed 260927, Standard / None, 노출 -1.8, 감마 1.
 - 카메라: 직교, 좌우 -20°, 내려다보기 15°, 목표 (0.02, 0, 1.72), 직교 크기 1.62.
 
 ## 미나의 구성
@@ -65,6 +66,7 @@ python Art/Blender/MinaPortrait/make_comparison.py
 
 ## 페인팅과 다른 점
 
-- 자홍 `#C2577E`은 명세가 정한 재질 기준색이라, 같은 조명에서 페인팅 머리의 평균색 `#9A535A`보다 밝고 분홍빛으로 보인다.
+- 자홍 `#C2577E`은 명세가 정한 재질 기준색이다. 같은 조명과 노출 -1.8에서 렌더된 머리의 평균색은 약 `#943E58`~`#9B425D`
+  (측정 영역에 따라 다름)로, 페인팅 머리의 평균색 `#9A535A`보다 조금 어둡고 채도가 높은 분홍빛으로 보인다.
 - 로우폴리 토이 비율(큰 머리) 때문에 어깨가 화면에서 차지하는 폭이 페인팅보다 좁다.
 - 유리 돔과 유리병은 투명 재질을 쓰지 않는 규칙에 따라 살 돔과 두 색 병으로 옮겼다.

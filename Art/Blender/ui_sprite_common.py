@@ -150,6 +150,14 @@ def setup_scene(name, rig, world, size, seed):
     scene.view_settings.exposure = EXPOSURE
     scene.view_settings.gamma = 1
     scene.render.threads_mode = 'FIXED'
+    scene.render.threads = 8  # the approved customer generators save their .blend with 8 threads
+    return scene
+
+
+def thread_override(scene):
+    """Apply UI_SPRITE_THREADS (default 8) to a scene from setup_scene(). Only the new UI sprite
+    builders call this (build_ui_sprites, MinaPortrait/create_mina); the approved customer
+    generators keep the fixed 8 threads whatever the environment says."""
     scene.render.threads = int(os.environ.get('UI_SPRITE_THREADS', '8'))
     return scene
 

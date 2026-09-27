@@ -1,6 +1,6 @@
 # 로우폴리 UI 스프라이트 교체 검증
 
-2026-09-27 · Unity 6000.5.3f1 · URP 17.5.0 · Blender 5.2.2 LTS · Python 3.13 · Windows · 기준 커밋 `18eabd1` (브랜치 `claude/lowpoly-ui-sprites`)
+2026-09-27 · Unity 6000.5.3f1 · URP 17.5.0 · Blender 5.2.2 LTS · Python 3.13 · Windows · 기준 커밋 `18eabd1` (브랜치 `claude/lowpoly-ui-sprites`), 최종 검토 뒤 `Trait_Kart` 재렌더 반영
 
 게임의 2D 그림은 세 가지 시각 언어가 섞여 있었다. 미나 초상화는 페인팅이었고, 가게·손님·제품·아이콘·지역 풍경은 `ShopArtGraphic`, `ShopStreetGraphic`, `ProgressionArtGraphic`이 코드로 그린 도형이었으며, 레이싱 화면만 파스텔 로우폴리 3D였다. 이번 작업은 [아트 명세](superpowers/specs/2026-09-26-lowpoly-art-concept-design.md)대로 이 그림 66장을 승인된 두 손님과 같은 "파스텔 토이" 로우폴리 렌더로 바꾸고, UI 배치와 게임 규칙은 그대로 두었다. 이 문서는 명세의 완료 기준 8개를 차례로 확인한 기록이다.
 
@@ -10,7 +10,8 @@
 - `SpriteImport`가 가져오기 설정(Sprite, 밉맵 없음, 알파 투명, 고품질 압축)을 강제한다. `SpriteCatalog`가 66장을 `GameAssets`에 연결하고, `IntegrationChecks`가 연결을 검사한다.
 - 런타임은 `UiArt`로 스프라이트를 찾는다. 손님·가게 외관·거리 배경·감정 표시는 `StreetSprite`(Image)로, 솜사탕·포장 솜사탕·설탕 봉지·쓰레기통은 `Image`를 상속한 `ShopArtGraphic`으로, 준비 화면의 기계·지역·특성 아이콘·초상화는 `Image`로 그린다. 표시 위치와 크기, 화남 상태와 맛·크기에 따른 선택, 달린 거리에 따른 솜사탕 크기 변화(막대 아래 끝 기준), 진열대 매듭 위치(`ClipPoint`)는 그대로다.
 - 도형 그리기 코드와 `Resources/Progression/NpcPortrait.png`를 삭제했다. 말풍선, 특성 원판, 진열대 철사, 미니맵, 성장 지도 연결선, 속도선은 명세대로 UI 도형으로 남겼다. 말풍선은 색만 팔레트(White `#FFF9ED`, Navy·Strawberry 테두리)에 맞췄다.
-- 작업 10 이후 아트 다듬기(커밋 `cde2568`..`18eabd1`)에서 포장 솜사탕의 셀로판, 바닐라 솜, 어린이 손님의 머리·눈썹, 화남 표시, 영업 구도의 아래 띠, 아이콘 5종을 고쳤다. 이 문서의 캡처는 모두 다듬은 뒤의 빌드로 찍었다.
+- 작업 10 이후 아트 다듬기(커밋 `cde2568`..`18eabd1`)에서 포장 솜사탕의 셀로판, 바닐라 솜, 어린이 손님의 머리·눈썹, 화남 표시, 영업 구도의 아래 띠, 아이콘 5종을 고쳤다. 이 문서의 캡처는 모두 다듬은 뒤의 빌드(`Builds/SpritesFinal`)로 찍었다.
+- 최종 검토 뒤 가장 약했던 `Trait_Kart`(알파 128 이상 면적 16.5%, 42px에서 약 32×17px, 단단한 픽셀의 44%가 잉크와 색차 15 이내)를 다시 만들었다. 짧은 차체와 큰 바퀴를 3/4로 돌리고 위로 기울여 84×84 캔버스에서 64×46px(면적 22.7%)로 키웠고, 바퀴는 Plum 트레드·Tire 옆면·White 허브, 좌석은 Wood, 차대는 Plum으로 바꿔 잉크 근처 픽셀을 27%로 줄였다. 다른 아이콘 22장은 바이트 단위로 그대로다. 이 한 장을 반영한 빌드 `Builds/SpritesFinal2`에서 에디터 검사와 성장 스모크를 다시 돌렸다(`Logs/SpritesFinal2-build.log`, `Logs/SpritesFinal2-progression`). 카트 아이콘이 보이는 캡처는 `15-tree-kart` 한 장이며, 영업·레거시 스모크는 이 아이콘을 쓰지 않아 다시 돌리지 않았다.
 
 ## 완료 기준별 결과
 
@@ -19,8 +20,8 @@
 | 1 | `validate_ui_sprites.py` 통과 | 통과, 66/66 | `UI_SPRITES_VALID 66/66`, `Art/Blender/ui-sprites-validation.json` |
 | 2 | 모든 그림이 스프라이트로 표시되고 대체된 그리기 코드가 없음 | 통과 | 아래 grep 결과, 게임 캡처 대응표 |
 | 3 | 에디터 검증에서 스프라이트 참조 연결 | 통과, 스프라이트 검사 14개 포함 98개 | `Logs/SpritesFinal-build.log` |
-| 4 | 준비 화면 세 페이지와 영업 화면의 1600×900·1280×720 교체 전후 비교 | 통과, 겹침·잘림·크기 변화 없음 | 캡처 비교표, 비교 이미지 2장 |
-| 5 | 실제 표시 크기의 밝은 배경·잉크 배경 가독성, 최종 판단은 게임 캡처 | 통과, 약점은 아래에 기록 | 1× 잘라내기 비교 이미지 2장, `Art/Blender/previews/all.png` |
+| 4 | 준비 화면 세 페이지와 영업 화면의 1600×900·1280×720 교체 전후 비교 | 통과(예외 1건). 그림 칸의 위치·크기는 그대로이고 겹침·잘림이 없다. 1280×720 오늘의 장사(`26-locations-1280`)는 교체 전 캡처가 없어 교체 후 캡처와 칸 크기 측정으로 확인했다(471×283, 1600×900의 588×354의 0.8배). 칸 안 그림의 크기 차이는 4절 | 캡처 비교표, 비교 이미지 2장, 칸 크기 측정 |
+| 5 | 실제 표시 크기의 밝은 배경·잉크 배경 가독성, 최종 판단은 게임 캡처 | 통과, 약점은 아래에 기록. 게임에는 잉크 배경이 없어 잉크 쪽은 검토 보드로만 판단했다 | 1× 잘라내기 비교 이미지 2장(게임 캡처), 잉크·원판 배경은 `Art/Blender/previews/all.png`(`preview_ui_sprites.py`로 만드는 생성물, git 제외)와 저장소의 분류별 보드 `previews/<분류>.png` |
 | 6 | 레이싱 화면 옆 영업 화면이 같은 게임으로 보임 | 통과 | 1600×900 분할 화면 캡처 |
 | 7 | 기존 테스트와 플레이 스모크 통과 | 통과 | 검사 표 |
 | 8 | README의 Blender 원본 목록 갱신 | 통과 | `README.md` Blender 원본 절 |
@@ -33,14 +34,14 @@ UI_SPRITES_VALID 66/66
 Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 ```
 
-보고서의 오류와 참고 메시지는 0건이다. 분류 목록 파일 5개(`items`, `shop`, `locations`, `machines`, `icons`)의 렌더 설정·팔레트·재질 레시피가 기준과 같고, 스프라이트 폴더에 카탈로그 밖 PNG는 없다. 투명 스프라이트의 가장자리 투명 여백은 최소 5px(`BaggedCandy_Soda_Large`)로 규칙(2px 이상)을 지키고, 알파 128 이상 면적은 16.5%(`Trait_Kart`)에서 77.6%(`Storefront`) 사이다. 지역 풍경 8장과 초상화는 모든 픽셀이 불투명하다. 접지 그림자가 있는 32장은 모두 beauty 패스의 불투명 픽셀과 같다(바뀐 픽셀 0).
+보고서의 오류와 참고 메시지는 0건이다. 분류 목록 파일 5개(`items`, `shop`, `locations`, `machines`, `icons`)의 렌더 설정·팔레트·재질 레시피가 기준과 같고, 스프라이트 폴더에 카탈로그 밖 PNG는 없다. 투명 스프라이트의 가장자리 투명 여백은 최소 5px(`BaggedCandy_Soda_Large`)로 규칙(2px 이상)을 지키고, 알파 128 이상 면적은 17.6%(`Trait_StickSpeed`)에서 77.6%(`Storefront`) 사이다(최종 수정 전에는 `Trait_Kart`가 16.5%로 가장 작았고, 재렌더 뒤 22.7%다). 지역 풍경 8장과 초상화는 모든 픽셀이 불투명하다. 접지 그림자가 있는 32장은 모두 beauty 패스의 불투명 픽셀과 같다(바뀐 픽셀 0).
 
 승인된 두 손님의 기본 스프라이트가 승인 PNG와 같은지는 단위 시험(`test_approved_neutrals_are_pixel_identical`)과 Blender 렌더 동일성 시험으로 확인했다. 동일성 시험은 남자·여자 모두 `RENDER_IDENTITY max_abs_diff=0 differing_pixels=0`이고, 호환 래퍼 경로도 같은 결과다.
 
 ### 2. 삭제한 그리기 코드
 
 ```
-> grep -rnwE "..." --include=*.cs Assets/CottonCircuit/Scripts | grep -E "void (DrawCustomer|DrawStorefront|DrawBackdrop|DrawHeartEmote|DrawAngryEmote|Person|Bag|Bin|BaggedCandy|FluffyCotton|PaperStick|Jar|Portrait|Scene|Quad|Triangle|Lobe|Puff|Candy)\b"
+> grep -rnE "void (DrawCustomer|DrawStorefront|DrawBackdrop|DrawHeartEmote|DrawAngryEmote|Person|Bag|Bin|BaggedCandy|FluffyCotton|PaperStick|Jar|Portrait|Scene|Quad|Triangle|Lobe|Puff|Candy)\b" --include=*.cs Assets/CottonCircuit/Scripts
 (결과 없음, 종료 코드 1)
 > grep -rn "NpcPortrait\|Resources.Load" --include=*.cs Assets/
 (결과 없음, 종료 코드 1)
@@ -48,7 +49,7 @@ Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 
 `Assets/CottonCircuit/Resources/` 폴더도 없다. `OnPopulateMesh`가 남은 클래스는 명세가 유지하라고 한 기능 그래픽뿐이다: `CandyRackGraphic`(진열대 철사), `ProgressionArtGraphic`(특성 원판 `disc`만), `RaceMapGraphic`(미니맵), `ShopStreetGraphic`(말풍선만), `SpeedLinesGraphic`(속도선), `UpgradeGraphGraphic`(성장 지도 연결선).
 
-교체 대상 표의 그림은 다음 캡처에서 스프라이트로 확인했다. 성장 스모크 캡처는 `Logs/SpritesFinal-progression`, 영업 스모크 캡처는 `Logs/SpritesFinal-shift`에 있다.
+교체 대상 표의 그림은 다음 캡처에서 스프라이트로 확인했다. 성장 스모크 캡처는 `Logs/SpritesFinal-progression`, 영업 스모크 캡처는 `Logs/SpritesFinal-shift`에 있다. 재렌더한 `Trait_Kart`는 `Logs/SpritesFinal2-progression/15-tree-kart`에서 확인했다.
 
 | 교체 대상 | 스프라이트 | 확인한 캡처 |
 |---|---|---|
@@ -62,10 +63,10 @@ Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 | 쓰레기통 | `Trash` | 모든 영업 캡처 |
 | 감정 표시 | `Emote_Heart`, `Emote_Angry` | 영업 `12-customer-heart`, `04-angry`, `13-customer-timeout` |
 | 기계 | `Machine_0/1/2` | 성장 `06-equipment`, `10-equipment-1280` |
-| 특성 아이콘 | 23장, 특성 31칸 | 성장 `01-preparation`, `11-tree-production`, `12-tree-machines`, `13-tree-staff`, `14-tree-sales`, `15-tree-kart` |
+| 특성 아이콘 | 23장, 특성 31칸 | 성장 `01-preparation`, `11-tree-production`, `12-tree-machines`, `13-tree-staff`, `14-tree-sales`, `15-tree-kart`(`Trait_Kart`는 `SpritesFinal2`의 캡처. 스모크에서 이 칸은 잠긴 상태라 55% 알파로만 찍힌다) |
 | 미나 초상화 | `Mina_Portrait` | 모든 준비 화면 캡처. 성장 스모크가 `CompanionPortrait`의 스프라이트 이름을 검사한다 |
 
-스모크가 거치지 않아 캡처에 없는 스프라이트는 `Location_1/2_Prep`, `Location_1/2_Street`, `Customer_V2_Angry`, 잠긴 기계(35% 알파) 상태다. 이 스프라이트들은 `GameAssets` 연결 검사와 `Art/Blender/previews/` 보드로만 확인했다.
+스모크가 거치지 않아 캡처에 없는 스프라이트는 `Location_1/2_Prep`, `Location_1/2_Street`, `Customer_V2_Angry`, 잠긴 기계(35% 알파) 상태, 열린 `Trait_Kart`(원판 위 100% 알파)다. 이 스프라이트들은 `GameAssets` 연결 검사와 `Art/Blender/previews/` 보드로만 확인했다.
 
 ### 3. 에디터 검사
 
@@ -96,11 +97,13 @@ Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 
 ![1280×720 교체 전후: 성장 지도, 기계와 레시피, 오늘의 장사(새 캡처), 영업 화면](screenshots/lowpoly-sprites-prep-1280.png)
 
-1280×720의 오늘의 장사 페이지(`26-locations-1280`)는 작업 10에서 추가한 캡처라 교체 전 짝이 없다. 별빛 광장 풍경과 초상화가 칸 안에 온전히 들어가고, 장소 카드와 영업 시작 버튼과 겹치지 않는다. 1280×720 영업 화면은 성장 스모크에 없어 영업 스모크의 `06-shop-1280x720`으로 비교했다. 레거시 스모크의 1280×960, 1920×820 가게 캡처는 교체 전과 픽셀이 같다. 영업 스모크의 1280×960, 1920×820 캡처도 그림 칸만 바뀌었다.
+1280×720의 오늘의 장사 페이지(`26-locations-1280`)는 작업 10에서 추가한 캡처라 교체 전 짝이 없다. 그래서 이 페이지는 교체 전후 비교가 아니라 교체 후 캡처와 측정으로 판단했다. 풍경 칸(`LocationScenery`)은 471×283px로 1600×900의 588×354를 0.8배 한 크기이고, 별빛 광장 풍경과 초상화가 칸 안에 온전히 들어가며, 장소 카드와 영업 시작 버튼과 겹치지 않는다. 1280×720 영업 화면은 성장 스모크에 없어 영업 스모크의 `06-shop-1280x720`으로 비교했다. 레거시 스모크의 1280×960, 1920×820 가게 캡처는 교체 전과 픽셀이 같다. 영업 스모크의 1280×960, 1920×820 캡처도 그림 칸만 바뀌었다.
+
+표의 "크기 변화 없음"은 그림 칸(UI 사각형)의 위치와 크기에 대한 판단이다. 칸 안에 보이는 그림 내용의 크기는 교체 전과 다르다. 승인 PNG와 픽셀이 같아야 하는 V0·V2 손님은 캔버스 280줄 중 24~262줄(85%)만 차지해, 칸 높이를 거의 다 채우던 교체 전 그림보다 약 15% 작고, 어린이 V1은 캔버스 높이의 64%다. 진열대 봉지는 칸 너비를 더 채워 12칸 진열대에서 이웃 봉지와 거의 닿는다. 생산 패널의 솜사탕은 막대 아래 끝을 기준으로 커지므로 0바퀴에서는 칸 아래쪽에 절반 크기로 보인다. 모두 승인 PNG 동일성과 명세의 기준점 규칙에서 나온 결과이며, 겹침이나 잘림은 없다.
 
 ### 5. 가독성
 
-게임 캡처의 1× 픽셀을 그대로 잘라 교체 전과 나란히 놓았다. 판단은 이 이미지와 원본 캡처로 했다.
+게임 캡처의 1× 픽셀을 그대로 잘라 교체 전과 나란히 놓았다. 판단은 이 이미지와 원본 캡처로 했다. 준비 화면 이미지의 `15-tree-kart` 행만 재렌더한 `Trait_Kart`를 담은 `Logs/SpritesFinal2-progression`의 캡처다.
 
 ![영업 화면 1× 잘라내기: 거리, 화난 손님, 진열대, 설탕 봉지, 생산 패널, 끌기](screenshots/lowpoly-sprites-shop-1x.png)
 
@@ -114,10 +117,10 @@ Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 - **설탕 봉지·쓰레기통:** 맛 카드 색 위에서 딸기, 소다 거품, 바닐라 꽃 문양이 읽힌다. 쓰레기통은 민트 카드 위에서 뚜껑과 통이 구분된다.
 - **감정 표시:** 흰 말풍선 안에서 하트와 화남 기호가 선명하다.
 - **기계:** 흰 카드 위에서 크기, 색, 거품 돔, 별 장식으로 세 등급이 구분된다.
-- **특성 아이콘:** 분류 원판 6색 위에서 31칸 모두 형태가 읽힌다. 아직 열 수 없는 칸은 교체 전과 같은 규칙으로 55% 알파가 되어 흐린 회색 원판 위에서 대비가 약하다. 이는 의도한 비활성 표시다.
+- **특성 아이콘:** 분류 원판 6색 위에서 31칸 모두 형태가 읽힌다. 아직 열 수 없는 칸은 교체 전과 같은 규칙으로 55% 알파가 되어 흐린 회색 원판 위에서 대비가 약하다. 이는 의도한 비활성 표시다. `Trait_Kart`는 최종 검토에서 가장 약한 아이콘(가로로 길고 낮아 42px에서 약 32×17px, 잉크 위에서 바퀴가 사라짐)으로 지적되어 다시 렌더했다. 게임 캡처(`15-tree-kart`)에는 잠긴 55% 알파 상태만 있으며, 새 아이콘은 이 상태에서 교체 전보다 크고 바퀴·좌석이 보인다. 장비 원판(`#B8D9CC`) 위 100% 알파, 크림, 잉크 배경의 모습은 `Art/Blender/previews/icons.png`로만 확인했다.
 - **지역 풍경·초상화:** 칸을 꽉 채우고, 1280×720에서도 잘리지 않는다. `Location_3_Street`의 관람차는 영업 중 두 번째 말풍선에 대부분 가려진다.
 
-게임 화면에는 스프라이트가 잉크색 위에 놓이는 곳이 없다. 그래서 잉크 배경은 `Art/Blender/previews/all.png`(모든 스프라이트의 2배 캔버스와 실제 표시 크기를 크림·잉크·특성 원판 6색 위에 놓은 보드)로 확인했다. 모든 스프라이트의 형태가 읽히고, 약점은 `Machine_0/1`의 Tire 받침과 몇몇 아이콘의 Navy 부품이 잉크와 비슷하다는 점이다. 이 보드는 sRGB에서 알파를 섞고 Unity는 선형 공간에서 섞는다. 두 방식은 완전히 불투명한 픽셀에서는 같고, 부분 투명 픽셀(그림자, 가장자리, 셀로판)만 다르다. 투명 스프라이트 57장을 2배 캔버스에서 두 방식으로 잉크 위에 합성해 보니, 부분 투명 픽셀의 평균 차이가 스프라이트별 중앙값 5.4, 최대 12.3단계(0~255)였다. 형태 판단을 뒤집을 만한 차이는 아니다.
+게임 화면에는 스프라이트가 잉크색 위에 놓이는 곳이 없다. 그래서 잉크 배경은 `Art/Blender/previews/all.png`(모든 스프라이트의 2배 캔버스와 실제 표시 크기를 크림·잉크·특성 원판 6색 위에 놓은 보드)로 확인했다. 모든 스프라이트의 형태가 읽히고, 약점은 `Machine_0/1`의 Tire 받침과 몇몇 아이콘의 Navy 부품이 잉크와 비슷하다는 점이다. `Trait_Kart`는 재렌더에서 바퀴를 Plum 트레드와 White 허브로, 좌석을 Wood로 바꿔 잉크 위에서도 바퀴가 보이게 했다. 이 보드는 sRGB에서 알파를 섞고 Unity는 선형 공간에서 섞는다. 두 방식은 완전히 불투명한 픽셀에서는 같고, 부분 투명 픽셀(그림자, 가장자리, 셀로판)만 다르다. 투명 스프라이트 57장을 2배 캔버스에서 두 방식으로 잉크 위에 합성해 보니, 부분 투명 픽셀의 평균 차이(픽셀별 가장 큰 채널 차이)가 스프라이트별 중앙값 5.4, 최대 12.3단계(0~255)였다. `Trait_Kart` 재렌더 뒤에 다시 재도 같은 값이다. 형태 판단을 뒤집을 만한 차이는 아니다.
 
 ### 6. 레이싱 화면과 영업 화면
 
@@ -131,6 +134,7 @@ Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 |---|---|---|---|
 | Unity 에디터·씬·저장 검사 | 84개 통과 | 98개 통과 | `Logs/SpritesBaseline-build.log`, `Logs/SpritesFinal-build.log` |
 | 성장 개발 플레이어 | 430개 통과 | 434개 통과 | `Logs/SpritesBaseline-progression`, `Logs/SpritesFinal-progression` |
+| `Trait_Kart` 재렌더 뒤 빌드(`Builds/SpritesFinal2`) | — | 에디터 검사 98개, 성장 434개 통과 | `Logs/SpritesFinal2-build.log`, `Logs/SpritesFinal2-progression` |
 | 영업 모드 개발 플레이어 | 3223개 통과 | 3319개 통과 | `Logs/SpritesBaseline-shift`, `Logs/SpritesFinal-shift` |
 | 레거시 개발 플레이어 | 625개 통과 | 625개 통과 | `Logs/SpritesBaseline-legacy`, `Logs/SpritesFinal-legacy` |
 | `Tools/test-*.ps1` 16개 | — | 모두 종료 코드 0, 실패 0 | `Logs/SpritesFinal-test-*.txt` |
@@ -140,20 +144,21 @@ Report: D:\UnityProjects\RacingTycoon\Art\Blender\ui-sprites-validation.json
 
 - 성장 +4는 작업 10에서 추가한 오늘의 장사 1280×720 캡처(페이지 이동 확인 3개와 캡처 픽셀 확인 1개)다.
 - 영업 +96은 작업 10에서 추가한 확인이다. 자라는 솜사탕이 막대 아래 끝을 기준으로 커지는지 1개, 진열대 봉지의 매듭이 고정 위치(`ClipPoint`)에 놓이는지 95개다.
-- 세 스모크의 `player.log`에 예외는 0건이다(교체 전도 0건).
+- 세 스모크의 `player.log`에 예외는 0건이다(교체 전도 0건). `SpritesFinal2` 성장 스모크의 `player.log`도 0건이다.
+- `SpritesFinal`과 `SpritesFinal2`의 성장 캡처 26장을 비교하면, 아이콘 때문에 바뀐 곳은 `15-tree-kart`의 카트 칸(x 554~585, y 664~686, 채널 차이 8 초과 342px)뿐이다. `06-equipment`, `10-equipment-1280`, `21`·`22`·`24`, `26-locations-1280`의 차이는 4절에 적은 것과 같은 실행 시점 차이(버튼 색 전환, 미나의 임시 대사)다.
 - `Tools/test-*.ps1` 16개는 acceleration 17, booster 11, collection 9, continuous 22, core 22·33·14, feel 28, maps 37, progression 16, progression-maps 3, progression-save 20, progression-shift 458, recipes 17, shop-shift 46, sugar-shake 23, trait-icons 6, upgrade-tree-layout 15건이 모두 통과했다.
 
 ### 8. README
 
-`README.md`의 "Blender 원본" 절을 고쳤다. 초기 샘플(`UiSprites.blend`, `ui-sprites-preview.png`, `ui-sprites-native.png`, `audit_ui_sprite_scene.py`)과 승인하지 않은 `GameCustomerFemaleFaceted` 줄을 지우고, 여자 탐험가 설명을 현재 승인본(곡선형 머리카락, 작은 점 눈)에 맞췄다. 새 파이프라인 파일, 분류 모듈, 손님 세 폴더, `MinaPortrait/`, `Assets/CottonCircuit/Sprites/`를 추가하고 PNG가 `GameAssets`로 UI에 연결되어 있다고 적었다. 같은 작업에서 [UI 스프라이트 안내](../Art/Blender/UI_SPRITES.md)의 최종 수치와 명세의 "파일 구조", "승인본과 비교 보드 재생성" 절도 실제 파일에 맞췄고, 명세의 비교 보드 두 장을 새 스프라이트와 어린이 손님을 넣어 다시 만들었다.
+`README.md`의 "Blender 원본" 절은 `461aae2` 대비 11줄이 늘었고 지운 줄은 없다(`git diff 461aae2..HEAD -- README.md`). 새 파이프라인 파일, 분류 모듈, 손님 세 폴더, `MinaPortrait/`, `Assets/CottonCircuit/Sprites/`를 추가하고 PNG가 `GameAssets`로 UI에 연결되어 있다고 적었다. 초기 샘플(`UiSprites.blend`, `ui-sprites-preview.png`, `ui-sprites-native.png`, `audit_ui_sprite_scene.py`)과 승인하지 않은 `GameCustomerFemaleFaceted`를 적은 줄은 Codex가 작업 트리에 남긴 커밋하지 않은 초안에만 있었고, 그 초안은 커밋하지 않고 버렸다. 최종 수정에서 패스·검사 보고서·검토 보드·확대 렌더의 위치를 한 줄로 더하고, `previews/all.png`가 git에서 제외된 생성물임을 적었다. 같은 작업에서 [UI 스프라이트 안내](../Art/Blender/UI_SPRITES.md)의 최종 수치와 명세의 "파일 구조", "승인본과 비교 보드 재생성" 절도 실제 파일에 맞췄고, 명세의 비교 보드 두 장을 새 스프라이트와 어린이 손님을 넣어 다시 만들었다.
 
 ## 알려진 한계
 
 - **솜사탕 회전 연출:** 달린 거리에 따라 솜사탕 실이 돌던 연출은 정지 스프라이트로 바뀌면서 사라졌다. 명세의 "이후 과제"에 적힌 대로다. 크기가 커지는 연출은 유지된다.
 - **바닐라 솜의 색:** 바닐라 솜은 빛을 받는 면이 금색 Vanilla `#F9D27D`로, 그늘진 면이 Cream으로 렌더된다. 공용 팔레트에 옅은 노랑이 없어서, 게임 크기에서 교체 전의 연노랑보다 캐러멜에 가깝게 보인다. 새 색을 추가하지 않고 이대로 두었다.
 - **이음매 벽 변경은 별개다:** 작업 트리에 커밋하지 않은 `Assets/CottonCircuit/Scripts/Core/ArcadeDrive.cs`, `RaceCourse.cs`, `Tools/Tests/MapTests.cs`의 이음매 벽 충돌 수정이 있다. 이번 작업의 변경이 아니며, 파일 수정 시각(2026-09-27 00:01~00:34)이 베이스라인 빌드(08:00)보다 앞서므로 교체 전과 교체 후 빌드에 모두 들어 있다. 레거시 스모크의 레이싱·분할 화면 차이(평균 최대 1.86, 변경 최대 7.5%)는 자동 주행 캡처 시점의 차이다. 결과 화면의 3D 솜사탕 모양과 차량 위치만 조금 다르고 숫자와 UI는 같다. 스프라이트를 쓰지 않는 레거시 가게 캡처는 교체 전과 같다. 스프라이트 작업이 없던 베이스라인과 작업 9 빌드 사이에도 같은 종류의 차이(평균 최대 0.54, 변경 최대 5.6%)가 있었다.
-- **캡처가 없는 상태:** `Location_1/2`의 준비·영업 구도, `Customer_V2_Angry`, 잠긴 기계는 스모크가 지나가지 않아 게임 캡처로 판단하지 못했고 검토 보드로만 확인했다.
-- **다듬을 여지:** 최종 검토로 넘긴 작은 아트 항목이 남아 있다. 포장 솜사탕 셀로판의 회색 기운, `Location_3_Street` 관람차가 말풍선에 가려지는 문제, 잉크 배경에서 `Machine_0/1`의 Tire 받침, 화남 표시의 작은 Navy 김이 그것이다. 모두 형태 판단에는 영향이 없다.
+- **캡처가 없는 상태:** `Location_1/2`의 준비·영업 구도, `Customer_V2_Angry`, 잠긴 기계, 열린 `Trait_Kart`는 스모크가 지나가지 않아 게임 캡처로 판단하지 못했고 검토 보드로만 확인했다.
+- **다듬을 여지:** 최종 검토로 넘긴 작은 아트 항목이 남아 있다. 포장 솜사탕 셀로판의 회색 기운, `Location_3_Street` 관람차가 말풍선에 가려지는 문제, 잉크 배경에서 `Machine_0/1`의 Tire 받침이 그것이다. 모두 형태 판단에는 영향이 없다.
 
 ## 재현
 
@@ -168,6 +173,11 @@ Get-ChildItem Tools/test-*.ps1 | ForEach-Object { & $_.FullName }
 ./Tools/verify-progression.ps1 -BuildFolder Builds/SpritesFinal -OutputFolder Logs/SpritesFinal-progression
 ./Tools/verify-player.ps1 -BuildFolder Builds/SpritesFinal -OutputFolder Logs/SpritesFinal-shift -ShopShift
 ./Tools/verify-player.ps1 -BuildFolder Builds/SpritesFinal -OutputFolder Logs/SpritesFinal-legacy
+# 최종 수정: Trait_Kart만 다시 렌더하고 성장 스모크를 다시 돌린다
+$env:UI_SPRITE_THREADS = '4'
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/build_ui_sprites.py -- --category icons --only Trait_Kart
+./Tools/build.ps1 -BuildFolder Builds/SpritesFinal2
+./Tools/verify-progression.ps1 -BuildFolder Builds/SpritesFinal2 -OutputFolder Logs/SpritesFinal2-progression
 python Tools/compare-captures.py Logs/SpritesBaseline-progression Logs/SpritesFinal-progression Logs/SpritesFinal-compare-progression
 python Tools/compare-captures.py Logs/SpritesBaseline-shift Logs/SpritesFinal-shift Logs/SpritesFinal-compare-shift
 python Tools/compare-captures.py Logs/SpritesBaseline-legacy Logs/SpritesFinal-legacy Logs/SpritesFinal-compare-legacy
@@ -175,7 +185,7 @@ python Tools/compare-captures.py Logs/SpritesBaseline-progression Logs/SpritesFi
 python Tools/compare-captures.py Logs/SpritesBaseline-shift Logs/SpritesFinal-shift Logs/SpritesFinal-regions-shift --threshold 8 --regions
 ```
 
-교체 전 캡처는 스프라이트를 연결하기 전 커밋 `b3b88bf`의 빌드(`Builds/SpritesBaseline`)에서 같은 스모크 명령으로 만든다. 이 문서의 비교 이미지는 `compare-captures.py --board`로 만들었다. 예를 들어 1600×900 비교는 다음과 같다. 나머지 세 장도 각 행 제목에 원본 파일과 잘라내기 영역이, 이미지 제목에 축소 비율이 적혀 있다.
+교체 전 캡처는 스프라이트를 연결하기 전 커밋 `b3b88bf`의 빌드(`Builds/SpritesBaseline`)에서 같은 스모크 명령으로 만든다. 이 문서의 비교 이미지는 `compare-captures.py --board`로 만들었다. 예를 들어 1600×900 비교는 다음과 같다. 나머지 세 장도 각 행 제목에 원본 파일과 잘라내기 영역이, 이미지 제목에 축소 비율이 적혀 있다. `lowpoly-sprites-prep-1x.png`는 `15-tree-kart` 행의 교체 후 캡처만 `Logs/SpritesFinal2-progression`에서 가져와 다시 만들었고, 다른 행은 이전과 픽셀이 같다.
 
 ```powershell
 $b = 'Logs/SpritesBaseline-progression'; $a = 'Logs/SpritesFinal-progression'

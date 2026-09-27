@@ -28,13 +28,13 @@
 - **화난 얼굴:** 화남 스프라이트에만 Navy 눈썹 조각 두 개를 눈 위에 안쪽이 내려가게 기울여 넣고, 입은 아래로 처진 짧은 선으로 바꾼다. 게임 크기에서 눈썹이 한 픽셀 두께 이상으로 보여야 한다. 기본 스프라이트와 같은 모델·카메라·자세를 쓰고 얼굴 표시 조각만 바꾼다. 노이즈 제거기가 넓은 영역을 함께 처리하므로 얼굴 밖 픽셀은 채널당 8 이하의 미세한 차이만 허용한다.
 - **출력:** 두 캐릭터 모두 표시 82×140, 투명 RGBA PNG 164×280이다. 같은 카메라의 `-large.png` 656×1120은 확대 검토용이며 게임 표시 크기를 바꾸는 기준이 아니다.
 
-아래 보드는 승인된 두 캐릭터의 확대 모습과 실제 표시 크기 82×140을 크림 배경 `#FFF6E7`과 잉크 배경 `#29324D`에서 비교한다. 배경의 `#FFF6E7`은 가독성 확인용 색이며 캐릭터 재질의 Cream `#FFF1D4`와 구분한다.
+아래 첫 보드는 승인된 남자·여자 손님과 어린이 손님(`V1`)의 확대 렌더, 게임 스프라이트 `CottonCandy_Strawberry_Medium`(156×176)과 `Trait_Hours`(84×84) 캔버스를 2배로 키운 모습을 보여 주고, 다섯 그림의 실제 표시 크기(손님 82×140, 솜사탕 77×88, 아이콘 42×42)를 크림 배경 `#FFF6E7`과 잉크 배경 `#29324D`에서 비교한다. 배경의 `#FFF6E7`은 가독성 확인용 색이며 캐릭터 재질의 Cream `#FFF1D4`와 구분한다.
 
-![승인된 남자·여자 캐릭터의 확대 및 실제 표시 크기 비교](../../screenshots/art-concept-lowpoly-test.png)
+![승인된 남자·여자 손님, 어린이 손님, 솜사탕과 벽시계 아이콘의 확대 및 실제 표시 크기 비교](../../screenshots/art-concept-lowpoly-test.png)
 
-아래 보드는 왼쪽에 기존 레이싱 캡처, 오른쪽에 승인된 두 캐릭터를 배치해 스타일을 비교한다. 두 보드는 아트 방향을 확인하는 자료이며 Unity에 두 캐릭터가 적용된 플레이 화면은 아니다.
+아래 둘째 보드는 왼쪽에 기존 레이싱 캡처, 오른쪽에 세 손님(남자, 여자 탐험가, 어린이)을 배치해 스타일을 비교한다. 두 보드는 아트 방향을 확인하는 자료이며 Unity 플레이 화면은 아니다. 게임에 적용한 화면은 `docs/lowpoly-sprites-verification.md`에 있다.
 
-![기존 레이싱 화면과 승인된 남자·여자 캐릭터 비교](../../screenshots/art-concept-vs-racing.png)
+![기존 레이싱 화면과 세 손님 비교](../../screenshots/art-concept-vs-racing.png)
 
 ## 목표와 범위
 - 2D 화면에 쓰이는 그림을 모두 같은 로우폴리 스타일의 사전 렌더 스프라이트로 바꾼다.
@@ -174,7 +174,7 @@ Blender에서 사전 렌더링한 PNG를 Unity 스프라이트로 쓴다.
 - `Art/Blender/ui-sprite-passes/<분류>/`: 접지 그림자 합성 전의 렌더 패스다.
 - `Art/Blender/validate_ui_sprites.py`: 카탈로그와 실제 PNG·목록 파일을 대조해 개수, 크기, 투명 여백, 불투명 배경, 목록 파일의 렌더 설정과 팔레트를 검사한다. `--complete`는 66장이 모두 있어야 통과하며, 결과는 `Art/Blender/ui-sprites-validation.json`에 쓴다.
 - `Art/Blender/preview_ui_sprites.py`: 모든 스프라이트를 2배 캔버스와 실제 표시 크기로 밝은 배경, 잉크 배경, 특성 원판 색 위에 놓은 검토 보드를 만든다.
-- `Art/Blender/previews/`: 전체 검토 보드 `all.png`, 분류별 보드, 분류별 추가 확인 이미지다.
+- `Art/Blender/previews/`: 전체 검토 보드 `all.png`(`preview_ui_sprites.py`로 만드는 생성물, git에서 제외), 분류별 보드, 분류별 추가 확인 이미지다.
 - `Art/Blender/tests/`: 카탈로그, 검사기, 손님 스프라이트의 단위 시험과 드라이버·렌더 동일성 시험이다.
 - `Art/Blender/UI_SPRITES.md`: 파이프라인 설정과 명령 안내다.
 - `Art/Blender/update_art_concept_boards.py`: 승인본과 새 스프라이트로 이 문서의 두 비교 보드를 다시 만든다. 확대에는 `-large.png`, 실제 표시 크기에는 164×280 PNG를 82×140으로 축소한 이미지를 쓴다.
@@ -183,9 +183,10 @@ Blender에서 사전 렌더링한 PNG를 Unity 스프라이트로 쓴다.
 
 ## 승인본과 비교 보드 재생성
 
-프로젝트 루트에서 실행한다. 앞의 두 Blender 명령은 현재 생성 코드로 승인본 원본과 두 해상도의 렌더를 다시 만든다. 어린이 손님과 게임 스프라이트는 [어린이 README](../../../Art/Blender/GameCustomerChild/README.md)와 [UI 스프라이트 안내](../../../Art/Blender/UI_SPRITES.md)의 명령으로 다시 만든다. 마지막 명령은 현재 PNG로 이 문서의 두 비교 보드와 검사 기록을 갱신한다. 첫 보드는 승인된 남자·여자와 어린이 손님(`V1`)의 확대 렌더와 82×140 표시 크기, 게임 스프라이트 `CottonCandy_Strawberry_Medium`(156×176)과 `Trait_Hours`(84×84)를 크림·잉크 배경에서 보여 준다. 둘째 보드는 기존 레이싱 캡처 옆에 세 손님을 놓는다.
+프로젝트 루트에서 실행한다. 승인본은 8 스레드로 저장·렌더해야 하므로 첫 줄에서 `UI_SPRITE_THREADS`를 지운다(현재 `setup_scene()`은 이 변수를 읽지 않지만, 같은 세션에서 UI 스프라이트 명령을 돌렸다면 남아 있을 수 있다). 앞의 두 Blender 명령은 현재 생성 코드로 승인본 원본과 두 해상도의 렌더를 다시 만든다. 어린이 손님, 손님 스프라이트 6장(`Customer_V0~V2`)과 게임 스프라이트는 [어린이 README](../../../Art/Blender/GameCustomerChild/README.md)와 [UI 스프라이트 안내](../../../Art/Blender/UI_SPRITES.md)의 명령으로 다시 만든다. 마지막 명령은 현재 PNG로 이 문서의 두 비교 보드와 검사 기록을 갱신한다. 첫 보드는 승인된 남자·여자와 어린이 손님(`V1`)의 확대 렌더와 82×140 표시 크기, 게임 스프라이트 `CottonCandy_Strawberry_Medium`(156×176)과 `Trait_Hours`(84×84)를 크림·잉크 배경에서 보여 준다. 둘째 보드는 기존 레이싱 캡처 옆에 세 손님을 놓는다.
 
 ```powershell
+Remove-Item Env:UI_SPRITE_THREADS -ErrorAction SilentlyContinue
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerFaceted/create_customer.py
 & 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' -b --factory-startup --python-exit-code 1 -P Art/Blender/GameCustomerFemaleExplorer/create_explorer.py
 python Art/Blender/GameCustomerFaceted/validate_png.py

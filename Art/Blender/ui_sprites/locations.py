@@ -53,7 +53,9 @@ try:
     import bpy
     from mathutils import Vector
 except ImportError:  # plain Python: only the Street overlay preview at the end of this file is usable
-    bpy = Vector = None
+    bpy = Vector = SEED = None
+else:
+    from ui_sprite_spec import SEED
 
 CATEGORY = 'locations'
 YAW, ELEVATION = -20, 15
@@ -172,7 +174,7 @@ class Stage:
     def __init__(self, col, kit, location, framing='prep'):
         self.col, self.kit, self.location = col, kit, location
         self.street = framing == 'street'   # Street leaves the band props out (module docstring)
-        self.rng = random.Random(260927 + location)
+        self.rng = random.Random(SEED + location)
         self.used = {}
         self.root = self.empty('Stage', (0, 0, 0), turn=STAGE_TURN, parent=False)
         self.root.scale = (STAGE_SCALE,)*3

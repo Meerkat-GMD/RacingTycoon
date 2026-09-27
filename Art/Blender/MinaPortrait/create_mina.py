@@ -327,7 +327,7 @@ def build():
         ob.name = 'MN_'+ob.name.removeprefix('UI_')
         ob.data.name = ob.name+'_Data'
     entry = spec.by_id()[SPRITE_ID]
-    scene = c.setup_scene(SCENE, rig, world, entry['canvas'], spec.SEED)
+    scene = c.thread_override(c.setup_scene(SCENE, rig, world, entry['canvas'], spec.SEED))
     kit = toy_kit.Kit('MN_')
     names = ('Head_Hair', 'Shirt_Collar', 'Apron', 'Arms_Hands', 'Cotton_Candy', 'Shop_Backdrop')
     cols = {name: kit.collection(scene, 'MN_'+name) for name in names}
@@ -442,7 +442,8 @@ def write_outputs(scene, cols, camera, entry, frame, cover):
         'identity': 'Mina, the shop companion: short wavy Magenta bob with side-swept bangs, Navy dot eyes, '
                     'open happy smile, Cream long-sleeve shirt with a turned-down collar, Mint apron bib with '
                     'ruffled straps, both hands holding a Strawberry cotton candy with a tiny berry',
-        'painting_reference': 'Assets/CottonCircuit/Resources/Progression/NpcPortrait.png',
+        'painting_reference': 'e8e5987:Assets/CottonCircuit/Resources/Progression/NpcPortrait.png '
+                              '(deleted in af2e25f; read with git show)',
         'assets': [{
             'id': SPRITE_ID, 'file': spec.sprite_path(entry), 'kind': entry['kind'],
             'canvas': list(entry['canvas']), 'displays': [list(d) for d in entry['displays']],

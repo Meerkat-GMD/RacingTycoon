@@ -7,7 +7,7 @@
 | 파일 | 역할 |
 |---|---|
 | `ui_sprite_spec.py` | bpy 없이 읽는 기준값: 팔레트 22색, 조명, 노출 -1.8, seed 260927, 재질 레시피, 종류별 규칙(`KIND_RULES`), 66장 `CATALOG`, `TRAIT_ICONS`, 경로 함수 |
-| `ui_sprite_common.py` | Blender 공용 함수: `studio()` 조명·환경, `setup_scene()`, `camera()`, `catcher()`. 기준값은 `ui_sprite_spec`에서 가져와 다시 내보낸다 |
+| `ui_sprite_common.py` | Blender 공용 함수: `studio()` 조명·환경, `setup_scene()`(고정 8 스레드), `thread_override()`(`UI_SPRITE_THREADS` 적용), `camera()`, `catcher()`. 기준값은 `ui_sprite_spec`에서 가져와 다시 내보낸다 |
 | `ui_sprite_render.py` | `render_sprite()`: 그림자 없는 단일 렌더, 또는 접지 그림자 합성 렌더. `DEFAULT_SHADOW` |
 | `toy_kit.py` | `Kit(prefix)`: 승인본 `customer_lib.py`와 같은 서명의 도형 함수(`mat`, `collection`, `place`, `mesh`, `box`, `ico`, `segment`, `loft`, `panel`, `band`, `buckle`). 재질은 Roughness 0.85, Specular IOR Level 0.08 |
 | `build_ui_sprites.py` | 분류 하나를 만들고 렌더하는 드라이버 |
@@ -24,7 +24,7 @@
 | `create_ui_sprites.py` | 승인된 두 손님 생성기가 쓰는 호환용 `render_contact_sprite()`와 `ART` 전역값 |
 | `tests/` | 카탈로그·검사기·손님 스프라이트 단위 시험, 드라이버 시험, 렌더 동일성 시험 |
 
-초기 대표 샘플 3종(`UiSprites.blend`, `ui-sprites-manifest.json`, 감사·재현 기록, `audit_ui_sprite_scene.py`, `ui-sprites-native.png`, `ui-sprites-preview.png`, 샘플 패스와 PNG)은 삭제했다. 솜사탕과 벽시계 샘플의 형태 코드는 `git show 966cf73:Art/Blender/create_ui_sprites.py`의 `cotton()`, `clock()`에서 볼 수 있다. 전체 검토 보드는 `previews/all.png`다.
+초기 대표 샘플 3종(`UiSprites.blend`, `ui-sprites-manifest.json`, 감사·재현 기록, `audit_ui_sprite_scene.py`, `ui-sprites-native.png`, `ui-sprites-preview.png`, 샘플 패스와 PNG)은 삭제했다. 솜사탕과 벽시계 샘플의 형태 코드는 `git show 966cf73:Art/Blender/create_ui_sprites.py`의 `cotton()`, `clock()`에서 볼 수 있다. 전체 검토 보드는 `previews/all.png`다. 이 파일은 `preview_ui_sprites.py`로 만드는 생성물이라 git에서 제외하며(`.gitignore`), 저장소에는 분류별 보드 `previews/<분류>.png`만 있다.
 
 ## 카탈로그
 
@@ -74,7 +74,7 @@
 | 환경 | `#F3ECF7`, 세기 0.75. 세 조명 모두 DISK 면광원이며 (0, 0, 1.25)를 향한다 |
 | 카메라 | 직교, 정면(-Y)에서 왼쪽 20°, 내려다보기 15° (`ui_sprite_common.camera`) |
 | 렌더 | Cycles 64 샘플, 노이즈 제거, 적응 샘플링 끔, seed 260927, Standard / None, 노출 -1.8, 감마 1, RGBA 8비트 PNG |
-| 스레드 | 기본 8. 환경 변수 `UI_SPRITE_THREADS`로 바꾼다(작업 2의 손님 렌더 외에는 4 사용) |
+| 스레드 | 기본 8. `build_ui_sprites.py`와 `MinaPortrait/create_mina.py`만 `thread_override()`로 환경 변수 `UI_SPRITE_THREADS`를 적용한다(이 PC에서는 4 사용). 손님 렌더(승인 생성기 `create_customer.py`·`create_explorer.py`, `GameCustomerChild/create_child.py`, `render_customer_sprites.py`)는 승인 PNG와 같은 결과를 내도록 항상 8 스레드이며 이 변수를 쓰지 않는다. 그래도 손님 명령 전에는 변수를 지운다(아래 명령) |
 | 검토 배경 | 크림 `#FFF6E7`, 잉크 `#29324D`, 특성 원판 6색(`DISC_COLORS`) |
 
 ## 접지 그림자 합성
@@ -106,7 +106,7 @@ def build(asset: dict, col, kit) -> None:  # 에셋 하나의 형상을 col에 �
 Blender는 항상 배경 모드로 실행한다. 실행 중인 Blender MCP 세션에는 연결하지 않는다.
 
 ```powershell
-$env:UI_SPRITE_THREADS = '4'
+$env:UI_SPRITE_THREADS = '4'   # 분류 스프라이트와 미나 렌더에만 적용된다. 손님 명령은 아래에서 따로
 $blender = 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe'
 
 # 분류 하나를 만들고 렌더 (items, shop, locations, machines, icons)
@@ -117,17 +117,28 @@ $blender = 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe'
 #   --module-path DIR  DIR/ui_sprites_<분류>.py 또는 DIR/<분류>.py를 모듈로 쓴다
 
 # 검사: 있는 PNG만 검사, --complete는 66장이 모두 있어야 통과
-python Art/Blender/validate_ui_sprites.py
+# --report가 없으면 저장소의 Art/Blender/ui-sprites-validation.json(66/66 기록)을 덮어쓴다.
+# 전체 기록을 갱신할 때만 기본 경로에 --complete로 쓰고, 나머지 검사는 --report로 다른 경로에 쓴다.
 python Art/Blender/validate_ui_sprites.py --complete
-python Art/Blender/validate_ui_sprites.py --report <다른 경로.json>   # 기본 Art/Blender/ui-sprites-validation.json
-python Art/Blender/validate_ui_sprites.py --owner items --complete   # --owner NAME(반복 또는 쉼표 구분)은 해당 owner(들)의 카탈로그 항목·목록 파일만 검사해, 7개 작업을 병렬로 돌릴 때 한 작업의 미완성 스프라이트가 다른 작업의 검사를 실패시키지 않게 한다; 알 수 없는 owner는 종료 코드 2
+python Art/Blender/validate_ui_sprites.py --report $env:TEMP/ui-sprites.json
+python Art/Blender/validate_ui_sprites.py --owner items --complete --report $env:TEMP/ui-sprites-items.json   # --owner NAME(반복 또는 쉼표 구분)은 해당 owner(들)의 카탈로그 항목·목록 파일만 검사해, 7개 작업을 병렬로 돌릴 때 한 작업의 미완성 스프라이트가 다른 작업의 검사를 실패시키지 않게 한다; 알 수 없는 owner는 종료 코드 2
 
-# 검토 보드: previews/all.png 또는 previews/<분류>.png
+# 검토 보드: 인자 없이 previews/all.png(git 제외), --category로 previews/<분류>.png
 python Art/Blender/preview_ui_sprites.py
 python Art/Blender/preview_ui_sprites.py --category items
+
+# 손님 스프라이트 6장 Customer_V{0,1,2}_{Neutral,Angry}: 항상 8 스레드로 렌더하므로 변수를 먼저 지운다
+Remove-Item Env:UI_SPRITE_THREADS -ErrorAction SilentlyContinue
+& $blender -b --factory-startup --python-exit-code 1 -P Art/Blender/render_customer_sprites.py -- --large
+#   --only V0,V2       이 변형만 렌더 (기본 V0,V1,V2)
+#   --large            656x1120 확대 렌더 <손님 폴더>/review/<id>-large.png도 만들고, 여섯 장이 모두 있으면
+#                      previews/customers-large.png를 다시 합성한다
+#   --replace-angry    .blend의 화난 얼굴 조각을 다시 만든 뒤 저장한다
+python Art/Blender/validate_ui_sprites.py --owner customers --report $env:TEMP/ui-sprites-customers.json
+python Art/Blender/preview_ui_sprites.py --category customers
 ```
 
-손님(작업 2)과 미나(작업 3)는 각자의 생성기와 `render_sprite`를 쓴다. 승인본 재생성 방법은 명세의 "승인본과 비교 보드 재생성"과 각 폴더의 README를 따른다.
+손님(작업 2)과 미나(작업 3)는 각자의 생성기와 `render_sprite`를 쓴다. 위 손님 명령은 저장된 세 `.blend`에서 6장을 렌더한다. V0·V2 기본 표정은 승인 PNG와 한 값이라도 다르면 승인 PNG를 복사하고 그 이유를 `ui-sprite-passes/customers/render-manifest.json`에 적는다. 어린이 원본(`GameCustomerChild.blend`)을 다시 만드는 명령은 [어린이 README](GameCustomerChild/README.md), 미나는 [미나 README](MinaPortrait/README.md), 승인본 원본의 재생성은 명세의 "승인본과 비교 보드 재생성"과 각 폴더의 README를 따른다.
 
 ## 검사 항목
 
@@ -155,16 +166,16 @@ python -m unittest Art/Blender/tests/test_build_driver.py -v                    
 
 동일성 시험은 승인 `.blend`를 읽기만 하고 `%TEMP%/ui_sprite_identity`에 렌더해 `RENDER_IDENTITY max_abs_diff=0 differing_pixels=0`을 확인한다. 드라이버 시험은 `tests/fixtures/`의 두 시험 분류를 임시 폴더에 렌더하며 `ui_sprites/`에는 아무것도 쓰지 않는다.
 
-## 최종 결과 (2026-09-27, 커밋 18eabd1 기준)
+## 최종 결과 (2026-09-27, 커밋 18eabd1 기준, 최종 수정의 `Trait_Kart` 재렌더 반영)
 
 | 항목 | 값 |
 |---|---|
 | 스프라이트 | 66/66 (`customers` 6, `mina` 1, `items` 21, `shop` 4, `locations` 8, `machines` 3, `icons` 23), PNG 합계 9.3MB 중 `Locations` 7.0MB |
 | 검사 | `validate_ui_sprites.py --complete` → `UI_SPRITES_VALID 66/66`, 오류·참고 0건, 목록 파일 5개 통과, 카탈로그 밖 PNG 없음 |
-| 투명 종류 | 가장자리 투명 여백 최소 5px(`BaggedCandy_Soda_Large`), 알파 128 이상 면적 16.5%(`Trait_Kart`)–77.6%(`Storefront`) |
+| 투명 종류 | 가장자리 투명 여백 최소 5px(`BaggedCandy_Soda_Large`), 알파 128 이상 면적 17.6%(`Trait_StickSpeed`)–77.6%(`Storefront`). `Trait_Kart`는 16.5%에서 22.7%로 커졌다 |
 | 검토 보드 | `previews/all.png` 2400×16340 |
 | 단위 시험 | 29건 중 28건 통과, 1건 건너뜀(렌더 동일성). 렌더 동일성은 Blender에서 따로 실행해 남자·여자 모두 `max_abs_diff=0 differing_pixels=0` |
-| Unity | 에디터 검사 98개 통과(스프라이트 관련 14개 포함), 플레이 스모크 성장 434·영업 3319·레거시 625개 통과 |
+| Unity | 에디터 검사 98개 통과(스프라이트 관련 14개 포함), 플레이 스모크 성장 434·영업 3319·레거시 625개 통과. `Trait_Kart` 재렌더 뒤 빌드(`Builds/SpritesFinal2`)에서 에디터 검사 98개와 성장 스모크 434개를 다시 통과 |
 
 전체 검증 기록과 교체 전후 캡처 비교는 `docs/lowpoly-sprites-verification.md`에 있다.
 
@@ -172,4 +183,4 @@ python -m unittest Art/Blender/tests/test_build_driver.py -v                    
 
 - 미나 초상화는 드라이버 대신 `MinaPortrait/create_mina.py`로 만든다. 이 스크립트는 `build_ui_sprites`의 내부 함수(`recalc_normals`, `relative`, `render_settings`, `material_record`)를 가져다 쓰므로, 드라이버에서 이 이름을 바꾸면 함께 고쳐야 한다.
 - `validate_ui_sprites.py`는 목록 파일로 `ui_sprites/*.manifest.json`만 읽고, `MinaPortrait/manifest.json`과 손님 폴더의 `manifest.json`은 검사하지 않는다. PNG는 66장 모두 검사한다.
-- `previews/icons-states.png`, `previews/machines-locked.png`, `previews/shop-storefront-labels.png`는 작업 중 임시 스크립트로 만든 추가 확인 이미지라 저장소의 명령으로 다시 만들 수 없다. `all.png`와 분류별 보드는 `preview_ui_sprites.py`, `customers-large.png`는 `render_customer_sprites.py`, `locations-street-composite.png`와 `shop-emotes-bubble.png`는 각 분류 모듈, `mina-vs-painting.png`는 `MinaPortrait/make_comparison.py`가 만든다.
+- `previews/icons-states.png`, `previews/machines-locked.png`, `previews/shop-storefront-labels.png`는 작업 중 임시 스크립트로 만든 추가 확인 이미지라 저장소의 명령으로 다시 만들 수 없다. `icons-states.png`는 작업 중 아이콘을 보여 주며 최종 `Trait_Kart`는 반영되지 않았다. 현재 아이콘은 `previews/icons.png`로 확인한다. `all.png`와 분류별 보드는 `preview_ui_sprites.py`, `customers-large.png`는 `render_customer_sprites.py`, `locations-street-composite.png`와 `shop-emotes-bubble.png`는 각 분류 모듈, `mina-vs-painting.png`는 `MinaPortrait/make_comparison.py`가 만든다.

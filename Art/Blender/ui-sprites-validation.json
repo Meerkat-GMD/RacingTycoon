@@ -1328,11 +1328,11 @@
         ],
         "transparent_margins": {
           "left": 9,
-          "top": 24,
+          "top": 18,
           "right": 9,
-          "bottom": 24
+          "bottom": 18
         },
-        "occupancy": 0.16482,
+        "occupancy": 0.22676,
         "neutral_near_white_fraction": 0.0
       },
       "passed": true

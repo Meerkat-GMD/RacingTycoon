@@ -94,7 +94,7 @@
   },
   "model_scale": 0.5,
   "identity": "Mina, the shop companion: short wavy Magenta bob with side-swept bangs, Navy dot eyes, open happy smile, Cream long-sleeve shirt with a turned-down collar, Mint apron bib with ruffled straps, both hands holding a Strawberry cotton candy with a tiny berry",
-  "painting_reference": "Assets/CottonCircuit/Resources/Progression/NpcPortrait.png",
+  "painting_reference": "e8e5987:Assets/CottonCircuit/Resources/Progression/NpcPortrait.png (deleted in af2e25f; read with git show)",
   "assets": [
     {
       "id": "Mina_Portrait",
