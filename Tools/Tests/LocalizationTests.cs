@@ -86,6 +86,26 @@ public static class LocalizationTests
             Check(list.Count == 3 && list[0].Equals(new ScreenSize(1280, 720)) && list[1].Equals(new ScreenSize(1600, 900)) && list[2].Equals(new ScreenSize(1920, 1080)), "choices " + string.Join(",", list));
             Check(new ScreenSize(1600, 900).ToString() == "1600 × 900", "label");
         });
+        Test("every perk, tab, machine, location, course, flavor and size is translated", () =>
+        {
+            Strings.Load(File.ReadAllText(Strings.TablePath(AppDomain.CurrentDomain.BaseDirectory)));
+            var keys = new List<string>();
+            foreach (var node in Progression.Nodes) { keys.Add("trait." + node.Id + ".name"); keys.Add("trait." + node.Id + ".desc"); }
+            foreach (var tab in UpgradeTreeLayout.Tabs) keys.Add("tab." + tab.Id);
+            for (int i = 0; i < 3; i++) { keys.Add("machine." + i); keys.Add("flavor." + i); keys.Add("size." + i); }
+            for (int i = 0; i < 4; i++) { keys.Add("location." + i + ".name"); keys.Add("location." + i + ".desc"); }
+            for (int map = 0; map < RaceCourse.MapCount; map++) keys.Add("course." + map);
+            var absent = keys.FindAll(k => !Strings.Has(k));
+            Check(absent.Count == 0, "missing: " + string.Join(", ", absent));
+        });
+        Test("core names follow the current language", () =>
+        {
+            Strings.Load(File.ReadAllText(Strings.TablePath(AppDomain.CurrentDomain.BaseDirectory)));
+            Strings.Set(Language.Korean);
+            Check(Progression.Find("hours").Name == "영업시간" && Progression.MachineName(1) == "소다 기계" && RaceRecipe.Name(0) == "1번 · 슈가웨이", "korean");
+            Strings.Set(Language.English);
+            Check(Progression.Find("hours").Name == "Business Hours" && Progression.MachineName(1) == "Soda Machine" && RaceRecipe.Name(0) == "No.1 · Sugarway", "english");
+        });
         Console.WriteLine(passed + " passed, " + failures + " failed");
         return failures == 0 ? 0 : 1;
     }

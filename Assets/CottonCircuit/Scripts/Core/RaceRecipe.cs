@@ -12,7 +12,7 @@ namespace CottonCircuit
         public static int TargetGrams(int map) { ValidateMap(map); return map == 0 ? 60 : 120; }
         public static double Timeout(int map) { ValidateMap(map); return map == 0 ? 180 : 240; }
         public static double ParSeconds(int map) { ValidateMap(map); return map == 0 ? 24 : 30; }
-        public static string Name(int map) { ValidateMap(map); return map == 0 ? "1번 · 슈가웨이" : "2번 · 클라우드런"; }
+        public static string Name(int map) { ValidateMap(map); return Strings.Get("course." + map); }
 
         public static int Quality(int boosts, int hits, int tankLevel)
         {

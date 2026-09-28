@@ -412,7 +412,7 @@ namespace CottonCircuit.Tests
             var details = Element<VisualElement>("TraitDetails");
             var arrow = Element<VisualElement>("TraitEdge_stick_speed_stick_saving");
             Pointer(speed, EventType.MouseMove, speed.worldBound.center);
-            Check(!details.ClassListContains("hidden") && Element<Label>("TraitDetailsTitle").text == "젓가락 회전" &&
+            Check(!details.ClassListContains("hidden") && Element<Label>("TraitDetailsTitle").text == Progression.Find("stick_speed").Name &&
                 Element<Label>("TraitDetailsBody").text.Contains(" C"), "hovering a trait opens its details with the cost");
             Check(arrow.ClassListContains("trait-edge-focus"), "hovering a trait focuses its arrows");
             yield return null;

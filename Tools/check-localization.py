@@ -72,7 +72,13 @@ def check_cs(path, keys, problems):
             if HANGUL.search(literal):
                 problems.append(f"{path.relative_to(ROOT)}:{number}: Hangul literal {literal}")
         for key in KEY_USE.findall(line):
-            if key not in keys:
+            # A literal ending in "." is a prefix built with string concatenation
+            # (e.g. Strings.Get("trait." + Id + ".name")); the checker cannot evaluate
+            # the runtime suffix, so it only confirms some key uses that prefix.
+            if key.endswith("."):
+                if not any(k.startswith(key) for k in keys):
+                    problems.append(f"{path.relative_to(ROOT)}:{number}: no key starts with {key}")
+            elif key not in keys:
                 problems.append(f"{path.relative_to(ROOT)}:{number}: unknown key {key}")
 
 

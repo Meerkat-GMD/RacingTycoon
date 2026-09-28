@@ -10,10 +10,11 @@ namespace CottonCircuit
 
     public sealed class UpgradeTreeTab
     {
-        public readonly string Id, Name;
+        public readonly string Id;
         public readonly UpgradeTreePosition[] Nodes;
-        public UpgradeTreeTab(string id, string name, params UpgradeTreePosition[] nodes)
-        { Id = id; Name = name; Nodes = nodes; }
+        public UpgradeTreeTab(string id, params UpgradeTreePosition[] nodes)
+        { Id = id; Nodes = nodes; }
+        public string Name => Strings.Get("tab." + Id);
     }
 
     /// <summary>
@@ -25,23 +26,23 @@ namespace CottonCircuit
     {
         static UpgradeTreePosition P(string id, float x, float y) { return new UpgradeTreePosition(id, x, y); }
         public static readonly UpgradeTreeTab[] Tabs = {
-            new UpgradeTreeTab("business", "가게 운영",
+            new UpgradeTreeTab("business",
                 P("hours", 174, 70), P("patience", 406, 70), P("shelf", 638, 70),
                 P("ads", 870, 70), P("group_visit", 638, 300), P("repeat_ads", 870, 300)),
-            new UpgradeTreeTab("production", "솜사탕 제작",
+            new UpgradeTreeTab("production",
                 P("stick_speed", 355, 60), P("sugar_2", 825, 60),
                 P("stick_quality", 155, 228), P("stick_saving", 480, 228), P("sugar_3", 910, 228),
                 P("quality_focus", 155, 416), P("sugar_saving", 650, 416)),
-            new UpgradeTreeTab("machines", "기계와 맛",
+            new UpgradeTreeTab("machines",
                 P("machine_2", 524, 44), P("machine_3", 524, 228), P("flavor_vanilla", 524, 416)),
-            new UpgradeTreeTab("staff", "알바",
+            new UpgradeTreeTab("staff",
                 P("worker_1", 524, 44), P("worker_speed", 200, 228),
                 P("worker_grade_2", 524, 228), P("worker_2", 848, 228), P("worker_grade_3", 524, 416)),
-            new UpgradeTreeTab("sales", "장소와 판매",
+            new UpgradeTreeTab("sales",
                 P("sales", 272, 44), P("location_1", 776, 44),
                 P("flavor_price", 154, 228), P("location_price", 490, 228),
                 P("location_2", 826, 228), P("location_3", 826, 416)),
-            new UpgradeTreeTab("kart", "차량",
+            new UpgradeTreeTab("kart",
                 P("engine", 524, 44), P("handling", 524, 228), P("coupe", 524, 416))
         };
 

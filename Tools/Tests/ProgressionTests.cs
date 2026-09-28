@@ -33,6 +33,8 @@ public static class ProgressionTests
     }
     public static int Main()
     {
+        Strings.Load(System.IO.File.ReadAllText(Strings.TablePath(AppDomain.CurrentDomain.BaseDirectory)));
+        Strings.Set(Language.Korean);
         Test("fresh progression starts with the downhill car without a paid unlock", () => {
             var e = Fresh();
             Check(e.Progression.CartStyle == 1 && Progression.Level(e, "coupe") == 0,

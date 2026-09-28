@@ -28,6 +28,6 @@ namespace CottonCircuit
             Soda = Hex("7ACDCE"), Yellow = Hex("F9D27D"), Muted = Hex("807C8A");
         public static Color Hex(string hex) { ColorUtility.TryParseHtmlString("#" + hex, out Color color); return color; }
         public static Color Flavor(int index) { return index == 0 ? Pink : index == 1 ? Soda : Yellow; }
-        public static string FlavorName(int index) { return index == 0 ? "딸기" : index == 1 ? "소다" : "바닐라"; }
+        public static string FlavorName(int index) { return Strings.Get("flavor." + Mathf.Clamp(index, 0, 2)); }
     }
 }

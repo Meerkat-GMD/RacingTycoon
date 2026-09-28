@@ -62,11 +62,10 @@ namespace CottonCircuit
         public string SizeLimitNote(int index)
         {
             if (economy.Progression == null || index < 0 || index >= 3 || Progression.MaxSugarGrade(economy) <= 1) return "";
-            string[] sizes = { "소", "중", "대" };
             int max = MaxSize(index);
             if (Progression.MachineTier(index) <= Progression.MaxSugarGrade(economy))
-                return Progression.MachineName(index) + "는 " + sizes[max] + "까지";
-            return sizes[max] + "까지 · 특급 설탕이면 " + sizes[max + 1];
+                return Strings.Format("shift.size.machine", Progression.MachineName(index), Progression.SizeName(max));
+            return Strings.Format("shift.size.sugar", Progression.SizeName(max), Progression.SizeName(max + 1));
         }
         public MachineProduction Machine(int index)
         {

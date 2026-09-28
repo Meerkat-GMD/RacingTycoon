@@ -103,6 +103,8 @@ class ProgressionShiftTests
     static int Main()
     {
         try {
+            Strings.Load(System.IO.File.ReadAllText(Strings.TablePath(AppDomain.CurrentDomain.BaseDirectory)));
+            Strings.Set(Language.Korean);
             var viewedWorkerEconomy = Fresh(); All(viewedWorkerEconomy); viewedWorkerEconomy.Coins = 10000;
             var viewedWorkerShift = new ShopShift(viewedWorkerEconomy);
             viewedWorkerShift.Machine(0).WorkerAssigned = true;
@@ -233,6 +235,9 @@ class ProgressionShiftTests
                 "stored machine grades follow the automatic grade");
             Check(s.SizeLimitNote(0) == "기본 기계는 소까지" && s.SizeLimitNote(1) == "소다 기계는 중까지" &&
                 s.SizeLimitNote(2) == "중까지 · 특급 설탕이면 대", "size notes name the machine or sugar limit");
+            Strings.Set(Language.English);
+            Check(s.SizeLimitNote(0) == "Basic Machine: up to S", "english size note");
+            Strings.Set(Language.Korean);
             s.Machine(1).SugarGrade = 1;
             Check(s.SugarGrade(1) == 2 && s.PourCost(1, 0) > 0 && s.MaxSize(1) == 1,
                 "a hand-edited low grade cannot buy cheaper sugar on an upgraded machine");

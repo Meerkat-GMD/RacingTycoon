@@ -18,7 +18,9 @@ namespace CottonCircuit
 
     [Serializable] public class UpgradeNode
     {
-        public string Id, Name, Description, Category, Icon;
+        public string Id, Category, Icon;
+        public string Name => Strings.Get("trait." + Id + ".name");
+        public string Description => Strings.Get("trait." + Id + ".desc");
         public string[] Parents;
         public int MaxLevel, BaseCost;
         public double CostGrowth;
@@ -28,46 +30,45 @@ namespace CottonCircuit
     /// <summary>Permanent, coin-funded capabilities and their balancing rules.</summary>
     public static class Progression
     {
-        static UpgradeNode N(string id, string name, string description, string category, string icon,
+        static UpgradeNode N(string id, string category, string icon,
             int max, int cost, double growth, float x, float y, params string[] parents)
         {
-            return new UpgradeNode { Id = id, Name = name, Description = description,
-                Category = category, Icon = icon, MaxLevel = max, BaseCost = cost,
+            return new UpgradeNode { Id = id, Category = category, Icon = icon, MaxLevel = max, BaseCost = cost,
                 CostGrowth = growth, X = x, Y = y, Parents = parents };
         }
 
         // Neighboring prerequisites share a compact topology layout; detached roots and the cart chain sit to the left.
         public static readonly UpgradeNode[] Nodes = {
-            N("hours", "영업시간", "하루 영업시간이 단계마다 40초 늘어납니다.", "business", "시", 3, 110, 2.0, 70, 70),
-            N("patience", "손님 기다림", "손님이 단계마다 12초 더 기다립니다.", "business", "참", 3, 90, 1.9, 215, 70),
-            N("ads", "동네 광고", "손님 방문 간격이 단계마다 크게 줄어듭니다.", "business", "광", 3, 120, 2.1, 320, 296),
-            N("shelf", "진열대 확장", "완제품 보관칸이 단계마다 3칸 늘어납니다.", "business", "칸", 2, 150, 2.0, 140, 205),
-            N("sales", "가게 간판", "모든 판매 가격이 단계마다 10% 오릅니다.", "sales", "값", 3, 160, 2.0, 418, 60),
-            N("engine", "차량 엔진", "차량 최고속도가 단계마다 8% 오릅니다.", "equipment", "속", 3, 130, 2.1, 70, 365),
-            N("handling", "차량 조향", "차량 조향력이 단계마다 8% 오릅니다.", "equipment", "향", 3, 125, 2.0, 190, 440, "engine"),
-            N("coupe", "클래식 카트", "드리프트와 부스터를 사용하는 카트 주행을 해금합니다.", "equipment", "차", 1, 480, 1, 120, 565, "handling"),
-            N("stick_speed", "젓가락 회전", "달린 거리당 솜사탕 성장량이 단계마다 12% 오릅니다.", "production", "성", 3, 110, 2.0, 820, 343),
-            N("stick_saving", "설탕 절약", "솜사탕 성장에 필요한 설탕이 단계마다 8% 줄어듭니다.", "production", "절", 3, 140, 2.0, 960, 315, "stick_speed"),
-            N("stick_quality", "예쁜 말기", "별 하나당 판매 보너스가 단계마다 0.6%p 오릅니다.", "production", "품", 3, 135, 2.0, 890, 219, "stick_speed"),
-            N("sugar_2", "고운 설탕", "2등급 설탕과 중간 크기를 해금합니다.", "production", "설", 1, 210, 1, 800, 451),
-            N("sugar_3", "특급 설탕", "3등급 설탕과 큰 크기를 해금합니다.", "production", "특", 1, 690, 1, 891, 561, "sugar_2"),
-            N("machine_2", "두 번째 기계", "2등급 기계를 즉시 설치합니다.", "equipment", "기", 1, 360, 1, 647, 342, "sugar_2"),
-            N("machine_3", "세 번째 기계", "3등급 기계를 즉시 설치합니다.", "equipment", "기", 1, 1100, 1, 691, 444, "machine_2", "stick_speed"),
-            N("flavor_vanilla", "바닐라 맛", "3등급 기계에서 바닐라 맛을 만듭니다.", "production", "바", 1, 980, 1, 749, 574, "machine_3", "sugar_3"),
-            N("worker_1", "첫 번째 알바", "기계에 배치할 첫 알바를 고용합니다.", "staff", "알", 1, 420, 1, 577, 243, "machine_2"),
-            N("worker_2", "두 번째 알바", "두 번째 알바를 고용합니다.", "staff", "알", 1, 930, 1, 734, 275, "worker_1", "machine_3"),
-            N("worker_grade_2", "알바 2등급 교육", "알바가 2등급 기계를 다룰 수 있습니다.", "staff", "교", 1, 360, 1, 545, 384, "worker_1", "machine_2"),
-            N("worker_grade_3", "알바 3등급 교육", "알바가 3등급 기계를 다룰 수 있습니다.", "staff", "교", 1, 880, 1, 577, 490, "worker_grade_2", "machine_3"),
-            N("worker_speed", "알바 손놀림", "알바 제작 속도가 단계마다 15% 오릅니다.", "staff", "손", 3, 220, 2.0, 473, 155, "worker_1"),
-            N("flavor_price", "맛 홍보", "특별한 맛의 판매 가격이 단계마다 오릅니다.", "sales", "맛", 3, 230, 2.0, 561, 89, "sales"),
-            N("location_1", "시장 앞", "더 많은 손님이 찾는 시장 앞 장사를 엽니다.", "location", "장", 1, 620, 1, 462, 313, "ads", "machine_2"),
-            N("location_2", "강변 축제", "단가가 높은 강변 축제 장사를 엽니다.", "location", "축", 1, 1300, 1, 467, 487, "location_1", "worker_grade_2"),
-            N("location_3", "별빛 광장", "최종 지역인 별빛 광장 장사를 엽니다.", "location", "별", 1, 2700, 1, 609, 595, "location_2", "machine_3", "flavor_vanilla"),
-            N("location_price", "지역 단골", "새 지역에서 받는 금액이 단계마다 오릅니다.", "sales", "단", 3, 280, 2.0, 372, 199, "location_1", "sales"),
-            N("sugar_saving", "설탕 계량", "설탕 사용량이 추가로 줄어듭니다.", "production", "계", 2, 320, 2.1, 942, 456, "stick_saving", "sugar_2"),
-            N("quality_focus", "장식 기술", "별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.", "production", "꽃", 2, 340, 2.1, 794, 115, "stick_quality"),
-            N("repeat_ads", "입소문", "추가 홍보로 방문 간격을 더 줄입니다.", "business", "입", 2, 390, 2.1, 375, 426, "ads", "location_1"),
-            N("group_visit", "단체 손님", "손님이 여럿 함께 찾아올 확률이 단계마다 오르고, 2단계부터는 세 명도 옵니다.", "business", "무", 3, 180, 2.0, 250, 380, "ads")
+            N("hours", "business", "시", 3, 110, 2.0, 70, 70),
+            N("patience", "business", "참", 3, 90, 1.9, 215, 70),
+            N("ads", "business", "광", 3, 120, 2.1, 320, 296),
+            N("shelf", "business", "칸", 2, 150, 2.0, 140, 205),
+            N("sales", "sales", "값", 3, 160, 2.0, 418, 60),
+            N("engine", "equipment", "속", 3, 130, 2.1, 70, 365),
+            N("handling", "equipment", "향", 3, 125, 2.0, 190, 440, "engine"),
+            N("coupe", "equipment", "차", 1, 480, 1, 120, 565, "handling"),
+            N("stick_speed", "production", "성", 3, 110, 2.0, 820, 343),
+            N("stick_saving", "production", "절", 3, 140, 2.0, 960, 315, "stick_speed"),
+            N("stick_quality", "production", "품", 3, 135, 2.0, 890, 219, "stick_speed"),
+            N("sugar_2", "production", "설", 1, 210, 1, 800, 451),
+            N("sugar_3", "production", "특", 1, 690, 1, 891, 561, "sugar_2"),
+            N("machine_2", "equipment", "기", 1, 360, 1, 647, 342, "sugar_2"),
+            N("machine_3", "equipment", "기", 1, 1100, 1, 691, 444, "machine_2", "stick_speed"),
+            N("flavor_vanilla", "production", "바", 1, 980, 1, 749, 574, "machine_3", "sugar_3"),
+            N("worker_1", "staff", "알", 1, 420, 1, 577, 243, "machine_2"),
+            N("worker_2", "staff", "알", 1, 930, 1, 734, 275, "worker_1", "machine_3"),
+            N("worker_grade_2", "staff", "교", 1, 360, 1, 545, 384, "worker_1", "machine_2"),
+            N("worker_grade_3", "staff", "교", 1, 880, 1, 577, 490, "worker_grade_2", "machine_3"),
+            N("worker_speed", "staff", "손", 3, 220, 2.0, 473, 155, "worker_1"),
+            N("flavor_price", "sales", "맛", 3, 230, 2.0, 561, 89, "sales"),
+            N("location_1", "location", "장", 1, 620, 1, 462, 313, "ads", "machine_2"),
+            N("location_2", "location", "축", 1, 1300, 1, 467, 487, "location_1", "worker_grade_2"),
+            N("location_3", "location", "별", 1, 2700, 1, 609, 595, "location_2", "machine_3", "flavor_vanilla"),
+            N("location_price", "sales", "단", 3, 280, 2.0, 372, 199, "location_1", "sales"),
+            N("sugar_saving", "production", "계", 2, 320, 2.1, 942, 456, "stick_saving", "sugar_2"),
+            N("quality_focus", "production", "꽃", 2, 340, 2.1, 794, 115, "stick_quality"),
+            N("repeat_ads", "business", "입", 2, 390, 2.1, 375, 426, "ads", "location_1"),
+            N("group_visit", "business", "무", 3, 180, 2.0, 250, 380, "ads")
         };
 
         public static UpgradeNode Find(string id)
@@ -203,12 +204,13 @@ namespace CottonCircuit
         }
         public static int MachineTier(int index) { return index >= 0 && index < 3 ? index + 1 : 0; }
         public static int MachineMap(int index) { return index >= 0 && index < 3 ? index : -1; }
-        public static string MachineName(int index) { return new[] { "기본 기계", "소다 기계", "특급 기계" }[Math.Max(0, Math.Min(2, index))]; }
-        public static string LocationName(int index) { return new[] { "동네 골목", "시장 앞", "강변 축제", "별빛 광장" }[Math.Max(0, Math.Min(3, index))]; }
+        public static string MachineName(int index) { return Strings.Get("machine." + Math.Max(0, Math.Min(2, index))); }
+        public static string LocationName(int index) { return Strings.Get("location." + Math.Max(0, Math.Min(3, index)) + ".name"); }
         public static string LocationDescription(int index)
         {
-            return new[] { "처음 장사를 시작하는 조용한 거리", "손님이 꾸준히 모이는 시장", "빠른 손길이 필요한 축제장", "맛과 기술을 모두 시험하는 마지막 광장" }[Math.Max(0, Math.Min(3, index))];
+            return Strings.Get("location." + Math.Max(0, Math.Min(3, index)) + ".desc");
         }
+        public static string SizeName(int size) => Strings.Get("size." + Math.Max(0, Math.Min(2, size)));
         public static int FlavorMachineTier(int flavor) { return flavor == 0 || flavor == 1 ? 1 : flavor == 2 ? 3 : 0; }
 
         public static string EffectSummary(Economy e, string id)
@@ -216,37 +218,36 @@ namespace CottonCircuit
             var node = Find(id);
             if (node == null) return "";
             int level = Level(e, id);
-            if (level >= node.MaxLevel) return "최대 단계";
+            if (level >= node.MaxLevel) return Strings.Get("effect.max");
             if (node.MaxLevel == 1) return node.Description;
-            if (id == "hours") return Values("영업시간", DaySeconds(e), DaySeconds(e) + 40, "0", "초");
-            if (id == "patience") return Values("대기시간", PatienceSeconds(e), PatienceSeconds(e) + 12, "0", "초");
-            if (id == "shelf") return Values("진열칸", Capacity(e), Capacity(e) + 3, "0", "칸");
+            if (id == "hours") return Values("effect.hours", DaySeconds(e), DaySeconds(e) + 40, "0");
+            if (id == "patience") return Values("effect.patience", PatienceSeconds(e), PatienceSeconds(e) + 12, "0");
+            if (id == "shelf") return Values("effect.shelf", Capacity(e), Capacity(e) + 3, "0");
             if (id == "ads" || id == "repeat_ads")
             {
                 double next = ArrivalSeconds(e, Level(e, "ads") + (id == "ads" ? 1 : 0), Level(e, "repeat_ads") + (id == "repeat_ads" ? 1 : 0));
-                return Values("손님 간격", ArrivalSeconds(e), next, "0.0", "초");
+                return Values("effect.arrival", ArrivalSeconds(e), next, "0.0");
             }
-            if (id == "group_visit") return Values("단체 방문", GroupChance(level) * 100, GroupChance(level + 1) * 100, "0", "%");
-            if (id == "engine") return Values("최고속도", 26 * SpeedMultiplier(e), 26 * (SpeedMultiplier(e) + .08), "0.0", "m/s");
-            if (id == "handling") return Values("조향력", SteeringMultiplier(e) * 100, (SteeringMultiplier(e) + .08) * 100, "0", "%");
-            if (id == "stick_speed") return Values("성장 효율", GrowthMultiplier(e) * 100, (GrowthMultiplier(e) + .12) * 100, "0", "%");
+            if (id == "group_visit") return Values("effect.group", GroupChance(level) * 100, GroupChance(level + 1) * 100, "0");
+            if (id == "engine") return Values("effect.speed", 26 * SpeedMultiplier(e), 26 * (SpeedMultiplier(e) + .08), "0.0");
+            if (id == "handling") return Values("effect.steering", SteeringMultiplier(e) * 100, (SteeringMultiplier(e) + .08) * 100, "0");
+            if (id == "stick_speed") return Values("effect.growth", GrowthMultiplier(e) * 100, (GrowthMultiplier(e) + .12) * 100, "0");
             if (id == "stick_saving" || id == "sugar_saving")
-                return Values("설탕 사용량", SugarMultiplier(e) * 100,
-                    Math.Max(.5, SugarMultiplier(e) - (id == "stick_saving" ? .08 : .07)) * 100, "0", "%");
+                return Values("effect.sugar", SugarMultiplier(e) * 100,
+                    Math.Max(.5, SugarMultiplier(e) - (id == "stick_saving" ? .08 : .07)) * 100, "0");
             if (id == "stick_quality" || id == "quality_focus")
-                return Values("별 하나당 보너스", StarBonus(e) * 100, (StarBonus(e) + (id == "stick_quality" ? .006 : .005)) * 100, "0.0", "%");
-            if (id == "sales") return Values("기본 가격", (1 + .1 * level) * 100, (1 + .1 * (level + 1)) * 100, "0", "%");
-            if (id == "flavor_price") return Values("특별한 맛", (1.07 + .06 * level) * 100, (1.07 + .06 * (level + 1)) * 100, "0", "%");
-            if (id == "location_price") return Values("지역 보너스", .06 * level * 100, .06 * (level + 1) * 100, "0", "%/지역");
-            if (id == "worker_speed") return Values("알바 속도", WorkerMetersPerSecond(e),
-                ShopShift.LapMeters / 60.0 * (1 + .15 * (level + 1)), "0.0", "m/s");
+                return Values("effect.star", StarBonus(e) * 100, (StarBonus(e) + (id == "stick_quality" ? .006 : .005)) * 100, "0.0");
+            if (id == "sales") return Values("effect.price", (1 + .1 * level) * 100, (1 + .1 * (level + 1)) * 100, "0");
+            if (id == "flavor_price") return Values("effect.flavor", (1.07 + .06 * level) * 100, (1.07 + .06 * (level + 1)) * 100, "0");
+            if (id == "location_price") return Values("effect.location", .06 * level * 100, .06 * (level + 1) * 100, "0");
+            if (id == "worker_speed") return Values("effect.helper", WorkerMetersPerSecond(e),
+                ShopShift.LapMeters / 60.0 * (1 + .15 * (level + 1)), "0.0");
             return node.Description;
         }
 
-        static string Values(string label, double current, double next, string format, string unit)
+        static string Values(string key, double current, double next, string format)
         {
-            return label + " " + current.ToString(format, CultureInfo.InvariantCulture) + unit +
-                " → " + next.ToString(format, CultureInfo.InvariantCulture) + unit;
+            return Strings.Format(key, current.ToString(format, CultureInfo.InvariantCulture), next.ToString(format, CultureInfo.InvariantCulture));
         }
     }
 }

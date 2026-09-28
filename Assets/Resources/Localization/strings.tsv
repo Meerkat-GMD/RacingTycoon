@@ -18,3 +18,106 @@ title.confirm.heading	새로운 가게를 열까요?	Open a new shop?
 title.confirm.copy	현재 진행 상황은 보관하고\n첫날부터 새롭게 시작합니다.	Your current progress is kept aside\nand you start again from day one.
 title.confirm.cancel	돌아가기	Back
 title.confirm.accept	새로 시작	Start over
+trait.hours.name	영업시간	Business Hours
+trait.hours.desc	하루 영업시간이 단계마다 40초 늘어납니다.	Each level adds 40 seconds to the business day.
+trait.patience.name	손님 기다림	Customer Patience
+trait.patience.desc	손님이 단계마다 12초 더 기다립니다.	Customers wait 12 seconds longer each level.
+trait.ads.name	동네 광고	Local Ads
+trait.ads.desc	손님 방문 간격이 단계마다 크게 줄어듭니다.	Each level shortens the gap between customer visits by a lot.
+trait.shelf.name	진열대 확장	Shelf Expansion
+trait.shelf.desc	완제품 보관칸이 단계마다 3칸 늘어납니다.	Each level adds 3 more finished-candy slots.
+trait.sales.name	가게 간판	Shop Sign
+trait.sales.desc	모든 판매 가격이 단계마다 10% 오릅니다.	All sale prices rise 10% each level.
+trait.engine.name	차량 엔진	Kart Engine
+trait.engine.desc	차량 최고속도가 단계마다 8% 오릅니다.	Top speed rises 8% each level.
+trait.handling.name	차량 조향	Kart Steering
+trait.handling.desc	차량 조향력이 단계마다 8% 오릅니다.	Steering power rises 8% each level.
+trait.coupe.name	클래식 카트	Classic Kart
+trait.coupe.desc	드리프트와 부스터를 사용하는 카트 주행을 해금합니다.	Unlocks kart driving with Drift and Boost.
+trait.stick_speed.name	젓가락 회전	Stick Spin
+trait.stick_speed.desc	달린 거리당 솜사탕 성장량이 단계마다 12% 오릅니다.	Growth per meter driven rises 12% each level.
+trait.stick_saving.name	설탕 절약	Sugar Saving
+trait.stick_saving.desc	솜사탕 성장에 필요한 설탕이 단계마다 8% 줄어듭니다.	Sugar needed for growth drops 8% each level.
+trait.stick_quality.name	예쁜 말기	Neat Winding
+trait.stick_quality.desc	별 하나당 판매 보너스가 단계마다 0.6%p 오릅니다.	Bonus per star rises 0.6%p each level.
+trait.sugar_2.name	고운 설탕	Fine Sugar
+trait.sugar_2.desc	2등급 설탕과 중간 크기를 해금합니다.	Unlocks Grade 2 sugar and Medium size.
+trait.sugar_3.name	특급 설탕	Premium Sugar
+trait.sugar_3.desc	3등급 설탕과 큰 크기를 해금합니다.	Unlocks Grade 3 sugar and Large size.
+trait.machine_2.name	두 번째 기계	Second Machine
+trait.machine_2.desc	2등급 기계를 즉시 설치합니다.	Installs a Grade 2 machine immediately.
+trait.machine_3.name	세 번째 기계	Third Machine
+trait.machine_3.desc	3등급 기계를 즉시 설치합니다.	Installs a Grade 3 machine immediately.
+trait.flavor_vanilla.name	바닐라 맛	Vanilla Flavor
+trait.flavor_vanilla.desc	3등급 기계에서 바닐라 맛을 만듭니다.	Makes Vanilla on the Grade 3 machine.
+trait.worker_1.name	첫 번째 알바	First Helper
+trait.worker_1.desc	기계에 배치할 첫 알바를 고용합니다.	Hires your first helper to run a machine.
+trait.worker_2.name	두 번째 알바	Second Helper
+trait.worker_2.desc	두 번째 알바를 고용합니다.	Hires a second helper.
+trait.worker_grade_2.name	알바 2등급 교육	Helper Training II
+trait.worker_grade_2.desc	알바가 2등급 기계를 다룰 수 있습니다.	Helpers can run Grade 2 machines.
+trait.worker_grade_3.name	알바 3등급 교육	Helper Training III
+trait.worker_grade_3.desc	알바가 3등급 기계를 다룰 수 있습니다.	Helpers can run Grade 3 machines.
+trait.worker_speed.name	알바 손놀림	Helper Skill
+trait.worker_speed.desc	알바 제작 속도가 단계마다 15% 오릅니다.	Helper production speed rises 15% each level.
+trait.flavor_price.name	맛 홍보	Flavor Promotion
+trait.flavor_price.desc	특별한 맛의 판매 가격이 단계마다 오릅니다.	Special flavor prices rise each level.
+trait.location_1.name	시장 앞	Market Square
+trait.location_1.desc	더 많은 손님이 찾는 시장 앞 장사를 엽니다.	Opens business at Market Square, where more customers come.
+trait.location_2.name	강변 축제	Riverside Festival
+trait.location_2.desc	단가가 높은 강변 축제 장사를 엽니다.	Opens business at the Riverside Festival, with higher prices.
+trait.location_3.name	별빛 광장	Starlight Plaza
+trait.location_3.desc	최종 지역인 별빛 광장 장사를 엽니다.	Opens business at Starlight Plaza, the final area.
+trait.location_price.name	지역 단골	Area Regulars
+trait.location_price.desc	새 지역에서 받는 금액이 단계마다 오릅니다.	Earnings in a new area rise each level.
+trait.sugar_saving.name	설탕 계량	Sugar Measuring
+trait.sugar_saving.desc	설탕 사용량이 추가로 줄어듭니다.	Sugar use drops further.
+trait.quality_focus.name	장식 기술	Decorating Skill
+trait.quality_focus.desc	별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.	Bonus per star rises another 0.5%p each level.
+trait.repeat_ads.name	입소문	Word of Mouth
+trait.repeat_ads.desc	추가 홍보로 방문 간격을 더 줄입니다.	Extra promotion shortens the visit gap further.
+trait.group_visit.name	단체 손님	Group Visits
+trait.group_visit.desc	손님이 여럿 함께 찾아올 확률이 단계마다 오르고, 2단계부터는 세 명도 옵니다.	Chance of customers arriving together rises each level; from level 2, groups of three appear.
+tab.business	가게 운영	Shop
+tab.production	솜사탕 제작	Candy Making
+tab.machines	기계와 맛	Machines & Flavors
+tab.staff	알바	Helpers
+tab.sales	장소와 판매	Places & Sales
+tab.kart	차량	Vehicles
+machine.0	기본 기계	Basic Machine
+machine.1	소다 기계	Soda Machine
+machine.2	특급 기계	Deluxe Machine
+location.0.name	동네 골목	Back Alley
+location.0.desc	처음 장사를 시작하는 조용한 거리	A quiet street to start your business
+location.1.name	시장 앞	Market Square
+location.1.desc	손님이 꾸준히 모이는 시장	A market with a steady crowd
+location.2.name	강변 축제	Riverside Festival
+location.2.desc	빠른 손길이 필요한 축제장	A festival that needs quick hands
+location.3.name	별빛 광장	Starlight Plaza
+location.3.desc	맛과 기술을 모두 시험하는 마지막 광장	The final plaza that tests taste and skill
+course.0	1번 · 슈가웨이	No.1 · Sugarway
+course.1	2번 · 클라우드런	No.2 · Cloud Run
+course.2	3번 · 캐러멜힐	No.3 · Caramel Hill
+flavor.0	딸기	Strawberry
+flavor.1	소다	Soda
+flavor.2	바닐라	Vanilla
+size.0	소	S
+size.1	중	M
+size.2	대	L
+effect.hours	영업시간 {0}초 → {1}초	Hours {0}s → {1}s
+effect.patience	대기시간 {0}초 → {1}초	Patience {0}s → {1}s
+effect.shelf	진열칸 {0}칸 → {1}칸	Shelf {0} → {1} slots
+effect.arrival	손님 간격 {0}초 → {1}초	Customer gap {0}s → {1}s
+effect.group	단체 방문 {0}% → {1}%	Group visits {0}% → {1}%
+effect.speed	최고속도 {0}m/s → {1}m/s	Top speed {0}m/s → {1}m/s
+effect.steering	조향력 {0}% → {1}%	Steering {0}% → {1}%
+effect.growth	성장 효율 {0}% → {1}%	Growth {0}% → {1}%
+effect.sugar	설탕 사용량 {0}% → {1}%	Sugar use {0}% → {1}%
+effect.star	별 하나당 보너스 {0}% → {1}%	Bonus per star {0}% → {1}%
+effect.price	기본 가격 {0}% → {1}%	Base price {0}% → {1}%
+effect.flavor	특별한 맛 {0}% → {1}%	Special flavors {0}% → {1}%
+effect.location	지역 보너스 {0}% → {1}%/지역	Area bonus {0}% → {1}% per area
+effect.helper	알바 속도 {0}m/s → {1}m/s	Helper speed {0}m/s → {1}m/s
+effect.max	최대 단계	Max level
+shift.size.machine	{0}는 {1}까지	{0}: up to {1}
+shift.size.sugar	{0}까지 · 특급 설탕이면 {1}	Up to {0} · {1} with Premium Sugar
