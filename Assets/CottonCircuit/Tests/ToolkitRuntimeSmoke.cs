@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -66,7 +67,7 @@ namespace CottonCircuit.Tests
         IEnumerator Scenario()
         {
             Check(game && game.Session == null, "runner starts before gameplay without touching the user's save");
-            Check(scenario == "full" || scenario == "legacy" || scenario == "rack" || scenario == "hud", "known UI Toolkit scenario");
+            Check(scenario == "full" || scenario == "legacy" || scenario == "rack" || scenario == "hud" || scenario == "music", "known UI Toolkit scenario");
             Directory.CreateDirectory(saveDirectory);
             Screen.SetResolution(width, height, false);
             yield return new WaitForSecondsRealtime(.6f);
@@ -74,16 +75,20 @@ namespace CottonCircuit.Tests
             if (scenario == "legacy") { yield return Legacy(); yield break; }
             if (scenario == "rack") { yield return Rack(); yield break; }
             if (scenario == "hud") { yield return Hud(); yield break; }
+            if (scenario == "music") { yield return MusicLoop(); yield break; }
 
             game.ShowTitle(saveDirectory);
             yield return Settle();
             CheckScreenBounds("TitleScreen");
+            Check(game.Audio.Music == MusicCue.Title, "title plays the title theme");
             Check(Element<Button>("TitlePrimaryButton").text == "게임 시작", "fresh title exposes game start");
             Check(!Visible(Find("TitleNewGameButton")), "fresh title does not show redundant new game");
             CheckNoGeneratedUI();
             yield return Capture("01-title.png");
+            int titleClicks = game.Audio.Played(Sound.UiClick);
             yield return Click("TitlePrimaryButton");
             Check(game.Session == null && Visible(Find("IntroScreen")), "new game opens the story before creating a save");
+            Check(game.Audio.Music == MusicCue.Story && game.Audio.Played(Sound.UiClick) > titleClicks, "the story theme follows a clicked start button");
             CheckScreenBounds("IntroScreen");
             Check(!new SaveStore(saveDirectory).HasSave, "reading the story has not created or replaced a save");
             yield return Capture("02-intro-first.png");
@@ -97,6 +102,7 @@ namespace CottonCircuit.Tests
                 yield return Click("IntroNextButton");
             }
             Check(game.TutorialStep == TutorialStep.PourSugar && game.TutorialActive, "story completion starts the real tutorial");
+            Check(game.Audio.Music == MusicCue.Tutorial && game.Audio.Played(Sound.TutorialPopup) > 0, "the tutorial plays its theme and the bubble sound");
             Check(game.Session.Economy.Coins == 80 && game.Session.Economy.Day == 1, "new-game money and day are preserved");
             yield return Tutorial();
             yield return PreparationAndWorkers();
@@ -159,7 +165,10 @@ namespace CottonCircuit.Tests
             yield return Settle();
             Check(game.TutorialStep == TutorialStep.Extract, "manual inputs reach a finished first candy");
             Check(Visible(Find("TutorialCoach")), "extraction brings the instruction back");
+            int pops = game.Audio.Played(Sound.CandyExtract), extractClicks = game.Audio.Played(Sound.UiClick);
             yield return Click("businessExtract");
+            Check(game.Audio.Played(Sound.CandyExtract) == pops + 1 && game.Audio.Played(Sound.UiClick) == extractClicks,
+                "extracting plays the pop without the button click");
             Check(game.TutorialStep == TutorialStep.Deliver && game.Session.Economy.Inventory.Count == 1, "extract button places the real product on the shelf");
             Check(!Visible(Find("TutorialSugarGuide")), "sugar markers stay hidden during delivery");
             yield return Capture("05-tutorial-delivery.png");
@@ -168,6 +177,7 @@ namespace CottonCircuit.Tests
             var item = game.UI.TutorialProductTarget(productId);
             var destination = game.UI.TutorialCustomerTarget();
             Check(item != null && destination != null, "authored product and customer targets are bound to live data");
+            int sales = game.Audio.Played(Sound.DeliverSuccess) + game.Audio.Played(Sound.StarBonus);
             Pick(item, item.worldBound.center);
             Pointer(item, EventType.MouseDown, item.worldBound.center);
             yield return null;
@@ -178,13 +188,17 @@ namespace CottonCircuit.Tests
             Pointer(item, EventType.MouseUp, destination.worldBound.center);
             yield return Settle();
             Check(!game.UI.BusinessDragActive && game.TutorialStep == TutorialStep.Success, "customer pointer drop advances to first sale success");
+            Check(game.Audio.Played(Sound.DeliverSuccess) + game.Audio.Played(Sound.StarBonus) == sales + 1, "a sale plays one success chime");
             Check(game.Session.Economy.TotalSold == 1 && game.Session.Economy.Coins > coins && game.Session.Economy.Inventory.Count == 0, "delivery charges exactly once and consumes the product");
             Check(game.DeliverCandy(productId, game.Shift.CustomerAt(0).Id) == DeliveryResult.Rejected, "repeating a completed delivery is rejected");
             Check(Near(clock, state.RemainingSeconds) && Near(patience, game.Shift.CustomerAt(0).PatienceRemaining), "tutorial actions hold the business and customer clocks");
             yield return Click("TutorialCompleteButton");
             Check(!game.TutorialActive && game.TutorialStep == TutorialStep.Complete, "success action ends the tutorial");
+            Check(game.Audio.Music == MusicCue.Machine1, "the first machine song follows the tutorial");
             Check(new SaveStore(saveDirectory).Load().TutorialStep == TutorialStep.Complete, "tutorial completion is saved immediately");
+            int bells = game.Audio.Played(Sound.ClosingBell);
             yield return CloseDay();
+            Check(game.Audio.Music == MusicCue.None && game.Audio.Played(Sound.ClosingBell) == bells + 1, "closing rings once and settlement is quiet");
             Check(!game.GrowthHintVisible, "growth hint waits until preparation after settlement");
             yield return Click("businessNextDay");
             Check(game.InPreparation && game.GrowthHintVisible, "first settlement opens the one-time growth hint");
@@ -216,6 +230,7 @@ namespace CottonCircuit.Tests
             yield return Capture("06-growth-hint.png");
             yield return Click("TutorialGrowthCloseButton");
             Check(!game.GrowthHintVisible && Visible(Find("PreparationScreen")), "confirm closes growth guidance and exposes preparation");
+            Check(game.Audio.Music == MusicCue.Preparation, "preparation plays its theme");
             Check(blockedLocations.enabledInHierarchy && blockedBusiness.enabledInHierarchy,
                 "closing the growth modal immediately restores preparation controls");
         }
@@ -236,6 +251,7 @@ namespace CottonCircuit.Tests
             yield return Capture("pause.png");
             yield return Click("PauseTitleButton");
             Check(game.Session == null && Element<Button>("TitlePrimaryButton").text == "이어하기", "pause return saves and opens the saved title");
+            Check(game.Audio.Music == MusicCue.Title, "returning to the title restores the title theme");
             var saved = new SaveStore(saveDirectory).Load();
             Check(saved.Coins == coins && saved.TutorialStep == TutorialStep.Drive, "returning to title retains money and tutorial progress");
             yield return Click("TitleNewGameButton");
@@ -260,9 +276,10 @@ namespace CottonCircuit.Tests
                 var button = Element<Button>("UpgradeNode_" + node);
                 button.GetFirstAncestorOfType<ScrollView>()?.ScrollTo(button);
                 yield return Settle();
-                int before = economy.Coins;
+                int before = economy.Coins, purchases = game.Audio.Played(Sound.Purchase);
                 yield return Click(button.name);
                 Check(Progression.Level(economy, node) == 1 && economy.Coins < before, "authored upgrade button buys " + node);
+                Check(game.Audio.Played(Sound.Purchase) == purchases + 1, "buying " + node + " plays the purchase sound");
             }
             yield return Capture("07-preparation-traits.png");
             yield return Click("OpenEquipment");
@@ -280,6 +297,8 @@ namespace CottonCircuit.Tests
             Check(Visible(Find("LocationsPage")), "location navigation opens authored scenery and options");
             yield return Click("BeginBusiness");
             Check(game.InBusiness && economy.Day == 2 && !game.GrowthHintVisible, "preparation starts day two without repeating guidance");
+            yield return Settle();
+            Check(game.Audio.Music == MusicCue.Machine1, "business opens on the first machine song");
             double beforeMeters = game.Machine(0).BatchMeters;
             game.Tick(0, 0, false, 5);
             double selectedGrowth = game.Machine(0).BatchMeters - beforeMeters;
@@ -287,6 +306,7 @@ namespace CottonCircuit.Tests
             Check(!game.PourSugar(0) && game.ExtractCandy() == null && !game.EmptySugar(), "worker machine rejects manual production conflicts");
             yield return Capture("09-worker-driving.png");
             yield return Click("businessMachine1");
+            Check(game.Audio.Music == MusicCue.Machine2, "switching to the soda machine switches its song");
             beforeMeters = game.Machine(0).BatchMeters;
             game.Tick(0, 0, false, 5);
             Check(!game.SelectedMachineHasWorker && !game.WorkerDriving && game.World.Kart.Speed < .01f, "unstaffed selected machine remains manual and stationary");
@@ -354,6 +374,39 @@ namespace CottonCircuit.Tests
             Check(!game.ContinuousMode && game.Shift == null && game.Session.Mode == GameMode.Shop, "legacy session shop still initializes");
             yield return Capture("12-legacy-shop.png");
         }
+
+        // The authored-ending loop is only reached after about two minutes, so this case moves the
+        // playing deck near its loop end and checks the restart the audio clock scheduled.
+        IEnumerator MusicLoop()
+        {
+            game.Initialize(Path.Combine(saveDirectory, "music"));
+            var economy = game.Session.Economy;
+            economy.Coins = 10000;
+            foreach (string node in new[] { "sugar_2", "machine_2" }) Check(Progression.Buy(economy, node), "music case owns " + node);
+            game.BeginBusiness();
+            game.ChooseMachine(1);
+            yield return new WaitForSecondsRealtime(.3f);
+            Check(game.Audio.Music == MusicCue.Machine2, "the soda machine plays its song");
+            Check(game.Audio.Sounds.TryGet(MusicCue.Machine2, out var song) && song.LoopEnd > 0, "the soda song has an authored-ending loop window");
+            var player = Private<MusicPlayer>(game.Audio, "music");
+            var decks = Private<AudioSource[]>(player, "decks");
+            var first = decks[Private<int>(player, "active")];
+            Check(first.isPlaying && first.clip == song.Clip, "the active deck plays the soda song");
+            first.timeSamples = (int)((song.LoopEnd - .8f) * song.Clip.frequency);
+            yield return new WaitForSecondsRealtime(1.6f);
+            var second = decks[Private<int>(player, "active")];
+            double position = second.timeSamples / (double)second.clip.frequency - song.LoopStart;
+            Check(second != first && second.isPlaying && second.clip == song.Clip && position > .5 && position < 1.2,
+                "the song restarts from its loop start at the loop end (" + position.ToString("0.00") + " s in)");
+            Check(!first.isPlaying, "the previous deck stops after its short tail");
+            second.Stop();
+            yield return new WaitForSecondsRealtime(1.6f);
+            var third = decks[Private<int>(player, "active")];
+            Check(third.isPlaying && third.clip == song.Clip, "a stopped song restarts instead of leaving the business silent");
+        }
+
+        static T Private<T>(object owner, string name) =>
+            (T)owner.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(owner);
 
         IEnumerator Hud()
         {

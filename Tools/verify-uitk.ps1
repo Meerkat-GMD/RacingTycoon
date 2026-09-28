@@ -1,7 +1,7 @@
 param(
     [string]$BuildFolder = 'Builds\UIToolkit',
     [string]$OutputFolder = 'Logs\UIToolkitSmoke',
-    [ValidateSet('full', 'legacy', 'rack', 'hud')][string]$Case = 'full',
+    [ValidateSet('full', 'legacy', 'rack', 'hud', 'music')][string]$Case = 'full',
     [int]$Width = 1600,
     [int]$Height = 900
 )
