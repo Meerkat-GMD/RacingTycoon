@@ -18,6 +18,36 @@
                 <ui:ProgressBar name="TutorialProgressBar" class="tutorial-progress" low-value="0" high-value="100" picking-mode="Ignore" />
                 <ui:Label name="TutorialActionCue" class="tutorial-cue" picking-mode="Ignore" />
             </ui:VisualElement>
+            <ui:VisualElement name="TutorialSugarGuide" class="tutorial-guide hidden" picking-mode="Ignore">
+                <ui:VisualElement name="TutorialShakeZone" class="tutorial-shake-zone" picking-mode="Ignore">
+                    <ui:Label name="TutorialShakeLabel" text="③ 여기서 위아래로 흔들기" class="tutorial-guide-label tutorial-shake-label" picking-mode="Ignore" />
+                    <ui:VisualElement class="tutorial-shake-row" picking-mode="Ignore">
+                        <ui:VisualElement class="tutorial-shake-arrows" picking-mode="Ignore">
+                            <ui:VisualElement class="tutorial-guide-arrow tutorial-guide-arrow-up" picking-mode="Ignore" />
+                            <ui:VisualElement class="tutorial-guide-arrow tutorial-guide-arrow-down" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="TutorialShakeDemo" class="tutorial-shake-demo" picking-mode="Ignore">
+                            <ui:VisualElement class="tutorial-shake-bag" picking-mode="Ignore" />
+                            <ui:VisualElement class="tutorial-guide-hand tutorial-shake-hand" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="tutorial-shake-arrows" picking-mode="Ignore">
+                            <ui:VisualElement class="tutorial-guide-arrow tutorial-guide-arrow-up" picking-mode="Ignore" />
+                            <ui:VisualElement class="tutorial-guide-arrow tutorial-guide-arrow-down" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="TutorialDragTrail" class="tutorial-drag-trail" picking-mode="Ignore">
+                    <ui:VisualElement class="tutorial-guide-arrow tutorial-trail-arrow tutorial-trail-arrow-near" picking-mode="Ignore" />
+                    <ui:VisualElement class="tutorial-guide-arrow tutorial-trail-arrow tutorial-trail-arrow-middle" picking-mode="Ignore" />
+                    <ui:VisualElement class="tutorial-guide-arrow tutorial-trail-arrow tutorial-trail-arrow-far" picking-mode="Ignore" />
+                    <ui:Label text="② 누른 채 주행 화면으로 끌기" class="tutorial-guide-label tutorial-trail-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="TutorialPickMarker" class="tutorial-pick-marker" picking-mode="Ignore">
+                    <ui:Label text="① 여기를 꾹 누르세요" class="tutorial-guide-label tutorial-pick-label" picking-mode="Ignore" />
+                    <ui:VisualElement name="TutorialPickArrow" class="tutorial-guide-arrow tutorial-guide-arrow-down tutorial-pick-arrow" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="TutorialPickHand" class="tutorial-guide-hand tutorial-pick-hand" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:Button name="TutorialSkipButton" text="튜토리얼 스킵" class="tutorial-button tutorial-skip" focusable="false" />
                 </ui:VisualElement>
             </ui:VisualElement>

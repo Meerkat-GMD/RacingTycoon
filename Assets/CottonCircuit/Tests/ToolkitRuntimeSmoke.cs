@@ -132,9 +132,11 @@ namespace CottonCircuit.Tests
                 "tutorial coaching stays aligned with the centered gameplay composition");
             Check(!game.EmptySugar() && game.ExtractCandy() == null, "tutorial rejects premature destructive production actions");
             CheckNoPlayerAuto();
+            yield return SugarGuideBeforeGrab();
             yield return Capture("03-tutorial-sugar.png");
             yield return PourSugar();
             Check(game.TutorialStep == TutorialStep.Drive && state.SugarGrams > 0, "real sugar pointer gestures unlock driving");
+            Check(!Visible(Find("TutorialSugarGuide")), "sugar markers leave the screen once the sugar is filled");
             game.Tick(0, 0, false, 2);
             Check(game.World.Kart.Speed < .01f && state.BatchMeters == 0, "filled unstaffed machine stays still without user input");
             yield return Settle();
@@ -159,6 +161,7 @@ namespace CottonCircuit.Tests
             Check(Visible(Find("TutorialCoach")), "extraction brings the instruction back");
             yield return Click("businessExtract");
             Check(game.TutorialStep == TutorialStep.Deliver && game.Session.Economy.Inventory.Count == 1, "extract button places the real product on the shelf");
+            Check(!Visible(Find("TutorialSugarGuide")), "sugar markers stay hidden during delivery");
             yield return Capture("05-tutorial-delivery.png");
             string productId = game.Session.Economy.Inventory[0].Id;
             int coins = game.Session.Economy.Coins;
@@ -615,21 +618,64 @@ namespace CottonCircuit.Tests
                 "retained product keeps its authored clip and pickup bounds when a neighbor is removed");
         }
 
+        IEnumerator SugarGuideBeforeGrab()
+        {
+            var bag = game.UI.TutorialSugarTarget;
+            var race = Element<VisualElement>("raceSurface");
+            var press = Element<VisualElement>("TutorialPickMarker");
+            var arrow = Element<VisualElement>("TutorialPickArrow");
+            var hand = Element<VisualElement>("TutorialPickHand");
+            var zone = Element<VisualElement>("TutorialShakeZone");
+            Check(Visible(press) && Visible(hand) && Visible(Find("TutorialDragTrail")) && Visible(zone) && Visible(Find("TutorialShakeDemo")),
+                "sugar step shows the press, drag and shake markers before the bag is grabbed");
+            float pixel = press.panel.visualTree.worldBound.width / Screen.width;
+            Check(Mathf.Abs(arrow.worldBound.center.x - bag.worldBound.center.x) <= 3f * pixel &&
+                Mathf.Abs(arrow.worldBound.yMax - bag.worldBound.yMin) <= 16f,
+                "press arrow points at the top of the strawberry sugar bag: arrow " + arrow.worldBound + ", bag " + bag.worldBound);
+            Check(bag.worldBound.Contains(hand.worldBound.center), "pointing hand rests on the strawberry sugar bag");
+            Pick(bag, hand.worldBound.center);
+            Check(race.worldBound.Contains(zone.worldBound.min) && race.worldBound.Contains(zone.worldBound.max),
+                "shake zone lies inside the driving screen: zone " + zone.worldBound + ", race " + race.worldBound);
+            Check(!zone.worldBound.Overlaps(Element<VisualElement>("TutorialCoach").worldBound) &&
+                !zone.worldBound.Overlaps(Element<VisualElement>("businessProduction").worldBound) &&
+                !zone.worldBound.Overlaps(Element<Button>("businessExtract").worldBound),
+                "shake zone leaves the coach and the production panel readable");
+            float low = float.MaxValue, high = float.MinValue;
+            for (float until = Time.realtimeSinceStartup + 1.2f; Time.realtimeSinceStartup < until;)
+            {
+                low = Mathf.Min(low, arrow.worldBound.y);
+                high = Mathf.Max(high, arrow.worldBound.y);
+                yield return null;
+            }
+            Check(high - low > 3f, "press arrow keeps moving to draw the eye: moved " + (high - low));
+        }
+
         IEnumerator PourSugar()
         {
             var bag = game.UI.TutorialSugarTarget;
             var race = Element<VisualElement>("raceSurface");
+            var zone = Element<VisualElement>("TutorialShakeZone");
             Pick(bag, bag.worldBound.center);
             Pointer(bag, EventType.MouseDown, bag.worldBound.center);
             yield return null;
             Check(game.UI.TutorialIsSugarDragging && bag.HasPointerCapture(PointerId.mousePointerId), "real sugar pointer down captures the draggable authored element");
-            var center = race.worldBound.center;
+            yield return null;
+            Check(!Visible(Find("TutorialPickMarker")) && !Visible(Find("TutorialPickHand")) && !Visible(Find("TutorialShakeDemo")),
+                "grabbing the bag removes the press marker and the demonstration bag");
+            Check(Visible(Find("TutorialDragTrail")) && Visible(zone), "drag route and shake zone stay while the bag is outside the driving screen");
+            // Shake where the marker tells the player to shake.
+            var center = zone.worldBound.center;
             float stroke = (float)game.SugarShakeFullStrokePixels;
             for (int i = 0; game.TutorialStep == TutorialStep.PourSugar && i < 18; i++)
             {
                 var point = center + new Vector2(0, (i % 2 == 0 ? -.5f : .5f) * stroke);
                 Pointer(bag, EventType.MouseDrag, point);
                 yield return null;
+                if (i > 0) continue;
+                yield return null;
+                Check(!Visible(Find("TutorialDragTrail")) && Visible(zone) && !Visible(Find("TutorialShakeDemo")),
+                    "inside the driving screen only the shake marker remains");
+                yield return Capture("03-tutorial-shake.png");
             }
             Pointer(bag, EventType.MouseUp, center);
             yield return Settle();

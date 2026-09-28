@@ -20,6 +20,7 @@ namespace CottonCircuit
         public bool ShiftInteractionsAllowed => game && game.Shift != null && game.Shift.IsOpen &&
             !game.Shift.Paused && !game.Session.Paused && game.Store != null && game.Store.CanSave;
         public bool TutorialIsSugarDragging => businessDragSource != null && businessDraggingSugar && businessDragFlavor == 0;
+        public bool TutorialSugarOverRace => TutorialIsSugarDragging && businessRace.ClassListContains("drop-hover");
         public VisualElement TutorialSugarTarget => businessSugarBags[0];
         public VisualElement TutorialExtractTarget => Q<Button>("businessExtract");
         public string ShiftCustomerIdAt(int slot) => game && game.Shift != null ? game.Shift.CustomerAt(slot)?.Id : null;

@@ -2,6 +2,53 @@
 
 > **현재 정책 (2026-09-28):** 플레이어 자동 주행과 튜토리얼 자동 주행 도움은 제거했다. 알바가 없는 기계와 튜토리얼은 직접 운전하며, 고용하고 배치한 알바만 자기 기계를 자동으로 운전·제작한다. 알바 기계를 선택해도 작업은 계속된다. 아래 자동 도움·수동 전환 관련 수치, 명령, 캡처는 변경 전의 역사적 검증 기록이다. 현재 정책의 검증은 [알바 주행 검증](worker-driving-verification.md)을 따른다.
 
+## 2026-09-28 설탕 넣기 단계의 조작 표식
+
+설탕 넣기 단계에서 실제 조작 위치에 번호가 붙은 표식 세 개를 표시한다. 기존에는 딸기 설탕 카드의 분홍색 테두리만 있었다.
+
+| 표식 | 위치 | 표시 내용 |
+|---|---|---|
+| ① 누르기 | 딸기 설탕 카드 | “여기를 꾹 누르세요” 말풍선, 위아래로 움직이는 화살표, 카드를 누르는 손 |
+| ② 끌기 | 설탕 카드에서 주행 화면으로 가는 경로 | 왼쪽 위를 가리키는 화살표 세 개와 “누른 채 주행 화면으로 끌기” |
+| ③ 흔들기 | 주행 화면 안의 분홍색 테두리 영역 | 위·아래 화살표와 “여기서 위아래로 흔들기”, 봉지를 쥐고 위아래로 흔드는 손 |
+
+봉지를 잡기 전에는 ①을 강조하고 ②와 ③은 다음 동작을 미리 보여준다. 봉지를 잡으면 ①과 시연용 봉지를 숨기고 ②를 강조한다. 봉지가 주행 화면 안으로 들어오면 ②도 숨기고 ③만 남기며, 영역의 가운데를 비워 끌고 있는 봉지를 가리지 않는다. 설탕을 다 넣으면 표식은 모두 사라진다.
+
+표식은 `Assets/Resources/UI/Tutorial.uxml`과 `Tutorial.uss`에 작성되어 있다. `TutorialOverlayUI`는 `dragging`, `inside`, `beat` 클래스만 전환하며, 움직임은 USS의 두 자세 사이를 전환 효과로 오간다. 손 아이콘은 Kenney Cursor Pack 1.1, 화살표는 Kenney UI Pack 2.0이며 모두 CC0이다. 출처는 `Assets/CottonCircuit/UI/THIRD-PARTY.md`에 기록했다.
+
+강조 테두리가 적용된 딸기 설탕 카드는 옆 카드보다 4px 넓어진다. ①의 기준 위치는 넓어진 카드의 중심에 맞췄다. 처음에는 넓어지기 전의 중심에 맞춰서 1920×820에서 위치 검사가 실패했고, 위치를 수정한 뒤 통과했다.
+
+구현 전에는 새 검사가 `TutorialPickMarker exists in authored UXML`에서 실패하는 것을 `Logs/TutorialGuide-red/result.txt`로 확인했다. 최종 개발 빌드 `Builds/TutorialGuide`의 결과는 다음과 같다.
+
+| 검사 | 해상도 | 통과 수 | 결과 폴더 |
+|---|---:|---:|---|
+| 전체 흐름 | 1600×900 | 465 | `Logs/TutorialGuide-full` |
+| 전체 흐름 | 1920×820 | 465 | `Logs/TutorialGuide-wide` |
+| 전체 흐름 | 1280×960 | 465 | `Logs/TutorialGuide-4x3` |
+| 전체 흐름 | 1280×720 | 465 | `Logs/TutorialGuide-720` |
+| 진열대 | 1600×900 | 849 | `Logs/TutorialGuide-rack` |
+| HUD | 1600×900 | 82 | `Logs/TutorialGuide-hud` |
+| 이전 게임 모드 | 1600×900 | 19 | `Logs/TutorialGuide-legacy` |
+
+전체 흐름의 검사 수는 직전 기록(`Logs/HUD-full-flow`)의 440개에서 25개 늘었다. 추가한 검사는 ①이 딸기 설탕 카드를 가리키는지, 손이 가리키는 지점을 눌렀을 때 실제로 설탕 카드가 선택되는지, ③이 주행 화면 안에 있으면서 안내창과 제작 패널을 가리지 않는지, 표식이 움직이는지, 잡기·진입·완료에 따라 표식이 바뀌는지를 확인한다. 설탕 흔들기 검사는 ③ 영역의 중심에서 흔든다. 튜토리얼 핵심 로직 13개도 통과했다. Release 빌드는 이번 변경으로 다시 만들지 않았다.
+
+```powershell
+./Tools/build.ps1 -BuildFolder Builds/TutorialGuide
+./Tools/verify-uitk.ps1 -BuildFolder Builds/TutorialGuide -OutputFolder Logs/TutorialGuide-full -Case full -Width 1600 -Height 900
+./Tools/verify-uitk.ps1 -BuildFolder Builds/TutorialGuide -OutputFolder Logs/TutorialGuide-wide -Case full -Width 1920 -Height 820
+./Tools/verify-uitk.ps1 -BuildFolder Builds/TutorialGuide -OutputFolder Logs/TutorialGuide-4x3 -Case full -Width 1280 -Height 960
+./Tools/verify-uitk.ps1 -BuildFolder Builds/TutorialGuide -OutputFolder Logs/TutorialGuide-720 -Case full -Width 1280 -Height 720
+./Tools/test-tutorial.ps1
+```
+
+![봉지를 잡기 전의 누르기·끌기·흔들기 표식](screenshots/tutorial-guide-press.png)
+
+![봉지를 주행 화면으로 끌고 온 뒤의 흔들기 표식](screenshots/tutorial-guide-shake.png)
+
+![가로로 긴 화면의 표식](screenshots/tutorial-guide-wide.png)
+
+## 2026-09-27 첫 판매 튜토리얼
+
 2026-09-27, Unity 6000.5.3f1 Windows 플레이어 기준. 실행 파일은 `Builds/Tutorial-Release/CottonCircuit.exe`이며 같은 폴더의 Data와 DLL도 필요하다.
 
 ## 2026-09-28 주행 조작과 시야 수정 (이전 정책 기록)

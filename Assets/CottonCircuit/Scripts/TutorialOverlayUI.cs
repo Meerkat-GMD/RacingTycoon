@@ -6,8 +6,10 @@ namespace CottonCircuit
     // The authored overlay ignores pointer picking except for its explicit actions.
     public sealed class TutorialOverlayUI : MonoBehaviour
     {
+        const float GuideBeatSeconds = .4f;
+
         GameController game;
-        VisualElement view, coach, modal;
+        VisualElement view, coach, modal, sugarGuide;
         VisualElement sourceFocus, destinationFocus;
         Label dialogue, modalDialogue, heading, progressLabel, actionCue;
         ProgressBar progress;
@@ -22,6 +24,7 @@ namespace CottonCircuit
             view = ToolkitUI.Q<VisualElement>(root, "TutorialContent");
             coach = ToolkitUI.Q<VisualElement>(root, "TutorialCoach");
             modal = ToolkitUI.Q<VisualElement>(root, "TutorialModal");
+            sugarGuide = ToolkitUI.Q<VisualElement>(root, "TutorialSugarGuide");
             dialogue = ToolkitUI.Q<Label>(root, "TutorialDialogue");
             modalDialogue = ToolkitUI.Q<Label>(root, "TutorialModalDialogue");
             heading = ToolkitUI.Q<Label>(root, "TutorialStepTitle");
@@ -64,6 +67,7 @@ namespace CottonCircuit
             ToolkitUI.Show(skip, !isModal);
             ToolkitUI.Show(complete, success && !growth);
             ToolkitUI.Show(growthClose, growth);
+            RefreshSugarGuide(showCoach && step == TutorialStep.PourSugar);
             if (isModal)
             {
                 SetFocusTargets(null, null);
@@ -86,12 +90,12 @@ namespace CottonCircuit
                 case TutorialStep.PourSugar:
                     heading.text = "01 / 04  설탕 넣기";
                     bool dragging = game.UI && game.UI.TutorialIsSugarDragging;
-                    dialogue.text = dragging ? "봉지를 놓지 말고\n위아래로 흔들어주세요!" : "첫 솜사탕은 함께 만들어봐요!\n딸기 설탕을 왼쪽으로 끌어주세요.";
+                    dialogue.text = dragging ? "봉지를 놓지 말고\n위아래로 흔들어주세요!" : "첫 솜사탕은 함께 만들어봐요!\n딸기 설탕을 꾹 누른 채 끌어주세요.";
                     double required = Tutorial.RequiredSugar(game.Session.Economy);
                     double sugarProgress = Tutorial.SugarProgress(game.Session.Economy);
                     progressLabel.text = "한 개 만들 설탕  " + (required * sugarProgress).ToString("0") + " / " + required.ToString("0") + " g";
                     progress.value = (float)(sugarProgress * 100);
-                    actionCue.text = dragging ? "잡은 채로 위아래로 흔들기" : "딸기 설탕을 잡고 주행 화면으로";
+                    actionCue.text = dragging ? "잡은 채로 위아래로 흔들기" : "① 누르기 → ② 끌기 → ③ 흔들기";
                     if (!dragging && game.UI) source = game.UI.TutorialSugarTarget;
                     break;
                 case TutorialStep.Drive:
@@ -118,6 +122,17 @@ namespace CottonCircuit
                     break;
             }
             SetFocusTargets(showCoach ? source : null, showCoach ? destination : null);
+        }
+
+        void RefreshSugarGuide(bool visible)
+        {
+            ToolkitUI.Show(sugarGuide, visible);
+            if (!visible) return;
+            bool dragging = game.UI && game.UI.TutorialIsSugarDragging;
+            sugarGuide.EnableInClassList("dragging", dragging);
+            sugarGuide.EnableInClassList("inside", dragging && game.UI.TutorialSugarOverRace);
+            // The authored markers rest in two USS poses; this only switches between them.
+            sugarGuide.EnableInClassList("beat", Mathf.Repeat(Time.unscaledTime, GuideBeatSeconds * 2) < GuideBeatSeconds);
         }
 
         void SetFocusTargets(VisualElement source, VisualElement destination)

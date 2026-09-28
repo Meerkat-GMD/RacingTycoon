@@ -47,6 +47,110 @@
     -unity-font-style: bold;
     white-space: normal;
 }
+.tutorial-guide { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.tutorial-guide-label {
+    height: 44px;
+    padding: 0 16px;
+    border-radius: 12px;
+    background-color: #29324d;
+    color: #fff6e7;
+    font-size: 19px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+}
+.tutorial-guide-arrow {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    background-image: url("project://database/Assets/CottonCircuit/UI/Art/GuideArrowDown.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition-duration: 0.36s;
+    transition-timing-function: ease-in-out;
+}
+.tutorial-guide-arrow-up { background-image: url("project://database/Assets/CottonCircuit/UI/Art/GuideArrowUp.png"); }
+.tutorial-guide-hand {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    background-image: url("project://database/Assets/CottonCircuit/UI/Art/HandPoint.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition-duration: 0.36s;
+    transition-timing-function: ease-in-out;
+}
+.tutorial-pick-marker { position: absolute; left: 959px; top: 670px; width: 241px; align-items: center; }
+.tutorial-pick-label { background-color: #d94f7e; color: #ffffff; }
+.tutorial-guide.beat .tutorial-pick-arrow { translate: 0 10px; }
+.tutorial-pick-hand { left: 1010px; top: 818px; }
+.tutorial-guide.beat .tutorial-pick-hand { translate: -6px -6px; scale: 0.9 0.9; }
+.tutorial-drag-trail { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.tutorial-trail-arrow {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-image: url("project://database/Assets/CottonCircuit/UI/Art/GuideArrowLeft.png");
+    rotate: 45deg;
+}
+.tutorial-trail-arrow-near { left: 928px; top: 728px; }
+.tutorial-trail-arrow-middle { left: 893px; top: 693px; }
+.tutorial-trail-arrow-far { left: 858px; top: 658px; }
+.tutorial-guide.beat .tutorial-trail-arrow { translate: -7px -7px; }
+.tutorial-trail-label { position: absolute; right: 750px; top: 612px; }
+.tutorial-shake-zone {
+    position: absolute;
+    left: 560px;
+    top: 285px;
+    width: 340px;
+    height: 315px;
+    padding: 14px;
+    align-items: center;
+    border-width: 3px;
+    border-color: #e7759b;
+    border-radius: 22px;
+    background-color: rgba(255, 246, 231, 0.3);
+}
+.tutorial-shake-row {
+    flex-grow: 1;
+    align-self: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+}
+.tutorial-shake-arrows { height: 176px; justify-content: space-between; }
+.tutorial-shake-demo {
+    width: 104px;
+    height: 124px;
+    translate: 0 -28px;
+    transition-duration: 0.36s;
+    transition-timing-function: ease-in-out;
+}
+.tutorial-guide.beat .tutorial-shake-demo { translate: 0 28px; }
+.tutorial-shake-bag {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/CottonCircuit/Sprites/Items/SugarBag_Strawberry.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.tutorial-shake-hand {
+    right: -26px;
+    bottom: -18px;
+    background-image: url("project://database/Assets/CottonCircuit/UI/Art/HandClosed.png");
+}
+.tutorial-guide.dragging .tutorial-pick-marker,
+.tutorial-guide.dragging .tutorial-pick-hand,
+.tutorial-guide.dragging .tutorial-shake-demo,
+.tutorial-guide.inside .tutorial-drag-trail { display: none; }
+.tutorial-guide.dragging .tutorial-trail-label { background-color: #d94f7e; color: #ffffff; }
+.tutorial-guide.inside .tutorial-shake-label { background-color: #d94f7e; color: #ffffff; }
+.tutorial-guide.inside .tutorial-shake-zone { background-color: rgba(255, 246, 231, 0.12); }
+.tutorial-guide.dragging.beat .tutorial-shake-zone .tutorial-guide-arrow-up { translate: 0 -10px; }
+.tutorial-guide.dragging.beat .tutorial-shake-zone .tutorial-guide-arrow-down { translate: 0 10px; }
 .tutorial-button {
     min-height: 48px;
     margin: 0;
