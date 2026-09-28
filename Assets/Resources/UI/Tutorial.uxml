@@ -9,7 +9,11 @@
                 <ui:VisualElement class="tutorial-coach-header" picking-mode="Ignore">
                     <ui:VisualElement name="TutorialMinaPortrait" class="tutorial-portrait" picking-mode="Ignore" />
                     <ui:VisualElement class="tutorial-heading-copy" picking-mode="Ignore">
-                        <ui:Label text="미나 · 첫 솜사탕 만들기" class="tutorial-companion" picking-mode="Ignore" />
+                        <ui:Label text="미나 · 첫 솜사탕 만들기" class="tutorial-companion" picking-mode="Ignore">
+                            <Bindings>
+                                <CottonCircuit.LocalizedText property="text" key="tutorial.companion" />
+                            </Bindings>
+                        </ui:Label>
                         <ui:Label name="TutorialStepTitle" class="tutorial-heading" picking-mode="Ignore" />
                     </ui:VisualElement>
                 </ui:VisualElement>
@@ -20,7 +24,11 @@
             </ui:VisualElement>
             <ui:VisualElement name="TutorialSugarGuide" class="tutorial-guide hidden" picking-mode="Ignore">
                 <ui:VisualElement name="TutorialShakeZone" class="tutorial-shake-zone" picking-mode="Ignore">
-                    <ui:Label name="TutorialShakeLabel" text="③ 여기서 위아래로 흔들기" class="tutorial-guide-label tutorial-shake-label" picking-mode="Ignore" />
+                    <ui:Label name="TutorialShakeLabel" text="③ 여기서 위아래로 흔들기" class="tutorial-guide-label tutorial-shake-label" picking-mode="Ignore">
+                        <Bindings>
+                            <CottonCircuit.LocalizedText property="text" key="tutorial.guide.shake" />
+                        </Bindings>
+                    </ui:Label>
                     <ui:VisualElement class="tutorial-shake-row" picking-mode="Ignore">
                         <ui:VisualElement class="tutorial-shake-arrows" picking-mode="Ignore">
                             <ui:VisualElement class="tutorial-guide-arrow tutorial-guide-arrow-up" picking-mode="Ignore" />
@@ -40,15 +48,27 @@
                     <ui:VisualElement class="tutorial-guide-arrow tutorial-trail-arrow tutorial-trail-arrow-near" picking-mode="Ignore" />
                     <ui:VisualElement class="tutorial-guide-arrow tutorial-trail-arrow tutorial-trail-arrow-middle" picking-mode="Ignore" />
                     <ui:VisualElement class="tutorial-guide-arrow tutorial-trail-arrow tutorial-trail-arrow-far" picking-mode="Ignore" />
-                    <ui:Label text="② 누른 채 주행 화면으로 끌기" class="tutorial-guide-label tutorial-trail-label" picking-mode="Ignore" />
+                    <ui:Label text="② 누른 채 주행 화면으로 끌기" class="tutorial-guide-label tutorial-trail-label" picking-mode="Ignore">
+                        <Bindings>
+                            <CottonCircuit.LocalizedText property="text" key="tutorial.guide.trail" />
+                        </Bindings>
+                    </ui:Label>
                 </ui:VisualElement>
                 <ui:VisualElement name="TutorialPickMarker" class="tutorial-pick-marker" picking-mode="Ignore">
-                    <ui:Label text="① 여기를 꾹 누르세요" class="tutorial-guide-label tutorial-pick-label" picking-mode="Ignore" />
+                    <ui:Label text="① 여기를 꾹 누르세요" class="tutorial-guide-label tutorial-pick-label" picking-mode="Ignore">
+                        <Bindings>
+                            <CottonCircuit.LocalizedText property="text" key="tutorial.guide.pick" />
+                        </Bindings>
+                    </ui:Label>
                     <ui:VisualElement name="TutorialPickArrow" class="tutorial-guide-arrow tutorial-guide-arrow-down tutorial-pick-arrow" picking-mode="Ignore" />
                 </ui:VisualElement>
                 <ui:VisualElement name="TutorialPickHand" class="tutorial-guide-hand tutorial-pick-hand" picking-mode="Ignore" />
             </ui:VisualElement>
-            <ui:Button name="TutorialSkipButton" text="튜토리얼 스킵" class="tutorial-button tutorial-skip" focusable="false" />
+            <ui:Button name="TutorialSkipButton" text="튜토리얼 스킵" class="tutorial-button tutorial-skip" focusable="false">
+                <Bindings>
+                    <CottonCircuit.LocalizedText property="text" key="tutorial.skip" />
+                </Bindings>
+            </ui:Button>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TutorialModal" class="tutorial-modal hidden">
@@ -56,13 +76,25 @@
                     <ui:VisualElement class="tutorial-modal-content" picking-mode="Ignore">
                         <ui:VisualElement name="TutorialModalMinaPortrait" class="tutorial-portrait tutorial-modal-portrait" picking-mode="Ignore" />
                         <ui:VisualElement class="tutorial-modal-copy" picking-mode="Ignore">
-                            <ui:Label text="미나" class="tutorial-modal-name" picking-mode="Ignore" />
+                            <ui:Label text="미나" class="tutorial-modal-name" picking-mode="Ignore">
+                                <Bindings>
+                                    <CottonCircuit.LocalizedText property="text" key="tutorial.modal.name" />
+                                </Bindings>
+                            </ui:Label>
                             <ui:Label name="TutorialModalDialogue" class="tutorial-modal-dialogue" picking-mode="Ignore" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                     <ui:VisualElement class="tutorial-modal-actions">
-                        <ui:Button name="TutorialCompleteButton" text="영업 시작" class="tutorial-button" />
-                        <ui:Button name="TutorialGrowthCloseButton" text="확인" class="tutorial-button" />
+                        <ui:Button name="TutorialCompleteButton" text="영업 시작" class="tutorial-button">
+                            <Bindings>
+                                <CottonCircuit.LocalizedText property="text" key="tutorial.complete" />
+                            </Bindings>
+                        </ui:Button>
+                        <ui:Button name="TutorialGrowthCloseButton" text="확인" class="tutorial-button">
+                            <Bindings>
+                                <CottonCircuit.LocalizedText property="text" key="common.ok" />
+                            </Bindings>
+                        </ui:Button>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>

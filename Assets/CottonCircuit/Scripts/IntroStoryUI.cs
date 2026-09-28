@@ -8,15 +8,7 @@ namespace CottonCircuit
     public sealed class IntroStoryUI : MonoBehaviour
     {
         static readonly int[] Scenes = { 0, 1, 2, 3, 3, 4 };
-        static readonly string[] Speakers = { "사장", "사장", "사장", "미나", "사장", "사장" };
-        static readonly string[] Dialogue = {
-            "내 꿈은 카레이서였다.\n누구보다 빠르게, 끝까지 달리고 싶었다.",
-            "하지만 한 번의 사고로,\n서킷을 떠나야 했다.",
-            "새로 시작해보려고 솜사탕 기계를 주문했는데…",
-            "초슈퍼 첨단기술이 적용된 레이싱 솜사탕 머신이에요!\n설탕을 넣고 달리기만 하면 돼요!",
-            "…솜사탕 만드는 데 자동차가 필요하다고?",
-            "결승선은 조금 달라졌지만…\n나는 다시 달리기 시작했다."
-        };
+        static readonly bool[] MinaSpeaks = { false, false, false, true, false, false };
 
         Sprite[] scenes;
         VisualElement background;
@@ -61,6 +53,7 @@ namespace CottonCircuit
             }, TrickleDown.TrickleDown);
             RefreshPage();
             root.schedule.Execute(() => next.Focus());
+            Localization.Changed += RefreshPage;
         }
 
         void Advance()
@@ -68,7 +61,7 @@ namespace CottonCircuit
             // Opening Submit and duplicate events in the same frame cannot skip a line.
             if (finished || lastAdvanceFrame == Time.frameCount) return;
             lastAdvanceFrame = Time.frameCount;
-            if (page == Dialogue.Length - 1) { Finish(); return; }
+            if (page == MinaSpeaks.Length - 1) { Finish(); return; }
             page++;
             RefreshPage();
         }
@@ -76,11 +69,11 @@ namespace CottonCircuit
         void RefreshPage()
         {
             ToolkitUI.SetArt(background, scenes[Scenes[page]]);
-            dialogue.text = Dialogue[page];
-            speaker.text = Speakers[page];
-            speaker.EnableInClassList("intro-speaker-mina", Speakers[page] == "미나");
+            dialogue.text = Strings.Get("intro.line." + page);
+            speaker.text = Strings.Get(MinaSpeaks[page] ? "intro.speaker.mina" : "intro.speaker.me");
+            speaker.EnableInClassList("intro-speaker-mina", MinaSpeaks[page]);
             counter.text = (Scenes[page] + 1).ToString("00") + " / 05";
-            next.text = page == Dialogue.Length - 1 ? "가게 시작" : "다음";
+            next.text = Strings.Get(page == MinaSpeaks.Length - 1 ? "intro.start" : "intro.next");
         }
 
         void Finish()
@@ -97,8 +90,11 @@ namespace CottonCircuit
         {
             finished = true;
             completed = null;
+            Localization.Changed -= RefreshPage;
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
+
+        void OnDestroy() { Localization.Changed -= RefreshPage; }
     }
 }

@@ -39,6 +39,7 @@ namespace CottonCircuit
             complete.clicked += game.CompleteTutorial;
             growthClose.clicked += game.DismissGrowthHint;
             Refresh();
+            Localization.Changed += Refresh;
         }
 
         void LateUpdate() { Refresh(); }
@@ -79,7 +80,7 @@ namespace CottonCircuit
             if (isModal)
             {
                 SetFocusTargets(null, null);
-                modalDialogue.text = growth ? "번 돈으로 가게를 성장시킬 수 있어요." : "첫 판매 성공이에요!\n이제 사장님 가게를 부탁해요.";
+                modalDialogue.text = Strings.Get(growth ? "tutorial.growth.hint" : "tutorial.first.sale");
                 var target = growth ? growthClose : complete;
                 if (focusedModal != target)
                 {
@@ -96,32 +97,32 @@ namespace CottonCircuit
             switch (step)
             {
                 case TutorialStep.PourSugar:
-                    heading.text = "01 / 04  설탕 넣기";
+                    heading.text = Strings.Get("tutorial.step1.heading");
                     bool dragging = game.UI && game.UI.TutorialIsSugarDragging;
-                    dialogue.text = dragging ? "봉지를 놓지 말고\n위아래로 흔들어주세요!" : "첫 솜사탕은 함께 만들어봐요!\n딸기 설탕을 꾹 누른 채 끌어주세요.";
+                    dialogue.text = Strings.Get(dragging ? "tutorial.step1.dialogue.drag" : "tutorial.step1.dialogue.start");
                     double required = Tutorial.RequiredSugar(game.Session.Economy);
                     double sugarProgress = Tutorial.SugarProgress(game.Session.Economy);
-                    progressLabel.text = "한 개 만들 설탕  " + (required * sugarProgress).ToString("0") + " / " + required.ToString("0") + " g";
+                    progressLabel.text = Strings.Format("tutorial.step1.progress", (required * sugarProgress).ToString("0"), required.ToString("0"));
                     progress.value = (float)(sugarProgress * 100);
-                    actionCue.text = dragging ? "잡은 채로 위아래로 흔들기" : "① 누르기 → ② 끌기 → ③ 흔들기";
+                    actionCue.text = Strings.Get(dragging ? "tutorial.step1.cue.drag" : "tutorial.step1.cue.start");
                     if (!dragging && game.UI) source = game.UI.TutorialSugarTarget;
                     break;
                 case TutorialStep.Drive:
-                    heading.text = "02 / 04  달리며 감기";
-                    dialogue.text = "W로 가속 · A / D로 조향해요.\n달리면 솜사탕이 감겨요!";
+                    heading.text = Strings.Get("tutorial.step2.heading");
+                    dialogue.text = Strings.Get("tutorial.step2.dialogue");
                     break;
                 case TutorialStep.Extract:
-                    heading.text = "03 / 04  솜사탕 꺼내기";
-                    dialogue.text = "잘 만들어졌어요!\nF 또는 꺼내기 버튼을 눌러주세요.";
-                    progressLabel.text = "완성된 솜사탕은 진열대에 놓여요.";
-                    actionCue.text = "F 키 또는 솜사탕 꺼내기";
+                    heading.text = Strings.Get("tutorial.step3.heading");
+                    dialogue.text = Strings.Get("tutorial.step3.dialogue");
+                    progressLabel.text = Strings.Get("tutorial.step3.progress");
+                    actionCue.text = Strings.Get("tutorial.step3.cue");
                     if (game.UI) destination = game.UI.TutorialExtractTarget;
                     break;
                 case TutorialStep.Deliver:
-                    heading.text = "04 / 04  첫 손님에게 판매";
-                    dialogue.text = "진열대의 솜사탕을 끌어서\n딸기 주문 손님에게 건네주세요.";
-                    progressLabel.text = "솜사탕 → 손님 또는 주문 말풍선";
-                    actionCue.text = "강조된 솜사탕을 주문 손님에게";
+                    heading.text = Strings.Get("tutorial.step4.heading");
+                    dialogue.text = Strings.Get("tutorial.step4.dialogue");
+                    progressLabel.text = Strings.Get("tutorial.step4.progress");
+                    actionCue.text = Strings.Get("tutorial.step4.cue");
                     if (game.UI)
                     {
                         source = game.UI.TutorialProductTarget();
@@ -157,11 +158,12 @@ namespace CottonCircuit
         public void Close()
         {
             SetFocusTargets(null, null);
+            Localization.Changed -= Refresh;
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
 
         void OnDisable() { SetFocusTargets(null, null); }
-        void OnDestroy() { SetFocusTargets(null, null); }
+        void OnDestroy() { SetFocusTargets(null, null); Localization.Changed -= Refresh; }
     }
 }

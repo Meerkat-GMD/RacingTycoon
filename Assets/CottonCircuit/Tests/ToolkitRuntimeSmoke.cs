@@ -218,7 +218,7 @@ namespace CottonCircuit.Tests
             Check(!game.GrowthHintVisible, "growth hint waits until preparation after settlement");
             yield return Click("businessNextDay");
             Check(game.InPreparation && game.GrowthHintVisible, "first settlement opens the one-time growth hint");
-            Check(Element<Label>("TutorialModalDialogue").text == "번 돈으로 가게를 성장시킬 수 있어요.", "growth hint uses the exact approved sentence");
+            Check(Element<Label>("TutorialModalDialogue").text == Strings.Get("tutorial.growth.hint"), "growth hint uses the exact approved sentence");
             Check(new SaveStore(saveDirectory).Load().GrowthHintShown, "one-time flag is saved when the hint appears");
             var blockedLocations = Element<Button>("OpenLocations");
             var blockedBusiness = Element<Button>("BeginBusiness");

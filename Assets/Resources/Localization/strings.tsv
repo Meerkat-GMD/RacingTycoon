@@ -3,6 +3,7 @@ language.self	한국어	English
 common.close	닫기	Close
 common.on	켜짐	On
 common.off	꺼짐	Off
+common.ok	확인	OK
 title.eyebrow	C O T T O N   C I R C U I T	S W E E T   R A C I N G   S H O P
 title.word.first	솜사탕	Cotton
 title.word.second	서킷	Circuit
@@ -120,3 +121,40 @@ effect.helper	알바 속도 {0}m/s → {1}m/s	Helper speed {0}m/s → {1}m/s
 effect.max	최대 단계	Max level
 shift.size.machine	{0}는 {1}까지	{0}: up to {1}
 shift.size.sugar	{0}까지 · 특급 설탕이면 {1}	Up to {0} · {1} with Premium Sugar
+intro.speaker.me	사장	Me
+intro.speaker.mina	미나	Mina
+intro.line.0	내 꿈은 카레이서였다.\n누구보다 빠르게, 끝까지 달리고 싶었다.	My dream was to be a race car driver.\nFaster than anyone, all the way to the end.
+intro.line.1	하지만 한 번의 사고로,\n서킷을 떠나야 했다.	But one crash\ntook me off the circuit.
+intro.line.2	새로 시작해보려고 솜사탕 기계를 주문했는데…	I ordered a cotton candy machine to start over…
+intro.line.3	초슈퍼 첨단기술이 적용된 레이싱 솜사탕 머신이에요!\n설탕을 넣고 달리기만 하면 돼요!	It's a super high-tech racing cotton candy machine!\nJust add sugar and drive!
+intro.line.4	…솜사탕 만드는 데 자동차가 필요하다고?	…I need a car to make cotton candy?
+intro.line.5	결승선은 조금 달라졌지만…\n나는 다시 달리기 시작했다.	The finish line looks a little different now…\nbut I'm racing again.
+intro.next	다음	Next
+intro.start	가게 시작	Open the shop
+intro.hint	클릭 · Space · Enter  다음 대사	Click · Space · Enter  Next line
+intro.skip	스킵	Skip
+tutorial.companion	미나 · 첫 솜사탕 만들기	Mina · Your first cotton candy
+tutorial.guide.pick	① 여기를 꾹 누르세요	① Press and hold here
+tutorial.guide.trail	② 누른 채 주행 화면으로 끌기	② Drag to the track
+tutorial.guide.shake	③ 여기서 위아래로 흔들기	③ Shake up and down
+tutorial.skip	튜토리얼 스킵	Skip tutorial
+tutorial.modal.name	미나	Mina
+tutorial.complete	영업 시작	Start business
+tutorial.growth.hint	번 돈으로 가게를 성장시킬 수 있어요.	You can use what you earn to grow your shop.
+tutorial.first.sale	첫 판매 성공이에요!\n이제 사장님 가게를 부탁해요.	Your first sale is a success!\nThe shop is yours now, boss.
+tutorial.step1.heading	01 / 04  설탕 넣기	01 / 04  Add sugar
+tutorial.step1.dialogue.start	첫 솜사탕은 함께 만들어봐요!\n딸기 설탕을 꾹 누른 채 끌어주세요.	Let's make your first cotton candy together!\nPress and hold the strawberry sugar, then drag it.
+tutorial.step1.dialogue.drag	봉지를 놓지 말고\n위아래로 흔들어주세요!	Don't let go of the bag,\nshake it up and down!
+tutorial.step1.progress	한 개 만들 설탕  {0} / {1} g	Sugar for one  {0} / {1} g
+tutorial.step1.cue.start	① 누르기 → ② 끌기 → ③ 흔들기	① Press → ② Drag → ③ Shake
+tutorial.step1.cue.drag	잡은 채로 위아래로 흔들기	Keep holding, shake up and down
+tutorial.step2.heading	02 / 04  달리며 감기	02 / 04  Drive to spin
+tutorial.step2.dialogue	W로 가속 · A / D로 조향해요.\n달리면 솜사탕이 감겨요!	W to accelerate · A / D to steer.\nDriving spins the candy!
+tutorial.step3.heading	03 / 04  솜사탕 꺼내기	03 / 04  Take out the candy
+tutorial.step3.dialogue	잘 만들어졌어요!\nF 또는 꺼내기 버튼을 눌러주세요.	It's ready!\nPress F or the Take out button.
+tutorial.step3.progress	완성된 솜사탕은 진열대에 놓여요.	The finished candy goes on your shelf.
+tutorial.step3.cue	F 키 또는 솜사탕 꺼내기	F key or Take out the candy
+tutorial.step4.heading	04 / 04  첫 손님에게 판매	04 / 04  Sell to your first customer
+tutorial.step4.dialogue	진열대의 솜사탕을 끌어서\n딸기 주문 손님에게 건네주세요.	Drag the candy from your shelf\nto the customer who ordered strawberry.
+tutorial.step4.progress	솜사탕 → 손님 또는 주문 말풍선	Candy → customer or order bubble
+tutorial.step4.cue	강조된 솜사탕을 주문 손님에게	Highlighted candy to the customer
