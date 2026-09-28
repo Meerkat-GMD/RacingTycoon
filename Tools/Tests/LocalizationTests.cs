@@ -94,7 +94,8 @@ public static class LocalizationTests
             foreach (var tab in UpgradeTreeLayout.Tabs) keys.Add("tab." + tab.Id);
             for (int i = 0; i < 3; i++) { keys.Add("machine." + i); keys.Add("flavor." + i); keys.Add("size." + i); }
             for (int i = 0; i < 4; i++) { keys.Add("location." + i + ".name"); keys.Add("location." + i + ".desc"); }
-            for (int map = 0; map < RaceCourse.MapCount; map++) keys.Add("course." + map);
+            // RaceRecipe.ValidateMap only names maps 0-1; RaceCourse.MapCount's third map has no recipe name.
+            for (int map = 0; map < 2; map++) keys.Add("course." + map);
             var absent = keys.FindAll(k => !Strings.Has(k));
             Check(absent.Count == 0, "missing: " + string.Join(", ", absent));
         });

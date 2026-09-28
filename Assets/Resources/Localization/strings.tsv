@@ -28,9 +28,9 @@ trait.shelf.name	진열대 확장	Shelf Expansion
 trait.shelf.desc	완제품 보관칸이 단계마다 3칸 늘어납니다.	Each level adds 3 more finished-candy slots.
 trait.sales.name	가게 간판	Shop Sign
 trait.sales.desc	모든 판매 가격이 단계마다 10% 오릅니다.	All sale prices rise 10% each level.
-trait.engine.name	차량 엔진	Kart Engine
+trait.engine.name	차량 엔진	Vehicle Engine
 trait.engine.desc	차량 최고속도가 단계마다 8% 오릅니다.	Top speed rises 8% each level.
-trait.handling.name	차량 조향	Kart Steering
+trait.handling.name	차량 조향	Vehicle Steering
 trait.handling.desc	차량 조향력이 단계마다 8% 오릅니다.	Steering power rises 8% each level.
 trait.coupe.name	클래식 카트	Classic Kart
 trait.coupe.desc	드리프트와 부스터를 사용하는 카트 주행을 해금합니다.	Unlocks kart driving with Drift and Boost.
@@ -54,9 +54,9 @@ trait.worker_1.name	첫 번째 알바	First Helper
 trait.worker_1.desc	기계에 배치할 첫 알바를 고용합니다.	Hires your first helper to run a machine.
 trait.worker_2.name	두 번째 알바	Second Helper
 trait.worker_2.desc	두 번째 알바를 고용합니다.	Hires a second helper.
-trait.worker_grade_2.name	알바 2등급 교육	Helper Training II
+trait.worker_grade_2.name	알바 2등급 교육	Grade 2 Training
 trait.worker_grade_2.desc	알바가 2등급 기계를 다룰 수 있습니다.	Helpers can run Grade 2 machines.
-trait.worker_grade_3.name	알바 3등급 교육	Helper Training III
+trait.worker_grade_3.name	알바 3등급 교육	Grade 3 Training
 trait.worker_grade_3.desc	알바가 3등급 기계를 다룰 수 있습니다.	Helpers can run Grade 3 machines.
 trait.worker_speed.name	알바 손놀림	Helper Skill
 trait.worker_speed.desc	알바 제작 속도가 단계마다 15% 오릅니다.	Helper production speed rises 15% each level.
@@ -97,7 +97,6 @@ location.3.name	별빛 광장	Starlight Plaza
 location.3.desc	맛과 기술을 모두 시험하는 마지막 광장	The final plaza that tests taste and skill
 course.0	1번 · 슈가웨이	No.1 · Sugarway
 course.1	2번 · 클라우드런	No.2 · Cloud Run
-course.2	3번 · 캐러멜힐	No.3 · Caramel Hill
 flavor.0	딸기	Strawberry
 flavor.1	소다	Soda
 flavor.2	바닐라	Vanilla
@@ -116,7 +115,7 @@ effect.sugar	설탕 사용량 {0}% → {1}%	Sugar use {0}% → {1}%
 effect.star	별 하나당 보너스 {0}% → {1}%	Bonus per star {0}% → {1}%
 effect.price	기본 가격 {0}% → {1}%	Base price {0}% → {1}%
 effect.flavor	특별한 맛 {0}% → {1}%	Special flavors {0}% → {1}%
-effect.location	지역 보너스 {0}% → {1}%/지역	Area bonus {0}% → {1}% per area
+effect.location	지역 보너스 {0}%/지역 → {1}%/지역	Area bonus {0}% → {1}% per area
 effect.helper	알바 속도 {0}m/s → {1}m/s	Helper speed {0}m/s → {1}m/s
 effect.max	최대 단계	Max level
 shift.size.machine	{0}는 {1}까지	{0}: up to {1}

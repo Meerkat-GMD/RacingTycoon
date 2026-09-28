@@ -99,8 +99,18 @@ def check_uxml(path, keys, problems):
 def main(arguments):
     problems = []
     keys = load_keys(problems)
-    paths = [ROOT / p for p in arguments] if arguments else \
-        sorted((ROOT / "Assets/CottonCircuit/Scripts").rglob("*.cs")) + sorted((ROOT / "Assets/Resources/UI").glob("*.uxml"))
+    if arguments:
+        paths = []
+        for argument in arguments:
+            candidate = ROOT / argument
+            if candidate.is_dir():
+                paths += sorted(candidate.rglob("*.cs")) + sorted(candidate.rglob("*.uxml"))
+            elif candidate.is_file():
+                paths.append(candidate)
+            else:
+                problems.append(f"{argument}: no such file or directory")
+    else:
+        paths = sorted((ROOT / "Assets/CottonCircuit/Scripts").rglob("*.cs")) + sorted((ROOT / "Assets/Resources/UI").glob("*.uxml"))
     for path in paths:
         if path.suffix == ".cs":
             check_cs(path, keys, problems)
