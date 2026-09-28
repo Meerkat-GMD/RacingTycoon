@@ -72,23 +72,27 @@ namespace CottonCircuit
             SetText("businessWallet", economy.Coins.ToString("N0") + " C");
             int seconds = Math.Max(0, (int)Math.Ceiling(state.RemainingSeconds));
             SetText("businessClock", (seconds / 60).ToString("00") + ":" + (seconds % 60).ToString("00"));
-            SetText("businessDayCaption", state.Closed ? "CLOSED · 내일 또 만나요" : "OPEN · 오늘 판매 " + state.DaySold + "개");
+            SetText("businessDayCaption", state.Closed ? Strings.Get("business.day.closed") : Strings.Format("business.day.open", state.DaySold));
             Show(Q<VisualElement>("businessMachines"), progression);
             for (int i = 0; i < 3; i++)
             {
                 bool owned = !progression ? i == 0 : i < Progression.OwnedMachines(economy);
                 bool assigned = shift.HasWorker(i), selected = i == shift.SelectedMachine;
                 var button = Q<Button>("businessMachine" + i);
-                button.text = "M0" + (i + 1) + " · " + (!owned ? "잠김" : assigned ? shift.WorkerCanOperate(i) ? "알바 운전" : "알바 대기" : selected ? "직접 운전" : "대기");
+                button.text = Strings.Format("business.machine.button", i + 1, Strings.Get(!owned ? "business.machine.locked" :
+                    assigned ? shift.WorkerCanOperate(i) ? "business.machine.helper" : "business.machine.helper.idle" :
+                    selected ? "business.machine.manual" : "business.machine.idle"));
                 button.SetEnabled(allowed && owned && !game.TutorialActive);
                 button.EnableInClassList("selected", selected);
-                button.tooltip = assigned ? "배치한 알바가 운전과 제작을 맡아요." : "이 기계는 직접 운전해요.";
+                button.tooltip = Strings.Get(assigned ? "business.machine.tooltip.assigned" : "business.machine.tooltip.manual");
             }
-            SetText("businessGrade", "설탕 " + shift.SugarGrade(shift.SelectedMachine) + "등급");
+            SetText("businessGrade", Strings.Format("business.grade", shift.SugarGrade(shift.SelectedMachine)));
             SetText("businessMinimapTitle", progression ? "M0" + (shift.SelectedMachine + 1) + " / LIVE" : "SUGARWAY / LIVE");
             Q<Image>("businessMinimap").image = game.World.MinimapTexture;
 
-            SetText("businessSugar", state.SugarGrams > .00001 ? Palette.FlavorName(state.SugarFlavor) + " 설탕  " + state.SugarGrams.ToString("0.0") + " / 100 g" : "설탕  0 / 100 g");
+            SetText("businessSugar", state.SugarGrams > .00001
+                ? Strings.Format("business.sugar.loaded", Palette.FlavorName(state.SugarFlavor), state.SugarGrams.ToString("0.0"))
+                : Strings.Get("business.sugar.empty"));
             Q<ProgressBar>("businessSugarMeter").value = (float)state.SugarGrams;
             int tier = ShopShift.SizeForDistance(state.BatchMeters);
             int maxSize = progression ? shift.MaxSize(shift.SelectedMachine) : 2;
@@ -96,21 +100,26 @@ namespace CottonCircuit
             bool capped = tier >= maxSize, sized = !progression || Progression.MaxSugarGrade(economy) > 1;
             SetText("businessBatchStage", BusinessTierName(tier));
             SetText("businessBatchStars", state.BatchMeters > 0 ? ShopShift.StarText(state.BatchQuality) : "");
-            SetText("businessBatchName", state.BatchMeters <= 0 ? "생산 준비" : Palette.FlavorName(state.BatchFlavor) + (tier < 0 ? " · 판매 불가" : ""));
+            SetText("businessBatchName", state.BatchMeters <= 0 ? Strings.Get("business.batch.ready")
+                : tier < 0 ? Strings.Format("business.batch.unsellable", Palette.FlavorName(state.BatchFlavor))
+                : Palette.FlavorName(state.BatchFlavor));
             double next = ShopShift.MetersForSize(Math.Min(maxSize, tier + 1));
             double previous = tier < 0 ? 0 : ShopShift.MetersForSize(tier);
-            string nextText = capped ? (sized ? "최대 크기" : "완성") + " · F로 꺼내기" :
-                (sized ? BusinessTierName(tier + 1) : "완성") + "까지 " + (Math.Ceiling(Math.Max(0, next - state.BatchMeters) / ShopShift.LapMeters * 100) / 100).ToString("0.00") + " 바퀴";
-            if (worker) nextText = economy.Inventory.Count >= economy.StockCapacity ? "진열대가 가득 차 대기" : game.WorkerDriving ? "알바가 만들고 꺼내요" : "알바 대기";
+            string laps = (Math.Ceiling(Math.Max(0, next - state.BatchMeters) / ShopShift.LapMeters * 100) / 100).ToString("0.00");
+            string nextText = capped ? Strings.Get(sized ? "business.next.max" : "business.next.done")
+                : sized ? Strings.Format("business.next.size", Progression.SizeName(tier + 1), laps)
+                : Strings.Format("business.next.finish", laps);
+            if (worker) nextText = economy.Inventory.Count >= economy.StockCapacity ? Strings.Get("business.next.shelf.full")
+                : game.WorkerDriving ? Strings.Get("business.next.worker.making") : Strings.Get("business.next.worker.idle");
             SetText("businessNextSize", nextText);
             Q<ProgressBar>("businessGrowthMeter").value = capped ? 100 : Mathf.Clamp01((float)((state.BatchMeters - previous) / Math.Max(.001, next - previous))) * 100;
             var batchArt = Q<VisualElement>("businessBatchArt");
             SetArt(batchArt, UiArt.CottonCandy(Math.Max(0, state.BatchFlavor), Math.Max(0, tier)));
             batchArt.EnableInClassList("biz-faint", state.BatchMeters <= 0);
-            SetText("businessExtractLabel", worker ? "알바가 꺼내요" : "꺼내기");
+            SetText("businessExtractLabel", Strings.Get(worker ? "business.extract.worker" : "business.extract.label"));
             Show(Q<VisualElement>("businessExtractKey"), !worker);
             Q<Button>("businessExtract").SetEnabled(manual && state.BatchMeters > 0 && economy.Inventory.Count < economy.StockCapacity);
-            SetText("businessEmptySugarLabel", worker ? "알바가 설탕 관리" : "설탕 비우기");
+            SetText("businessEmptySugarLabel", Strings.Get(worker ? "business.empty.worker" : "business.empty.label"));
             Show(Q<VisualElement>("businessEmptySugarKey"), !worker);
             Q<Button>("businessEmptySugar").SetEnabled(manual && state.SugarGrams > 0);
             for (int i = 0; i < 3; i++)
@@ -118,18 +127,20 @@ namespace CottonCircuit
                 bool available = !progression || shift.CanMakeFlavor(shift.SelectedMachine, i);
                 businessSugarBags[i].SetEnabled(manual && available);
                 int cost = available && progression ? shift.PourCost(shift.SelectedMachine, i) : 0;
-                SetText("sugarCost" + i, !available ? shift.MachineMakesFlavor(shift.SelectedMachine, i) ? "튜토리얼 중 잠김" : "이 기계에서는 잠김"
-                    : worker ? "알바 담당" : cost > 0 ? cost + " C / 10g" : "무료");
-                businessSugarBags[i].tooltip = "주행 화면으로 끌어 위아래로 흔들어 주세요.\n작게 흔들면 조금, 크게 흔들면 많이 들어가요.";
+                SetText("sugarCost" + i, !available ? Strings.Get(shift.MachineMakesFlavor(shift.SelectedMachine, i) ? "business.sugar.tutorial" : "business.sugar.locked")
+                    : worker ? Strings.Get("business.sugar.worker") : cost > 0 ? cost + " C / 10g" : Strings.Get("business.sugar.free"));
+                businessSugarBags[i].tooltip = Strings.Get("business.sugar.tooltip");
             }
             RefreshBusinessCustomers(allowed);
             RefreshBusinessShelf(allowed);
             RefreshBusinessDriving(worker);
             Show(Q<VisualElement>("businessResults"), state.Closed);
-            SetText("businessResultTitle", "DAY " + economy.Day.ToString("00") + "  영업 마감");
-            SetText("businessResultCaption", progression ? Progression.LocationName(economy.Progression.SelectedLocation) : "오늘도 달콤한 하루였어요");
-            SetText("businessResultStats", "판매 " + state.DaySold + "개   ·   매출 " + state.DayRevenue.ToString("N0") + " C\n\n재료비 " + state.DayMaterialCost.ToString("N0") + " C   ·   순이익 " + (state.DayRevenue - state.DayMaterialCost).ToString("N0") + " C\n\n오배송 " + state.DayWrong + "   ·   시간 초과 " + state.DayMissed + "   ·   폐기 " + state.DayTrashed);
-            Q<Button>("businessNextDay").text = progression ? "가게 정비하기" : "다음 날 시작하기";
+            SetText("businessResultTitle", Strings.Format("business.result.title", economy.Day.ToString("00")));
+            SetText("businessResultCaption", progression ? Progression.LocationName(economy.Progression.SelectedLocation) : Strings.Get("business.result.caption.default"));
+            SetText("businessResultStats", Strings.Format("business.result.stats", state.DaySold, state.DayRevenue.ToString("N0"),
+                state.DayMaterialCost.ToString("N0"), (state.DayRevenue - state.DayMaterialCost).ToString("N0"),
+                state.DayWrong, state.DayMissed, state.DayTrashed));
+            Q<Button>("businessNextDay").text = Strings.Get(progression ? "business.nextday.progression" : "business.nextday.simple");
         }
 
         void RefreshBusinessDriving(bool worker)
@@ -138,15 +149,18 @@ namespace CottonCircuit
             bool downhill = game.RunStyle == DrivingStyle.Downhill;
             SetText("businessSpeed", Mathf.RoundToInt(kart.Speed * 3.6f) + " km/h");
             double speedYield = ShopShift.SpeedYield(kart.Speed);
-            SetText("businessSpeedYield", worker ? game.WorkerDriving ? "알바 운전 중" : "알바 대기" : speedYield <= 0 ? "예열 중 · 속도를 올려요" : "감기 속도 ×" + speedYield.ToString("0.0"));
+            SetText("businessSpeedYield", worker ? Strings.Get(game.WorkerDriving ? "business.speed.worker.driving" : "business.speed.worker.idle")
+                : speedYield <= 0 ? Strings.Get("business.speed.warmup") : Strings.Format("business.speed.yield", speedYield.ToString("0.0")));
             Show(Q<VisualElement>("businessBoostCard"), !downhill && !worker);
-            SetText("businessBoost", kart.Boosting ? "BOOST · 달콤한 가속" : "BOOSTER  " + drive.StoredBoosts + " / 2");
+            SetText("businessBoost", kart.Boosting ? Strings.Get("business.boost.active") : "BOOSTER  " + drive.StoredBoosts + " / 2");
             var meter = Q<ProgressBar>("businessBoostMeter");
             meter.value = 100 * (kart.Boosting ? Mathf.Clamp01((float)(drive.BoostRemaining / Math.Max(.01, drive.BoostDuration))) : kart.Charge);
             meter.EnableInClassList("boosting", kart.Boosting);
             bool impact = kart.ImpactFlash > 0;
             Show(Q<Label>("businessRaceEvent"), impact);
-            SetText("businessRaceEvent", impact ? "벽 충돌!  " + (game.Shift.State.BatchMeters > 0 ? ShopShift.StarText(game.Shift.State.BatchQuality) : "") + (worker ? "" : " · R로 코스 복귀") : "");
+            SetText("businessRaceEvent", impact ? Strings.Get("business.race.impact") + "  " +
+                (game.Shift.State.BatchMeters > 0 ? ShopShift.StarText(game.Shift.State.BatchQuality) : "") +
+                (worker ? "" : " · " + Strings.Get("business.race.recover")) : "");
         }
 
         void RefreshBusinessCustomers(bool allowed)
@@ -164,13 +178,14 @@ namespace CottonCircuit
                 bool reacting = customer.Angry || customer.Happy;
                 SetArt(Q<VisualElement>("customerArt" + i), UiArt.Customer((i + location + customer.Flavor) % 3, customer.Angry));
                 SetArt(Q<VisualElement>("customerOrderArt" + i), reacting ? customer.Happy ? UiArt.HeartEmote : UiArt.AngryEmote : UiArt.CottonCandy(customer.Flavor, customer.Size));
-                SetText("customerOrderText" + i, reacting ? customer.Happy ? "고마워요!" : customer.TimedOut ? "오래 걸려요!" : "주문이 달라요!" : Palette.FlavorName(customer.Flavor) + (sized ? " · " + BusinessTierName(customer.Size) : ""));
+                SetText("customerOrderText" + i, reacting ? Strings.Get(customer.Happy ? "business.customer.thanks" : customer.TimedOut ? "business.customer.slow" : "business.customer.wrong")
+                    : sized ? Strings.Format("business.customer.order", Palette.FlavorName(customer.Flavor), BusinessTierName(customer.Size)) : Palette.FlavorName(customer.Flavor));
                 var patience = Q<ProgressBar>("customerPatience" + i);
                 Show(patience, !reacting);
                 float fraction = Mathf.Clamp01((float)(customer.PatienceRemaining / game.Shift.PatienceLimit));
                 patience.value = fraction * 100;
                 patience.EnableInClassList("warning", fraction < .25f);
-                businessCustomers[i].tooltip = reacting ? "" : "주문에 맞는 솜사탕을 끌어다 주세요.";
+                businessCustomers[i].tooltip = reacting ? "" : Strings.Get("business.customer.tooltip");
             }
         }
 
@@ -178,7 +193,7 @@ namespace CottonCircuit
         {
             var economy = game.Session.Economy;
             int capacity = Math.Min(economy.StockCapacity, businessStock.Length);
-            SetText("businessShelfCount", "내 진열대  " + economy.Inventory.Count + " / " + economy.StockCapacity);
+            SetText("businessShelfCount", Strings.Format("business.shelf.count", economy.Inventory.Count, economy.StockCapacity));
             var rack = Q<VisualElement>("businessStockGrid");
             rack.EnableInClassList("rack-six", capacity <= 6);
             rack.EnableInClassList("rack-nine", capacity > 6 && capacity <= 9);
@@ -207,18 +222,19 @@ namespace CottonCircuit
                 Show(art, product != null);
                 businessStock[i].EnableInClassList("occupied", product != null);
                 businessStock[i].EnableInClassList("selected", product != null && (product.Id == game.SelectedProductId || product.Id == businessHoveredProductId));
-                if (product == null) { SetText("stockGrade" + i, ""); businessStock[i].tooltip = "빈 진열 공간"; continue; }
+                if (product == null) { SetText("stockGrade" + i, ""); businessStock[i].tooltip = Strings.Get("business.shelf.slot.empty"); continue; }
                 int tier = ShopShift.SizeOf(product);
                 SetArt(art, UiArt.BaggedCandy(product.FlavorIndex, Math.Max(0, tier)));
-                SetText("stockGrade" + i, tier < 0 ? "미완성" : (sized ? BusinessTierName(tier) + " " : "") + ShopShift.StarText(product.Quality));
-                businessStock[i].tooltip = Palette.FlavorName(product.FlavorIndex) + " · " + BusinessDistance(product.DistanceMeters) + "\n" +
-                    (tier < 0 ? "주행 화면에서 더 키우세요." : economy.Price(product).ToString("N0") + " C · 손님에게 끌어다 주세요.");
+                SetText("stockGrade" + i, tier < 0 ? Strings.Get("business.unfinished") : (sized ? BusinessTierName(tier) + " " : "") + ShopShift.StarText(product.Quality));
+                businessStock[i].tooltip = tier < 0
+                    ? Strings.Format("business.shelf.tooltip.grow", Palette.FlavorName(product.FlavorIndex), BusinessDistance(product.DistanceMeters))
+                    : Strings.Format("business.shelf.tooltip.sell", Palette.FlavorName(product.FlavorIndex), BusinessDistance(product.DistanceMeters), economy.Price(product).ToString("N0"));
             }
         }
 
         Product BusinessProduct(string id) => string.IsNullOrEmpty(id) || !game || game.Session == null ? null : game.Session.Economy.Inventory.Find(p => p.Id == id);
-        static string BusinessTierName(int tier) => tier < 0 ? "미완성" : tier == 0 ? "소" : tier == 1 ? "중" : "대";
-        static string BusinessDistance(double meters) => (Math.Floor(meters / ShopShift.LapMeters * 100) / 100).ToString("0.00") + " 바퀴";
+        static string BusinessTierName(int tier) => tier < 0 ? Strings.Get("business.unfinished") : Progression.SizeName(tier);
+        static string BusinessDistance(double meters) => Strings.Format("business.laps", (Math.Floor(meters / ShopShift.LapMeters * 100) / 100).ToString("0.00"));
 
         public VisualElement TutorialProductTarget(string productId = null)
         {

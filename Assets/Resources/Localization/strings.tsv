@@ -158,3 +158,75 @@ tutorial.step4.heading	04 / 04  첫 손님에게 판매	04 / 04  Sell to your fi
 tutorial.step4.dialogue	진열대의 솜사탕을 끌어서\n딸기 주문 손님에게 건네주세요.	Drag the candy from your shelf\nto the customer who ordered strawberry.
 tutorial.step4.progress	솜사탕 → 손님 또는 주문 말풍선	Candy → customer or order bubble
 tutorial.step4.cue	강조된 솜사탕을 주문 손님에게	Highlighted candy to the customer
+business.day.closed	CLOSED · 내일 또 만나요	CLOSED · See you tomorrow
+business.day.open	OPEN · 오늘 판매 {0}개	OPEN · {0} sold today
+business.machine.button	M0{0} · {1}	M0{0} · {1}
+business.machine.locked	잠김	Locked
+business.machine.helper	알바 운전	Helper driving
+business.machine.helper.idle	알바 대기	Helper waiting
+business.machine.manual	직접 운전	Manual drive
+business.machine.idle	대기	Waiting
+business.machine.tooltip.assigned	배치한 알바가 운전과 제작을 맡아요.	Your assigned helper drives and makes candy.
+business.machine.tooltip.manual	이 기계는 직접 운전해요.	You drive this machine yourself.
+business.grade	설탕 {0}등급	Sugar grade {0}
+business.sugar.loaded	{0} 설탕  {1} / 100 g	{0} sugar  {1} / 100 g
+business.sugar.empty	설탕  0 / 100 g	Sugar  0 / 100 g
+business.unfinished	미완성	Unfinished
+business.laps	{0} 바퀴	{0} laps
+business.batch.ready	생산 준비	Ready to make
+business.batch.unsellable	{0} · 판매 불가	{0} · Not for sale
+business.next.max	최대 크기 · F로 꺼내기	Max size · Press F to take out
+business.next.done	완성 · F로 꺼내기	Done · Press F to take out
+business.next.size	{0}까지 {1} 바퀴	{1} laps to {0}
+business.next.finish	완성까지 {0} 바퀴	{0} laps to finish
+business.next.shelf.full	진열대가 가득 차 대기	Waiting, shelf is full
+business.next.worker.making	알바가 만들고 꺼내요	Helper makes and takes out
+business.next.worker.idle	알바 대기	Helper waiting
+business.extract.label	꺼내기	Take out
+business.extract.worker	알바가 꺼내요	Helper takes out
+business.empty.label	설탕 비우기	Empty sugar
+business.empty.worker	알바가 설탕 관리	Helper manages sugar
+business.sugar.tutorial	튜토리얼 중 잠김	Locked during tutorial
+business.sugar.locked	이 기계에서는 잠김	Locked on this machine
+business.sugar.worker	알바 담당	Helper handles it
+business.sugar.free	무료	Free
+business.sugar.tooltip	주행 화면으로 끌어 위아래로 흔들어 주세요.\n작게 흔들면 조금, 크게 흔들면 많이 들어가요.	Drag it to the track and shake up and down.\nA small shake adds a little, a big shake adds a lot.
+business.customer.thanks	고마워요!	Thank you!
+business.customer.slow	오래 걸려요!	Too slow!
+business.customer.wrong	주문이 달라요!	Wrong order!
+business.customer.order	{0} · {1}	{0} · {1}
+business.customer.tooltip	주문에 맞는 솜사탕을 끌어다 주세요.	Drag over the candy that matches the order.
+business.shelf.count	내 진열대  {0} / {1}	My shelf  {0} / {1}
+business.shelf.slot.empty	빈 진열 공간	Empty shelf slot
+business.shelf.tooltip.grow	{0} · {1}\n주행 화면에서 더 키우세요.	{0} · {1}\nGrow it more on the track.
+business.shelf.tooltip.sell	{0} · {1}\n{2} C · 손님에게 끌어다 주세요.	{0} · {1}\n{2} C · Drag it to a customer.
+business.result.title	DAY {0}  영업 마감	DAY {0}  Closing time
+business.result.caption.default	오늘도 달콤한 하루였어요	Another sweet day is done
+business.result.stats	판매 {0}개   ·   매출 {1} C\n\n재료비 {2} C   ·   순이익 {3} C\n\n오배송 {4}   ·   시간 초과 {5}   ·   폐기 {6}	Sold {0}   ·   Revenue {1} C\n\nCost {2} C   ·   Profit {3} C\n\nWrong {4}   ·   Missed {5}   ·   Trashed {6}
+business.nextday.progression	가게 정비하기	Manage the shop
+business.nextday.simple	다음 날 시작하기	Start the next day
+business.speed.worker.driving	알바 운전 중	Helper driving
+business.speed.worker.idle	알바 대기	Helper waiting
+business.speed.warmup	예열 중 · 속도를 올려요	Warming up · Speed it up
+business.speed.yield	감기 속도 ×{0}	Winding speed ×{0}
+business.boost.active	BOOST · 달콤한 가속	BOOST · Sweet acceleration
+business.race.impact	벽 충돌!	Wall hit!
+business.race.recover	R로 코스 복귀	R to return to track
+business.title	솜사탕 서킷	Cotton Circuit
+business.shop.title	우리 솜사탕 가게	Our Cotton Candy Shop
+business.clock.caption	남은 영업시간	Time left
+business.store.sign	솜사탕	Candy
+business.rack.hint	완성한 솜사탕을 여기에 꽂아요	Put finished candy here
+business.trash.label	버리기	Trash
+business.sugar.header	맛별 설탕	Sugar by flavor
+business.sugar.kind	설탕	Sugar
+drag.caption.sugar	{0} 설탕	{0} sugar
+drag.caption.unfinished	{0} · 미완성	{0} · Unfinished
+drag.drop.swap	여기에 놓으면 만들던 솜사탕과 교환해요	Drop here to swap with what you're making
+drag.drop.resume	여기에 놓으면 이어서 만들어요	Drop here to keep making it
+drag.drop.mismatch	제작 중인 맛과 달라요	Different from what you're making
+drag.drop.full	설탕이 가득해요	Sugar is full
+drag.drop.tutorial	설탕을 넣었어요. 직접 달려보세요!	Sugar added. Try driving yourself!
+drag.drop.cost	재료비가 부족해요	Not enough coins
+drag.drop.shake	봉지를 위아래로 흔들어 설탕을 넣어요	Shake the bag up and down to add sugar
+drag.drop.bring	주행 화면으로 가져와 흔들어 주세요	Bring it to the track and shake

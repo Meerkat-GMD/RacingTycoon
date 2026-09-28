@@ -29,10 +29,13 @@ namespace CottonCircuit
                 Q<Button>("PauseContinueButton").clicked += game.TogglePause;
                 Q<Button>("PauseMuteButton").clicked += game.ToggleMute;
                 Q<Button>("PauseTitleButton").clicked += game.ReturnToTitle;
+                Localization.Changed += Refresh;
             }
             Show(uiRoot, true);
             Refresh();
         }
+
+        void OnDestroy() { Localization.Changed -= Refresh; }
 
         public void HideForTitle()
         {

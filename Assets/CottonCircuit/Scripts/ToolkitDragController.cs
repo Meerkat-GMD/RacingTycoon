@@ -78,7 +78,9 @@ namespace CottonCircuit
             businessPourMessageUntil = 0;
             int tier = product == null ? 0 : ShopShift.SizeOf(product);
             SetArt(Q<VisualElement>("businessDragArt"), sugar ? UiArt.SugarBag(slot) : UiArt.BaggedCandy(product.FlavorIndex, Mathf.Max(0, tier)));
-            SetText("businessDragCaption", Palette.FlavorName(businessDragFlavor) + (sugar ? " 설탕" : tier < 0 ? " · 미완성" : ""));
+            SetText("businessDragCaption", sugar ? Strings.Format("drag.caption.sugar", Palette.FlavorName(businessDragFlavor))
+                : tier < 0 ? Strings.Format("drag.caption.unfinished", Palette.FlavorName(businessDragFlavor))
+                : Palette.FlavorName(businessDragFlavor));
             source.AddToClassList("drag-source");
             Show(businessGhost, true);
             Show(Q<Label>("businessDropMessage"), !game.SelectedMachineHasWorker);
@@ -105,7 +107,7 @@ namespace CottonCircuit
             trash.EnableInClassList("drop-hover", !businessDraggingSugar && trash.worldBound.Contains(position));
             if (!businessDraggingSugar)
             {
-                SetText("businessDropMessage", game.Shift.State.BatchMeters > 0 ? "여기에 놓으면 만들던 솜사탕과 교환해요" : "여기에 놓으면 이어서 만들어요");
+                SetText("businessDropMessage", Strings.Get(game.Shift.State.BatchMeters > 0 ? "drag.drop.swap" : "drag.drop.resume"));
                 return;
             }
             businessShake.FullStrokePixels = game.SugarShakeFullStrokePixels;
@@ -124,11 +126,11 @@ namespace CottonCircuit
             {
                 businessPourMessageUntil = Time.unscaledTime + .7f;
                 var state = game.Shift.State;
-                SetText("businessDropMessage", state.BatchMeters > 0 && state.BatchFlavor != businessDragFlavor ? "제작 중인 맛과 달라요" :
-                    state.SugarGrams >= 100 ? "설탕이 가득해요" : game.TutorialActive && game.TutorialStep != TutorialStep.PourSugar ? "설탕을 넣었어요. 직접 달려보세요!" : "재료비가 부족해요");
+                SetText("businessDropMessage", Strings.Get(state.BatchMeters > 0 && state.BatchFlavor != businessDragFlavor ? "drag.drop.mismatch" :
+                    state.SugarGrams >= 100 ? "drag.drop.full" : game.TutorialActive && game.TutorialStep != TutorialStep.PourSugar ? "drag.drop.tutorial" : "drag.drop.cost"));
             }
             else if (Time.unscaledTime >= businessPourMessageUntil)
-                SetText("businessDropMessage", inside ? "봉지를 위아래로 흔들어 설탕을 넣어요" : "주행 화면으로 가져와 흔들어 주세요");
+                SetText("businessDropMessage", Strings.Get(inside ? "drag.drop.shake" : "drag.drop.bring"));
         }
 
         public DeliveryResult DropBusinessDrag(int pointerId, Vector2 position)

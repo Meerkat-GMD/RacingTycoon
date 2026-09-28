@@ -148,8 +148,8 @@ namespace CottonCircuit.Tests
                 "tutorial coaching stays aligned with the centered gameplay composition");
             Check(!game.EmptySugar() && game.ExtractCandy() == null, "tutorial rejects premature destructive production actions");
             var sodaBag = Element<VisualElement>("sugar1");
-            Check(!sodaBag.enabledInHierarchy && Element<Label>("sugarCost1").text == "튜토리얼 중 잠김" &&
-                Element<Label>("sugarCost2").text == "이 기계에서는 잠김", "the starting soda bag waits for the strawberry tutorial to finish");
+            Check(!sodaBag.enabledInHierarchy && Element<Label>("sugarCost1").text == Strings.Get("business.sugar.tutorial") &&
+                Element<Label>("sugarCost2").text == Strings.Get("business.sugar.locked"), "the starting soda bag waits for the strawberry tutorial to finish");
             CheckNoPlayerAuto();
             yield return SugarGuideBeforeGrab();
             yield return Capture("03-tutorial-sugar.png");
@@ -209,7 +209,7 @@ namespace CottonCircuit.Tests
             yield return Click("TutorialCompleteButton");
             Check(!game.TutorialActive && game.TutorialStep == TutorialStep.Complete, "success action ends the tutorial");
             Check(sodaBag.enabledInHierarchy && Element<Label>("sugarCost1").text == "2 C / 10g" &&
-                Element<Label>("sugarCost2").text == "이 기계에서는 잠김", "after the tutorial the basic machine offers paid soda while vanilla stays locked");
+                Element<Label>("sugarCost2").text == Strings.Get("business.sugar.locked"), "after the tutorial the basic machine offers paid soda while vanilla stays locked");
             Check(game.Audio.Music == MusicCue.Machine1, "the first machine song follows the tutorial");
             Check(new SaveStore(saveDirectory).Load().TutorialStep == TutorialStep.Complete, "tutorial completion is saved immediately");
             int bells = game.Audio.Played(Sound.ClosingBell);
@@ -512,11 +512,13 @@ namespace CottonCircuit.Tests
             state.SugarFlavor = 0;
             state.SugarGrams = 50;
             double[] laps = { 0, .5, .999, 1, 1.499, 1.5, 1.999, 2, 2.5 };
-            string[] stages = { "미완성", "미완성", "미완성", "소", "소", "중", "중", "대", "대" };
+            string unfinished = Strings.Get("business.unfinished"), small = Progression.SizeName(0), medium = Progression.SizeName(1), large = Progression.SizeName(2);
+            string[] stages = { unfinished, unfinished, unfinished, small, small, medium, medium, large, large };
             string[] remaining = {
-                "소까지 1.00 바퀴", "소까지 0.50 바퀴", "소까지 0.01 바퀴",
-                "중까지 0.50 바퀴", "중까지 0.01 바퀴", "대까지 0.50 바퀴", "대까지 0.01 바퀴",
-                "최대 크기 · F로 꺼내기", "최대 크기 · F로 꺼내기"
+                Strings.Format("business.next.size", small, "1.00"), Strings.Format("business.next.size", small, "0.50"), Strings.Format("business.next.size", small, "0.01"),
+                Strings.Format("business.next.size", medium, "0.50"), Strings.Format("business.next.size", medium, "0.01"),
+                Strings.Format("business.next.size", large, "0.50"), Strings.Format("business.next.size", large, "0.01"),
+                Strings.Get("business.next.max"), Strings.Get("business.next.max")
             };
             string[] screenshots = { "hud-ready.png", "hud-incomplete.png", null, "hud-small.png", null, "hud-medium.png", null, "hud-large.png", null };
             for (int i = 0; i < laps.Length; i++)
@@ -544,9 +546,9 @@ namespace CottonCircuit.Tests
             yield return Settle();
             Check(game.HasProgression && game.Shift.MaxSize(0) == 0 && state.BatchOverflowMeters > state.BatchMeters,
                 "capped fixture has a small first-machine batch and excess winding distance");
-            Check(Element<Label>("businessBatchStage").text == "소",
+            Check(Element<Label>("businessBatchStage").text == small,
                 "overflow winding cannot mislabel a capped small candy as medium or large");
-            Check(Element<Label>("businessNextSize").text == "완성 · F로 꺼내기",
+            Check(Element<Label>("businessNextSize").text == Strings.Get("business.next.done"),
                 "capped first-machine batch retains extraction guidance");
             yield return Capture("hud-capped-small.png");
             game.TogglePause();
@@ -639,7 +641,7 @@ namespace CottonCircuit.Tests
             Check(game.UI.TutorialProductTarget(incomplete.Id) == Element<VisualElement>("stock1") &&
                 source == Element<VisualElement>("stock2") && Element<VisualElement>("stock0").pickingMode == PickingMode.Ignore,
                 "sparse rack keeps product IDs on their original clips after inventory compaction");
-            Check(Element<Label>("stockGrade1").text.Contains("미완성"), "incomplete bag keeps its visible unsellable tag");
+            Check(Element<Label>("stockGrade1").text.Contains(Strings.Get("business.unfinished")), "incomplete bag keeps its visible unsellable tag");
             CheckRackProducts(9);
             yield return Capture("rack-sparse.png");
 
