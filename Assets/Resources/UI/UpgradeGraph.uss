@@ -1,0 +1,165 @@
+/* Growth map: authored per-tab trees. Node and edge geometry below mirrors UpgradeTreeLayout
+   (disc centers in a 1048 x 550 map); the runtime smoke test checks that they agree. */
+.prep-screen .prep-graph-paper { padding: 18px 20px 12px; background-color: #fffcf5; border-radius: 16px; }
+.trait-graph-area { flex-grow: 1; min-height: 0; align-items: center; justify-content: center; overflow: hidden; }
+.trait-graph { width: 1048px; height: 550px; flex-shrink: 0; }
+
+.trait-node { position: absolute; width: 176px; align-items: center; }
+.prep-screen .trait-node-button,
+.prep-screen .trait-node-button:hover,
+.prep-screen .trait-node-button:active,
+.prep-screen .trait-node-button:focus {
+    width: 74px;
+    height: 74px;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 37px;
+    background-color: rgba(0, 0, 0, 0);
+}
+.trait-ring { width: 74px; height: 74px; border-radius: 37px; align-items: center; justify-content: center; }
+.trait-highlight .trait-ring { background-color: #d6a853; }
+.trait-disc { width: 64px; height: 64px; border-radius: 32px; align-items: center; justify-content: center; background-color: #e7e9e2; }
+/* Only a purchasable trait answers the pointer, as in the old graph; others still show details on hover. */
+.trait-buyable .trait-node-button:hover .trait-disc { border-width: 2px; border-color: rgba(38, 59, 66, 0.3); }
+.trait-buyable .trait-node-button:active .trait-disc { scale: 0.96 0.96; }
+.trait-icon { width: 42px; height: 42px; margin-bottom: 6px; -unity-background-scale-mode: scale-to-fit; }
+.trait-rank {
+    position: absolute;
+    left: 19px;
+    top: 54px;
+    width: 36px;
+    height: 19px;
+    padding: 0;
+    border-radius: 9px;
+    background-color: #263b42;
+    color: #fffcf5;
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+.trait-name {
+    margin-top: 2px;
+    height: 27px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background-color: #fffcf5;
+    color: #263b42;
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    white-space: nowrap;
+}
+.trait-locked .trait-icon { opacity: 0.55; }
+.trait-locked .trait-name { color: #65736d; }
+
+/* Open: bought or purchasable now. Reachable: prerequisites met, not affordable yet. */
+.trait-open.trait-cat-business .trait-disc { background-color: #ebc997; }
+.trait-open.trait-cat-production .trait-disc { background-color: #eba5b3; }
+.trait-open.trait-cat-equipment .trait-disc { background-color: #b8d9cc; }
+.trait-open.trait-cat-staff .trait-disc { background-color: #c9bde0; }
+.trait-open.trait-cat-location .trait-disc { background-color: #acd2d9; }
+.trait-open.trait-cat-sales .trait-disc { background-color: #e2c2ad; }
+.trait-reachable.trait-cat-business .trait-disc { background-color: #f3dcbb; }
+.trait-reachable.trait-cat-production .trait-disc { background-color: #f3c6cc; }
+.trait-reachable.trait-cat-equipment .trait-disc { background-color: #d3e6dc; }
+.trait-reachable.trait-cat-staff .trait-disc { background-color: #ded5e8; }
+.trait-reachable.trait-cat-location .trait-disc { background-color: #cce2e4; }
+.trait-reachable.trait-cat-sales .trait-disc { background-color: #edd8c8; }
+
+.trait-chips { margin-top: 3px; }
+.prep-screen .trait-chip {
+    width: 176px;
+    height: 21px;
+    min-height: 21px;
+    margin: 0 0 2px;
+    padding: 0 8px;
+    border-width: 0;
+    border-radius: 10px;
+    background-color: #f4e3d3;
+    color: #263b42;
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: nowrap;
+}
+.prep-screen .trait-chip:hover { background-color: #eed4bd; }
+.prep-screen .trait-chip-met { background-color: #ddede4; }
+.prep-screen .trait-chip-met:hover { background-color: #c9e2d4; }
+
+/* An edge is a line rotated about its start; the two heads fold back from its end. */
+.trait-edge { position: absolute; height: 2.5px; transform-origin: 0 50%; background-color: #b4bdb2; }
+.trait-edge-head { position: absolute; right: 0; top: 50%; width: 10px; height: 2.5px; margin-top: -1.25px; transform-origin: 100% 50%; background-color: #b4bdb2; }
+.trait-edge-head-left { rotate: 32deg; }
+.trait-edge-head-right { rotate: -32deg; }
+.trait-edge-unlocked, .trait-edge-unlocked .trait-edge-head { background-color: #82ac9d; }
+.trait-edge-focus { height: 3.5px; margin-top: -0.5px; }
+.trait-edge-focus, .trait-edge-focus .trait-edge-head { background-color: #50796d; }
+
+.trait-details { position: absolute; left: 0; top: 0; width: 330px; padding: 15px 20px; border-radius: 12px; background-color: #263b42; }
+.trait-details-left { translate: -100% 0; }
+.trait-details-up { translate: 0 -100%; }
+.trait-details-left.trait-details-up { translate: -100% -100%; }
+.trait-details-title { margin-bottom: 6px; color: #fff9ec; font-size: 16px; -unity-font-style: bold; }
+.trait-details-body { color: #fff9ec; font-size: 14px; white-space: pre-wrap; }
+
+/* 가게 운영 */
+#TraitEdge_ads_group_visit { left: 870px; top: 142.75px; width: 260.28px; rotate: 153.04deg; }
+#TraitEdge_ads_repeat_ads { left: 870px; top: 142.75px; width: 118px; rotate: 90deg; }
+#TraitNode_hours { left: 86px; top: 33px; }
+#TraitNode_patience { left: 318px; top: 33px; }
+#TraitNode_shelf { left: 550px; top: 33px; }
+#TraitNode_ads { left: 782px; top: 33px; }
+#TraitNode_group_visit { left: 550px; top: 263px; }
+#TraitNode_repeat_ads { left: 782px; top: 263px; }
+/* 솜사탕 제작 */
+#TraitEdge_stick_speed_stick_quality { left: 355px; top: 132.75px; width: 207.69px; rotate: 164.36deg; }
+#TraitEdge_stick_speed_stick_saving { left: 355px; top: 132.75px; width: 136.97px; rotate: 24.13deg; }
+#TraitEdge_sugar_2_sugar_3 { left: 825px; top: 132.75px; width: 101.79px; rotate: 33.38deg; }
+#TraitEdge_stick_quality_quality_focus { left: 155px; top: 300.75px; width: 76px; rotate: 90deg; }
+#TraitEdge_stick_saving_sugar_saving { left: 480px; top: 300.75px; width: 186.21px; rotate: 24.09deg; }
+#TraitEdge_sugar_2_sugar_saving { left: 825px; top: 132.75px; width: 300.27px; rotate: 125.65deg; }
+#TraitNode_stick_speed { left: 267px; top: 23px; }
+#TraitNode_sugar_2 { left: 737px; top: 23px; }
+#TraitNode_stick_quality { left: 67px; top: 191px; }
+#TraitNode_stick_saving { left: 392px; top: 191px; }
+#TraitNode_sugar_3 { left: 822px; top: 191px; }
+#TraitNode_quality_focus { left: 67px; top: 379px; }
+#TraitNode_sugar_saving { left: 562px; top: 379px; }
+/* 기계와 맛 */
+#TraitEdge_machine_2_flavor_soda { left: 524px; top: 139.75px; width: 288.2px; rotate: 170.21deg; }
+#TraitEdge_machine_2_machine_3 { left: 524px; top: 139.75px; width: 202.03px; rotate: 14.04deg; }
+#TraitEdge_machine_3_flavor_vanilla { left: 720px; top: 323.75px; width: 53px; rotate: 90deg; }
+#TraitNode_machine_2 { left: 436px; top: 7px; }
+#TraitNode_flavor_soda { left: 152px; top: 191px; }
+#TraitNode_machine_3 { left: 632px; top: 191px; }
+#TraitNode_flavor_vanilla { left: 632px; top: 379px; }
+/* 알바 */
+#TraitEdge_worker_1_worker_speed { left: 524px; top: 139.75px; width: 327.68px; rotate: 171.4deg; }
+#TraitEdge_worker_1_worker_grade_2 { left: 524px; top: 139.75px; width: 49px; rotate: 90deg; }
+#TraitEdge_worker_1_worker_2 { left: 524px; top: 139.75px; width: 327.68px; rotate: 8.6deg; }
+#TraitEdge_worker_grade_2_worker_grade_3 { left: 524px; top: 323.75px; width: 53px; rotate: 90deg; }
+#TraitNode_worker_1 { left: 436px; top: 7px; }
+#TraitNode_worker_speed { left: 112px; top: 191px; }
+#TraitNode_worker_grade_2 { left: 436px; top: 191px; }
+#TraitNode_worker_2 { left: 760px; top: 191px; }
+#TraitNode_worker_grade_3 { left: 436px; top: 379px; }
+/* 장소와 판매 */
+#TraitEdge_sales_flavor_price { left: 272px; top: 116.75px; width: 138.23px; rotate: 148.61deg; }
+#TraitEdge_location_1_location_price { left: 776px; top: 162.75px; width: 287.18px; rotate: 174.81deg; }
+#TraitEdge_sales_location_price { left: 272px; top: 116.75px; width: 229.58px; rotate: 18.28deg; }
+#TraitEdge_location_1_location_2 { left: 776px; top: 162.75px; width: 56.36px; rotate: 27.47deg; }
+#TraitEdge_location_2_location_3 { left: 826px; top: 323.75px; width: 53px; rotate: 90deg; }
+#TraitNode_sales { left: 184px; top: 7px; }
+#TraitNode_location_1 { left: 688px; top: 7px; }
+#TraitNode_flavor_price { left: 66px; top: 191px; }
+#TraitNode_location_price { left: 402px; top: 191px; }
+#TraitNode_location_2 { left: 738px; top: 191px; }
+#TraitNode_location_3 { left: 738px; top: 379px; }
+/* 차량 */
+#TraitEdge_engine_handling { left: 524px; top: 116.75px; width: 72px; rotate: 90deg; }
+#TraitEdge_handling_coupe { left: 524px; top: 300.75px; width: 76px; rotate: 90deg; }
+#TraitNode_engine { left: 436px; top: 7px; }
+#TraitNode_handling { left: 436px; top: 191px; }
+#TraitNode_coupe { left: 436px; top: 379px; }

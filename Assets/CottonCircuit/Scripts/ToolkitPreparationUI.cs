@@ -7,20 +7,35 @@ namespace CottonCircuit
 {
     public partial class GameUI
     {
-        VisualElement toolkitPreparation;
+        VisualElement toolkitPreparation, toolkitTraitDetails;
         readonly List<PreparationTraitBinding> preparationTraits = new List<PreparationTraitBinding>();
+        readonly List<PreparationRequirementBinding> preparationRequirements = new List<PreparationRequirementBinding>();
+        readonly List<PreparationEdgeBinding> preparationEdges = new List<PreparationEdgeBinding>();
         int toolkitPreparationPage, toolkitTraitTab, toolkitLocationPreview, toolkitPreparationFingerprint = int.MinValue;
         bool toolkitPreparationVisible;
-        string toolkitHighlightedTrait, toolkitPreparationSpeech;
+        string toolkitHighlightedTrait, toolkitHoveredTrait, toolkitPreparationSpeech;
         float toolkitPreparationSpeechUntil;
 
         sealed class PreparationTraitBinding
         {
             public UpgradeNode Node;
             public int Tab;
-            public VisualElement Card;
+            public VisualElement Root;
             public Button Purchase;
-            public Label Rank, Description, Effect, Availability;
+            public Label Rank;
+        }
+
+        // Prerequisites in another tab are chips under the trait; same-tab ones are authored edges.
+        sealed class PreparationRequirementBinding
+        {
+            public string Parent;
+            public Button Chip;
+        }
+
+        sealed class PreparationEdgeBinding
+        {
+            public string Parent, Child;
+            public VisualElement Line;
         }
 
         void BindPreparation(VisualElement root)
@@ -29,6 +44,10 @@ namespace CottonCircuit
             if (screen == toolkitPreparation) return;
             toolkitPreparation = screen ?? throw new InvalidOperationException("Preparation.uxml must contain PreparationScreen");
             preparationTraits.Clear();
+            preparationRequirements.Clear();
+            preparationEdges.Clear();
+            toolkitTraitDetails = PreparationElement<VisualElement>("TraitDetails");
+            toolkitHoveredTrait = null;
             toolkitPreparationPage = toolkitTraitTab = toolkitLocationPreview = 0;
             toolkitPreparationVisible = false;
             toolkitPreparationFingerprint = int.MinValue;
@@ -48,30 +67,40 @@ namespace CottonCircuit
                 var item = node;
                 var binding = new PreparationTraitBinding {
                     Node = item, Tab = UpgradeTreeLayout.TabOf(item.Id),
-                    Card = PreparationElement<VisualElement>("TraitCard_" + item.Id),
+                    Root = PreparationElement<VisualElement>("TraitNode_" + item.Id),
                     Purchase = PreparationElement<Button>("UpgradeNode_" + item.Id),
-                    Rank = PreparationElement<Label>("TraitRank_" + item.Id),
-                    Description = PreparationElement<Label>("TraitDescription_" + item.Id),
-                    Effect = PreparationElement<Label>("TraitEffect_" + item.Id),
-                    Availability = PreparationElement<Label>("TraitAvailability_" + item.Id)
+                    Rank = PreparationElement<Label>("TraitRank_" + item.Id)
                 };
+                // Unaffordable traits stay enabled so hovering still explains them; Buy rejects the click.
                 binding.Purchase.clicked += () => {
                     int before = Progression.Level(game.Session.Economy, item.Id);
                     game.PurchaseNode(item.Id);
-                    if (Progression.Level(game.Session.Economy, item.Id) > before)
-                    {
-                        toolkitPreparationSpeech = item.Name + ", 준비됐어요!";
-                        toolkitPreparationSpeechUntil = Time.unscaledTime + 5;
-                    }
+                    if (Progression.Level(game.Session.Economy, item.Id) == before) return;
+                    HideTraitDetails();
+                    toolkitPreparationSpeech = item.Name + ", 준비됐어요!";
+                    toolkitPreparationSpeechUntil = Time.unscaledTime + 5;
                     toolkitHighlightedTrait = item.Id;
                     InvalidatePreparation();
                 };
+                binding.Purchase.RegisterCallback<PointerEnterEvent>(_ =>
+                    ShowTraitDetails(binding.Purchase, item.Id, item.Name, TraitDetailsBody(item)));
+                binding.Purchase.RegisterCallback<PointerLeaveEvent>(_ => HideTraitDetails());
                 preparationTraits.Add(binding);
                 foreach (string prerequisite in item.Parents)
                 {
                     string parent = prerequisite;
-                    PreparationElement<Button>("TraitRequirement_" + item.Id + "_" + parent).clicked +=
-                        () => SelectPreparationTraitTab(UpgradeTreeLayout.TabOf(parent), parent);
+                    if (UpgradeTreeLayout.TabOf(parent) == binding.Tab)
+                    {
+                        preparationEdges.Add(new PreparationEdgeBinding { Parent = parent, Child = item.Id,
+                            Line = PreparationElement<VisualElement>("TraitEdge_" + parent + "_" + item.Id) });
+                        continue;
+                    }
+                    var chip = PreparationElement<Button>("TraitRequirement_" + item.Id + "_" + parent);
+                    chip.clicked += () => SelectPreparationTraitTab(UpgradeTreeLayout.TabOf(parent), parent);
+                    chip.RegisterCallback<PointerEnterEvent>(_ =>
+                        ShowTraitDetails(chip, null, "필요 특성  ·  " + UpgradeTreeLayout.Tabs[UpgradeTreeLayout.TabOf(parent)].Name, RequirementDetailsBody(parent)));
+                    chip.RegisterCallback<PointerLeaveEvent>(_ => HideTraitDetails());
+                    preparationRequirements.Add(new PreparationRequirementBinding { Parent = parent, Chip = chip });
                 }
                 SetArt(PreparationElement<VisualElement>("TraitIcon_" + item.Id), game.World.Assets.TraitIcon(TraitIcons.For(item.Id)));
             }
@@ -106,7 +135,13 @@ namespace CottonCircuit
             if (toolkitPreparation == null) return false;
             bool visible = game && game.HasProgression && game.InPreparation;
             Show(toolkitPreparation, visible);
-            if (!visible) { toolkitPreparationVisible = false; return false; }
+            if (!visible)
+            {
+                toolkitPreparationVisible = false;
+                toolkitHoveredTrait = null;
+                Show(toolkitTraitDetails, false);
+                return false;
+            }
             var economy = game.Session.Economy;
             if (!toolkitPreparationVisible)
             {
@@ -115,6 +150,8 @@ namespace CottonCircuit
             }
             toolkitPreparationVisible = true;
             toolkitPreparation.SetEnabled(!game.Session.Paused && !game.GrowthHintVisible);
+            // A hidden page or disabled screen never sends the pointer-leave that would close the details.
+            if (toolkitPreparationPage != 0 || !toolkitPreparation.enabledSelf) HideTraitDetails();
             PreparationElement<Label>("PreparationWallet").text = economy.Coins.ToString("N0") + " C";
             PreparationElement<Label>("PreparationDay").text = "DAY " + economy.Day.ToString("00") + "  /  영업 준비";
             string[] pageNames = { "UpgradeGraphPage", "EquipmentPage", "LocationsPage" };
@@ -146,35 +183,92 @@ namespace CottonCircuit
             foreach (var view in preparationTraits)
             {
                 var node = view.Node;
-                int rank = Progression.Level(economy, node.Id), cost = Progression.Cost(economy, node.Id);
-                bool complete = rank >= node.MaxLevel, requirementsMet = true;
-                foreach (string parent in node.Parents)
-                {
-                    bool met = Progression.Level(economy, parent) > 0;
-                    requirementsMet &= met;
-                    var requirement = PreparationElement<Button>("TraitRequirement_" + node.Id + "_" + parent);
-                    requirement.text = (met ? "✓ " : "○ ") + Progression.Find(parent).Name + "  →";
-                    requirement.EnableInClassList("prep-requirement-met", met);
-                }
-                Show(view.Card, view.Tab == toolkitTraitTab);
+                int rank = Progression.Level(economy, node.Id);
+                bool available = Progression.CanBuy(economy, node.Id), open = rank > 0 || available, reachable = true;
+                foreach (string parent in node.Parents) reachable &= Progression.Level(economy, parent) > 0;
                 if (view.Tab == toolkitTraitTab) { total++; if (rank > 0) bought++; }
-                view.Card.EnableInClassList("prep-trait-complete", complete);
-                view.Card.EnableInClassList("prep-trait-highlight", toolkitHighlightedTrait == node.Id);
-                view.Card.EnableInClassList("prep-trait-locked", !requirementsMet);
-                view.Rank.text = rank + " / " + node.MaxLevel;
-                view.Description.text = node.Description;
-                view.Effect.text = Progression.EffectSummary(economy, node.Id);
-                Show(view.Effect, view.Effect.text != node.Description);
-                view.Availability.text = complete ? "모든 단계 완료" : !requirementsMet ? "필요 특성을 먼저 해금하세요."
-                    : economy.Coins < cost ? (cost - economy.Coins).ToString("N0") + " C 더 모으면 해금할 수 있어요." : "다음 단계로 성장할 준비가 됐어요.";
-                view.Purchase.text = complete ? "완료" : cost.ToString("N0") + " C  ·  " + (rank == 0 ? "해금" : "성장");
-                view.Purchase.SetEnabled(Progression.CanBuy(economy, node.Id));
-                view.Purchase.tooltip = node.Name + "\n" + node.Description + "\n" + view.Effect.text;
+                view.Root.EnableInClassList("trait-buyable", available);
+                view.Root.EnableInClassList("trait-open", open);
+                view.Root.EnableInClassList("trait-reachable", !open && reachable);
+                view.Root.EnableInClassList("trait-locked", !open && !reachable);
+                view.Root.EnableInClassList("trait-highlight", toolkitHighlightedTrait == node.Id);
+                view.Rank.text = rank + "/" + node.MaxLevel;
+                view.Purchase.EnableInClassList(ToolkitUI.QuietClick, !available);
             }
+            foreach (var requirement in preparationRequirements)
+            {
+                bool met = Progression.Level(economy, requirement.Parent) > 0;
+                requirement.Chip.text = (met ? "✓ " : "○ ") + Progression.Find(requirement.Parent).Name + "  ↗";
+                requirement.Chip.EnableInClassList("trait-chip-met", met);
+            }
+            RefreshPreparationEdges(economy);
             for (int i = 0; i < UpgradeTreeLayout.Tabs.Length; i++)
-                PreparationElement<Button>("TraitTab_" + UpgradeTreeLayout.Tabs[i].Id).EnableInClassList("prep-selected", toolkitTraitTab == i);
+            {
+                string tab = UpgradeTreeLayout.Tabs[i].Id;
+                PreparationElement<Button>("TraitTab_" + tab).EnableInClassList("prep-selected", toolkitTraitTab == i);
+                Show(PreparationElement<VisualElement>("TraitGraph_" + tab), toolkitTraitTab == i);
+            }
             PreparationElement<Label>("PreparationTraitCount").text = bought + " / " + total + " 해금";
-            PreparationElement<Label>("PreparationCategoryTitle").text = UpgradeTreeLayout.Tabs[toolkitTraitTab].Name;
+        }
+
+        void RefreshPreparationEdges(Economy economy)
+        {
+            string focus = toolkitHoveredTrait ?? toolkitHighlightedTrait;
+            foreach (var edge in preparationEdges)
+            {
+                edge.Line.EnableInClassList("trait-edge-unlocked", Progression.Level(economy, edge.Parent) > 0);
+                edge.Line.EnableInClassList("trait-edge-focus", focus == edge.Parent || focus == edge.Child);
+            }
+        }
+
+        // Fills the authored details panel and moves it beside the hovered element, inside the map area.
+        void ShowTraitDetails(VisualElement anchor, string focus, string title, string body)
+        {
+            toolkitHoveredTrait = focus;
+            RefreshPreparationEdges(game.Session.Economy);
+            PreparationElement<Label>("TraitDetailsTitle").text = title;
+            PreparationElement<Label>("TraitDetailsBody").text = body;
+            var area = toolkitTraitDetails.parent;
+            var box = area.WorldToLocal(anchor.worldBound);
+            bool left = box.center.x > area.layout.width * .5f, up = box.center.y > area.layout.height * .5f;
+            toolkitTraitDetails.style.left = left ? box.xMin - 12 : box.xMax + 12;
+            toolkitTraitDetails.style.top = up ? box.yMax : box.yMin;
+            toolkitTraitDetails.EnableInClassList("trait-details-left", left);
+            toolkitTraitDetails.EnableInClassList("trait-details-up", up);
+            Show(toolkitTraitDetails, true);
+        }
+
+        void HideTraitDetails()
+        {
+            Show(toolkitTraitDetails, false);
+            if (toolkitHoveredTrait == null) return;
+            toolkitHoveredTrait = null;
+            RefreshPreparationEdges(game.Session.Economy);
+        }
+
+        string TraitDetailsBody(UpgradeNode node)
+        {
+            var economy = game.Session.Economy;
+            int level = Progression.Level(economy, node.Id), cost = Progression.Cost(economy, node.Id);
+            bool complete = level >= node.MaxLevel;
+            string value = level + " / " + node.MaxLevel + " 단계\n" + node.Description;
+            string effect = Progression.EffectSummary(economy, node.Id);
+            if (effect != node.Description) value += "\n" + effect;
+            value += complete ? "\n모든 단계 완료" : "\n비용  " + cost.ToString("N0") + " C";
+            if (node.Parents.Length > 0)
+            {
+                value += "\n필요 특성  ·  각각 1단계";
+                foreach (string parent in node.Parents)
+                    value += "\n" + (Progression.Level(economy, parent) > 0 ? "✓ " : "○ ") + Progression.Find(parent).Name;
+            }
+            if (!complete && economy.Coins < cost) value += "\n" + (cost - economy.Coins).ToString("N0") + " C 부족";
+            return value;
+        }
+
+        string RequirementDetailsBody(string id)
+        {
+            bool met = Progression.Level(game.Session.Economy, id) > 0;
+            return Progression.Find(id).Name + (met ? "  ✓ 완료" : "  1단계 필요") + "\n클릭하면 해당 특성으로 이동합니다.";
         }
 
         void RefreshPreparationEquipment(Economy economy)
@@ -256,10 +350,8 @@ namespace CottonCircuit
             toolkitTraitTab = Mathf.Clamp(tab, 0, UpgradeTreeLayout.Tabs.Length - 1);
             toolkitPreparationPage = 0;
             toolkitHighlightedTrait = target;
+            HideTraitDetails();
             InvalidatePreparation();
-            var scroll = PreparationElement<ScrollView>("UpgradeGraphScroll");
-            if (target == null) scroll.scrollOffset = Vector2.zero;
-            else scroll.schedule.Execute(() => scroll.ScrollTo(PreparationElement<VisualElement>("TraitCard_" + target)));
         }
         void InvalidatePreparation() { toolkitPreparationFingerprint = int.MinValue; RefreshPreparation(); }
         T PreparationElement<T>(string name) where T : VisualElement

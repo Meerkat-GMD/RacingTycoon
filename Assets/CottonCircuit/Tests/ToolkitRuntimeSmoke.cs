@@ -26,6 +26,10 @@ namespace CottonCircuit.Tests
             foreach (var flag in Flags) requested |= Array.IndexOf(args, flag) >= 0;
             if (!requested) return;
             var runner = new GameObject("UI Toolkit verification").AddComponent<ToolkitRuntimeSmoke>();
+            // An EventSystem without an input module takes UI Toolkit input over from its default event system, so a
+            // real cursor resting on or crossing the player window cannot move drags or end hovers. Synthetic pointer
+            // events are still dispatched through the real panels.
+            runner.gameObject.AddComponent<UnityEngine.EventSystems.EventSystem>();
             runner.output = Path.GetFullPath("CottonToolkitSmoke");
             foreach (var arg in args)
             {
@@ -265,8 +269,13 @@ namespace CottonCircuit.Tests
 
         IEnumerator PreparationAndWorkers()
         {
-            yield return NativeScroll();
+            yield return UpgradeGraph();
             var economy = game.Session.Economy;
+            yield return Click("TraitTab_production");
+            int clicks = game.Audio.Played(Sound.UiClick);
+            yield return Click("UpgradeNode_sugar_3");
+            Check(Progression.Level(economy, "sugar_3") == 0 && game.Audio.Played(Sound.UiClick) == clicks,
+                "clicking a trait that cannot be bought neither buys it nor plays a click");
             economy.Coins = 10000;
             game.UI.Refresh();
             foreach (string node in new[] { "sugar_2", "machine_2", "flavor_soda", "worker_1", "worker_grade_2" })
@@ -274,13 +283,15 @@ namespace CottonCircuit.Tests
                 yield return Click("OpenUpgradeGraph");
                 yield return Click("TraitTab_" + UpgradeTreeLayout.Tabs[UpgradeTreeLayout.TabOf(node)].Id);
                 var button = Element<Button>("UpgradeNode_" + node);
-                button.GetFirstAncestorOfType<ScrollView>()?.ScrollTo(button);
-                yield return Settle();
                 int before = economy.Coins, purchases = game.Audio.Played(Sound.Purchase);
                 yield return Click(button.name);
                 Check(Progression.Level(economy, node) == 1 && economy.Coins < before, "authored upgrade button buys " + node);
                 Check(game.Audio.Played(Sound.Purchase) == purchases + 1, "buying " + node + " plays the purchase sound");
             }
+            Check(Element<VisualElement>("TraitEdge_sugar_2_sugar_3").ClassListContains("trait-edge-unlocked"),
+                "arrows leaving a bought trait switch to the unlocked color");
+            var sodaChip = Element<Button>("TraitRequirement_quality_focus_flavor_soda");
+            Check(sodaChip.ClassListContains("trait-chip-met") && sodaChip.text.StartsWith("✓"), "a bought prerequisite marks its chip complete");
             yield return Capture("07-preparation-traits.png");
             yield return Click("OpenEquipment");
             Check(Visible(Find("EquipmentPage")) && !game.Machine(0).WorkerAssigned, "equipment page shows the hired worker without silently assigning it");
@@ -334,27 +345,80 @@ namespace CottonCircuit.Tests
             Check(!game.TutorialActive && game.InBusiness, "tutorial skip remains available through its real button");
         }
 
-        IEnumerator NativeScroll()
+        // The authored map must reproduce UpgradeTreeLayout: disc centers, same-tab arrows and cross-tab chips.
+        IEnumerator UpgradeGraph()
         {
             yield return Click("OpenUpgradeGraph");
+            var area = Element<VisualElement>("TraitGraphArea");
+            foreach (var tab in UpgradeTreeLayout.Tabs)
+            {
+                yield return Click("TraitTab_" + tab.Id);
+                var graph = Element<VisualElement>("TraitGraph_" + tab.Id);
+                foreach (var other in UpgradeTreeLayout.Tabs)
+                    Check(Visible(Find("TraitGraph_" + other.Id)) == (other == tab), "the " + tab.Id + " tab shows only its own map");
+                Check(Inside(area.worldBound, graph.worldBound), tab.Id + " map fits the growth map area without scrolling: " + graph.worldBound + " in " + area.worldBound);
+                foreach (var position in tab.Nodes)
+                {
+                    var node = Element<VisualElement>("TraitNode_" + position.Id);
+                    var button = graph.WorldToLocal(Element<Button>("UpgradeNode_" + position.Id).worldBound);
+                    Check(node.parent == graph && Close(button.center, new Vector2(position.X, position.Y)), position.Id + " disc center matches UpgradeTreeLayout: " + button.center);
+                    Check(button.width <= 76 && button.height <= 76, position.Id + " reacts only on its disc, like the old graph: " + button.size);
+                    float bottom = graph.WorldToLocal(node.worldBound).yMax;
+                    Check(bottom <= position.Y + UpgradeTreeLayout.FootprintBottom(position.Id) + 2, position.Id + " name and chips end above where its arrows start: " + bottom);
+                    foreach (string parent in Progression.Find(position.Id).Parents)
+                    {
+                        if (UpgradeTreeLayout.TabOf(parent) != UpgradeTreeLayout.TabOf(position.Id))
+                        {
+                            var chip = Element<Button>("TraitRequirement_" + position.Id + "_" + parent);
+                            Check(node.Contains(chip) && Visible(chip), "cross-tab prerequisite " + parent + " is a chip under " + position.Id);
+                            continue;
+                        }
+                        var from = UpgradeTreeLayout.Find(parent);
+                        var edge = Element<VisualElement>("TraitEdge_" + parent + "_" + position.Id);
+                        float middle = edge.resolvedStyle.height * .5f;
+                        var start = graph.WorldToLocal(edge.LocalToWorld(new Vector2(0, middle)));
+                        var tip = graph.WorldToLocal(edge.LocalToWorld(new Vector2(edge.resolvedStyle.width, middle)));
+                        Check(Close(start, new Vector2(from.X, from.Y + UpgradeTreeLayout.FootprintBottom(parent) + 5)) &&
+                            Close(tip, new Vector2(position.X, position.Y - 38)), "arrow " + parent + " -> " + position.Id + " runs from " + start + " to " + tip);
+                    }
+                }
+                yield return Capture("graph-" + tab.Id + ".png");
+            }
+            var lockedDisc = Element<VisualElement>("TraitNode_sugar_3").Q(className: "trait-disc").resolvedStyle.backgroundColor;
+            var openDisc = Element<VisualElement>("TraitNode_hours").Q(className: "trait-disc").resolvedStyle.backgroundColor;
+            Check(Element<VisualElement>("TraitNode_sugar_3").ClassListContains("trait-locked") && lockedDisc == Palette.Hex("E7E9E2") &&
+                !Element<VisualElement>("TraitNode_hours").ClassListContains("trait-locked") && openDisc != lockedDisc,
+                "locked traits have grey discs and reachable ones keep their category color: " + lockedDisc + " / " + openDisc);
+
+            yield return Click("TraitTab_production");
+            var speed = Element<Button>("UpgradeNode_stick_speed");
+            var details = Element<VisualElement>("TraitDetails");
+            var arrow = Element<VisualElement>("TraitEdge_stick_speed_stick_saving");
+            Pointer(speed, EventType.MouseMove, speed.worldBound.center);
+            Check(!details.ClassListContains("hidden") && Element<Label>("TraitDetailsTitle").text == "젓가락 회전" &&
+                Element<Label>("TraitDetailsBody").text.Contains(" C"), "hovering a trait opens its details with the cost");
+            Check(arrow.ClassListContains("trait-edge-focus"), "hovering a trait focuses its arrows");
+            yield return null;
+            Check(Visible(details) && Inside(area.worldBound, details.worldBound) && details.worldBound.xMin > speed.worldBound.xMax,
+                "trait details open to the right of an upper-left trait inside the map area: " + details.worldBound);
+            yield return Capture("graph-hover.png");
+            Pointer(area, EventType.MouseMove, area.worldBound.min + new Vector2(4, 4));
+            Check(details.ClassListContains("hidden") && !arrow.ClassListContains("trait-edge-focus"), "leaving the trait closes its details and focus");
+            yield return Click("TraitTab_sales");
+            var square = Element<Button>("UpgradeNode_location_3");
+            Pointer(square, EventType.MouseMove, square.worldBound.center);
+            Check(!details.ClassListContains("hidden") && details.ClassListContains("trait-details-left") && details.ClassListContains("trait-details-up"),
+                "a lower-right trait flips its details to the left and upward");
+            yield return null;
+            Check(Visible(details) && Inside(area.worldBound, details.worldBound) && details.worldBound.xMax < square.worldBound.xMin &&
+                Math.Abs(details.worldBound.yMax - square.worldBound.yMax) <= 2, "flipped details end beside the trait inside the map area: " + details.worldBound);
+            Pointer(area, EventType.MouseMove, area.worldBound.min + new Vector2(4, 4));
+            Check(details.ClassListContains("hidden"), "leaving the lower-right trait closes its details");
+
             yield return Click("TraitTab_business");
-            var scroll = Element<ScrollView>("UpgradeGraphScroll");
-            scroll.scrollOffset = Vector2.zero;
-            yield return Settle();
-            var viewport = scroll.contentViewport.worldBound;
-            Check(scroll.contentContainer.worldBound.height > viewport.height, "growth cards extend beyond the native scroll viewport");
-            var target = scroll.panel.Pick(viewport.center);
-            Check(target != null && scroll.Contains(target), "wheel event targets content inside the real ScrollView");
-            var mouse = new Event { type = EventType.ScrollWheel, delta = new Vector2(0, 4), mousePosition = viewport.center };
-            using (var wheel = WheelEvent.GetPooled(mouse)) { wheel.target = target; target.SendEvent(wheel); }
-            yield return Settle();
-            Check(scroll.scrollOffset.y > 0, "native wheel input changes the ScrollView offset");
-            var firstCard = Element<VisualElement>("TraitCard_hours");
-            var clippedPoint = new Vector2(firstCard.worldBound.center.x, viewport.yMin - 2);
-            Check(firstCard.worldBound.Contains(clippedPoint), "scroll fixture places card geometry behind the viewport edge");
-            var picked = scroll.panel.Pick(clippedPoint);
-            Check(picked != firstCard && (picked == null || !firstCard.Contains(picked)), "clipped card content cannot intercept pointer input above the viewport");
-            yield return Capture("preparation-scroll.png");
+            yield return Click("TraitRequirement_repeat_ads_location_1");
+            Check(Visible(Find("TraitGraph_sales")) && Element<Button>("TraitTab_sales").ClassListContains("prep-selected") &&
+                Element<VisualElement>("TraitNode_location_1").ClassListContains("trait-highlight"), "a prerequisite chip opens its tab and highlights the prerequisite");
         }
 
         IEnumerator Legacy()
@@ -855,6 +919,10 @@ namespace CottonCircuit.Tests
 
         static IEnumerator Settle() { yield return null; yield return null; }
         static bool Near(double a, double b) => Math.Abs(a - b) < .00001;
+        // Layout positions are rounded to the device pixel grid, which can move them by up to two pixels.
+        static bool Close(Vector2 a, Vector2 b) => (a - b).magnitude <= 2;
+        static bool Inside(Rect outer, Rect inner) =>
+            inner.xMin >= outer.xMin - 1 && inner.yMin >= outer.yMin - 1 && inner.xMax <= outer.xMax + 1 && inner.yMax <= outer.yMax + 1;
         void Check(bool condition, string message)
         {
             if (!condition) throw new InvalidOperationException("UITK_CHECK_FAILED " + message);

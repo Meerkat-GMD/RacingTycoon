@@ -51,29 +51,10 @@
 .prep-footer-caption { font-size: 12px; color: #75877f; -unity-text-align: middle-center; }
 .prep-trait-tabs { flex-direction: row; flex-shrink: 0; margin-bottom: 12px; }
 .prep-screen .prep-trait-tab { flex-grow: 1; flex-basis: 0; min-width: 0; min-height: 43px; padding: 8px 6px; margin-right: 6px; font-size: 14px; }
-.prep-category-heading { flex-direction: row; align-items: center; margin: 5px 6px 9px; }
-.prep-category-title { font-size: 19px; -unity-font-style: bold; flex-grow: 1; }
 .prep-scroll { flex-grow: 1; min-height: 0; }
 .prep-scroll .unity-scroll-view__content-container { padding-right: 8px; }
-.prep-trait-grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
-.prep-trait-card { width: 47%; flex-grow: 1; min-width: 270px; max-width: 570px; margin: 8px; padding: 20px; background-color: #fffdf6; border-width: 2px; border-color: #e8e3d7; border-radius: 16px; }
-.prep-trait-card.prep-trait-complete { border-color: #b8d4c4; background-color: #f3f8ef; }
-.prep-trait-card.prep-trait-highlight { border-color: #cd9a37; background-color: #fff5d9; }
-.prep-trait-card.prep-trait-locked { background-color: #f0efe8; }
-.prep-trait-header { flex-direction: row; align-items: center; margin-bottom: 12px; }
-.prep-trait-icon { width: 62px; height: 62px; flex-shrink: 0; margin-right: 13px; -unity-background-scale-mode: scale-to-fit; }
-.prep-trait-title-group { flex-grow: 1; min-width: 0; }
-.prep-trait-name { font-size: 20px; -unity-font-style: bold; white-space: normal; }
-.prep-trait-rank { font-size: 13px; color: #75877f; margin-top: 4px; }
-.prep-trait-description { font-size: 15px; white-space: normal; min-height: 43px; margin-bottom: 9px; }
-.prep-trait-effect { font-size: 13px; color: #507166; white-space: normal; margin-bottom: 12px; }
-.prep-requirements-title { font-size: 11px; color: #75877f; margin-bottom: 6px; -unity-font-style: bold; }
-.prep-requirements { flex-direction: row; flex-wrap: wrap; margin-bottom: 10px; }
-.prep-screen .prep-requirement { font-size: 12px; min-height: 29px; padding: 5px 8px; margin-right: 5px; margin-bottom: 5px; border-radius: 7px; background-color: #f4e5d5; }
-.prep-screen .prep-requirement-met { background-color: #dcecdf; }
-.prep-trait-availability { font-size: 12px; color: #75877f; white-space: normal; margin-top: auto; margin-bottom: 11px; }
-.prep-screen .prep-trait-purchase { min-height: 40px; font-size: 15px; }
-.prep-legend { flex-shrink: 0; font-size: 12px; color: #75877f; margin: 13px 8px 0; white-space: normal; }
+.prep-legend { flex-direction: row; flex-shrink: 0; margin: 8px 6px 0; }
+.prep-legend-item { font-size: 12px; color: #75877f; margin-right: 22px; }
 .prep-machine-row { flex-direction: row; flex-shrink: 0; margin-bottom: 18px; }
 .prep-machine-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin-right: 12px; padding: 19px; background-color: #fffdf6; border-width: 2px; border-color: #e8e3d7; border-radius: 16px; }
 .prep-machine-card.prep-machine-selected { border-color: #91bba8; }
