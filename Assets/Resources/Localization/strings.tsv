@@ -163,7 +163,7 @@ business.day.open	OPEN · 오늘 판매 {0}개	OPEN · {0} sold today
 business.machine.button	M0{0} · {1}	M0{0} · {1}
 business.machine.locked	잠김	Locked
 business.machine.helper	알바 운전	Helper driving
-business.machine.helper.idle	알바 대기	Helper waiting
+business.helper.waiting	알바 대기	Helper waiting
 business.machine.manual	직접 운전	Manual drive
 business.machine.idle	대기	Waiting
 business.machine.tooltip.assigned	배치한 알바가 운전과 제작을 맡아요.	Your assigned helper drives and makes candy.
@@ -181,7 +181,6 @@ business.next.size	{0}까지 {1} 바퀴	{1} laps to {0}
 business.next.finish	완성까지 {0} 바퀴	{0} laps to finish
 business.next.shelf.full	진열대가 가득 차 대기	Waiting, shelf is full
 business.next.worker.making	알바가 만들고 꺼내요	Helper makes and takes out
-business.next.worker.idle	알바 대기	Helper waiting
 business.extract.label	꺼내기	Take out
 business.extract.worker	알바가 꺼내요	Helper takes out
 business.empty.label	설탕 비우기	Empty sugar
@@ -206,12 +205,11 @@ business.result.stats	판매 {0}개   ·   매출 {1} C\n\n재료비 {2} C   · 
 business.nextday.progression	가게 정비하기	Manage the shop
 business.nextday.simple	다음 날 시작하기	Start the next day
 business.speed.worker.driving	알바 운전 중	Helper driving
-business.speed.worker.idle	알바 대기	Helper waiting
 business.speed.warmup	예열 중 · 속도를 올려요	Warming up · Speed it up
-business.speed.yield	감기 속도 ×{0}	Winding speed ×{0}
+business.speed.yield	감기 속도 ×{0}	Spin speed ×{0}
 business.boost.active	BOOST · 달콤한 가속	BOOST · Sweet acceleration
 business.race.impact	벽 충돌!	Wall hit!
-business.race.recover	R로 코스 복귀	R to return to track
+business.race.recover	R로 코스 복귀	R: Back to track
 business.title	솜사탕 서킷	Cotton Circuit
 business.shop.title	우리 솜사탕 가게	Our Cotton Candy Shop
 business.clock.caption	남은 영업시간	Time left

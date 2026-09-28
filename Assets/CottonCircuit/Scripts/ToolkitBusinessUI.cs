@@ -80,7 +80,7 @@ namespace CottonCircuit
                 bool assigned = shift.HasWorker(i), selected = i == shift.SelectedMachine;
                 var button = Q<Button>("businessMachine" + i);
                 button.text = Strings.Format("business.machine.button", i + 1, Strings.Get(!owned ? "business.machine.locked" :
-                    assigned ? shift.WorkerCanOperate(i) ? "business.machine.helper" : "business.machine.helper.idle" :
+                    assigned ? shift.WorkerCanOperate(i) ? "business.machine.helper" : "business.helper.waiting" :
                     selected ? "business.machine.manual" : "business.machine.idle"));
                 button.SetEnabled(allowed && owned && !game.TutorialActive);
                 button.EnableInClassList("selected", selected);
@@ -110,7 +110,7 @@ namespace CottonCircuit
                 : sized ? Strings.Format("business.next.size", Progression.SizeName(tier + 1), laps)
                 : Strings.Format("business.next.finish", laps);
             if (worker) nextText = economy.Inventory.Count >= economy.StockCapacity ? Strings.Get("business.next.shelf.full")
-                : game.WorkerDriving ? Strings.Get("business.next.worker.making") : Strings.Get("business.next.worker.idle");
+                : game.WorkerDriving ? Strings.Get("business.next.worker.making") : Strings.Get("business.helper.waiting");
             SetText("businessNextSize", nextText);
             Q<ProgressBar>("businessGrowthMeter").value = capped ? 100 : Mathf.Clamp01((float)((state.BatchMeters - previous) / Math.Max(.001, next - previous))) * 100;
             var batchArt = Q<VisualElement>("businessBatchArt");
@@ -149,7 +149,7 @@ namespace CottonCircuit
             bool downhill = game.RunStyle == DrivingStyle.Downhill;
             SetText("businessSpeed", Mathf.RoundToInt(kart.Speed * 3.6f) + " km/h");
             double speedYield = ShopShift.SpeedYield(kart.Speed);
-            SetText("businessSpeedYield", worker ? Strings.Get(game.WorkerDriving ? "business.speed.worker.driving" : "business.speed.worker.idle")
+            SetText("businessSpeedYield", worker ? Strings.Get(game.WorkerDriving ? "business.speed.worker.driving" : "business.helper.waiting")
                 : speedYield <= 0 ? Strings.Get("business.speed.warmup") : Strings.Format("business.speed.yield", speedYield.ToString("0.0")));
             Show(Q<VisualElement>("businessBoostCard"), !downhill && !worker);
             SetText("businessBoost", kart.Boosting ? Strings.Get("business.boost.active") : "BOOSTER  " + drive.StoredBoosts + " / 2");
