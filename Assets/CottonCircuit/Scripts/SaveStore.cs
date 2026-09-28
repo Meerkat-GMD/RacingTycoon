@@ -41,13 +41,13 @@ namespace CottonCircuit
                         // Keep the damaged payload for diagnosis and retain the good backup.
                         File.Move(FilePath, FilePath + ".invalid-" + DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff"));
                         File.Copy(backup, FilePath);
-                        Error = "백업 저장 파일을 복구했어요.";
+                        Error = Strings.Get("save.recovered");
                         return recovered;
                     }
                 }
                 catch (Exception backupError) when (backupError is IOException || backupError is InvalidDataException ||
                     backupError is ArgumentException || backupError is UnauthorizedAccessException) { }
-                Error = "저장 파일을 읽지 못했어요. 원본을 보관하고 새로 시작할 수 있어요.";
+                Error = Strings.Get("save.unreadable");
                 CanSave = false;
                 return new Economy();
             }
@@ -63,7 +63,7 @@ namespace CottonCircuit
         {
             if (!CanSave) return false;
             if (!Valid(state))
-            { Error = "저장 데이터가 올바르지 않아 저장하지 못했어요."; return false; }
+            { Error = Strings.Get("save.invalid"); return false; }
             try
             {
                 Directory.CreateDirectory(directory);
@@ -80,7 +80,7 @@ namespace CottonCircuit
                 return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
-            { Error = "저장하지 못했어요. 저장 폴더의 공간과 접근 권한을 확인해주세요."; return false; }
+            { Error = Strings.Get("save.write"); return false; }
         }
         public bool ArchiveAndReset()
         {
@@ -91,7 +91,7 @@ namespace CottonCircuit
                 return true;
             }
             catch (Exception e) when (e is IOException || e is UnauthorizedAccessException)
-            { Error = "기존 저장 파일을 보관하지 못했어요."; return false; }
+            { Error = Strings.Get("save.archive"); return false; }
         }
         public static bool Valid(Economy e)
         { return Valid(e, CustomerOrder.Patience, true); }

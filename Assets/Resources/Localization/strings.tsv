@@ -228,3 +228,49 @@ drag.drop.tutorial	설탕을 넣었어요. 직접 달려보세요!	Sugar added. 
 drag.drop.cost	재료비가 부족해요	Not enough coins
 drag.drop.shake	봉지를 위아래로 흔들어 설탕을 넣어요	Shake the bag up and down to add sugar
 drag.drop.bring	주행 화면으로 가져와 흔들어 주세요	Bring it to the track and shake
+notice.recover.legacy	코스에 복귀했어요. 결승선까지 한 바퀴 완주하세요.	Back on track. Finish one lap to the line.
+notice.recover.shift	코스에 복귀했어요. 복귀 이동은 생산 거리에 포함되지 않아요.	Back on track. The jump back doesn't count toward production.
+notice.order.missed	기다리던 손님이 떠났어요. 만든 솜사탕은 재고에 남아요.	The waiting customer left. The candy you made stays in stock.
+notice.drift.kart	드리프트 성공! 부스터 {0}/2 · 가속이 끝나면 Shift로 사용	Nice drift! Boost {0}/2 · Press Shift after the rush
+notice.drift.coupe	드리프트 성공! 엑셀을 유지해 속도를 더 올리세요.	Nice drift! Keep the throttle down to build more speed.
+notice.lap.done.waiting	완주! 솜사탕 보관 · 기록 보상 +{0} 코인 · 진열대가 가득 차 생산을 기다려요.	Lap done! Candy stored · Reward +{0} coins · Shelf is full, production is waiting.
+notice.lap.done.next	완주! 솜사탕 보관 · 기록 보상 +{0} 코인 · 다음 솜사탕을 만들어요.	Lap done! Candy stored · Reward +{0} coins · Making the next candy.
+notice.recipe.next	다음 바퀴부터 {0} · {1} 솜사탕을 만들어요.	From the next lap, you'll make {0} · {1} cotton candy.
+notice.save.blocked	{0}  Esc → 타이틀 화면으로 → 새 게임	{0}  Esc → Back to title → New game
+notice.shelf.full	진열대가 가득 찼어요. 손님에게 건네거나 재고를 정리하세요.	Shelf is full. Hand it to a customer or clear some stock.
+notice.recipe.set	{0} · {1} 설정! 한 바퀴 완주하면 완성됩니다.	{0} · {1} set! Finish one lap to complete it.
+notice.run.abort.confirm	솜사탕 없이 돌아가려면 '주행 포기' 또는 Enter를 한 번 더 누르세요.	Press 'Abort run' or Enter again to go back without candy.
+notice.order.mismatch	재고에서 주문의 맛과 크기에 맞는 솜사탕을 선택하세요.	Pick candy from stock that matches the order's flavor and size.
+notice.sale.direct	직접 전달했어요!  +{0} 코인 · 팁 +{1}	Delivered it yourself!  +{0} coins · Tip +{1}
+notice.discard.confirm	선택한 솜사탕을 버리려면 '재고 정리'를 한 번 더 누르세요.	Press 'Clear stock' again to trash the selected candy.
+notice.discard.done	선택한 재고를 정리했어요.	Cleared the selected stock.
+notice.result.incomplete	이번 주행은 미완주입니다. 다시 도전해보세요.	This run wasn't finished. Give it another try.
+notice.result.complete	완주! 솜사탕 보관 · 기록 보상 +{0} 코인	Lap done! Candy stored · Reward +{0} coins
+notice.upgrade.done	업그레이드 완료!	Upgrade complete!
+notice.upgrade.blocked	코인이 부족하거나 최고 레벨이에요.	Not enough coins, or it's already max level.
+notice.shelf.buy	진열대 확장! 최대 {0}개를 보관해요.	Shelf expanded! Holds up to {0} now.
+notice.shelf.blocked	확장할 코인이 부족하거나 최대 크기예요.	Not enough coins to expand, or it's already max size.
+notice.reset.done	새로운 솜사탕 가게를 열었어요.	Opened a new cotton candy shop.
+notice.shift.closing	영업 마감	Closing time
+notice.sugar.empty.batch	설탕을 비웠어요. 만들던 솜사탕은 남아 있어요.	Emptied the sugar. The candy you were making stays.
+notice.sugar.empty.clear	설탕을 비웠어요. 새 설탕을 넣어주세요.	Emptied the sugar. Add new sugar to keep going.
+notice.sugar.mismatch	다른 맛을 넣으려면 지금 만든 솜사탕을 F로 먼저 꺼내세요.	To add a different flavor, press F to take out the candy first.
+notice.extract.tutorial	조금 더 달려 완성한 뒤 꺼내주세요.	Drive a bit more to finish it, then take it out.
+notice.extract.shelf.full	진열대가 가득 찼어요. 판매하거나 쓰레기통에 버린 뒤 꺼내세요.	Shelf is full. Sell or trash something, then take it out.
+notice.extract.none	아직 만든 솜사탕이 없어요. 설탕을 넣고 달려보세요.	No candy made yet. Add sugar and take a drive.
+notice.extract.small	아직 작아요. 주행 화면으로 가져와 키우거나 쓰레기통에 버릴 수 있어요.	Still too small. Bring it to the track to grow it, or trash it.
+notice.extract.done	솜사탕을 꺼냈어요. 맞는 손님에게 드래그하세요!	Took out the candy. Drag it to the matching customer!
+notice.resume.exchange	만들던 제품은 진열대로 옮기고, 가져온 솜사탕을 이어 만들어요.	Moved what you were making to the shelf, and continuing the candy you brought.
+notice.resume.simple	가져온 솜사탕을 이어 만들어요.	Continuing the candy you brought.
+notice.resume.mismatch	{0} 솜사탕을 가져왔어요. 같은 맛 설탕을 넣어주세요.	Brought {0} cotton candy. Add matching flavor sugar.
+notice.deliver.small	아직 팔 수 없어요. 주행 화면에서 더 키우거나 쓰레기통에 버리세요.	Not sellable yet. Grow it more on the track, or trash it.
+notice.sale.shift	주문 전달 완료! +{0} 코인  ·  {1}{2}	Order delivered! +{0} coins  ·  {1}{2}
+notice.sale.bonus	 보너스 +{0}	 Bonus +{0}
+notice.sale.nobonus	 보너스 없음	 No bonus
+notice.trash.done	솜사탕을 쓰레기통에 버렸어요.	Trashed the candy.
+notice.nextday.legacy	새로운 영업일! 진열대·설탕·제작 중 솜사탕을 비우고 새 손님을 맞이해요.	New business day! Cleared the shelf, sugar, and candy in progress — new customers are here.
+save.recovered	백업 저장 파일을 복구했어요.	Recovered your save from a backup.
+save.unreadable	저장 파일을 읽지 못했어요. 원본을 보관하고 새로 시작할 수 있어요.	Couldn't read the save file. The original is kept, and you can start fresh.
+save.invalid	저장 데이터가 올바르지 않아 저장하지 못했어요.	Couldn't save — the data wasn't valid.
+save.write	저장하지 못했어요. 저장 폴더의 공간과 접근 권한을 확인해주세요.	Couldn't save. Check the save folder's space and permissions.
+save.archive	기존 저장 파일을 보관하지 못했어요.	Couldn't archive the existing save file.

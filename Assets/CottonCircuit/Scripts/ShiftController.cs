@@ -97,7 +97,7 @@ namespace CottonCircuit
                 Audio.PlayClosing();
                 World.Kart.Stop(); World.AnimationPaused = true; UI.CancelShiftDrag();
                 World.ShowInventory(Session.Economy);
-                Save(); Notify("영업 마감");
+                Save(); Notify(Strings.Get("notice.shift.closing"));
             }
             else
             {
@@ -127,9 +127,7 @@ namespace CottonCircuit
             World.Kart.ConfiguredFlavor = -1;
             World.UpdateThread(false);
             Save();
-            Notify(Shift.State.BatchMeters > 0
-                ? "설탕을 비웠어요. 만들던 솜사탕은 남아 있어요."
-                : "설탕을 비웠어요. 새 설탕을 넣어주세요.");
+            Notify(Strings.Get(Shift.State.BatchMeters > 0 ? "notice.sugar.empty.batch" : "notice.sugar.empty.clear"));
             UI.Refresh(); return true;
         }
 
@@ -143,7 +141,7 @@ namespace CottonCircuit
                 Save(); UI.Refresh();
             }
             else if (Shift.State.BatchMeters > 0 && Shift.State.BatchFlavor != flavorIndex)
-                Notify("다른 맛을 넣으려면 지금 만든 솜사탕을 F로 먼저 꺼내세요.");
+                Notify(Strings.Get("notice.sugar.mismatch"));
             return poured;
         }
 
@@ -153,17 +151,16 @@ namespace CottonCircuit
             var product = Shift.Extract();
             if (product == null)
             {
-                Notify(TutorialActive && TutorialStep == CottonCircuit.TutorialStep.Drive
-                    ? "조금 더 달려 완성한 뒤 꺼내주세요."
+                Notify(Strings.Get(TutorialActive && TutorialStep == CottonCircuit.TutorialStep.Drive
+                    ? "notice.extract.tutorial"
                     : Session.Economy.Inventory.Count >= Session.Economy.StockCapacity
-                    ? "진열대가 가득 찼어요. 판매하거나 쓰레기통에 버린 뒤 꺼내세요."
-                    : "아직 만든 솜사탕이 없어요. 설탕을 넣고 달려보세요.");
+                    ? "notice.extract.shelf.full"
+                    : "notice.extract.none"));
                 return null;
             }
             SelectedProductId = product.Id;
             RefreshShiftPreview(); World.ShowInventory(Session.Economy); Audio.Play(Sound.CandyExtract);
-            Notify(ShopShift.SizeOf(product) < 0 ? "아직 작아요. 주행 화면으로 가져와 키우거나 쓰레기통에 버릴 수 있어요."
-                : "솜사탕을 꺼냈어요. 맞는 손님에게 드래그하세요!");
+            Notify(Strings.Get(ShopShift.SizeOf(product) < 0 ? "notice.extract.small" : "notice.extract.done"));
             Save(); UI.Refresh(); return product;
         }
 
@@ -176,8 +173,8 @@ namespace CottonCircuit
             shiftPreviewCount = -1; shiftPreviewFlavor = -2;
             RefreshShiftPreview(); World.ShowInventory(Session.Economy); Audio.Play(Sound.CandyDrop);
             bool matchingSugar = Shift.State.SugarGrams > 0 && Shift.State.SugarFlavor == Shift.State.BatchFlavor;
-            string message = exchanged ? "만들던 제품은 진열대로 옮기고, 가져온 솜사탕을 이어 만들어요." : "가져온 솜사탕을 이어 만들어요.";
-            if (!matchingSugar) message = Palette.FlavorName(Shift.State.BatchFlavor) + " 솜사탕을 가져왔어요. 같은 맛 설탕을 넣어주세요.";
+            string message = Strings.Get(exchanged ? "notice.resume.exchange" : "notice.resume.simple");
+            if (!matchingSugar) message = Strings.Format("notice.resume.mismatch", Palette.FlavorName(Shift.State.BatchFlavor));
             Save(); Notify(message); UI.Refresh(); return true;
         }
 
@@ -190,15 +187,15 @@ namespace CottonCircuit
             if (delivery != DeliveryResult.Sold) Audio.Play(Sound.DeliverFail);
             if (delivery == DeliveryResult.Rejected)
             {
-                if (product != null && ShopShift.SizeOf(product) < 0) Notify("아직 팔 수 없어요. 주행 화면에서 더 키우거나 쓰레기통에 버리세요.");
+                if (product != null && ShopShift.SizeOf(product) < 0) Notify(Strings.Get("notice.deliver.small"));
                 return delivery;
             }
             SelectedProductId = null;
             if (delivery == DeliveryResult.Sold)
             {
                 Audio.PlaySale(starBonus > 0);
-                Notify("주문 전달 완료! +" + (Session.Economy.Coins - before) + " 코인  ·  " + ShopShift.StarText(product.Quality) +
-                    (starBonus > 0 ? " 보너스 +" + starBonus : " 보너스 없음"));
+                Notify(Strings.Format("notice.sale.shift", Session.Economy.Coins - before, ShopShift.StarText(product.Quality),
+                    starBonus > 0 ? Strings.Format("notice.sale.bonus", starBonus) : Strings.Get("notice.sale.nobonus")));
             }
             World.ShowInventory(Session.Economy); Save(); UI.Refresh(); return delivery;
         }
@@ -208,7 +205,7 @@ namespace CottonCircuit
             if (!ShiftActionsAllowed || !Shift.Discard(productId)) return false;
             Audio.Play(Sound.Trash);
             SelectedProductId = null; World.ShowInventory(Session.Economy);
-            Save(); Notify("솜사탕을 쓰레기통에 버렸어요."); UI.Refresh(); return true;
+            Save(); Notify(Strings.Get("notice.trash.done")); UI.Refresh(); return true;
         }
 
         public void StartNextDay()
@@ -220,7 +217,7 @@ namespace CottonCircuit
             InitializeShiftDriving();
             World.ShowInventory(Session.Economy); World.UpdateThread(false);
             Save();
-            Notify("새로운 영업일! 진열대·설탕·제작 중 솜사탕을 비우고 새 손님을 맞이해요.");
+            Notify(Strings.Get("notice.nextday.legacy"));
             UI.Refresh();
         }
     }

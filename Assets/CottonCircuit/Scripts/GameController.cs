@@ -130,7 +130,7 @@ namespace CottonCircuit
                 else ReturnToShop();
             }
             if (Session.Mode == GameMode.Racing && !SelectedMachineHasWorker && (Shift == null || Shift.IsOpen) && Input.GetKeyDown(KeyCode.R))
-            { World.Kart.Recover(); Notify(Shift == null ? "코스에 복귀했어요. 결승선까지 한 바퀴 완주하세요." : "코스에 복귀했어요. 복귀 이동은 생산 거리에 포함되지 않아요."); }
+            { World.Kart.Recover(); Notify(Strings.Get(Shift == null ? "notice.recover.legacy" : "notice.recover.shift")); }
             bool brake = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
             float throttle = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
             float steer = (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
@@ -157,7 +157,7 @@ namespace CottonCircuit
             {
                 int missed = Session.Economy.MissedOrders;
                 Orders.Tick(dt);
-                if (missed != Session.Economy.MissedOrders) Notify("기다리던 손님이 떠났어요. 만든 솜사탕은 재고에 남아요.");
+                if (missed != Session.Economy.MissedOrders) Notify(Strings.Get("notice.order.missed"));
             }
             if (Session.Mode == GameMode.Racing)
             {
@@ -169,15 +169,14 @@ namespace CottonCircuit
                 if (World.Kart.DriveModel.BoostCount > boosts) Audio.PlayBoost(World.Kart.DriveModel.BoostTier);
                 if (World.Kart.DriveModel.WallHits > hits) Audio.Play(Sound.WallHit);
                 if (World.Kart.DriveModel.DriftCount > drifts) Notify(RunStyle == DrivingStyle.Kart
-                    ? "드리프트 성공! 부스터 " + World.Kart.DriveModel.StoredBoosts + "/2 · 가속이 끝나면 Shift로 사용"
-                    : "드리프트 성공! 엑셀을 유지해 속도를 더 올리세요.");
+                    ? Strings.Format("notice.drift.kart", World.Kart.DriveModel.StoredBoosts)
+                    : Strings.Get("notice.drift.coupe"));
                 if (Store.CanSave) Session.TickRecipe(dt, delta * RunTargetGrams / 40.0 * 1.18 * (1 + Session.Economy.Levels[1] * .15), World.Kart.Radius, World.Kart.DriveModel.Laps, World.Kart.DriveModel.SkillCount, World.Kart.DriveModel.WallHits);
                 if (ContinuousMode && previousRecipes != Session.CompletedRecipes)
                 {
                     if (SelectedProduct == null) SelectedProductId = Session.Result.Id;
                     World.ShowInventory(Session.Economy); Audio.Play(Sound.CandyExtract); Save();
-                    Notify("완주! 솜사탕 보관 · 기록 보상 +" + Session.ResultBonus + " 코인" +
-                        (Session.ProductionWaiting ? " · 진열대가 가득 차 생산을 기다려요." : " · 다음 솜사탕을 만들어요."));
+                    Notify(Strings.Format(Session.ProductionWaiting ? "notice.lap.done.waiting" : "notice.lap.done.next", Session.ResultBonus));
                     renderedSamples = -1;
                 }
                 if (ContinuousMode && World.Kart.DriveModel.Laps > previousLaps &&
@@ -233,19 +232,19 @@ namespace CottonCircuit
             if (ContinuousMode)
             {
                 if (Session.Paused) return;
-                Notify("다음 바퀴부터 " + RaceRecipe.Name(PreparedMap) + " · " + Palette.FlavorName(PreparedFlavor) + " 솜사탕을 만들어요.");
+                Notify(Strings.Format("notice.recipe.next", RaceRecipe.Name(PreparedMap), Palette.FlavorName(PreparedFlavor)));
                 return;
             }
             if (Session.Paused || Session.Mode != GameMode.Shop) return;
-            if (!Store.CanSave) { Notify(Store.Error + "  Esc → 타이틀 화면으로 → 새 게임"); return; }
+            if (!Store.CanSave) { Notify(Strings.Format("notice.save.blocked", Store.Error)); return; }
             RunMap = PreparedMap; RunFlavor = PreparedFlavor; RunStyle = PreparedStyle;
             RunTargetGrams = RaceRecipe.TargetGrams(RunMap);
-            if (!Session.StartRecipe(RunMap, RunFlavor)) { Notify("진열대가 가득 찼어요. 손님에게 건네거나 재고를 정리하세요."); return; }
+            if (!Session.StartRecipe(RunMap, RunFlavor)) { Notify(Strings.Get("notice.shelf.full")); return; }
             World.SelectCourse(RunMap); World.Kart.ConfiguredFlavor = RunFlavor;
             World.Kart.SetStyle(RunStyle, World.Assets.DownhillCoupe);
             World.Kart.MaximumSpeed = Session.Economy.MaxSpeed; World.Kart.ResetPosition(); renderedSamples = -1; abortConfirmUntil = 0;
             World.CentralCandy.Show(null); Audio.Play(Sound.EngineStart); SyncMode();
-            Notify(RaceRecipe.Name(RunMap) + " · " + Palette.FlavorName(RunFlavor) + " 설정! 한 바퀴 완주하면 완성됩니다.");
+            Notify(Strings.Format("notice.recipe.set", RaceRecipe.Name(RunMap), Palette.FlavorName(RunFlavor)));
         }
         void BeginContinuousRecipe(bool forceReset)
         {
@@ -268,7 +267,7 @@ namespace CottonCircuit
         {
             if (ContinuousMode || Session.Mode != GameMode.Racing || Session.Paused) return;
             if (Time.unscaledTime >= abortConfirmUntil)
-            { abortConfirmUntil = Time.unscaledTime + 5; Notify("솜사탕 없이 돌아가려면 '주행 포기' 또는 Enter를 한 번 더 누르세요."); return; }
+            { abortConfirmUntil = Time.unscaledTime + 5; Notify(Strings.Get("notice.run.abort.confirm")); return; }
             Session.FinishRun(); SyncMode();
         }
         public void ReturnToShop()
@@ -286,18 +285,18 @@ namespace CottonCircuit
             if (!ShopActionsAllowed || !Store.CanSave) return false;
             var product = SelectedProduct; int slot = Session.Economy.Orders.FindIndex(o => o.Id == orderId);
             var receipt = Orders.Serve(orderId, SelectedProductId);
-            if (receipt == null) { Notify("재고에서 주문의 맛과 크기에 맞는 솜사탕을 선택하세요."); return false; }
+            if (receipt == null) { Notify(Strings.Get("notice.order.mismatch")); return false; }
             World.HandOver(product, slot); SelectedProductId = null;
-            Audio.PlaySale(false); Notify("직접 전달했어요!  +" + receipt.Price + " 코인 · 팁 +" + receipt.Tip);
+            Audio.PlaySale(false); Notify(Strings.Format("notice.sale.direct", receipt.Price, receipt.Tip));
             orderRevision = Orders.Revision; Save(); World.ShowInventory(Session.Economy); World.UpdateOrders(Session.Economy, 0); UI.Refresh(); return true;
         }
         public void DiscardSelected()
         {
             if (!ShopActionsAllowed || !Store.CanSave || SelectedProduct == null) return;
             if (discardCandidate != SelectedProductId || Time.unscaledTime > discardConfirmUntil)
-            { discardCandidate = SelectedProductId; discardConfirmUntil = Time.unscaledTime + 5; Notify("선택한 솜사탕을 버리려면 '재고 정리'를 한 번 더 누르세요."); return; }
+            { discardCandidate = SelectedProductId; discardConfirmUntil = Time.unscaledTime + 5; Notify(Strings.Get("notice.discard.confirm")); return; }
             Session.Economy.Discard(SelectedProductId); Audio.Play(Sound.Trash); SelectedProductId = null; discardCandidate = null;
-            World.ShowInventory(Session.Economy); Save(); Notify("선택한 재고를 정리했어요."); UI.Refresh();
+            World.ShowInventory(Session.Economy); Save(); Notify(Strings.Get("notice.discard.done")); UI.Refresh();
         }
         void SyncMode()
         {
@@ -307,7 +306,7 @@ namespace CottonCircuit
                 World.Kart.Stop(); World.UpdateThread(false); Audio.UpdateDriving(World.Kart, false); Audio.Play(Sound.ClosingJingle);
                 World.CentralCandy.Show(Session.Result?.Samples);
                 World.SetCandyQuality(Session.Result == null ? 0 : Session.Result.Quality);
-                Notify(Session.Result == null ? "이번 주행은 미완주입니다. 다시 도전해보세요." : "완주! 솜사탕 보관 · 기록 보상 +" + Session.ResultBonus + " 코인");
+                Notify(Session.Result == null ? Strings.Get("notice.result.incomplete") : Strings.Format("notice.result.complete", Session.ResultBonus));
                 Save();
             }
             if (UI) UI.Refresh();
@@ -315,14 +314,14 @@ namespace CottonCircuit
         public void BuyUpgrade(int index)
         {
             if (!ShopActionsAllowed || !Store.CanSave) return;
-            if (Session.Economy.BuyUpgrade(index)) { Audio.Play(Sound.Purchase); Notify("업그레이드 완료!"); Save(); }
-            else Notify("코인이 부족하거나 최고 레벨이에요."); UI.Refresh();
+            if (Session.Economy.BuyUpgrade(index)) { Audio.Play(Sound.Purchase); Notify(Strings.Get("notice.upgrade.done")); Save(); }
+            else Notify(Strings.Get("notice.upgrade.blocked")); UI.Refresh();
         }
         public void BuyShelf()
         {
             if (!ShopActionsAllowed || !Store.CanSave) return;
-            if (Session.Economy.BuyShelf()) { World.ShowInventory(Session.Economy); Audio.Play(Sound.Purchase); Notify("진열대 확장! 최대 " + Session.Economy.StockCapacity + "개를 보관해요."); Save(); }
-            else Notify("확장할 코인이 부족하거나 최대 크기예요."); UI.Refresh();
+            if (Session.Economy.BuyShelf()) { World.ShowInventory(Session.Economy); Audio.Play(Sound.Purchase); Notify(Strings.Format("notice.shelf.buy", Session.Economy.StockCapacity)); Save(); }
+            else Notify(Strings.Get("notice.shelf.blocked")); UI.Refresh();
         }
         public void TogglePause()
         {
@@ -343,7 +342,7 @@ namespace CottonCircuit
         {
             if ((!ContinuousMode && Session.Mode != GameMode.Shop) || !Store.ArchiveAndReset()) return;
             Initialize(Store.DirectoryPath, ContinuousMode, Shift != null, HasProgression);
-            World.AnimationPaused = Shift != null && !Shift.IsOpen; Notify("새로운 솜사탕 가게를 열었어요."); UI.Refresh();
+            World.AnimationPaused = Shift != null && !Shift.IsOpen; Notify(Strings.Get("notice.reset.done")); UI.Refresh();
         }
         bool Save()
         {
