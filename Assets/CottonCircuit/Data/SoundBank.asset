@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c975c6147623ff46877d5d1ceab81ec, type: 3}
+  m_Name: SoundBank
+  m_EditorClassIdentifier: Assembly-CSharp::CottonCircuit.SoundBank
+  Sounds:
+  - Id: 0
+    Clip: {fileID: 8300000, guid: e91baf246f9638c4883e76054340279a, type: 3}
+    Volume: 0.5
+    MinInterval: 0.05
+    PitchJitter: 0
+  - Id: 1
+    Clip: {fileID: 8300000, guid: 222db3200a3a1c744a30f68f3bda20e4, type: 3}
+    Volume: 0.6
+    MinInterval: 0.3
+    PitchJitter: 0
+  - Id: 2
+    Clip: {fileID: 8300000, guid: 0031c2f7986d60f4ab05e3d62f311d56, type: 3}
+    Volume: 0.5
+    MinInterval: 0.35
+    PitchJitter: 0.08
+  - Id: 3
+    Clip: {fileID: 8300000, guid: 5a483846ee7f41c4788e25df4a0fa1bc, type: 3}
+    Volume: 0.7
+    MinInterval: 0.08
+    PitchJitter: 0
+  - Id: 4
+    Clip: {fileID: 8300000, guid: ba24c0411f389e84ab3dec4ecc8597ff, type: 3}
+    Volume: 0.6
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 5
+    Clip: {fileID: 8300000, guid: 843018a149facbe44a4002af93fd328d, type: 3}
+    Volume: 0.7
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 6
+    Clip: {fileID: 8300000, guid: 6a3e03b24be34834a85dcdaea8f75474, type: 3}
+    Volume: 0.6
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 7
+    Clip: {fileID: 8300000, guid: 9e45ce0cf08a7204b910d872f1449ef6, type: 3}
+    Volume: 0.5
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 8
+    Clip: {fileID: 8300000, guid: c715e8890abaa5548b30bc55a456b19e, type: 3}
+    Volume: 0.6
+    MinInterval: 0.2
+    PitchJitter: 0
+  - Id: 9
+    Clip: {fileID: 8300000, guid: f536b183d76e8f34d93d93dc4dde9826, type: 3}
+    Volume: 0.7
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 10
+    Clip: {fileID: 8300000, guid: b64bfced4eafebb429c679d62a5d0e32, type: 3}
+    Volume: 0.7
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 11
+    Clip: {fileID: 8300000, guid: c019ba31813daf543b7a5a915323c956, type: 3}
+    Volume: 0.7
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 12
+    Clip: {fileID: 8300000, guid: 495164aa61f42f44ea076397845903a2, type: 3}
+    Volume: 0.8
+    MinInterval: 0.04
+    PitchJitter: 0
+  - Id: 13
+    Clip: {fileID: 8300000, guid: 7e455f71f766eaa4cb0ee05d4ce882a1, type: 3}
+    Volume: 0.35
+    MinInterval: 0.5
+    PitchJitter: 0
+  - Id: 14
+    Clip: {fileID: 8300000, guid: 8823f9ec1b8d0ac498cfa4b12459808a, type: 3}
+    Volume: 0.5
+    MinInterval: 0.5
+    PitchJitter: 0
+  - Id: 15
+    Clip: {fileID: 8300000, guid: 4468a3807a401e746981249d04cde5ea, type: 3}
+    Volume: 0.6
+    MinInterval: 0.25
+    PitchJitter: 0.06
+  Music:
+  - Cue: 1
+    Clip: {fileID: 8300000, guid: aff964fc34f46b54dbd57b8f041e898c, type: 3}
+    Volume: 0.75
+    LoopStart: 0
+    LoopEnd: 0
+  - Cue: 2
+    Clip: {fileID: 8300000, guid: aba397db6007931478dadce2800bffe6, type: 3}
+    Volume: 1
+    LoopStart: 0
+    LoopEnd: 0
+  - Cue: 3
+    Clip: {fileID: 8300000, guid: 19a5ed89191288c49a5cbe9751a072b9, type: 3}
+    Volume: 0.49
+    LoopStart: 0
+    LoopEnd: 0
+  - Cue: 4
+    Clip: {fileID: 8300000, guid: 6502ffd7897d24146b719fa83b0432a9, type: 3}
+    Volume: 0.8
+    LoopStart: 0
+    LoopEnd: 0
+  - Cue: 5
+    Clip: {fileID: 8300000, guid: 34861485c69baee4799e61be50c5dd09, type: 3}
+    Volume: 0.66
+    LoopStart: 0
+    LoopEnd: 0
+  - Cue: 6
+    Clip: {fileID: 8300000, guid: 7be304ef2460cd14e8409384ccb0ee48, type: 3}
+    Volume: 0.35
+    LoopStart: 0
+    LoopEnd: 111.47
+  - Cue: 7
+    Clip: {fileID: 8300000, guid: 72d61a3cc3b03d14986bf41532ff4470, type: 3}
+    Volume: 0.31
+    LoopStart: 0.6
+    LoopEnd: 117.93
+  EngineLoop: {fileID: 8300000, guid: 844f0481e7cd9a9449bf313e143d399c, type: 3}
+  MachineHum: {fileID: 8300000, guid: 904cf9074e81a7449a55fe2e3e1e52bd, type: 3}
+  EngineVolume: 0.3
+  MachineHumVolume: 0.18

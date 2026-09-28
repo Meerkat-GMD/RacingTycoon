@@ -49,7 +49,8 @@ namespace CottonCircuit.Editor
             var gameObject = new GameObject("Cotton Circuit");
             var controller = gameObject.AddComponent<GameController>();
             controller.SetSugarShakeFullStrokePixels(shakeWidth);
-            controller.Audio = gameObject.AddComponent<AudioFeedback>(); controller.UI = gameObject.AddComponent<GameUI>();
+            controller.Audio = gameObject.AddComponent<AudioFeedback>(); controller.Audio.Sounds = SoundCatalog.Build();
+            controller.UI = gameObject.AddComponent<GameUI>();
             var worldObject = new GameObject("Candy park"); var world = worldObject.AddComponent<WorldView>(); world.Assets = assets; controller.World = world;
             BuildWorld(world);
             var cameraObject = new GameObject("Main Camera", typeof(Camera), typeof(AudioListener)); cameraObject.tag = "MainCamera";

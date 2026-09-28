@@ -15,11 +15,12 @@ namespace CottonCircuit
         public void PurchaseNode(string id)
         {
             if (!PreparationActions || !Progression.Buy(Session.Economy, id)) return;
-            Audio.Play(1); Save(); UI.Refresh();
+            Audio.Play(Sound.Purchase); Save(); UI.Refresh();
         }
         public void BeginBusiness()
         {
             if (!PreparationActions || !Shift.BeginBusiness()) return;
+            Audio.Play(Sound.EngineStart);
             Notice = null; noticeTimer = 0;
             machineDrives = new ArcadeDrive[3]; SelectedProductId = SelectedOrderId = null;
             UI.CancelShiftDrag(); ApplyMachineCourse(false);

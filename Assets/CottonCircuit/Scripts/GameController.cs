@@ -27,6 +27,16 @@ namespace CottonCircuit
         bool ShopActionsAllowed => Session != null && !Session.Paused && (Shift == null || Shift.IsOpen) && (ContinuousMode || Session.Mode == GameMode.Shop);
         public CustomerOrder SelectedOrder => Session?.Economy.Orders.Find(o => o.Id == SelectedOrderId);
         public Product SelectedProduct => Session?.Economy.Inventory.Find(p => p.Id == SelectedProductId);
+        public MusicScene MusicScene => new MusicScene
+        {
+            Title = titleScreen, Story = titleScreen && titleScreen.StoryShowing, InGame = Session != null,
+            Tutorial = TutorialActive, Progression = HasProgression, ShiftExists = Shift != null,
+            ShiftOpen = Shift != null && Shift.DayRunning,
+            Phase = HasProgression ? Session.Economy.Progression.Phase : BusinessPhase.Operating,
+            Mode = Session != null ? Session.Mode : GameMode.Shop,
+            Machine = HasProgression ? Shift.SelectedMachine : 0,
+            RemainingSeconds = Shift != null ? Shift.State.RemainingSeconds : 0
+        };
         float noticeTimer, discardConfirmUntil, abortConfirmUntil;
         string discardCandidate;
         int renderedSamples = -1, orderRevision;
@@ -150,11 +160,12 @@ namespace CottonCircuit
             if (Session.Mode == GameMode.Racing)
             {
                 World.Kart.MaximumSpeed = Session.Economy.MaxSpeed;
-                int boosts = World.Kart.DriveModel.BoostCount;
+                int boosts = World.Kart.DriveModel.BoostCount, hits = World.Kart.DriveModel.WallHits;
                 int drifts = World.Kart.DriveModel.DriftCount;
                 int previousLaps = World.Kart.DriveModel.Laps, previousRecipes = Session.CompletedRecipes;
                 double delta = World.Kart.Drive(throttle, steering, brake, dt, drift, boost);
                 if (World.Kart.DriveModel.BoostCount > boosts) Audio.PlayBoost(World.Kart.DriveModel.BoostTier);
+                if (World.Kart.DriveModel.WallHits > hits) Audio.Play(Sound.WallHit);
                 if (World.Kart.DriveModel.DriftCount > drifts) Notify(RunStyle == DrivingStyle.Kart
                     ? "드리프트 성공! 부스터 " + World.Kart.DriveModel.StoredBoosts + "/2 · 가속이 끝나면 Shift로 사용"
                     : "드리프트 성공! 엑셀을 유지해 속도를 더 올리세요.");
@@ -162,7 +173,7 @@ namespace CottonCircuit
                 if (ContinuousMode && previousRecipes != Session.CompletedRecipes)
                 {
                     if (SelectedProduct == null) SelectedProductId = Session.Result.Id;
-                    World.ShowInventory(Session.Economy); Audio.Play(2); Save();
+                    World.ShowInventory(Session.Economy); Audio.Play(Sound.CandyExtract); Save();
                     Notify("완주! 솜사탕 보관 · 기록 보상 +" + Session.ResultBonus + " 코인" +
                         (Session.ProductionWaiting ? " · 진열대가 가득 차 생산을 기다려요." : " · 다음 솜사탕을 만들어요."));
                     renderedSamples = -1;
@@ -231,7 +242,7 @@ namespace CottonCircuit
             World.SelectCourse(RunMap); World.Kart.ConfiguredFlavor = RunFlavor;
             World.Kart.SetStyle(RunStyle, World.Assets.DownhillCoupe);
             World.Kart.MaximumSpeed = Session.Economy.MaxSpeed; World.Kart.ResetPosition(); renderedSamples = -1; abortConfirmUntil = 0;
-            World.CentralCandy.Show(null); Audio.Play(0); SyncMode();
+            World.CentralCandy.Show(null); Audio.Play(Sound.EngineStart); SyncMode();
             Notify(RaceRecipe.Name(RunMap) + " · " + Palette.FlavorName(RunFlavor) + " 설정! 한 바퀴 완주하면 완성됩니다.");
         }
         void BeginContinuousRecipe(bool forceReset)
@@ -275,7 +286,7 @@ namespace CottonCircuit
             var receipt = Orders.Serve(orderId, SelectedProductId);
             if (receipt == null) { Notify("재고에서 주문의 맛과 크기에 맞는 솜사탕을 선택하세요."); return false; }
             World.HandOver(product, slot); SelectedProductId = null;
-            Audio.Play(1); Notify("직접 전달했어요!  +" + receipt.Price + " 코인 · 팁 +" + receipt.Tip);
+            Audio.PlaySale(false); Notify("직접 전달했어요!  +" + receipt.Price + " 코인 · 팁 +" + receipt.Tip);
             orderRevision = Orders.Revision; Save(); World.ShowInventory(Session.Economy); World.UpdateOrders(Session.Economy, 0); UI.Refresh(); return true;
         }
         public void DiscardSelected()
@@ -283,7 +294,7 @@ namespace CottonCircuit
             if (!ShopActionsAllowed || !Store.CanSave || SelectedProduct == null) return;
             if (discardCandidate != SelectedProductId || Time.unscaledTime > discardConfirmUntil)
             { discardCandidate = SelectedProductId; discardConfirmUntil = Time.unscaledTime + 5; Notify("선택한 솜사탕을 버리려면 '재고 정리'를 한 번 더 누르세요."); return; }
-            Session.Economy.Discard(SelectedProductId); SelectedProductId = null; discardCandidate = null;
+            Session.Economy.Discard(SelectedProductId); Audio.Play(Sound.Trash); SelectedProductId = null; discardCandidate = null;
             World.ShowInventory(Session.Economy); Save(); Notify("선택한 재고를 정리했어요."); UI.Refresh();
         }
         void SyncMode()
@@ -291,7 +302,7 @@ namespace CottonCircuit
             if (lastMode == Session.Mode) return; lastMode = Session.Mode; World.SetMode(lastMode);
             if (lastMode == GameMode.Results)
             {
-                World.Kart.Stop(); World.UpdateThread(false); Audio.UpdateDriving(World.Kart, false); Audio.Play(2);
+                World.Kart.Stop(); World.UpdateThread(false); Audio.UpdateDriving(World.Kart, false); Audio.Play(Sound.ClosingJingle);
                 World.CentralCandy.Show(Session.Result?.Samples);
                 World.SetCandyQuality(Session.Result == null ? 0 : Session.Result.Quality);
                 Notify(Session.Result == null ? "이번 주행은 미완주입니다. 다시 도전해보세요." : "완주! 솜사탕 보관 · 기록 보상 +" + Session.ResultBonus + " 코인");
@@ -302,13 +313,13 @@ namespace CottonCircuit
         public void BuyUpgrade(int index)
         {
             if (!ShopActionsAllowed || !Store.CanSave) return;
-            if (Session.Economy.BuyUpgrade(index)) { Audio.Play(1); Notify("업그레이드 완료!"); Save(); }
+            if (Session.Economy.BuyUpgrade(index)) { Audio.Play(Sound.Purchase); Notify("업그레이드 완료!"); Save(); }
             else Notify("코인이 부족하거나 최고 레벨이에요."); UI.Refresh();
         }
         public void BuyShelf()
         {
             if (!ShopActionsAllowed || !Store.CanSave) return;
-            if (Session.Economy.BuyShelf()) { World.ShowInventory(Session.Economy); Audio.Play(1); Notify("진열대 확장! 최대 " + Session.Economy.StockCapacity + "개를 보관해요."); Save(); }
+            if (Session.Economy.BuyShelf()) { World.ShowInventory(Session.Economy); Audio.Play(Sound.Purchase); Notify("진열대 확장! 최대 " + Session.Economy.StockCapacity + "개를 보관해요."); Save(); }
             else Notify("확장할 코인이 부족하거나 최대 크기예요."); UI.Refresh();
         }
         public void TogglePause()

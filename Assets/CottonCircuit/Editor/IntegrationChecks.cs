@@ -254,6 +254,18 @@ namespace CottonCircuit.Editor
                 UnityEditor.SceneManagement.EditorSceneManager.OpenScene(ProjectBuilder.ScenePath);
             var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
             Check(game && game.World && game.UI && game.Audio, "wired playable scene");
+            var bank = game.Audio.Sounds;
+            Check(bank, "audio feedback uses the authored sound bank");
+            foreach (Sound id in Enum.GetValues(typeof(Sound))) Check(bank.TryGet(id, out _), "sound bank has " + id);
+            foreach (MusicCue cue in Enum.GetValues(typeof(MusicCue)))
+                if (cue != MusicCue.None) Check(bank.TryGet(cue, out _), "sound bank has music for " + cue);
+            Check(bank.EngineLoop && bank.MachineHum, "sound bank has the engine and machine loops");
+            foreach (var song in bank.Music)
+            {
+                var importer = (AudioImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(song.Clip));
+                Check(importer.defaultSampleSettings.loadType == AudioClipLoadType.Streaming, song.Cue + " music streams from disk");
+                Check(song.LoopEnd == 0 || song.LoopEnd < song.Clip.length && song.LoopStart < song.LoopEnd, song.Cue + " loop window lies inside the song");
+            }
             Check(game.World.Kart && game.World.CentralCandy && game.World.Customer && game.World.SugarThread, "world gameplay references");
             Check(game.World.SugarThread.sharedMaterial.shader.name == "CottonCircuit/SugarFloss" && game.World.SugarThread.sharedMaterial.mainTexture &&
                 game.World.SugarWisps != null && game.World.SugarWisps.Length == 2 && Array.TrueForAll(game.World.SugarWisps, wisp => wisp && !wisp.enabled),

@@ -62,6 +62,7 @@ namespace CottonCircuit
             World.Kart.ConfiguredFlavor = Shift.State.SugarFlavor;
             drive.SteeringMultiplier = HasProgression ? Progression.SteeringMultiplier(Session.Economy) : 1;
             World.Kart.Drive(throttle, steering, brake, dt, drift, boost);
+            if (!worker && drive.WallHits > hits) Audio.Play(Sound.WallHit);
             // LastRewardDistance excludes reverse/replayed/recovery progress. Growth per meter
             // follows speed, so slow driving, wall hits and stops wind little or nothing.
             double speedYield = ShopShift.SpeedYield(drive.Speed);
@@ -93,6 +94,7 @@ namespace CottonCircuit
             Audio.UpdateDriving(World.Kart, active);
             if (!active)
             {
+                Audio.PlayClosing();
                 World.Kart.Stop(); World.AnimationPaused = true; UI.CancelShiftDrag();
                 World.ShowInventory(Session.Economy);
                 Save(); Notify("영업 마감");
@@ -159,7 +161,7 @@ namespace CottonCircuit
                 return null;
             }
             SelectedProductId = product.Id;
-            RefreshShiftPreview(); World.ShowInventory(Session.Economy); Audio.Play(2);
+            RefreshShiftPreview(); World.ShowInventory(Session.Economy); Audio.Play(Sound.CandyExtract);
             Notify(ShopShift.SizeOf(product) < 0 ? "아직 작아요. 주행 화면으로 가져와 키우거나 쓰레기통에 버릴 수 있어요."
                 : "솜사탕을 꺼냈어요. 맞는 손님에게 드래그하세요!");
             Save(); UI.Refresh(); return product;
@@ -172,7 +174,7 @@ namespace CottonCircuit
             if (!Shift.ResumeProduct(productId)) return false;
             SelectedProductId = null;
             shiftPreviewCount = -1; shiftPreviewFlavor = -2;
-            RefreshShiftPreview(); World.ShowInventory(Session.Economy); Audio.Play(2);
+            RefreshShiftPreview(); World.ShowInventory(Session.Economy); Audio.Play(Sound.CandyDrop);
             bool matchingSugar = Shift.State.SugarGrams > 0 && Shift.State.SugarFlavor == Shift.State.BatchFlavor;
             string message = exchanged ? "만들던 제품은 진열대로 옮기고, 가져온 솜사탕을 이어 만들어요." : "가져온 솜사탕을 이어 만들어요.";
             if (!matchingSugar) message = Palette.FlavorName(Shift.State.BatchFlavor) + " 솜사탕을 가져왔어요. 같은 맛 설탕을 넣어주세요.";
@@ -185,6 +187,7 @@ namespace CottonCircuit
             var product = Session.Economy.Inventory.Find(p => p.Id == productId);
             int before = Session.Economy.Coins, starBonus = Session.Economy.StarBonus(product);
             var delivery = Shift.Deliver(productId, customerId);
+            if (delivery != DeliveryResult.Sold) Audio.Play(Sound.DeliverFail);
             if (delivery == DeliveryResult.Rejected)
             {
                 if (product != null && ShopShift.SizeOf(product) < 0) Notify("아직 팔 수 없어요. 주행 화면에서 더 키우거나 쓰레기통에 버리세요.");
@@ -193,7 +196,7 @@ namespace CottonCircuit
             SelectedProductId = null;
             if (delivery == DeliveryResult.Sold)
             {
-                Audio.Play(1);
+                Audio.PlaySale(starBonus > 0);
                 Notify("주문 전달 완료! +" + (Session.Economy.Coins - before) + " 코인  ·  " + ShopShift.StarText(product.Quality) +
                     (starBonus > 0 ? " 보너스 +" + starBonus : " 보너스 없음"));
             }
@@ -203,6 +206,7 @@ namespace CottonCircuit
         public bool TrashCandy(string productId)
         {
             if (!ShiftActionsAllowed || !Shift.Discard(productId)) return false;
+            Audio.Play(Sound.Trash);
             SelectedProductId = null; World.ShowInventory(Session.Economy);
             Save(); Notify("솜사탕을 쓰레기통에 버렸어요."); UI.Refresh(); return true;
         }

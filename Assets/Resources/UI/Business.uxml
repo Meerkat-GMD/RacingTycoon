@@ -34,7 +34,7 @@
             <ui:ProgressBar name="businessGrowthMeter" class="biz-meter pink" low-value="0" high-value="100" />
           </ui:VisualElement>
           <ui:VisualElement class="biz-actions">
-            <ui:Button focusable="false" name="businessExtract" text="꺼내기  F" class="biz-button primary" />
+            <ui:Button focusable="false" name="businessExtract" text="꺼내기  F" class="biz-button primary quiet-click" />
             <ui:Button focusable="false" name="businessEmptySugar" text="설탕 비우기" class="biz-button" />
           </ui:VisualElement>
         </ui:VisualElement>

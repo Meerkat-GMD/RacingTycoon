@@ -82,7 +82,7 @@ namespace CottonCircuit
             source.AddToClassList("drag-source");
             Show(businessGhost, true);
             Show(Q<Label>("businessDropMessage"), !game.SelectedMachineHasWorker);
-            if (!sugar) game.SelectProduct(product.Id);
+            if (!sugar) { game.SelectProduct(product.Id); game.Audio.Play(Sound.CandyDrop); }
             MoveBusinessDrag(pointerId, position);
             return true;
         }
@@ -114,6 +114,7 @@ namespace CottonCircuit
             int beforeCoins = game.Session.Economy.Coins;
             if (shake && game.PourSugar(businessDragFlavor, businessShake.Amount))
             {
+                game.Audio.Play(Sound.SugarShake);
                 businessPourMessageUntil = Time.unscaledTime + .5f;
                 double poured = game.Shift.State.SugarGrams - beforeSugar;
                 int cost = beforeCoins - game.Session.Economy.Coins;
@@ -154,6 +155,7 @@ namespace CottonCircuit
                 if (customer != null && !customer.Angry && !customer.Happy && businessCustomers[i].worldBound.Contains(position))
                     return game.DeliverCandy(productId, customer.Id);
             }
+            game.Audio.Play(Sound.CandyDrop);
             return DeliveryResult.Rejected;
         }
 

@@ -1,59 +1,120 @@
+using System.Collections.Generic;
 using UnityEngine;
 namespace CottonCircuit
 {
     public class AudioFeedback : MonoBehaviour
     {
-        AudioSource source, engine, skid, wind;
-        AudioClip purchase, complete, select, boost, superBoost, engineClip, skidClip, windClip;
-        bool wasDriving;
+        const float MusicLevel = .7f, PausedMusic = .4f, CoinDelay = .15f, JingleDelay = .8f, BoostVolume = .25f;
+        public SoundBank Sounds;
+        GameController game;
+        readonly AudioSource[] pool = new AudioSource[8];
+        int next;
+        AudioSource engine, skid, wind, hum;
+        AudioClip boost, superBoost, skidClip, windClip;
+        MusicPlayer music;
+        readonly Dictionary<Sound, float> lastTimes = new Dictionary<Sound, float>();
+        readonly List<KeyValuePair<float, Sound>> queued = new List<KeyValuePair<float, Sound>>();
+        readonly Dictionary<Sound, int> counts = new Dictionary<Sound, int>();
         public bool Muted { get; private set; }
+        public MusicCue Music => music.Current;
+        // How often a sound was actually heard; the development smoke check reads it.
+        public int Played(Sound id) => counts.TryGetValue(id, out int count) ? count : 0;
+
         void Awake()
         {
-            source = gameObject.AddComponent<AudioSource>(); source.playOnAwake = false; source.volume = .18f;
-            select = Tone(520, .08f); purchase = Tone(880, .18f); complete = Tone(660, .35f);
+            game = GetComponent<GameController>();
+            for (int i = 0; i < pool.Length; i++) { pool[i] = gameObject.AddComponent<AudioSource>(); pool[i].playOnAwake = false; }
             boost = BoostSound(false); superBoost = BoostSound(true);
-            engineClip = Motor(false); skidClip = Motor(true); windClip = Motor(true);
-            engine = Loop(engineClip); skid = Loop(skidClip); wind = Loop(windClip);
+            skidClip = Noise("Tire slide"); windClip = Noise("Wind");
+            engine = Loop(Sounds.EngineLoop); skid = Loop(skidClip); wind = Loop(windClip); hum = Loop(Sounds.MachineHum);
+            music = new MusicPlayer(gameObject);
         }
-        AudioSource Loop(AudioClip clip)
+
+        void OnEnable() { ToolkitUI.ButtonPressed += Click; }
+        void OnDisable() { ToolkitUI.ButtonPressed -= Click; }
+        void Click() { Play(Sound.UiClick); }
+
+        void LateUpdate()
         {
-            var s = gameObject.AddComponent<AudioSource>(); s.playOnAwake = false; s.clip = clip; s.loop = true; s.volume = 0; s.Play(); return s;
+            float now = Time.unscaledTime;
+            for (int i = queued.Count - 1; i >= 0; i--)
+                if (queued[i].Key <= now) { var sound = queued[i].Value; queued.RemoveAt(i); Play(sound); }
+            var scene = game.MusicScene;
+            bool paused = game.Session != null && game.Session.Paused;
+            float level = Muted ? 0 : MusicLevel * (paused ? PausedMusic : 1);
+            music.Update(Sounds, MusicChoice.Cue(scene), level, MusicChoice.Hurry(scene) ? MusicChoice.HurryPitch : 1, Time.unscaledDeltaTime);
         }
-        static AudioClip Motor(bool noise)
+
+        public void Play(Sound id)
         {
-            const int count = 22050; var data = new float[count]; var random = new System.Random(71); float low = 0;
-            for (int i = 0; i < count; i++)
-            {
-                float t = i / 22050f;
-                low = Mathf.Lerp(low, (float)random.NextDouble() * 2 - 1, .18f);
-                data[i] = noise ? low * .65f : (Mathf.Sin(2 * Mathf.PI * 70 * t) * .4f + Mathf.Sin(2 * Mathf.PI * 140 * t) * .14f + Mathf.Sin(2 * Mathf.PI * 210 * t) * .06f);
-            }
-            var clip = AudioClip.Create(noise ? "Tire slide" : "Electric sugar motor", count, 1, 22050, false); clip.SetData(data, 0); return clip;
+            if (Muted || !Sounds.TryGet(id, out var entry)) return;
+            float now = Time.unscaledTime;
+            if (lastTimes.TryGetValue(id, out float last) && now - last < entry.MinInterval) return;
+            lastTimes[id] = now;
+            counts[id] = Played(id) + 1;
+            Emit(entry.Clip, entry.Volume, 1 + Random.Range(-entry.PitchJitter, entry.PitchJitter));
         }
-        static AudioClip Tone(float frequency, float seconds, bool sweep = false)
+
+        void PlayAfter(Sound id, float delay) { queued.Add(new KeyValuePair<float, Sound>(Time.unscaledTime + delay, id)); }
+
+        public void PlaySale(bool starBonus)
         {
-            int count = (int)(22050 * seconds); var data = new float[count];
-            for (int i = 0; i < count; i++)
-            {
-                float t = i / 22050f;
-                data[i] = Mathf.Sin(2 * Mathf.PI * (frequency * t + (sweep ? 600 * t * t : 0))) * Mathf.Sin(Mathf.PI * i / count) * Mathf.Exp(-t * (sweep ? 2 : 8));
-            }
-            var clip = AudioClip.Create("Cotton chime", count, 1, 22050, false); clip.SetData(data, 0); return clip;
+            Play(starBonus ? Sound.StarBonus : Sound.DeliverSuccess);
+            PlayAfter(Sound.Coins, CoinDelay);
         }
+
+        public void PlayClosing()
+        {
+            Play(Sound.ClosingBell); Play(Sound.EngineStop);
+            PlayAfter(Sound.ClosingJingle, JingleDelay);
+        }
+
+        public void PlayBoost(int tier) { if (!Muted) Emit(tier == 2 ? superBoost : boost, BoostVolume, 1); }
+
+        void Emit(AudioClip clip, float volume, float pitch)
+        {
+            var source = pool[next]; next = (next + 1) % pool.Length;
+            source.clip = clip; source.volume = volume; source.pitch = pitch; source.Play();
+        }
+
         public void UpdateDriving(KartController kart, bool active)
         {
             if (!engine) return;
-            if (wasDriving && !active) source.Stop();
-            wasDriving = active;
             bool audible = active && !Muted;
-            engine.volume = audible ? Mathf.Lerp(.035f, .17f, Mathf.Clamp01(kart.Speed / 32)) : 0;
             bool downhill = kart.DriveModel.Style == DrivingStyle.Downhill;
-            engine.pitch = .6f + kart.Speed / (downhill ? 26 : 20);
+            float speed = Mathf.Clamp01(kart.Speed / (downhill ? 45 : 32));
+            engine.volume = audible ? Mathf.Lerp(.25f, 1f, speed) * Sounds.EngineVolume : 0;
+            engine.pitch = .8f + speed * .8f;
+            hum.volume = audible ? Sounds.MachineHumVolume : 0;
             skid.volume = audible && kart.Drifting && kart.Speed > 5 ? .13f : 0;
             skid.pitch = 1 + kart.Speed / 40;
             wind.volume = audible ? Mathf.Clamp01((kart.Speed - 12) / (downhill ? 43 : 28)) * (kart.Boosting ? .18f : downhill ? .15f : .09f) : 0;
             wind.pitch = .7f + kart.Speed / 60;
         }
+
+        public void Toggle()
+        {
+            Muted = !Muted;
+            if (!Muted) return;
+            foreach (var source in pool) source.Stop();
+            queued.Clear();
+            engine.volume = skid.volume = wind.volume = hum.volume = 0;
+        }
+
+        AudioSource Loop(AudioClip clip)
+        {
+            var source = gameObject.AddComponent<AudioSource>();
+            source.playOnAwake = false; source.clip = clip; source.loop = true; source.volume = 0; source.Play();
+            return source;
+        }
+
+        static AudioClip Noise(string name)
+        {
+            const int count = 22050; var data = new float[count]; var random = new System.Random(71); float low = 0;
+            for (int i = 0; i < count; i++) { low = Mathf.Lerp(low, (float)random.NextDouble() * 2 - 1, .18f); data[i] = low * .65f; }
+            var clip = AudioClip.Create(name, count, 1, 22050, false); clip.SetData(data, 0); return clip;
+        }
+
         static AudioClip BoostSound(bool strong)
         {
             int count = strong ? 15435 : 9922; var data = new float[count];
@@ -68,9 +129,7 @@ namespace CottonCircuit
             var clip = AudioClip.Create(strong ? "Super sugar rush" : "Sugar rush", count, 1, 22050, false);
             clip.SetData(data, 0); return clip;
         }
-        public void PlayBoost(int tier) { if (!Muted && source) source.PlayOneShot(tier == 2 ? superBoost : boost, 1.4f); }
-        public void Play(int kind) { if (!Muted && source) source.PlayOneShot(kind == 0 ? select : kind == 1 ? purchase : kind == 3 ? boost : complete); }
-        public void Toggle() { Muted = !Muted; if (Muted) { source.Stop(); engine.volume = 0; skid.volume = 0; wind.volume = 0; } }
-        void OnDestroy() { foreach (var clip in new[] { purchase, complete, select, boost, superBoost, engineClip, skidClip, windClip }) if (clip) Destroy(clip); }
+
+        void OnDestroy() { foreach (var clip in new[] { boost, superBoost, skidClip, windClip }) if (clip) Destroy(clip); }
     }
 }

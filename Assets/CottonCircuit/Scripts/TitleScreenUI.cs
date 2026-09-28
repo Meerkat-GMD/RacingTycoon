@@ -16,6 +16,8 @@ namespace CottonCircuit
         IntroStoryUI intro;
         bool entering, confirming;
 
+        public bool StoryShowing => intro != null;
+
         public void Show(GameController controller, string directory)
         {
             game = controller;

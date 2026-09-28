@@ -8,6 +8,10 @@ namespace CottonCircuit
     // and binds data; no visual elements or geometry are constructed here.
     public static class ToolkitUI
     {
+        // Buttons with this class play their own action sound instead of the click.
+        public const string QuietClick = "quiet-click";
+        public static event Action ButtonPressed;
+
         public static UIDocument Open(GameObject owner, string screenName, int order)
         {
             var tree = Resources.Load<VisualTreeAsset>("UI/" + screenName);
@@ -19,7 +23,17 @@ namespace CottonCircuit
             document.sortingOrder = order;
             document.visualTreeAsset = tree;
             document.rootVisualElement.pickingMode = PickingMode.Ignore;
+            document.rootVisualElement.RegisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
+            document.rootVisualElement.RegisterCallback<NavigationSubmitEvent>(OnSubmit, TrickleDown.TrickleDown);
             return document;
+        }
+
+        static void OnClick(ClickEvent evt) => Pressed(evt.target as VisualElement);
+        static void OnSubmit(NavigationSubmitEvent evt) => Pressed(evt.target as VisualElement);
+        static void Pressed(VisualElement target)
+        {
+            var button = target as Button ?? target?.GetFirstAncestorOfType<Button>();
+            if (button != null && button.enabledInHierarchy && !button.ClassListContains(QuietClick)) ButtonPressed?.Invoke();
         }
 
         public static T Q<T>(VisualElement root, string name) where T : VisualElement

@@ -15,6 +15,7 @@ namespace CottonCircuit
         ProgressBar progress;
         Button skip, complete, growthClose, focusedModal;
         bool driveCoachDismissed;
+        string shownBubble;
 
         public void Show(GameController controller)
         {
@@ -51,6 +52,9 @@ namespace CottonCircuit
                 driveCoachDismissed = true;
             bool visible = game.Session != null && !game.Session.Paused && (game.TutorialActive || game.GrowthHintVisible);
             ToolkitUI.Show(view, visible);
+            string bubble = !visible ? null : game.GrowthHintVisible ? "growth" : step == TutorialStep.Success ? "success" : step.ToString();
+            if (bubble != null && bubble != shownBubble) game.Audio.Play(Sound.TutorialPopup);
+            shownBubble = bubble;
             if (!visible)
             {
                 SetFocusTargets(null, null);
