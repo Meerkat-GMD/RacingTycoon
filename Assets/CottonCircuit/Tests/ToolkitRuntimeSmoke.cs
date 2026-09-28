@@ -172,6 +172,7 @@ namespace CottonCircuit.Tests
             yield return Settle();
             Check(game.TutorialStep == TutorialStep.Extract, "manual inputs reach a finished first candy");
             Check(Visible(Find("TutorialCoach")), "extraction brings the instruction back");
+            yield return Capture("04-tutorial-extract.png");
             int pops = game.Audio.Played(Sound.CandyExtract), extractClicks = game.Audio.Played(Sound.UiClick);
             yield return Click("businessExtract");
             Check(game.Audio.Played(Sound.CandyExtract) == pops + 1 && game.Audio.Played(Sound.UiClick) == extractClicks,
@@ -324,6 +325,8 @@ namespace CottonCircuit.Tests
             Check(game.SelectedMachineHasWorker && game.WorkerDriving && game.World.Kart.Speed > 0 && selectedGrowth > 0, "assigned selected worker alone drives and produces automatically");
             Check(!game.PourSugar(0) && game.ExtractCandy() == null && !game.EmptySugar(), "worker machine rejects manual production conflicts");
             yield return Capture("09-worker-driving.png");
+            Check(!Visible(Find("businessExtractKey")) && !Visible(Find("businessEmptySugarKey")),
+                "worker machine hides the manual F and right-click icons");
             yield return Click("businessMachine1");
             Check(game.Audio.Music == MusicCue.Machine2, "switching to the soda machine switches its song");
             beforeMeters = game.Machine(0).BatchMeters;
@@ -493,6 +496,9 @@ namespace CottonCircuit.Tests
                 Check(Find(name) == null, "clean gameplay HUD omits the removed " + name + " element");
             Check(Element<VisualElement>("businessShelf").Q<Label>(className: "biz-shelf-tip") == null,
                 "rack heading no longer repeats drag instructions");
+            foreach (string action in new[] { "businessExtract", "businessEmptySugar" })
+                Check(Visible(Find(action + "Key")) && Inside(Element<Button>(action).worldBound, Find(action + "Key").worldBound),
+                    action + " shows its input icon inside the button");
 
             var state = game.Shift.State;
             state.BatchFlavor = 0;

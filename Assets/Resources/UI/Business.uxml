@@ -34,8 +34,14 @@
             <ui:ProgressBar name="businessGrowthMeter" class="biz-meter pink" low-value="0" high-value="100" />
           </ui:VisualElement>
           <ui:VisualElement class="biz-actions">
-            <ui:Button focusable="false" name="businessExtract" text="꺼내기  F" class="biz-button primary quiet-click" />
-            <ui:Button focusable="false" name="businessEmptySugar" text="설탕 비우기" class="biz-button" />
+            <ui:Button focusable="false" name="businessExtract" class="biz-button biz-input-button primary quiet-click">
+              <ui:Label name="businessExtractLabel" text="꺼내기" class="biz-input-label" picking-mode="Ignore" />
+              <ui:VisualElement name="businessExtractKey" class="biz-input-icon biz-key-f" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:Button focusable="false" name="businessEmptySugar" class="biz-button biz-input-button">
+              <ui:Label name="businessEmptySugarLabel" text="설탕 비우기" class="biz-input-label" picking-mode="Ignore" />
+              <ui:VisualElement name="businessEmptySugarKey" class="biz-input-icon biz-mouse-right" picking-mode="Ignore" />
+            </ui:Button>
           </ui:VisualElement>
         </ui:VisualElement>
         <ui:Label name="businessRaceEvent" class="biz-race-event hidden" picking-mode="Ignore" />

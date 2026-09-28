@@ -32,6 +32,13 @@
 .biz-next { font-size: 12px; color: #687477; margin-bottom: 6px; }
 .biz-actions { margin-left: 14px; width: 158px; }
 .biz-actions > .biz-button { margin-bottom: 8px; }
+.biz-input-button { flex-direction: row; justify-content: center; align-items: center; }
+.biz-input-label { margin: 0; padding: 0; -unity-text-align: middle-center; }
+.biz-input-icon { width: 24px; height: 24px; margin-left: 6px; flex-shrink: 0; background-size: contain; background-position: center; background-repeat: no-repeat; -unity-background-image-tint-color: #29324d; }
+.biz-button.primary .biz-input-icon { -unity-background-image-tint-color: #fff8ec; }
+.biz-key-f { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyF.png"); }
+/* The mouse glyph has wider transparent padding than the key cap, so it is enlarged to match its visual size. */
+.biz-mouse-right { width: 28px; height: 28px; margin: -2px 0 -2px 3px; background-image: url("project://database/Assets/CottonCircuit/UI/Art/MouseRight.png"); }
 .biz-race-event { position: absolute; top: 224px; left: 170px; right: 170px; -unity-text-align: middle-center; color: #fff8ec; background-color: #29324d; border-radius: 12px; padding: 12px; font-size: 17px; }
 .biz-driving-footer { position: absolute; left: 22px; right: 22px; bottom: 58px; flex-direction: row; align-items: flex-end; }
 .biz-speed-card { background-color: #29324d; border-radius: 16px; width: 210px; padding: 14px 18px; color: #fff8ec; }
@@ -143,3 +150,4 @@
     background-color: #fff0f5;
     color: #29324d;
 }
+.business-screen .biz-button.tutorial-focus .biz-input-icon { -unity-background-image-tint-color: #29324d; }

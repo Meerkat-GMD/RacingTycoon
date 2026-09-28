@@ -107,12 +107,12 @@ namespace CottonCircuit
             var batchArt = Q<VisualElement>("businessBatchArt");
             SetArt(batchArt, UiArt.CottonCandy(Math.Max(0, state.BatchFlavor), Math.Max(0, tier)));
             batchArt.EnableInClassList("biz-faint", state.BatchMeters <= 0);
-            var extract = Q<Button>("businessExtract");
-            extract.text = worker ? "알바가 꺼내요" : "꺼내기  F";
-            extract.SetEnabled(manual && state.BatchMeters > 0 && economy.Inventory.Count < economy.StockCapacity);
-            var empty = Q<Button>("businessEmptySugar");
-            empty.text = worker ? "알바가 설탕 관리" : "설탕 비우기";
-            empty.SetEnabled(manual && state.SugarGrams > 0);
+            SetText("businessExtractLabel", worker ? "알바가 꺼내요" : "꺼내기");
+            Show(Q<VisualElement>("businessExtractKey"), !worker);
+            Q<Button>("businessExtract").SetEnabled(manual && state.BatchMeters > 0 && economy.Inventory.Count < economy.StockCapacity);
+            SetText("businessEmptySugarLabel", worker ? "알바가 설탕 관리" : "설탕 비우기");
+            Show(Q<VisualElement>("businessEmptySugarKey"), !worker);
+            Q<Button>("businessEmptySugar").SetEnabled(manual && state.SugarGrams > 0);
             for (int i = 0; i < 3; i++)
             {
                 bool available = !progression || shift.CanMakeFlavor(shift.SelectedMachine, i);
