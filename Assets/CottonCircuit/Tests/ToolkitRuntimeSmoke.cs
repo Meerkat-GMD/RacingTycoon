@@ -60,6 +60,8 @@ namespace CottonCircuit.Tests
                 if (current is IEnumerator nested) { stack.Push(nested); continue; }
                 yield return current;
             }
+            try { Check(Strings.Missing.Count == 0, "no missing localization keys were requested: " + string.Join(", ", Strings.Missing)); }
+            catch (Exception e) { failed = true; if (string.IsNullOrEmpty(failure)) failure = e.ToString(); Debug.LogException(e); }
             Directory.CreateDirectory(output);
             File.WriteAllText(Path.Combine(output, "result.txt"), (failed ? "FAILED" : "PASSED") +
                 "\nCase: " + scenario + "\nChecks: " + checks + "\nResolution: " + Screen.width + "x" + Screen.height +
@@ -77,6 +79,8 @@ namespace CottonCircuit.Tests
             Screen.SetResolution(width, height, false);
             yield return new WaitForSecondsRealtime(.6f);
             Check(Screen.width == width && Screen.height == height, "requested framebuffer size is active");
+            Check(Strings.Get("language.self") == (Strings.Current == Language.Korean ? "한국어" : "English") && Strings.Get("title.start") != "title.start",
+                "the string table loaded in the player (" + Strings.Code(Strings.Current) + ")");
             if (scenario == "legacy") { yield return Legacy(); yield break; }
             if (scenario == "rack") { yield return Rack(); yield break; }
             if (scenario == "hud") { yield return Hud(); yield break; }

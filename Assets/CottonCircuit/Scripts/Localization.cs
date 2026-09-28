@@ -13,7 +13,10 @@ namespace CottonCircuit
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Initialize()
         {
-            Strings.Load(Resources.Load<TextAsset>("Localization/strings").text);
+            var table = Resources.Load<TextAsset>("Localization/strings");
+            if (table == null) throw new InvalidOperationException(
+                "Localization/strings.tsv did not import as a TextAsset; check Assets/CottonCircuit/Editor/LocalizationTableImport.cs.");
+            Strings.Load(table.text);
             foreach (var argument in Environment.GetCommandLineArgs())
                 if (argument.StartsWith("--language=")) CommandLine = argument.Substring("--language=".Length);
             SettingsStore.Use(Application.persistentDataPath);
