@@ -97,7 +97,9 @@ namespace CottonCircuit
         readonly Economy economy;
         public BusinessState State { get { return economy.Business; } }
         public bool Paused { get; set; }
-        public bool IsOpen { get { return !Paused && !State.Closed && State.RemainingSeconds > 0 &&
+        public bool IsOpen { get { return !Paused && DayRunning; } }
+        // Open ignoring pause: the day has time left and the business is operating.
+        public bool DayRunning { get { return !State.Closed && State.RemainingSeconds > 0 &&
             (economy.Progression == null || economy.Progression.Phase == BusinessPhase.Operating); } }
 
         public ShopCustomer CustomerAt(int slot)
