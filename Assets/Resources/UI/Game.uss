@@ -1,11 +1,2 @@
 .screen-instance { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
-.modal { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(26,32,49,0.56); align-items: center; justify-content: center; }
-.pause-card { width: 610px; padding: 36px 40px; background-color: var(--paper); border-radius: 24px; }
-.eyebrow { font-size: 12px; color: #a48683; letter-spacing: 3px; margin-bottom: 10px; }
-.pause-title { font-size: 32px; -unity-font-style: bold; margin-bottom: 28px; }
-.pause-help { font-size: 19px; color: #625d69; min-height: 210px; margin-bottom: 24px; }
-.pause-continue { height: 60px; font-size: 21px; }
-.pause-actions { flex-direction: row; margin-top: 14px; }
-.pause-actions > Button { flex-grow: 1; width: 0; margin-right: 6px; height: 49px; }
-.pause-footer { font-size: 13px; color: var(--muted); -unity-text-align: middle-center; margin-top: 26px; }
 .notice-toast { position: absolute; left: 400px; right: 400px; bottom: 27px; border-radius: 14px; padding: 17px 24px; background-color: var(--ink); color: white; -unity-text-align: middle-center; font-size: 17px; }

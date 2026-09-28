@@ -1,5 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="Shared.uss" />
+    <ui:Style src="Menu.uss" />
+    <ui:Style src="Pause.uss" />
     <ui:Style src="Game.uss" />
     <ui:Template name="Business" src="Business.uxml" />
     <ui:Template name="Preparation" src="Preparation.uxml" />
@@ -9,21 +11,62 @@
             <ui:Instance template="Business" name="businessDocument" class="screen-instance" picking-mode="Ignore" />
             <ui:Instance template="Legacy" name="legacyDocument" class="screen-instance hidden" picking-mode="Ignore" />
             <ui:Instance template="Preparation" name="preparationDocument" class="screen-instance hidden" />
-            <ui:VisualElement name="PauseScreen" class="modal hidden">
-                <ui:VisualElement class="pause-card">
-                    <ui:Label text="PAUSE" class="eyebrow" />
-                    <ui:Label text="잠깐, 달콤한 휴식" class="pause-title" />
-                    <ui:Label name="PauseControls" class="pause-help" />
-                    <ui:Button name="PauseContinueButton" text="계속하기" class="primary pause-continue" />
-                    <ui:VisualElement class="pause-actions">
-                        <ui:Button name="PauseMuteButton" text="소리 켜짐" />
-                        <ui:Button name="PauseTitleButton" text="타이틀 화면으로" />
-                    </ui:VisualElement>
-                    <ui:Label text="진행 상황은 자동으로 저장됩니다." class="pause-footer" />
-                </ui:VisualElement>
-            </ui:VisualElement>
             <ui:VisualElement name="NoticeToast" class="notice-toast hidden" picking-mode="Ignore">
                 <ui:Label name="NoticeText" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="PauseScreen" class="pause-screen hidden">
+            <ui:VisualElement class="pause-layout">
+                <ui:VisualElement name="PauseMenu" class="menu-card pause-menu">
+                    <ui:Label text="PAUSE" class="menu-eyebrow" />
+                    <ui:Label text="잠깐, 달콤한 휴식" class="pause-title">
+                        <Bindings><CottonCircuit.LocalizedText property="text" key="pause.title" /></Bindings>
+                    </ui:Label>
+                    <ui:Button name="PauseContinueButton" text="계속하기" class="menu-button menu-button-primary">
+                        <Bindings><CottonCircuit.LocalizedText property="text" key="pause.resume" /></Bindings>
+                        <ui:VisualElement class="menu-action-icon" picking-mode="Ignore" />
+                    </ui:Button>
+                    <ui:Button name="PauseSettingsButton" text="설정" class="menu-button">
+                        <Bindings><CottonCircuit.LocalizedText property="text" key="settings.open" /></Bindings>
+                    </ui:Button>
+                    <ui:Button name="PauseTitleButton" text="타이틀 화면으로" class="menu-button">
+                        <Bindings><CottonCircuit.LocalizedText property="text" key="pause.title.button" /></Bindings>
+                    </ui:Button>
+                    <ui:Label text="진행 상황은 자동으로 저장됩니다." class="pause-note">
+                        <Bindings><CottonCircuit.LocalizedText property="text" key="pause.autosave" /></Bindings>
+                    </ui:Label>
+                </ui:VisualElement>
+                <ui:VisualElement name="PauseGuide" class="pause-guide" picking-mode="Ignore">
+                    <ui:Label text="조작 안내" class="pause-guide-title">
+                        <Bindings><CottonCircuit.LocalizedText property="text" key="pause.guide" /></Bindings>
+                    </ui:Label>
+                    <ui:VisualElement class="pause-guide-columns">
+                        <ui:VisualElement name="PauseDriveGroup" class="pause-guide-group">
+                            <ui:Label text="주행" class="pause-guide-heading">
+                                <Bindings><CottonCircuit.LocalizedText property="text" key="pause.drive" /></Bindings>
+                            </ui:Label>
+                            <ui:VisualElement class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-w" /></ui:VisualElement><ui:Label text="가속" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.accelerate" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-s" /></ui:VisualElement><ui:Label text="제동" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.brake" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-a" /><ui:VisualElement class="pause-key key-d" /></ui:VisualElement><ui:Label text="조향" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.steer" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-space" /></ui:VisualElement><ui:Label text="드리프트" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.drift" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement name="PauseBoostRow" class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-shift" /></ui:VisualElement><ui:Label text="부스터" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.boost" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-r" /></ui:VisualElement><ui:Label text="코스 복귀" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.recover" /></Bindings></ui:Label></ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PauseWorkerGroup" class="pause-guide-group hidden">
+                            <ui:Label text="주행" class="pause-guide-heading"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.drive" /></Bindings></ui:Label>
+                            <ui:Label text="알바가 운전과 제작을 맡고 있어요." class="pause-guide-copy"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.helper" /></Bindings></ui:Label>
+                            <ui:Label text="다른 기계는 상단 버튼으로 선택하고, 알바 배치는 영업 준비 화면에서 바꿀 수 있어요." class="pause-guide-copy pause-guide-muted"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.helper.hint" /></Bindings></ui:Label>
+                        </ui:VisualElement>
+                        <ui:VisualElement name="PauseShopGroup" class="pause-guide-group">
+                            <ui:Label text="가게" class="pause-guide-heading"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.shop" /></Bindings></ui:Label>
+                            <ui:VisualElement name="PauseSugarRow" class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key mouse-left" /></ui:VisualElement><ui:Label text="설탕 봉지를 주행 화면으로 끌어 흔들기" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.sugar" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key mouse-left" /></ui:VisualElement><ui:Label text="솜사탕을 손님에게 건네기" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.deliver" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement name="PauseExtractRow" class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-f" /></ui:VisualElement><ui:Label text="꺼내기" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.extract" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement name="PauseEmptyRow" class="pause-row"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key mouse-right" /></ui:VisualElement><ui:Label text="설탕 비우기" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.empty" /></Bindings></ui:Label></ui:VisualElement>
+                            <ui:VisualElement class="pause-row pause-row-gap"><ui:VisualElement class="pause-keys"><ui:VisualElement class="pause-key key-escape" /></ui:VisualElement><ui:Label text="일시정지 / 돌아가기" class="pause-row-label"><Bindings><CottonCircuit.LocalizedText property="text" key="pause.escape" /></Bindings></ui:Label></ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

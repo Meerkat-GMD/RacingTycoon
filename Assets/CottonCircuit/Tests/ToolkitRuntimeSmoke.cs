@@ -259,12 +259,11 @@ namespace CottonCircuit.Tests
             game.TogglePause();
             yield return Settle();
             Check(game.Session.Paused && Visible(Find("PauseScreen")), "Esc pause action opens the authored pause menu");
-            Check(Element<Button>("PauseTitleButton").text == "타이틀 화면으로", "pause offers title navigation rather than a new shop");
-            bool wasMuted = game.Audio.Muted;
-            yield return Click("PauseMuteButton");
-            Check(game.Audio.Muted != wasMuted, "pause mute button changes the actual audio state");
-            yield return Click("PauseMuteButton");
-            Check(game.Audio.Muted == wasMuted, "pause mute toggles back to its original state");
+            Check(Element<Button>("PauseTitleButton").text == Strings.Get("pause.title.button"), "pause offers title navigation rather than a new shop");
+            CheckInsideViewport("PauseMenu");
+            CheckInsideViewport("PauseGuide");
+            Check(Visible(Find("PauseBoostRow")) == (game.RunStyle == DrivingStyle.Kart), "boost row follows the vehicle");
+            Check(Find("PauseMuteButton") == null, "mute moved to the settings window");
             yield return Capture("pause.png");
             yield return Click("PauseTitleButton");
             Check(game.Session == null && Element<Button>("TitlePrimaryButton").text == Strings.Get("title.continue"), "pause return saves and opens the saved title");
@@ -539,6 +538,35 @@ namespace CottonCircuit.Tests
             Check(Strings.Current == start, "switching again restores the starting language");
             yield return Click("SettingsCloseButton");
             Check(!game.SettingsOpen, "close button closes settings");
+            game.Initialize(saveDirectory);
+            yield return Settle();
+            game.TogglePause();
+            yield return Settle();
+            yield return Click("PauseSettingsButton");
+            Check(game.SettingsOpen && game.Session.Paused, "pause opens settings and stays paused");
+            yield return Capture("settings-pause.png");
+            yield return Key(KeyCode.Escape);
+            Check(!game.SettingsOpen && game.Session.Paused && Element<Button>("PauseSettingsButton").focusController.focusedElement == Find("PauseSettingsButton"), "Esc closes settings back to the pause menu");
+            // Capture() asserts the captured texture matches the runner's launch resolution
+            // (width/height), so each sweep step retargets those fields to the size under test
+            // and restores the original launch resolution once the sweep is done.
+            int launchWidth = width, launchHeight = height;
+            foreach (var size in new[] { new Vector2Int(1280, 720), new Vector2Int(1600, 900), new Vector2Int(1280, 960), new Vector2Int(1920, 820) })
+            {
+                width = size.x; height = size.y;
+                Screen.SetResolution(size.x, size.y, false);
+                yield return new WaitForSecondsRealtime(.6f);
+                CheckInsideViewport("PauseMenu");
+                CheckInsideViewport("PauseGuide");
+                yield return Capture("pause-" + size.x + "x" + size.y + ".png");
+                yield return Click("PauseSettingsButton");
+                CheckInsideViewport("SettingsCard");
+                yield return Capture("settings-" + size.x + "x" + size.y + ".png");
+                yield return Click("SettingsCloseButton");
+            }
+            width = launchWidth; height = launchHeight;
+            Screen.SetResolution(width, height, false);
+            yield return new WaitForSecondsRealtime(.6f);
         }
 
         IEnumerator Key(KeyCode key)

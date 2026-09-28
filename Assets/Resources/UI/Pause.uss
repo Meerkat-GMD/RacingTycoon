@@ -1,0 +1,29 @@
+.pause-screen { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(26, 32, 49, 0.38); color: #29324d; }
+.pause-layout { flex-grow: 1; flex-direction: row; align-items: center; justify-content: space-between; padding: 42px 56px; }
+.pause-menu { flex-shrink: 0; }
+.pause-title { font-size: 40px; -unity-font-style: bold; margin: 0 0 26px 0; white-space: normal; }
+.pause-note { font-size: 15px; color: #777180; margin-top: 6px; white-space: normal; }
+.pause-guide { width: 760px; flex-shrink: 1; margin-left: 32px; padding: 26px 30px; border-radius: 24px; background-color: rgba(255, 246, 231, 0.9); }
+.pause-guide-title { font-size: 24px; -unity-font-style: bold; margin-bottom: 12px; }
+.pause-guide-columns { flex-direction: row; }
+.pause-guide-group { flex-grow: 1; flex-basis: 0; margin-right: 18px; }
+.pause-guide-heading { font-size: 15px; color: #537f7e; -unity-font-style: bold; letter-spacing: 1px; margin-bottom: 6px; }
+.pause-guide-copy { font-size: 18px; white-space: normal; margin-bottom: 8px; }
+.pause-guide-muted { color: #626573; font-size: 16px; }
+.pause-row { flex-direction: row; align-items: center; min-height: 44px; }
+.pause-row-gap { margin-top: 10px; }
+.pause-keys { flex-direction: row; width: 104px; flex-shrink: 0; }
+.pause-key { width: 40px; height: 40px; margin-right: 4px; background-size: contain; background-repeat: no-repeat; background-position: center; -unity-background-image-tint-color: #29324d; }
+.pause-key-wide { width: 80px; }
+.pause-row-label { font-size: 18px; white-space: normal; flex-shrink: 1; }
+.key-w { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyW.png"); }
+.key-a { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyA.png"); }
+.key-s { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyS.png"); }
+.key-d { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyD.png"); }
+.key-r { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyR.png"); }
+.key-f { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyF.png"); }
+.key-space { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeySpace.png"); }
+.key-shift { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyShift.png"); }
+.key-escape { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyEscape.png"); }
+.mouse-left { background-image: url("project://database/Assets/CottonCircuit/UI/Art/MouseLeft.png"); }
+.mouse-right { background-image: url("project://database/Assets/CottonCircuit/UI/Art/MouseRight.png"); }

@@ -27,7 +27,9 @@ namespace CottonCircuit
                 BindPreparation(uiRoot);
                 BindLegacy();
                 Q<Button>("PauseContinueButton").clicked += game.TogglePause;
-                Q<Button>("PauseMuteButton").clicked += () => SettingsStore.Apply(s => s.Muted = !s.Muted);
+                var pauseSettings = Q<Button>("PauseSettingsButton");
+                pauseSettings.clicked += () => game.OpenSettings(() => pauseSettings.Focus());
+                Q<VisualElement>("PauseMenu").RegisterCallback<NavigationMoveEvent>(NavigatePause, TrickleDown.TrickleDown);
                 Q<Button>("PauseTitleButton").clicked += game.ReturnToTitle;
                 Localization.Changed += Refresh;
             }
@@ -56,15 +58,33 @@ namespace CottonCircuit
             else if (game.Shift == null) RefreshLegacy();
             bool paused = game.Session.Paused;
             Show(Q<VisualElement>("PauseScreen"), paused);
-            SetText("PauseControls", game.SelectedMachineHasWorker
-                ? "알바가 운전과 제작을 맡고 있어요.\n완성된 솜사탕을 손님에게 드래그해 주세요.\n\n다른 기계는 상단 버튼으로 선택해요.\n알바 배치는 영업 준비 화면에서 바꿀 수 있어요.\n\nEsc  돌아가기"
-                : "설탕 봉지를 위아래로 흔들어 넣어요.\n솜사탕은 손님에게 드래그해 주세요.\n\nW 가속   A / D 조향   S 제동\nSpace 드리프트   F 꺼내기\nR 코스 복귀   Esc 돌아가기");
-            Q<Button>("PauseMuteButton").text = Strings.Get(game.Audio.Muted ? "pause.sound.off" : "pause.sound.on");
+            if (paused) RefreshPause();
             Show(Q<VisualElement>("NoticeToast"), !string.IsNullOrEmpty(game.Notice));
             SetText("NoticeText", game.Notice ?? "");
-            if (paused && !pauseWasVisible) Q<Button>("PauseContinueButton").Focus();
+            if (paused && !pauseWasVisible && !game.SettingsOpen) Q<Button>("PauseContinueButton").Focus();
             if (!paused && pauseWasVisible) uiRoot.focusController?.focusedElement?.Blur();
             pauseWasVisible = paused;
+        }
+
+        void RefreshPause()
+        {
+            bool worker = game.SelectedMachineHasWorker, shift = game.Shift != null;
+            Show(Q<VisualElement>("PauseDriveGroup"), !worker);
+            Show(Q<VisualElement>("PauseWorkerGroup"), worker);
+            Show(Q<VisualElement>("PauseBoostRow"), game.RunStyle == DrivingStyle.Kart);
+            Show(Q<VisualElement>("PauseSugarRow"), shift);
+            Show(Q<VisualElement>("PauseExtractRow"), shift);
+            Show(Q<VisualElement>("PauseEmptyRow"), shift);
+        }
+
+        void NavigatePause(NavigationMoveEvent evt)
+        {
+            var buttons = new[] { Q<Button>("PauseContinueButton"), Q<Button>("PauseSettingsButton"), Q<Button>("PauseTitleButton") };
+            int delta = evt.direction == NavigationMoveEvent.Direction.Up || evt.direction == NavigationMoveEvent.Direction.Left ? -1 : 1;
+            int index = System.Array.IndexOf(buttons, uiRoot.focusController.focusedElement as Button);
+            buttons[(index + delta + buttons.Length) % buttons.Length].Focus();
+            evt.PreventDefault();
+            evt.StopPropagation();
         }
 
         T Q<T>(string name) where T : VisualElement => ToolkitUI.Q<T>(uiRoot, name);
