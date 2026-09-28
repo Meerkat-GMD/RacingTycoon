@@ -1,0 +1,151 @@
+.title-screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    color: #29324d;
+}
+.title-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("project://database/Assets/CottonCircuit/Sprites/Title/TitleBackground.png");
+    background-size: cover;
+    background-position: center;
+}
+.title-content {
+    flex-grow: 1;
+    justify-content: center;
+    padding: 42px 72px;
+}
+.title-menu {
+    width: 500px;
+    max-height: 100%;
+    padding: 34px 40px;
+    border-radius: 28px;
+    background-color: rgba(255, 246, 231, 0.96);
+}
+.title-eyebrow {
+    color: #537f7e;
+    font-size: 16px;
+    -unity-font-style: bold;
+    margin-bottom: 15px;
+}
+.title-word {
+    font-size: 82px;
+    -unity-font-style: bold;
+    margin: 0;
+    padding: 0;
+}
+.title-word-accent {
+    color: #c9678a;
+    font-size: 92px;
+    margin-top: -12px;
+}
+.title-tagline {
+    color: #626573;
+    font-size: 20px;
+    white-space: normal;
+    margin-top: 14px;
+    margin-bottom: 28px;
+}
+.title-button {
+    min-height: 62px;
+    margin: 0 0 12px 0;
+    padding: 12px 24px;
+    background-color: #fffdf7;
+    border-width: 2px;
+    border-color: #e5dcd0;
+    border-radius: 14px;
+    color: #29324d;
+    font-size: 23px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+.title-button-primary {
+    background-color: #29324d;
+    border-color: #29324d;
+    color: #fff6e7;
+}
+.title-button:hover, .title-button:focus {
+    border-color: #69bfc1;
+    background-color: #dcefee;
+    color: #29324d;
+}
+.title-button:active { background-color: #bfdfde; }
+.title-button:disabled { opacity: 0.45; }
+.title-action-icon {
+    position: absolute;
+    right: 24px;
+    top: 20px;
+    width: 20px;
+    height: 20px;
+    background-image: url("project://database/Assets/CottonCircuit/UI/Art/ArrowRight.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.title-button-primary:hover > .title-action-icon, .title-button-primary:focus > .title-action-icon {
+    -unity-background-image-tint-color: #29324d;
+}
+.title-saved-note {
+    color: #777180;
+    font-size: 16px;
+    white-space: normal;
+    margin-top: 5px;
+}
+.title-error {
+    color: #9a3c56;
+    font-size: 17px;
+    white-space: normal;
+    margin-top: 10px;
+}
+.title-footer {
+    position: absolute;
+    left: 82px;
+    bottom: 14px;
+    font-size: 14px;
+    color: #505b67;
+    background-color: rgba(255, 246, 231, 0.9);
+    border-radius: 9px;
+    padding: 6px 12px;
+}
+.title-confirmation {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(31, 38, 56, 0.66);
+}
+.title-confirmation-card {
+    width: 620px;
+    max-width: 90%;
+    padding: 38px;
+    background-color: #fff6e7;
+    border-radius: 24px;
+}
+.title-confirmation-heading {
+    font-size: 31px;
+    -unity-font-style: bold;
+    margin-bottom: 24px;
+}
+.title-confirmation-copy {
+    font-size: 22px;
+    color: #636573;
+    white-space: normal;
+    margin-bottom: 34px;
+}
+.title-confirmation-actions { flex-direction: row; }
+.title-confirmation-actions > .title-button {
+    flex-grow: 1;
+    flex-basis: 0;
+    margin-bottom: 0;
+    -unity-text-align: middle-center;
+}
+.title-confirmation-actions > .title-button-primary { margin-left: 14px; }

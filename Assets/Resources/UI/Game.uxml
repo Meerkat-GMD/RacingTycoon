@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Shared.uss" />
+    <ui:Style src="Game.uss" />
+    <ui:Template name="Business" src="Business.uxml" />
+    <ui:Template name="Preparation" src="Preparation.uxml" />
+    <ui:Template name="Legacy" src="Legacy.uxml" />
+    <ui:VisualElement name="gameShell" class="screen-shell" picking-mode="Ignore">
+        <ui:VisualElement name="gameComposition" class="composition" picking-mode="Ignore">
+            <ui:Instance template="Business" name="businessDocument" class="screen-instance" picking-mode="Ignore" />
+            <ui:Instance template="Legacy" name="legacyDocument" class="screen-instance hidden" picking-mode="Ignore" />
+            <ui:Instance template="Preparation" name="preparationDocument" class="screen-instance hidden" />
+            <ui:VisualElement name="PauseScreen" class="modal hidden">
+                <ui:VisualElement class="pause-card">
+                    <ui:Label text="PAUSE" class="eyebrow" />
+                    <ui:Label text="잠깐, 달콤한 휴식" class="pause-title" />
+                    <ui:Label name="PauseControls" class="pause-help" />
+                    <ui:Button name="PauseContinueButton" text="계속하기" class="primary pause-continue" />
+                    <ui:VisualElement class="pause-actions">
+                        <ui:Button name="PauseMuteButton" text="소리 켜짐" />
+                        <ui:Button name="PauseTitleButton" text="타이틀 화면으로" />
+                    </ui:VisualElement>
+                    <ui:Label text="진행 상황은 자동으로 저장됩니다." class="pause-footer" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="NoticeToast" class="notice-toast hidden" picking-mode="Ignore">
+                <ui:Label name="NoticeText" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -21,7 +21,6 @@ namespace CottonCircuit
         public int RunTargetGrams { get; private set; } = 60;
         public int RunFlavor { get; private set; } = -1;
         public bool ContinuousMode { get; private set; }
-        public bool AutoDrive { get; private set; }
         public bool RaceVisible => ContinuousMode || Session?.Mode == GameMode.Racing;
         public double RunProgress => Session == null || Session.ProductionWaiting || World.Kart.DriveModel == null
             ? 0 : World.Kart.DriveModel.Sample.Progress / World.Kart.DriveModel.Course.Length;
@@ -32,8 +31,46 @@ namespace CottonCircuit
         string discardCandidate;
         int renderedSamples = -1, orderRevision;
         GameMode lastMode;
-        public void Initialize(string saveDirectory, bool continuous = true, bool businessDay = true, bool progression = true)
+        TitleScreenUI titleScreen;
+        public void ShowTitle(string saveDirectory)
         {
+            if (Session != null || titleScreen) return;
+            if (World) World.gameObject.SetActive(false);
+            if (!titleScreen)
+            {
+                var titleObject = new GameObject("Title Screen");
+                titleObject.transform.SetParent(transform, false);
+                titleScreen = titleObject.AddComponent<TitleScreenUI>();
+            }
+            titleScreen.Show(this, saveDirectory);
+        }
+        public void ReturnToTitle()
+        {
+            if (Session == null || Store == null || titleScreen) return;
+            if (UI) UI.CancelShiftDrag();
+            // Keep the live session if a writable save fails. A protected, unreadable
+            // save can return to the title without replacing its original bytes.
+            if (Store.CanSave && !Save()) { if (UI) UI.Refresh(); return; }
+            string directory = Store.DirectoryPath;
+            CloseTutorialUI();
+            if (World)
+            {
+                World.Kart.Stop(); World.Kart.SetEffects(false);
+                World.UpdateThread(false); World.AnimationPaused = true;
+                if (Audio) Audio.UpdateDriving(World.Kart, false);
+            }
+            if (UI) UI.HideForTitle();
+            Session = null; Shift = null; Orders = null;
+            SelectedOrderId = SelectedProductId = null;
+            Notice = null; noticeTimer = 0;
+            ContinuousMode = false;
+            ShowTitle(directory);
+        }
+        public void Initialize(string saveDirectory, bool continuous = true, bool businessDay = true, bool progression = true, bool tutorial = false)
+        {
+            if (titleScreen) { titleScreen.Close(); titleScreen = null; }
+            CloseTutorialUI();
+            if (World) World.gameObject.SetActive(true);
             if (UI) UI.CancelShiftDrag();
             Notice = null; noticeTimer = 0;
             Store = new SaveStore(saveDirectory); Session = new GameSession(Store.Load());
@@ -43,8 +80,9 @@ namespace CottonCircuit
                 Progression.Enable(Session.Economy);
                 Session.Economy.Business = null; Session.Economy.Inventory.Clear(); Session.Economy.CompletedIds.Clear();
             }
-            ContinuousMode = continuous; AutoDrive = false;
+            ContinuousMode = continuous;
             Shift = continuous && businessDay ? new ShopShift(Session.Economy) : null;
+            if (tutorial && Shift != null) Shift.BeginTutorial();
             Orders = Shift == null ? new OrderManager(Session.Economy) : null;
             orderRevision = Orders == null ? 0 : Orders.Revision;
             lastMode = Session.Mode; PreparedMap = PreparedFlavor = 0; RunFlavor = 0;
@@ -61,10 +99,11 @@ namespace CottonCircuit
             else if (Orders.Orders.Count > 0) SelectOrder(Orders.Orders[0].Id);
             if (HasProgression) ApplyMachineCourse(false);
             if (UI) UI.Initialize(this);
+            PrepareTutorialUI();
             if (ContinuousMode && Shift == null) BeginContinuousRecipe(true);
             if (Store.Error != null) Notify(Store.Error); else Save();
         }
-        void Start() { if (Session == null) Initialize(Application.persistentDataPath); }
+        void Start() { if (Session == null && !titleScreen) ShowTitle(Application.persistentDataPath); }
         void Update()
         {
             if (Session == null) return;
@@ -78,7 +117,7 @@ namespace CottonCircuit
                 else if (Session.Mode == GameMode.Racing) FinishRun();
                 else ReturnToShop();
             }
-            if (Session.Mode == GameMode.Racing && (Shift == null || Shift.IsOpen) && Input.GetKeyDown(KeyCode.R))
+            if (Session.Mode == GameMode.Racing && !SelectedMachineHasWorker && (Shift == null || Shift.IsOpen) && Input.GetKeyDown(KeyCode.R))
             { World.Kart.Recover(); Notify(Shift == null ? "코스에 복귀했어요. 결승선까지 한 바퀴 완주하세요." : "코스에 복귀했어요. 복귀 이동은 생산 거리에 포함되지 않아요."); }
             bool brake = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
             float throttle = Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ? 1 : 0;
@@ -110,12 +149,6 @@ namespace CottonCircuit
             }
             if (Session.Mode == GameMode.Racing)
             {
-                if (ContinuousMode && AutoDrive)
-                {
-                    double autoThrottle, autoSteering; bool autoBrake;
-                    CottonCircuit.AutoDrive.Input(World.Kart.DriveModel, out autoThrottle, out autoSteering, out autoBrake);
-                    throttle = (float)autoThrottle; steering = (float)autoSteering; brake = autoBrake; drift = boost = false;
-                }
                 World.Kart.MaximumSpeed = Session.Economy.MaxSpeed;
                 int boosts = World.Kart.DriveModel.BoostCount;
                 int drifts = World.Kart.DriveModel.DriftCount;
@@ -191,7 +224,7 @@ namespace CottonCircuit
                 return;
             }
             if (Session.Paused || Session.Mode != GameMode.Shop) return;
-            if (!Store.CanSave) { Notify(Store.Error + "  도움말 → 새 가게 시작"); return; }
+            if (!Store.CanSave) { Notify(Store.Error + "  Esc → 타이틀 화면으로 → 새 게임"); return; }
             RunMap = PreparedMap; RunFlavor = PreparedFlavor; RunStyle = PreparedStyle;
             RunTargetGrams = RaceRecipe.TargetGrams(RunMap);
             if (!Session.StartRecipe(RunMap, RunFlavor)) { Notify("진열대가 가득 찼어요. 손님에게 건네거나 재고를 정리하세요."); return; }
@@ -217,13 +250,6 @@ namespace CottonCircuit
             Session.StartContinuousRecipe(RunMap, RunFlavor, drive.Laps, drive.SkillCount, drive.WallHits);
             renderedSamples = -1; abortConfirmUntil = 0;
             World.CentralCandy.Show(null); SyncMode();
-        }
-        public void ToggleAutoDrive()
-        {
-            if (Session == null || Session.Paused || !ContinuousMode) return;
-            AutoDrive = !AutoDrive;
-            Notify(AutoDrive ? "자동 주행 중 · 가게를 운영하는 동안 계속 달려요." : "직접 운전 · 방향키 / WASD로 달려요.");
-            if (UI) UI.Refresh();
         }
         public void FinishRun()
         {
@@ -287,7 +313,7 @@ namespace CottonCircuit
         }
         public void TogglePause()
         {
-            HoverHint.HideAll();
+            if (Session == null) return;
             Session.Paused = !Session.Paused; World.AnimationPaused = Session.Paused; World.UpdateThread(false);
             if (Shift != null)
             {
@@ -306,14 +332,19 @@ namespace CottonCircuit
             Initialize(Store.DirectoryPath, ContinuousMode, Shift != null, HasProgression);
             World.AnimationPaused = Shift != null && !Shift.IsOpen; Notify("새로운 솜사탕 가게를 열었어요."); UI.Refresh();
         }
-        void Save() { if (Shift != null) Shift.SyncActive(); if (!Store.Save(Session.Economy) && Store.Error != null) Notify(Store.Error); }
+        bool Save()
+        {
+            if (Shift != null) Shift.SyncActive();
+            bool saved = Store.Save(Session.Economy);
+            if (!saved && Store.Error != null) Notify(Store.Error);
+            return saved;
+        }
         public void Notify(string message) { Notice = message; noticeTimer = 5; }
         void OnApplicationQuit() { if (Session != null && Store != null) Save(); }
         void OnApplicationFocus(bool focused)
         {
             if (enabled && !focused && Session != null && Session.Mode == GameMode.Racing && !Application.isBatchMode)
             {
-                HoverHint.HideAll();
                 Session.Paused = true;
                 if (Shift != null) { Shift.Paused = true; if (UI) UI.CancelShiftDrag(); Save(); }
                 World.AnimationPaused = true; World.Kart.SetEffects(false); World.UpdateThread(false); Audio.UpdateDriving(World.Kart, false); if (UI) UI.Refresh();

@@ -146,6 +146,55 @@ namespace CottonCircuit
         public CourseSample Project(RoadPoint position)
         { return Project(position, 0); }
 
+        // True when a round body of the given radius lies wholly on the road.
+        public bool Fits(RoadPoint position, double radius)
+        {
+            var road = Project(position, radius);
+            return Math.Abs(road.Lateral) <= road.HalfWidth - radius || Straddles(position, radius);
+        }
+
+        // Where the shortcut overlaps the main road, a body across the seam fits neither
+        // ribbon on its own although all of it is on painted road. Testing the ribbons
+        // separately would leave an invisible wedge of wall beyond each grass island tip.
+        // Fits calls this only after neither shrunken ribbon held the body, so the edge of
+        // each ribbon the body reaches passes within it. Over that short span the edges are
+        // nearly straight, and grass reaches the body either at an edge point outside the
+        // other ribbon or at the corner where the two edges cross.
+        bool Straddles(RoadPoint position, double radius)
+        {
+            RoadPoint main = Nearest(MainPoints, true, position), shortcut = Nearest(ShortcutPoints, false, position);
+            double toMain = Distance(position, main), toShortcut = Distance(position, shortcut);
+            if (toMain > MainHalfWidth + radius || toShortcut > ShortcutHalfWidth + radius) return false;
+            if (toMain > MainHalfWidth && toShortcut > ShortcutHalfWidth) return false;
+            RoadPoint mainOut = Unit(position - main), shortcutOut = Unit(position - shortcut);
+            RoadPoint mainEdge = main + mainOut * MainHalfWidth;
+            RoadPoint shortcutEdge = shortcut + shortcutOut * ShortcutHalfWidth;
+            if (Distance(mainEdge, Nearest(ShortcutPoints, false, mainEdge)) > ShortcutHalfWidth ||
+                Distance(shortcutEdge, Nearest(MainPoints, true, shortcutEdge)) > MainHalfWidth) return false;
+            RoadPoint mainAlong = new RoadPoint(mainOut.Z, -mainOut.X);
+            double crossing = Dot(mainAlong, shortcutOut);
+            if (Math.Abs(crossing) < 1e-6) return true;
+            RoadPoint corner = mainEdge + mainAlong * (Dot(shortcutEdge - mainEdge, shortcutOut) / crossing);
+            return Distance(position, corner) >= radius;
+        }
+
+        static RoadPoint Nearest(RoadPoint[] points, bool closed, RoadPoint position)
+        {
+            RoadPoint best = points[0];
+            double bestDistance = double.PositiveInfinity;
+            int count = closed ? points.Length : points.Length - 1;
+            for (int i = 0; i < count; i++)
+            {
+                RoadPoint a = points[i], delta = points[(i + 1) % points.Length] - a;
+                double spanSquared = Dot(delta, delta);
+                double t = spanSquared < 1e-10 ? 0 : Math.Max(0, Math.Min(1, Dot(position - a, delta) / spanSquared));
+                RoadPoint candidate = a + delta * t;
+                double distance = Distance(position, candidate);
+                if (distance < bestDistance) { bestDistance = distance; best = candidate; }
+            }
+            return best;
+        }
+
         // Clearance reduces each ribbon by the kart's half-width before route selection.
         // The returned HalfWidth remains the full road width for rendering and HUD use.
         public CourseSample Project(RoadPoint position, double clearance)

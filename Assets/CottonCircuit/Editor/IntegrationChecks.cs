@@ -83,6 +83,14 @@ namespace CottonCircuit.Editor
         }
         static void CheckSprites(GameAssets assets)
         {
+            Check(assets.TitleBackground && AssetDatabase.GetAssetPath(assets.TitleBackground) ==
+                "Assets/CottonCircuit/Sprites/Title/TitleBackground.png", "title screen uses the approved background artwork");
+            string[] introNames = { "Intro_01_Dream", "Intro_02_Stopped", "Intro_03_Delivery", "Intro_04_Machine_v2", "Intro_05_RaceAgain" };
+            bool introValid = assets.IntroScenes != null && assets.IntroScenes.Length == introNames.Length;
+            for (int i = 0; introValid && i < introNames.Length; i++)
+                introValid = assets.IntroScenes[i] && AssetDatabase.GetAssetPath(assets.IntroScenes[i]) ==
+                    "Assets/CottonCircuit/Sprites/Intro/" + introNames[i] + ".png";
+            Check(introValid, "intro uses five approved scenes in order, including the corrected machine illustration");
             string[] flavors = { "Strawberry", "Soda", "Vanilla" }, sizes = { "Small", "Medium", "Large" };
             var found = new List<Sprite>();
             CheckSpriteSlots(assets.CustomerNeutral, Names(3, i => "Customer_V" + i + "_Neutral"), "GameAssets.CustomerNeutral", found);
@@ -126,12 +134,14 @@ namespace CottonCircuit.Editor
                 "URP asset with a Universal renderer is the default pipeline");
             for (int i = 0; i < QualitySettings.names.Length; i++)
                 Check(QualitySettings.GetRenderPipelineAssetAt(i) == pipeline, "quality level " + QualitySettings.names[i] + " renders with URP");
-            var shaders = new HashSet<string>();
+            var shaders = new HashSet<Shader>();
             foreach (var renderer in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include))
-                foreach (var material in renderer.sharedMaterials) if (material) shaders.Add(material.shader.name);
+                foreach (var material in renderer.sharedMaterials) if (material) shaders.Add(material.shader);
+            // Project shaders such as CottonCircuit/SugarFloss qualify by declaring the URP subshader tag.
             foreach (var shader in shaders)
-                Check(shader.StartsWith("Universal Render Pipeline/") || shader == "Sprites/Default" || shader == "GUI/Text Shader",
-                    "scene shader " + shader + " renders in URP");
+                Check(shader.name.StartsWith("Universal Render Pipeline/") || shader.name == "Sprites/Default" || shader.name == "GUI/Text Shader" ||
+                    shader.FindSubshaderTagValue(0, new ShaderTagId("RenderPipeline")).name == "UniversalPipeline",
+                    "scene shader " + shader.name + " renders in URP");
         }
         static void CheckOrderSaves(string root)
         {
@@ -245,6 +255,9 @@ namespace CottonCircuit.Editor
             var game = UnityEngine.Object.FindAnyObjectByType<GameController>();
             Check(game && game.World && game.UI && game.Audio, "wired playable scene");
             Check(game.World.Kart && game.World.CentralCandy && game.World.Customer && game.World.SugarThread, "world gameplay references");
+            Check(game.World.SugarThread.sharedMaterial.shader.name == "CottonCircuit/SugarFloss" && game.World.SugarThread.sharedMaterial.mainTexture &&
+                game.World.SugarWisps != null && game.World.SugarWisps.Length == 2 && Array.TrueForAll(game.World.SugarWisps, wisp => wisp && !wisp.enabled),
+                "sugar floss uses the floss shader and two hidden wisps");
             CheckRenderPipeline();
             Debug.Log("COTTON_MESH_DIAGNOSTIC assets=" + (game.World.Assets ? game.World.Assets.name : "null") + " mesh=" + (game.World.Assets.PuffMesh ? game.World.Assets.PuffMesh.name + " vertices=" + game.World.Assets.PuffMesh.vertexCount : "null"));
             Check(game.World.Assets.PuffMesh && game.World.Assets.PuffMesh.vertexCount > 0, "Blender cotton mesh imported");

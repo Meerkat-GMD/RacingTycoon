@@ -1,0 +1,79 @@
+.intro-screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    color: #29324d;
+}
+.intro-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+}
+.intro-advance-area { flex-grow: 1; }
+.intro-dialogue-panel {
+    position: absolute;
+    left: 28px;
+    right: 28px;
+    bottom: 24px;
+    flex-direction: row;
+    min-height: 204px;
+    padding: 24px 30px;
+    background-color: rgba(255, 246, 231, 0.98);
+    border-width: 1px;
+    border-color: #e4d6c8;
+    border-radius: 22px;
+}
+.intro-copy { flex-grow: 1; flex-basis: 0; }
+.intro-speaker {
+    font-size: 24px;
+    -unity-font-style: bold;
+    margin-bottom: 14px;
+}
+.intro-speaker-mina { color: #ba587b; }
+.intro-dialogue {
+    font-size: 26px;
+    white-space: normal;
+    flex-grow: 1;
+}
+.intro-hint { font-size: 14px; color: #737384; margin-top: 14px; }
+.intro-actions {
+    width: 190px;
+    margin-left: 30px;
+    justify-content: center;
+}
+.intro-counter {
+    font-size: 18px;
+    color: #737384;
+    -unity-text-align: middle-center;
+    margin-bottom: 16px;
+}
+.intro-button {
+    min-height: 56px;
+    padding: 10px 24px;
+    margin: 0;
+    font-size: 22px;
+    -unity-font-style: bold;
+    background-color: #29324d;
+    color: #fff6e7;
+    border-width: 2px;
+    border-color: #29324d;
+    border-radius: 13px;
+}
+.intro-button:hover, .intro-button:focus {
+    border-color: #69bfc1;
+    background-color: #dcefee;
+    color: #29324d;
+}
+.intro-button:active { background-color: #bfdfde; }
+.intro-skip {
+    position: absolute;
+    right: 28px;
+    top: 28px;
+    min-width: 148px;
+}

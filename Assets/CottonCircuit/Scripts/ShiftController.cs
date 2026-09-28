@@ -38,11 +38,22 @@ namespace CottonCircuit
             }
             // Clamp the physical step as well as the business clock at the closing boundary.
             dt = (float)Math.Min(dt, Shift.State.RemainingSeconds);
-            if (AutoDrive)
+            bool worker = SelectedMachineHasWorker;
+            if (worker && WorkerDriving)
             {
                 double autoThrottle, autoSteering; bool autoBrake;
                 CottonCircuit.AutoDrive.Input(World.Kart.DriveModel, out autoThrottle, out autoSteering, out autoBrake);
                 throttle = (float)autoThrottle; steering = (float)autoSteering; brake = autoBrake; drift = boost = false;
+            }
+            else if (worker)
+            {
+                World.Kart.Stop();
+                throttle = steering = 0; brake = true; drift = boost = false;
+            }
+            if (TutorialActive && TutorialStep != CottonCircuit.TutorialStep.Drive)
+            {
+                World.Kart.Stop();
+                throttle = steering = 0; brake = true; drift = boost = false;
             }
             World.AnimationPaused = false;
             var drive = World.Kart.DriveModel;
@@ -56,7 +67,23 @@ namespace CottonCircuit
             double speedYield = ShopShift.SpeedYield(drive.Speed);
             double normalizedMeters = drive.LastRewardDistance * speedYield *
                 (HasProgression ? ShopShift.LapMeters / drive.Course.Length : 1);
-            Shift.Advance(dt, normalizedMeters, drive.WallHits - hits);
+            var tutorialBefore = TutorialStep;
+            int inventoryBefore = Session.Economy.Inventory.Count;
+            // Worker output uses its established production rate, equally on and off screen.
+            // Its animated car must not add a second source of production or wall penalties.
+            Shift.Advance(dt, worker ? 0 : normalizedMeters, worker ? 0 : drive.WallHits - hits);
+            World.Kart.ConfiguredFlavor = Shift.State.SugarFlavor;
+            if (worker && !WorkerDriving) World.Kart.Stop();
+            if (Session.Economy.Inventory.Count != inventoryBefore)
+            {
+                World.ShowInventory(Session.Economy);
+                Save();
+            }
+            if (tutorialBefore != TutorialStep)
+            {
+                World.Kart.Stop();
+                Save();
+            }
             if (drive.BoostCount > boosts) Audio.PlayBoost(drive.BoostTier);
             RefreshShiftPreview();
             World.UpdateOrders(Session.Economy, dt);
@@ -92,7 +119,7 @@ namespace CottonCircuit
 
         public bool EmptySugar()
         {
-            if (!ShiftActionsAllowed) return false;
+            if (!ShiftActionsAllowed || SelectedMachineHasWorker) return false;
             UI.CancelShiftDrag();
             if (!Shift.EmptySugar()) return false;
             World.Kart.ConfiguredFlavor = -1;
@@ -106,7 +133,7 @@ namespace CottonCircuit
 
         public bool PourSugar(int flavorIndex, double grams = ShopShift.PourAmount)
         {
-            if (!ShiftActionsAllowed) return false;
+            if (!ShiftActionsAllowed || SelectedMachineHasWorker) return false;
             bool poured = Shift.Pour(flavorIndex, grams);
             if (poured)
             {
@@ -120,11 +147,13 @@ namespace CottonCircuit
 
         public Product ExtractCandy()
         {
-            if (!ShiftActionsAllowed) return null;
+            if (!ShiftActionsAllowed || SelectedMachineHasWorker) return null;
             var product = Shift.Extract();
             if (product == null)
             {
-                Notify(Session.Economy.Inventory.Count >= Session.Economy.StockCapacity
+                Notify(TutorialActive && TutorialStep == CottonCircuit.TutorialStep.Drive
+                    ? "조금 더 달려 완성한 뒤 꺼내주세요."
+                    : Session.Economy.Inventory.Count >= Session.Economy.StockCapacity
                     ? "진열대가 가득 찼어요. 판매하거나 쓰레기통에 버린 뒤 꺼내세요."
                     : "아직 만든 솜사탕이 없어요. 설탕을 넣고 달려보세요.");
                 return null;
@@ -138,7 +167,7 @@ namespace CottonCircuit
 
         public bool ResumeCandy(string productId)
         {
-            if (!ShiftActionsAllowed) return false;
+            if (!ShiftActionsAllowed || SelectedMachineHasWorker) return false;
             bool exchanged = Shift.State.BatchMeters > 0;
             if (!Shift.ResumeProduct(productId)) return false;
             SelectedProductId = null;

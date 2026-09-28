@@ -14,6 +14,8 @@ namespace CottonCircuit
         // Pre-rendered lowpoly UI sprites, filled by the editor SpriteCatalog.
         public Sprite[] CustomerNeutral = new Sprite[3], CustomerAngry = new Sprite[3];     // index = customer style 0..2
         public Sprite Storefront, Trash, HeartEmote, AngryEmote, MinaPortrait;
+        public Sprite TitleBackground;
+        public Sprite[] IntroScenes = new Sprite[5];
         public Sprite[] LocationPrep = new Sprite[4], LocationStreet = new Sprite[4];      // index = location 0..3
         public Sprite[] CottonCandy = new Sprite[9], BaggedCandy = new Sprite[9];          // index = flavor * 3 + size
         public Sprite[] SugarBags = new Sprite[3], Machines = new Sprite[3];

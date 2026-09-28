@@ -276,6 +276,27 @@ public static class ProgressionSaveTests
             }
             finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
         });
+        Test("selected worker ownership and automatic production survive a V8 file reload", () => {
+            string dir = Path.Combine(Path.GetTempPath(), "cc-selected-worker-" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                var e = Fresh(); e.Coins = 1000;
+                Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "worker_1");
+                var shift = new ShopShift(e); shift.Machine(0).WorkerAssigned = true;
+                Check(shift.BeginBusiness(), "worker business setup failed");
+                shift.Advance(25, 0); double partial = shift.State.BatchMeters;
+                Check(partial > 0 && e.Inventory.Count == 0, "selected worker did not begin the saved batch");
+                var store = new SaveStore(dir); Check(store.Save(e), "selected worker state was not saveable");
+                var restored = store.Load(); var resumed = new ShopShift(restored);
+                Check(store.CanSave && resumed.SelectedMachine == 0 && resumed.HasWorker(0) && resumed.WorkerCanOperate(0) &&
+                    resumed.State.BatchMeters == partial, "worker assignment or batch changed on reload");
+                resumed.Advance(40, 0);
+                Check(restored.Inventory.Count == 1 && restored.Business.RemainingSeconds == 115 && restored.Coins == 1000,
+                    "resumed selected worker lost automatic time production or changed basic material economics");
+                Check(store.Save(restored), "worker automatic extraction left mismatched active save state");
+            }
+            finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
+        });
         Console.WriteLine("Progression save checks: " + passed + " passed, " + failed + " failed");
         return failed == 0 ? 0 : 1;
     }

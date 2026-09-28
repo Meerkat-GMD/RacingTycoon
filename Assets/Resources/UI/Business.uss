@@ -1,0 +1,143 @@
+.business-screen { position: absolute; left: 0; top: 0; right: 0; bottom: 0; flex-direction: row; color: #29324d; }
+.biz-race { width: 960px; height: 900px; }
+.biz-shop { width: 640px; height: 900px; background-color: #fff8ec; border-left-width: 1px; border-left-color: #e8dfce; padding: 0 20px 18px 20px; }
+.biz-race-header { height: 92px; background-color: #fff8ec; padding: 12px 24px 10px 24px; }
+.biz-title-row { flex-direction: row; align-items: center; height: 32px; }
+.biz-title { font-size: 25px; -unity-font-style: bold; flex-grow: 1; }
+.biz-day { font-size: 14px; color: #777986; margin-right: 18px; }
+.biz-button { min-height: 36px; padding: 6px 14px; margin: 0; border-width: 0; border-radius: 10px; background-color: #ece8df; color: #29324d; -unity-font-style: bold; font-size: 14px; }
+.biz-button:hover { background-color: #dddeda; }
+.biz-button:active { background-color: #cbd8d5; }
+.biz-button:disabled { opacity: .48; }
+.biz-button.primary { background-color: #29324d; color: #fff8ec; }
+.biz-button.primary:hover { background-color: #465069; }
+.biz-machine-row { flex-direction: row; margin-top: 8px; }
+.biz-machine { width: 174px; min-height: 26px; height: 26px; margin-right: 8px; padding: 3px 8px; border-radius: 7px; font-size: 12px; background-color: #efebe3; }
+.biz-machine.selected { background-color: #bde4df; }
+.biz-grade { font-size: 12px; color: #747a81; -unity-text-align: middle-left; padding-left: 12px; }
+.biz-tutorial-slot { width: 188px; height: 28px; margin-left: auto; flex-shrink: 0; }
+.biz-race-surface { flex-grow: 1; }
+.biz-production-row { position: absolute; left: 22px; right: 22px; top: 18px; flex-direction: row; align-items: flex-start; }
+.biz-minimap-card { width: 160px; padding: 10px; background-color: rgba(255,248,236,.96); border-radius: 16px; margin-right: 14px; }
+.biz-minimap-title { font-size: 11px; -unity-font-style: bold; margin-bottom: 6px; color: #667873; }
+.biz-minimap { width: 140px; height: 115px; }
+.biz-production-card { width: 328px; padding: 14px 18px; background-color: rgba(255, 248, 236, .96); border-radius: 16px; }
+.biz-sugar-title { font-size: 14px; -unity-font-style: bold; margin-bottom: 7px; }
+.biz-batch-row { flex-direction: row; height: 72px; align-items: center; margin-top: 4px; }
+.biz-batch-art { width: 62px; height: 70px; margin-right: 12px; }
+.biz-batch-detail { flex-grow: 1; }
+.biz-stage { font-size: 24px; -unity-font-style: bold; }
+.biz-stars { font-size: 15px; color: #b98636; margin-left: 8px; }
+.biz-batch-name { font-size: 12px; color: #787e84; margin-top: 4px; }
+.biz-next { font-size: 12px; color: #687477; margin-bottom: 6px; }
+.biz-actions { margin-left: 14px; width: 158px; }
+.biz-actions > .biz-button { margin-bottom: 8px; }
+.biz-race-event { position: absolute; top: 224px; left: 170px; right: 170px; -unity-text-align: middle-center; color: #fff8ec; background-color: #29324d; border-radius: 12px; padding: 12px; font-size: 17px; }
+.biz-driving-footer { position: absolute; left: 22px; right: 22px; bottom: 58px; flex-direction: row; align-items: flex-end; }
+.biz-speed-card { background-color: #29324d; border-radius: 16px; width: 210px; padding: 14px 18px; color: #fff8ec; }
+.biz-yield { font-size: 12px; color: #afe1d8; }
+.biz-speed { font-size: 33px; -unity-font-style: bold; margin-top: 2px; }
+.biz-boost-card { background-color: rgba(41,50,77,.94); border-radius: 14px; width: 270px; padding: 12px 18px; margin-left: 16px; color: #fff8ec; }
+.biz-boost-title { margin-bottom: 8px; font-size: 13px; -unity-font-style: bold; }
+.biz-drop-message { position: absolute; left: 190px; right: 190px; bottom: 168px; padding: 17px; background-color: #fff8ec; color: #29324d; border-radius: 14px; -unity-text-align: middle-center; font-size: 17px; -unity-font-style: bold; }
+.biz-race-surface.drop-hover { background-color: rgba(106,192,178,.12); }
+.biz-shop-header { height: 92px; flex-direction: row; align-items: center; }
+.biz-shop-heading { flex-grow: 1; }
+.biz-shop-title { font-size: 22px; -unity-font-style: bold; }
+.biz-shop-caption { margin-top: 7px; font-size: 12px; color: #7c8187; }
+.biz-clock-card { padding: 8px 16px; border-radius: 13px; background-color: #f8df9d; margin-left: 8px; }
+.biz-clock-caption { font-size: 10px; -unity-text-align: middle-center; }
+.biz-clock { font-size: 27px; -unity-font-style: bold; -unity-text-align: middle-center; }
+.biz-wallet { min-width: 118px; padding: 13px; border-radius: 13px; background-color: #29324d; color: #fff8ec; font-size: 23px; -unity-font-style: bold; margin-left: 10px; -unity-text-align: middle-right; }
+.biz-street { height: 290px; flex-shrink: 0; border-radius: 18px; overflow: hidden; margin-bottom: 16px; }
+.biz-street-backdrop { position: absolute; left: 0; right: 0; top: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop; }
+.biz-street-foreground { flex-direction: row; flex-grow: 1; padding: 8px 8px 26px 8px; align-items: stretch; }
+.biz-storefront { width: 163px; align-self: flex-end; height: 231px; margin-right: 8px; }
+.biz-storefront-art { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.biz-store-sign { -unity-text-align: middle-center; font-size: 19px; -unity-font-style: bold; margin-top: 33px; }
+.biz-store-caption { position: absolute; left: 0; right: 0; top: 163px; -unity-text-align: middle-center; font-size: 10px; }
+.biz-customer { flex-grow: 1; flex-basis: 0; margin: 0 4px; align-items: center; border-radius: 16px; }
+.biz-customer.drop-hover { background-color: rgba(255,248,236,.46); }
+.biz-order { background-color: #fffaf1; border-radius: 16px; border-width: 1px; border-color: rgba(75,91,104,.22); width: 100%; height: 114px; padding: 7px 8px; }
+.biz-order-art { height: 58px; }
+.biz-order-title { font-size: 12px; -unity-font-style: bold; -unity-text-align: middle-center; margin-bottom: 5px; }
+.biz-customer-art { flex-grow: 1; width: 85px; margin-top: 8px; }
+.biz-shelf { flex-grow: 1; background-color: #fffdfa; border-radius: 18px; padding: 14px; margin-bottom: 16px; }
+.biz-shelf-header { flex-direction: row; align-items: center; margin-bottom: 10px; }
+.biz-shelf-title { font-size: 18px; -unity-font-style: bold; flex-grow: 1; }
+.biz-shelf-body { flex-direction: row; flex-grow: 1; }
+.biz-stock-grid { flex-grow: 1; min-height: 240px; }
+.biz-rack-art { position: absolute; left: 14px; top: 26px; width: 448px; height: 224px; background-image: url("project://database/Assets/CottonCircuit/UI/Art/CottonCandyFanStand.png"); background-size: contain; background-repeat: no-repeat; }
+.biz-rack-empty { position: absolute; left: 36px; right: 36px; top: 4px; font-size: 12px; color: #9a9490; -unity-text-align: middle-center; }
+.biz-stock { position: absolute; width: 68px; height: 90px; border-radius: 24px; border-width: 2px; border-color: transparent; padding: 0; background-color: transparent; }
+.biz-stock.occupied:hover, .biz-stock.selected { border-color: #b7d7cf; background-color: rgba(225,241,234,.38); }
+.biz-stock.drag-source { opacity: 0; }
+.biz-stock-art { position: absolute; left: -2px; right: -2px; top: -2px; height: 84px; }
+.biz-stock-grade { display: none; position: absolute; right: -5px; bottom: 2px; font-size: 10px; -unity-font-style: bold; -unity-text-align: middle-center; color: #9b722f; padding: 2px 5px; border-radius: 5px; background-color: #fff1d5; white-space: nowrap; }
+.biz-stock.occupied > .biz-stock-grade { display: flex; }
+.biz-stock-grid #stock0 { left: 237px; top: 12px; }
+.biz-stock-grid #stock1 { left: 95px; top: 17px; }
+.biz-stock-grid #stock2 { left: 382px; top: 31px; }
+.biz-stock-grid #stock3 { left: 174px; top: 90px; }
+.biz-stock-grid #stock4 { left: 38px; top: 102px; }
+.biz-stock-grid #stock5 { left: 302px; top: 92px; }
+.biz-stock-grid #stock6 { left: 168px; top: 12px; }
+.biz-stock-grid #stock7 { left: 310px; top: 18px; }
+.biz-stock-grid #stock8 { left: 366px; top: 103px; }
+.biz-stock-grid #stock9 { left: 24px; top: 31px; }
+.biz-stock-grid #stock10 { left: 103px; top: 92px; }
+.biz-stock-grid #stock11 { left: 232px; top: 90px; }
+.biz-stock-grid.rack-six .biz-stock { width: 92px; height: 102px; }
+.biz-stock-grid.rack-six .biz-stock-art { height: 96px; }
+.biz-stock-grid.rack-six #stock0 { left: 225px; top: 1px; }
+.biz-stock-grid.rack-six #stock1 { left: 83px; top: 6px; }
+.biz-stock-grid.rack-six #stock2 { left: 370px; top: 20px; }
+.biz-stock-grid.rack-six #stock3 { left: 162px; top: 80px; }
+.biz-stock-grid.rack-six #stock4 { left: 26px; top: 91px; }
+.biz-stock-grid.rack-six #stock5 { left: 290px; top: 81px; }
+.biz-trash { width: 88px; flex-shrink: 0; height: 116px; border-radius: 12px; background-color: #edf0e9; align-self: flex-end; margin-left: 8px; margin-bottom: 16px; padding: 10px 5px; justify-content: center; }
+.biz-trash.drop-hover { background-color: #f3d9d0; }
+.biz-trash-art { height: 77px; }
+.biz-trash-caption { font-size: 12px; -unity-text-align: middle-center; }
+.biz-sugar-header { font-size: 17px; -unity-font-style: bold; margin-bottom: 8px; }
+.biz-sugar-row { height: 110px; flex-direction: row; flex-shrink: 0; }
+.biz-sugar { flex-grow: 1; flex-basis: 0; margin-right: 8px; border-radius: 14px; flex-direction: row; align-items: center; padding: 8px; background-color: #f8e3e5; }
+.biz-sugar.soda { background-color: #dff0ec; }
+.biz-sugar.vanilla { background-color: #f7eccb; margin-right: 0; }
+.biz-sugar:disabled { opacity: .44; }
+.biz-sugar.drag-source { opacity: .5; }
+.biz-sugar-art { width: 63px; height: 91px; }
+.biz-sugar-info { flex-grow: 1; }
+.biz-sugar-name { font-size: 18px; -unity-font-style: bold; }
+.biz-sugar-kind { font-size: 12px; color: #777e82; margin-top: 4px; }
+.biz-sugar-cost { font-size: 10px; color: #777e82; margin-top: 10px; white-space: normal; }
+.biz-meter { margin: 0; height: 5px; min-height: 5px; }
+.biz-meter .unity-progress-bar__container { background-color: transparent; }
+.biz-meter .unity-progress-bar__background { background-color: #e9e4da; border-radius: 5px; margin: 0; border-width: 0; }
+.biz-meter .unity-progress-bar__progress { background-color: #82c8bd; border-radius: 5px; margin: 0; border-width: 0; }
+.biz-meter .unity-progress-bar__title { display: none; }
+.biz-meter.pink .unity-progress-bar__progress { background-color: #efa0b2; }
+.biz-meter.warning .unity-progress-bar__progress { background-color: #e88c90; }
+.biz-meter.boosting .unity-progress-bar__progress { background-color: #f5d88d; }
+.biz-art { -unity-background-scale-mode: scale-to-fit; }
+.biz-faint { opacity: .22; }
+.biz-drag-ghost { position: absolute; left: 0; top: 0; width: 118px; height: 148px; }
+.biz-drag-ghost-art { height: 117px; }
+.biz-drag-caption { padding: 6px; border-radius: 8px; background-color: #29324d; color: #fff8ec; -unity-text-align: middle-center; font-size: 12px; }
+.biz-results { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-color: rgba(32,40,56,.67); align-items: center; justify-content: center; }
+.biz-receipt { width: 590px; padding: 34px 40px; background-color: #fff8ec; border-radius: 24px; align-items: stretch; }
+.biz-receipt-eyebrow { -unity-text-align: middle-center; font-size: 12px; color: #83868b; letter-spacing: 3px; margin-bottom: 20px; }
+.biz-receipt-title { -unity-text-align: middle-center; font-size: 31px; -unity-font-style: bold; }
+.biz-receipt-caption { -unity-text-align: middle-center; font-size: 15px; color: #828687; margin-top: 10px; }
+.biz-receipt-stats { padding: 22px; margin-top: 24px; margin-bottom: 26px; background-color: #fffdfa; border-radius: 14px; white-space: normal; -unity-text-align: middle-center; font-size: 20px; }
+.biz-receipt .biz-button { height: 56px; font-size: 20px; background-color: #ed9fb0; }
+.business-screen .biz-stock.tutorial-focus,
+.business-screen .biz-customer.tutorial-focus,
+.business-screen .biz-sugar.tutorial-focus,
+.business-screen .biz-button.tutorial-focus {
+    border-width: 3px;
+    border-color: #e7759b;
+    border-radius: 16px;
+    background-color: #fff0f5;
+    color: #29324d;
+}

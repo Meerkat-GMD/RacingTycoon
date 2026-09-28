@@ -1,0 +1,106 @@
+.tutorial-screen { position: absolute; left: 0; top: 0; right: 0; bottom: 0; color: #29324d; }
+.tutorial-content { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.tutorial-coach {
+    position: absolute;
+    left: 24px;
+    top: 31%;
+    width: 408px;
+    padding: 22px;
+    border-width: 1px;
+    border-color: #e7ddcc;
+    border-radius: 20px;
+    background-color: #fff6e7;
+}
+.tutorial-coach-header { flex-direction: row; align-items: center; margin-bottom: 20px; }
+.tutorial-portrait {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    background-image: url("project://database/Assets/CottonCircuit/Sprites/Characters/Mina_Portrait.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 12px;
+    margin-right: 14px;
+}
+.tutorial-heading-copy { flex-grow: 1; }
+.tutorial-companion { font-size: 14px; color: #807c8a; margin-bottom: 5px; }
+.tutorial-heading { font-size: 22px; -unity-font-style: bold; white-space: normal; }
+.tutorial-dialogue { font-size: 20px; white-space: normal; margin-bottom: 16px; }
+.tutorial-progress-copy { font-size: 15px; color: #716d79; white-space: normal; }
+.tutorial-progress { margin-top: 14px; height: 7px; min-height: 7px; }
+.tutorial-progress .unity-progress-bar__container { padding: 0; }
+.tutorial-progress .unity-progress-bar__background {
+    height: 7px;
+    border-width: 0;
+    border-radius: 4px;
+    background-color: #e7e2d7;
+}
+.tutorial-progress .unity-progress-bar__progress { background-color: #ed8da8; border-radius: 4px; }
+.tutorial-progress .unity-progress-bar__title { display: none; }
+.tutorial-cue {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: #f5e4e9;
+    font-size: 16px;
+    -unity-font-style: bold;
+    white-space: normal;
+}
+.tutorial-button {
+    min-height: 48px;
+    margin: 0;
+    padding: 10px 24px;
+    border-width: 2px;
+    border-color: #29324d;
+    border-radius: 12px;
+    background-color: #29324d;
+    color: #fff6e7;
+    -unity-font-style: bold;
+    font-size: 19px;
+}
+.tutorial-button:hover, .tutorial-button:focus {
+    border-color: #69bfc1;
+    background-color: #dcefee;
+    color: #29324d;
+}
+.tutorial-button:active { background-color: #bfdfde; }
+.tutorial-skip {
+    position: absolute;
+    left: 748px;
+    top: 52px;
+    width: 188px;
+    min-height: 28px;
+    height: 28px;
+    padding: 4px 12px;
+    border-width: 0;
+    font-size: 13px;
+    color: #695969;
+    background-color: #eee3e5;
+}
+.tutorial-modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(26, 33, 48, 0.53);
+}
+.tutorial-modal-card {
+    width: 840px;
+    max-width: 92%;
+    padding: 30px;
+    background-color: #fff6e7;
+    border-width: 1px;
+    border-color: #e7ddcc;
+    border-radius: 22px;
+}
+.tutorial-modal-content { flex-direction: row; align-items: center; }
+.tutorial-modal-portrait { width: 106px; height: 106px; margin-right: 28px; }
+.tutorial-modal-copy { flex-grow: 1; flex-basis: 0; }
+.tutorial-modal-name { font-size: 19px; color: #807c8a; -unity-font-style: bold; margin-bottom: 15px; }
+.tutorial-modal-dialogue { font-size: 24px; white-space: normal; }
+.tutorial-modal-actions { align-items: flex-end; margin-top: 26px; }
+.tutorial-modal-actions > .tutorial-button { width: 224px; }

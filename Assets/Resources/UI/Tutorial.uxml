@@ -1,0 +1,41 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Shared.uss" />
+    <ui:Style src="Tutorial.uss" />
+    <ui:VisualElement name="TutorialScreen" class="tutorial-screen" picking-mode="Ignore">
+        <ui:VisualElement name="TutorialContent" class="tutorial-content" picking-mode="Ignore">
+            <ui:VisualElement class="screen-shell" picking-mode="Ignore">
+                <ui:VisualElement name="TutorialComposition" class="composition" picking-mode="Ignore">
+            <ui:VisualElement name="TutorialCoach" class="tutorial-coach" picking-mode="Ignore">
+                <ui:VisualElement class="tutorial-coach-header" picking-mode="Ignore">
+                    <ui:VisualElement name="TutorialMinaPortrait" class="tutorial-portrait" picking-mode="Ignore" />
+                    <ui:VisualElement class="tutorial-heading-copy" picking-mode="Ignore">
+                        <ui:Label text="미나 · 첫 솜사탕 만들기" class="tutorial-companion" picking-mode="Ignore" />
+                        <ui:Label name="TutorialStepTitle" class="tutorial-heading" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="TutorialDialogue" class="tutorial-dialogue" picking-mode="Ignore" />
+                <ui:Label name="TutorialProgress" class="tutorial-progress-copy" picking-mode="Ignore" />
+                <ui:ProgressBar name="TutorialProgressBar" class="tutorial-progress" low-value="0" high-value="100" picking-mode="Ignore" />
+                <ui:Label name="TutorialActionCue" class="tutorial-cue" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:Button name="TutorialSkipButton" text="튜토리얼 스킵" class="tutorial-button tutorial-skip" focusable="false" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="TutorialModal" class="tutorial-modal hidden">
+                <ui:VisualElement name="TutorialModalCard" class="tutorial-modal-card">
+                    <ui:VisualElement class="tutorial-modal-content" picking-mode="Ignore">
+                        <ui:VisualElement name="TutorialModalMinaPortrait" class="tutorial-portrait tutorial-modal-portrait" picking-mode="Ignore" />
+                        <ui:VisualElement class="tutorial-modal-copy" picking-mode="Ignore">
+                            <ui:Label text="미나" class="tutorial-modal-name" picking-mode="Ignore" />
+                            <ui:Label name="TutorialModalDialogue" class="tutorial-modal-dialogue" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="tutorial-modal-actions">
+                        <ui:Button name="TutorialCompleteButton" text="영업 시작" class="tutorial-button" />
+                        <ui:Button name="TutorialGrowthCloseButton" text="확인" class="tutorial-button" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

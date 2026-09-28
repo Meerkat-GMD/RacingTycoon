@@ -48,6 +48,13 @@ MonoBehaviour:
   HeartEmote: {fileID: 21300000, guid: 75723b334f9074a4c83784b7b207ecb9, type: 3}
   AngryEmote: {fileID: 21300000, guid: e727b9660b2235d44a51bdbf77388fe3, type: 3}
   MinaPortrait: {fileID: 21300000, guid: d970e9a012a8795428e2e1b7f6091d71, type: 3}
+  TitleBackground: {fileID: 21300000, guid: dd012983e235af142a7f7a108ba0f38a, type: 3}
+  IntroScenes:
+  - {fileID: 21300000, guid: 0485488759320904ab812c2e122a3f9b, type: 3}
+  - {fileID: 21300000, guid: c91c3619b5f3334498cc10a1ebcbd7d7, type: 3}
+  - {fileID: 21300000, guid: a8a653ce75a52bd4c95838ff1973aac7, type: 3}
+  - {fileID: 21300000, guid: bdf5c0e8bf1e9ea44a5ed6dc1251ce68, type: 3}
+  - {fileID: 21300000, guid: 134e69c774bc8c544b507c2a92508c2c, type: 3}
   LocationPrep:
   - {fileID: 21300000, guid: 3e674054a12facc4ba8c627804c331ba, type: 3}
   - {fileID: 21300000, guid: 79a05b217090dde4682f1dd2e2dec0bc, type: 3}

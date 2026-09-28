@@ -2,8 +2,8 @@ using System;
 
 namespace CottonCircuit
 {
-    // Converts the visible road geometry into normal steering/pedal input. The
-    // same drive model and collision/progress rules still govern every lap.
+    // Road-following inputs for hired workers. Player-controlled machines never
+    // invoke this helper; their steering and pedals come only from player input.
     public static class AutoDrive
     {
         static double Turn(double angle)

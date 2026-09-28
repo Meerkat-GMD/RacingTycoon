@@ -19,6 +19,7 @@ namespace CottonCircuit
         readonly string directory;
         public string DirectoryPath { get { return directory; } }
         string FilePath => Path.Combine(directory, "cotton-circuit.json");
+        public bool HasSave => File.Exists(FilePath);
         public string Error { get; private set; }
         public bool CanSave { get; private set; } = true;
         public SaveStore(string directory) { this.directory = directory; }
@@ -96,7 +97,7 @@ namespace CottonCircuit
         { return Valid(e, CustomerOrder.Patience, true); }
         static bool Valid(Economy e, double patience, bool validateQuality, bool legacyBusiness = false, bool legacyVehicle = false)
         {
-            if (e == null || e.ShelfLevel < 0 || e.ShelfLevel > 2 ||
+            if (!Tutorial.Valid(e) || e.ShelfLevel < 0 || e.ShelfLevel > 2 ||
                 e.Orders == null || e.Orders.Count > 2 || e.OrderSerial < 0 ||
                 e.TotalTips < 0 || e.MissedOrders < 0 || e.OrdersServed < 0 ||
                 e.OrdersServed > e.TotalSold || e.OrdersServed > e.OrderSerial ||

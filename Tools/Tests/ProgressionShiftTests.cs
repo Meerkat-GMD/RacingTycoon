@@ -6,9 +6,110 @@ class ProgressionShiftTests
     static void Check(bool value, string name) { if (!value) throw new Exception(name); passed++; Console.WriteLine("PASS " + name); }
     static Economy Fresh() { var e = new Economy(); Progression.Enable(e); return e; }
     static void All(Economy e) { foreach (var n in Progression.Nodes) e.Progression.Purchases.Add(new NodePurchase { Id = n.Id, Level = n.MaxLevel }); }
+    static ShopShift WorkerFixture(out Economy economy, int selected, int worker = 0)
+    {
+        economy = Fresh(); All(economy); economy.Coins = 10000;
+        var shift = new ShopShift(economy); shift.SelectMachine(selected);
+        shift.Machine(worker).WorkerAssigned = true;
+        shift.BeginBusiness(); return shift;
+    }
+    static void WorkerControlChecks()
+    {
+        Economy viewed, hidden, manual;
+        var viewedShift = WorkerFixture(out viewed, 0);
+        var hiddenShift = WorkerFixture(out hidden, 1);
+        var manualShift = WorkerFixture(out manual, 0);
+        viewedShift.Advance(20, 0); hiddenShift.Advance(20, 0); manualShift.Advance(20, ShopShift.LapMeters * 100, 100);
+        var shown = viewedShift.Machine(0); var offscreen = hiddenShift.Machine(0); var ignoredInput = manualShift.Machine(0);
+        Check(shown.BatchMeters > 0 && Math.Abs(shown.BatchMeters - offscreen.BatchMeters) < 1e-8 &&
+            Math.Abs(shown.SugarGrams - offscreen.SugarGrams) < 1e-8 && viewed.Coins == hidden.Coins &&
+            viewed.Business.DayMaterialCost == hidden.Business.DayMaterialCost,
+            "viewing a worker preserves offscreen production rate and material spending");
+        Check(Math.Abs(shown.BatchMeters - ignoredInput.BatchMeters) < 1e-8 && shown.BatchQuality == ignoredInput.BatchQuality &&
+            Math.Abs(shown.SugarGrams - ignoredInput.SugarGrams) < 1e-8,
+            "manual distance and wall hits cannot double grow or damage a selected worker batch");
+        viewedShift.Advance(50, 0); hiddenShift.Advance(50, 0);
+        Check(viewed.Inventory.Count > 0 && viewed.Inventory.Count == hidden.Inventory.Count &&
+            Math.Abs(viewedShift.State.BatchMeters - hiddenShift.Machine(0).BatchMeters) < 1e-8 &&
+            viewedShift.State.SugarGrams == viewedShift.Machine(0).SugarGrams,
+            "selected workers repeatedly extract to inventory and keep selected state synchronized");
+
+        Economy unstaffed = Fresh(); var idle = new ShopShift(unstaffed); idle.BeginBusiness(); idle.Pour(0);
+        idle.Advance(10, 0);
+        Check(idle.State.BatchMeters == 0 && idle.State.SugarGrams == 10 && !idle.HasWorker(0) && !idle.WorkerCanOperate(0),
+            "an unstaffed machine with sugar cannot produce while the player is idle");
+        idle.State.Machines[0].WorkerAssigned = true; idle.Advance(1, 0);
+        Check(!idle.HasWorker(0) && idle.State.BatchMeters == 0,
+            "assignment without hiring does not create a free automatic worker");
+        unstaffed.Progression.Purchases.Add(new NodePurchase { Id = "worker_1", Level = 1 });
+        Check(idle.HasWorker(0) && !idle.HasWorker(1) && !idle.HasWorker(-1) && !idle.HasWorker(3),
+            "worker ownership requires a valid owned machine and an assigned hired worker");
+        unstaffed.Progression.Purchases.Add(new NodePurchase { Id = "machine_2", Level = 1 });
+        idle.State.Machines[0].WorkerAssigned = false; idle.State.Machines[1].WorkerAssigned = true;
+        Check(!idle.HasWorker(1) && !idle.WorkerCanOperate(1), "worker education is required for a higher tier machine");
+        unstaffed.Progression.Purchases.Add(new NodePurchase { Id = "worker_grade_2", Level = 1 });
+        Check(idle.HasWorker(1), "trained hired worker can own an assigned higher tier machine");
+        idle.State.Machines[0].WorkerAssigned = true;
+        Check(idle.HasWorker(0) && !idle.HasWorker(1), "assignments cannot create more automatic workers than were hired");
+
+        var owned = WorkerFixture(out viewed, 0); owned.Advance(.2, 0);
+        double sugar = owned.State.SugarGrams, batch = owned.State.BatchMeters;
+        var stock = ShopShift.Preview(ShopShift.LapMeters, 0); stock.Id = "worker-protected-stock";
+        viewed.Inventory.Add(stock); viewed.CompletedIds.Add(stock.Id);
+        Check(!owned.Pour(0) && !owned.EmptySugar() && owned.Extract() == null && !owned.ResumeProduct(stock.Id) &&
+            owned.State.SugarGrams == sugar && owned.State.BatchMeters == batch && viewed.Inventory.Contains(stock),
+            "manual pour empty extract and resume leave a selected worker batch intact");
+        int coins = viewed.Coins, material = owned.State.DayMaterialCost;
+        for (int i = 0; i < 5; i++) Check(owned.WorkerCanOperate(0), "working worker remains operable when queried");
+        Check(viewed.Coins == coins && owned.State.DayMaterialCost == material && owned.State.SugarGrams == sugar &&
+            owned.State.BatchMeters == batch && owned.Machine(0).SugarGrams == sugar && viewed.Inventory.Count == 1,
+            "worker operation queries do not spend consume grow extract or synchronize state");
+        owned.Paused = true;
+        Check(owned.HasWorker(0) && !owned.WorkerCanOperate(0), "pause keeps ownership but blocks automatic operation");
+        owned.Advance(10, 0); Check(owned.State.BatchMeters == batch, "paused worker does not grow"); owned.Paused = false;
+        while (viewed.Inventory.Count < viewed.StockCapacity) viewed.Inventory.Add(ShopShift.Preview(ShopShift.LapMeters, 0));
+        Check(!owned.WorkerCanOperate(0), "full shelf reports selected worker stopped"); owned.Advance(5, 0);
+        Check(owned.State.BatchMeters == batch && owned.State.SugarGrams == sugar && viewed.Coins == coins,
+            "full shelf stops selected worker growth and material spending");
+
+        var premium = WorkerFixture(out viewed, 1, 1); premium.Machine(1).RecipeFlavor = 1; viewed.Coins = 0;
+        Check(!premium.WorkerCanOperate(1), "unfunded premium worker reports stopped"); premium.Advance(2, 0);
+        Check(premium.State.BatchMeters == 0 && premium.State.SugarGrams == 0 && premium.State.DayMaterialCost == 0,
+            "unfunded selected worker cannot create paid ingredients");
+        viewed.Coins = 2; Check(!premium.WorkerCanOperate(1), "partial refill money does not pay for a full worker pour");
+        viewed.Coins = 3; Check(premium.WorkerCanOperate(1), "affordable premium worker can begin"); premium.Advance(.2, 0);
+        Check(viewed.Coins == 0 && premium.State.DayMaterialCost == 3 && premium.WorkerCanOperate(1),
+            "prepaid matching sugar keeps the worker running after money runs out");
+        premium.Advance(60, 0);
+        Check(premium.State.BatchMeters > 0 && premium.State.SugarGrams == 0 && !premium.WorkerCanOperate(1),
+            "worker stops when paid sugar runs out and cannot be replaced");
+
+        viewed = Fresh(); All(viewed); viewed.Coins = 10000; owned = new ShopShift(viewed);
+        owned.SelectMachine(1); owned.BeginBusiness(); owned.Pour(0); owned.Advance(.2, 1);
+        // A handover may already have a finished batch; it needs no refill to be put on the shelf.
+        owned.State.BatchMeters = ShopShift.MetersForSize(0); owned.SyncActive();
+        owned.Machine(1).WorkerAssigned = true; viewed.Coins = 0;
+        Check(owned.WorkerCanOperate(1), "ready inherited candy can be finished without refill funds"); owned.Advance(.2, 0);
+        Check(viewed.Inventory.Count == 1 && viewed.Coins == 0 && owned.State.BatchMeters == 0,
+            "selected worker extracts ready inherited candy without a material charge");
+        owned.Advance(1000, 0);
+        Check(!owned.WorkerCanOperate(1) && owned.HasWorker(1), "closed day preserves worker assignment but stops operation");
+        owned.ReturnToPreparation(); Check(!owned.WorkerCanOperate(1), "preparation does not operate hired workers");
+
+        var tutorialEconomy = Fresh(); var tutorial = new ShopShift(tutorialEconomy); tutorial.BeginTutorial();
+        All(tutorialEconomy); tutorial.State.Machines[0].WorkerAssigned = true;
+        Check(tutorial.HasWorker(0) && !tutorial.WorkerCanOperate(0), "practice never starts automatic worker production");
+    }
     static int Main()
     {
         try {
+            var viewedWorkerEconomy = Fresh(); All(viewedWorkerEconomy); viewedWorkerEconomy.Coins = 10000;
+            var viewedWorkerShift = new ShopShift(viewedWorkerEconomy);
+            viewedWorkerShift.Machine(0).WorkerAssigned = true;
+            viewedWorkerShift.BeginBusiness(); viewedWorkerShift.Advance(1, 0);
+            Check(viewedWorkerShift.State.BatchMeters > 0,
+                "a hired assigned worker produces on the selected machine without manual driving");
+            WorkerControlChecks();
             var proportionalEconomy = Fresh(); var proportionalShift = new ShopShift(proportionalEconomy);
             proportionalShift.BeginBusiness(); int startingCoins = proportionalEconomy.Coins;
             Check(proportionalShift.Pour(0, 1) && Math.Abs(proportionalShift.State.SugarGrams - 1) < 1e-9,
@@ -74,21 +175,21 @@ class ProgressionShiftTests
             while(e.Inventory.Count < e.StockCapacity) e.Inventory.Add(ShopShift.Preview(ShopShift.LapMeters,0));
             coins=e.Coins; s.Advance(2,0); Check(e.Coins==coins, "full shelf stops worker material spending");
             e=Fresh(); All(e); e.Coins=10000; s=new ShopShift(e);
-            s.Machine(1).WorkerAssigned=true; s.Machine(1).SugarGrade=2;
+            s.Machine(1).SugarGrade=2;
             s.Machine(1).RecipeFlavor=1; s.Machine(1).RecipeSize=1;
-            s.SelectMachine(1); s.BeginBusiness(); s.Pour(0); s.Advance(1,1); s.SelectMachine(0);
+            s.SelectMachine(1); s.BeginBusiness(); s.Pour(0); s.Advance(1,1); s.Machine(1).WorkerAssigned=true; s.SelectMachine(0);
             s.Advance(180,0);
             Check(e.Inventory.Exists(product=>product.FlavorIndex==0) && e.Inventory.Exists(product=>product.FlavorIndex==1),
                 "worker finishes inherited flavor then resumes its assigned recipe");
             e=Fresh(); All(e); e.Coins=10000; s=new ShopShift(e);
-            s.Machine(1).WorkerAssigned=true; s.Machine(1).SugarGrade=2; s.Machine(1).RecipeSize=1;
+            s.Machine(1).SugarGrade=2; s.Machine(1).RecipeSize=1;
             s.SelectMachine(1); s.BeginBusiness();
             p=ShopShift.Preview(ShopShift.LapMeters*.1,0); p.Id="low-grade"; p.SugarGrade=1; e.Inventory.Add(p);
             Check(s.ResumeProduct(p.Id),"higher machine accepts unfinished basic candy");
-            s.SelectMachine(0); s.Advance(80,0);
+            s.Machine(1).WorkerAssigned=true; s.SelectMachine(0); s.Advance(80,0);
             Check(e.Inventory.Exists(product=>product.Id=="low-grade" && ShopShift.SizeOf(product)==0),
                 "worker honors inherited material cap instead of waiting forever");
-            s.SelectMachine(1); s.Extract(); s.EmptySugar();
+            s.Machine(1).WorkerAssigned=false; s.SelectMachine(1); s.Extract(); s.EmptySugar();
             Check(s.ResumeProduct("low-grade"),"completed basic candy can be inspected on upgraded machine");
             coins=e.Coins; Check(s.Pour(0) && e.Coins<coins,"completed candy still accepts paid sugar for overflow winding");
             s.Advance(1, ShopShift.LapMeters*.1);

@@ -1,0 +1,459 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:Style src="Shared.uss" />
+  <ui:Style src="Preparation.uss" />
+  <ui:VisualElement name="PreparationScreen" class="prep-screen">
+    <ui:VisualElement class="prep-main">
+      <ui:VisualElement class="prep-header">
+        <ui:VisualElement class="prep-header-titles">
+          <ui:Label text="C O T T O N   C I R C U I T" class="prep-eyebrow" />
+          <ui:Label text="내일의 달콤함" class="prep-title" />
+        </ui:VisualElement>
+        <ui:VisualElement class="prep-wallet-group">
+          <ui:Label name="PreparationDay" text="DAY 01  /  영업 준비" class="prep-day" />
+          <ui:Label name="PreparationWallet" text="80 C" class="prep-wallet" />
+        </ui:VisualElement>
+      </ui:VisualElement>
+      <ui:VisualElement name="UpgradeGraphPage" class="prep-page">
+        <ui:VisualElement class="prep-page-heading">
+          <ui:Label text="성장 지도" class="prep-section-title" />
+          <ui:Label text="한 단계씩, 우리만의 가게로" class="prep-muted" />
+        </ui:VisualElement>
+        <ui:VisualElement class="prep-trait-tabs">
+          <ui:Button name="TraitTab_business" text="가게 운영" class="prep-button prep-trait-tab prep-selected" />
+          <ui:Button name="TraitTab_production" text="솜사탕 제작" class="prep-button prep-trait-tab" />
+          <ui:Button name="TraitTab_machines" text="기계와 맛" class="prep-button prep-trait-tab" />
+          <ui:Button name="TraitTab_staff" text="알바" class="prep-button prep-trait-tab" />
+          <ui:Button name="TraitTab_sales" text="장소와 판매" class="prep-button prep-trait-tab" />
+          <ui:Button name="TraitTab_kart" text="차량" class="prep-button prep-trait-tab" />
+        </ui:VisualElement>
+        <ui:VisualElement class="prep-category-heading">
+          <ui:Label name="PreparationCategoryTitle" text="가게 운영" class="prep-category-title" />
+          <ui:Label name="PreparationTraitCount" text="0 / 6 해금" class="prep-muted" />
+        </ui:VisualElement>
+        <ui:ScrollView name="UpgradeGraphScroll" class="prep-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
+          <ui:VisualElement name="TraitMap" class="prep-trait-grid">
+            <ui:VisualElement name="TraitCard_hours" class="prep-trait-card">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_hours" class="prep-trait-icon prep-icon-Trait_Hours" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="영업시간" class="prep-trait-name" /><ui:Label name="TraitRank_hours" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_hours" text="하루 영업시간이 단계마다 40초 늘어납니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_hours" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_hours" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_hours" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_patience" class="prep-trait-card">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_patience" class="prep-trait-icon prep-icon-Trait_Patience" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="손님 기다림" class="prep-trait-name" /><ui:Label name="TraitRank_patience" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_patience" text="손님이 단계마다 12초 더 기다립니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_patience" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_patience" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_patience" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_ads" class="prep-trait-card">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_ads" class="prep-trait-icon prep-icon-Trait_Ads" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="동네 광고" class="prep-trait-name" /><ui:Label name="TraitRank_ads" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_ads" text="손님 방문 간격이 단계마다 크게 줄어듭니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_ads" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_ads" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_ads" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_shelf" class="prep-trait-card">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_shelf" class="prep-trait-icon prep-icon-Trait_Shelf" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="진열대 확장" class="prep-trait-name" /><ui:Label name="TraitRank_shelf" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_shelf" text="완제품 보관칸이 단계마다 3칸 늘어납니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_shelf" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_shelf" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_shelf" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_sales" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_sales" class="prep-trait-icon prep-icon-Trait_Sales" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="가게 간판" class="prep-trait-name" /><ui:Label name="TraitRank_sales" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_sales" text="모든 판매 가격이 단계마다 10% 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_sales" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_sales" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_sales" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_engine" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_engine" class="prep-trait-icon prep-icon-Trait_Engine" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="차량 엔진" class="prep-trait-name" /><ui:Label name="TraitRank_engine" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_engine" text="차량 최고속도가 단계마다 8% 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_engine" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_engine" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_engine" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_handling" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_handling" class="prep-trait-icon prep-icon-Trait_Handling" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="차량 조향" class="prep-trait-name" /><ui:Label name="TraitRank_handling" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_handling" text="차량 조향력이 단계마다 8% 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_handling" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_handling_engine" text="○ 차량 엔진 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_handling" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_handling" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_coupe" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_coupe" class="prep-trait-icon prep-icon-Trait_Kart" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="클래식 카트" class="prep-trait-name" /><ui:Label name="TraitRank_coupe" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_coupe" text="드리프트와 부스터를 사용하는 카트 주행을 해금합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_coupe" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_coupe_handling" text="○ 차량 조향 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_coupe" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_coupe" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_stick_speed" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_stick_speed" class="prep-trait-icon prep-icon-Trait_StickSpeed" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="젓가락 회전" class="prep-trait-name" /><ui:Label name="TraitRank_stick_speed" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_stick_speed" text="달린 거리당 솜사탕 성장량이 단계마다 12% 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_stick_speed" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_stick_speed" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_stick_speed" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_stick_saving" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_stick_saving" class="prep-trait-icon prep-icon-Trait_Spoon" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="설탕 절약" class="prep-trait-name" /><ui:Label name="TraitRank_stick_saving" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_stick_saving" text="솜사탕 성장에 필요한 설탕이 단계마다 8% 줄어듭니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_stick_saving" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_stick_saving_stick_speed" text="○ 젓가락 회전 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_stick_saving" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_stick_saving" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_stick_quality" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_stick_quality" class="prep-trait-icon prep-icon-Trait_Ribbon" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="예쁜 말기" class="prep-trait-name" /><ui:Label name="TraitRank_stick_quality" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_stick_quality" text="별 하나당 판매 보너스가 단계마다 0.6%p 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_stick_quality" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_stick_quality_stick_speed" text="○ 젓가락 회전 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_stick_quality" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_stick_quality" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_sugar_2" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_sugar_2" class="prep-trait-icon prep-icon-Trait_Sugar2" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="고운 설탕" class="prep-trait-name" /><ui:Label name="TraitRank_sugar_2" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_sugar_2" text="2등급 설탕과 중간 크기를 해금합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_sugar_2" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label name="TraitAvailability_sugar_2" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_sugar_2" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_sugar_3" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_sugar_3" class="prep-trait-icon prep-icon-Trait_Sugar3" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="특급 설탕" class="prep-trait-name" /><ui:Label name="TraitRank_sugar_3" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_sugar_3" text="3등급 설탕과 큰 크기를 해금합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_sugar_3" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_sugar_3_sugar_2" text="○ 고운 설탕 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_sugar_3" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_sugar_3" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_machine_2" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_machine_2" class="prep-trait-icon prep-icon-Trait_Machine" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="두 번째 기계" class="prep-trait-name" /><ui:Label name="TraitRank_machine_2" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_machine_2" text="2등급 기계를 즉시 설치합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_machine_2" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_machine_2_sugar_2" text="○ 고운 설탕 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_machine_2" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_machine_2" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_machine_3" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_machine_3" class="prep-trait-icon prep-icon-Trait_Machine" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="세 번째 기계" class="prep-trait-name" /><ui:Label name="TraitRank_machine_3" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_machine_3" text="3등급 기계를 즉시 설치합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_machine_3" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_machine_3_machine_2" text="○ 두 번째 기계 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_machine_3_stick_speed" text="○ 젓가락 회전 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_machine_3" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_machine_3" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_flavor_soda" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_flavor_soda" class="prep-trait-icon prep-icon-Trait_FlavorSoda" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="소다 맛" class="prep-trait-name" /><ui:Label name="TraitRank_flavor_soda" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_flavor_soda" text="2등급 기계에서 소다 맛을 만듭니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_flavor_soda" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_flavor_soda_machine_2" text="○ 두 번째 기계 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_flavor_soda" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_flavor_soda" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_flavor_vanilla" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_flavor_vanilla" class="prep-trait-icon prep-icon-Trait_FlavorVanilla" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="바닐라 맛" class="prep-trait-name" /><ui:Label name="TraitRank_flavor_vanilla" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_flavor_vanilla" text="3등급 기계에서 바닐라 맛을 만듭니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_flavor_vanilla" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_flavor_vanilla_machine_3" text="○ 세 번째 기계 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_flavor_vanilla_sugar_3" text="○ 특급 설탕 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_flavor_vanilla" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_flavor_vanilla" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_worker_1" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_worker_1" class="prep-trait-icon prep-icon-Trait_Worker" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="첫 번째 알바" class="prep-trait-name" /><ui:Label name="TraitRank_worker_1" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_worker_1" text="기계에 배치할 첫 알바를 고용합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_worker_1" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_worker_1_machine_2" text="○ 두 번째 기계 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_worker_1" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_worker_1" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_worker_2" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_worker_2" class="prep-trait-icon prep-icon-Trait_Worker" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="두 번째 알바" class="prep-trait-name" /><ui:Label name="TraitRank_worker_2" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_worker_2" text="두 번째 알바를 고용합니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_worker_2" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_worker_2_worker_1" text="○ 첫 번째 알바 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_worker_2_machine_3" text="○ 세 번째 기계 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_worker_2" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_worker_2" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_worker_grade_2" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_worker_grade_2" class="prep-trait-icon prep-icon-Trait_GradCap" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="알바 2등급 교육" class="prep-trait-name" /><ui:Label name="TraitRank_worker_grade_2" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_worker_grade_2" text="알바가 2등급 기계를 다룰 수 있습니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_worker_grade_2" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_worker_grade_2_worker_1" text="○ 첫 번째 알바 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_worker_grade_2_machine_2" text="○ 두 번째 기계 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_worker_grade_2" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_worker_grade_2" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_worker_grade_3" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_worker_grade_3" class="prep-trait-icon prep-icon-Trait_GradCap" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="알바 3등급 교육" class="prep-trait-name" /><ui:Label name="TraitRank_worker_grade_3" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_worker_grade_3" text="알바가 3등급 기계를 다룰 수 있습니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_worker_grade_3" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_worker_grade_3_worker_grade_2" text="○ 알바 2등급 교육 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_worker_grade_3_machine_3" text="○ 세 번째 기계 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_worker_grade_3" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_worker_grade_3" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_worker_speed" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_worker_speed" class="prep-trait-icon prep-icon-Trait_Glove" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="알바 손놀림" class="prep-trait-name" /><ui:Label name="TraitRank_worker_speed" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_worker_speed" text="알바 제작 속도가 단계마다 15% 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_worker_speed" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_worker_speed_worker_1" text="○ 첫 번째 알바 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_worker_speed" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_worker_speed" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_flavor_price" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_flavor_price" class="prep-trait-icon prep-icon-Trait_PriceTag" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="맛 홍보" class="prep-trait-name" /><ui:Label name="TraitRank_flavor_price" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_flavor_price" text="특별한 맛의 판매 가격이 단계마다 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_flavor_price" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_flavor_price_flavor_soda" text="○ 소다 맛 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_flavor_price_sales" text="○ 가게 간판 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_flavor_price" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_flavor_price" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_location_1" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_location_1" class="prep-trait-icon prep-icon-Trait_MapPin" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="시장 앞" class="prep-trait-name" /><ui:Label name="TraitRank_location_1" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_location_1" text="더 많은 손님이 찾는 시장 앞 장사를 엽니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_location_1" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_location_1_ads" text="○ 동네 광고 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_location_1_machine_2" text="○ 두 번째 기계 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_location_1" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_location_1" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_location_2" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_location_2" class="prep-trait-icon prep-icon-Trait_MapPin" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="강변 축제" class="prep-trait-name" /><ui:Label name="TraitRank_location_2" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_location_2" text="단가가 높은 강변 축제 장사를 엽니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_location_2" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_location_2_location_1" text="○ 시장 앞 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_location_2_worker_grade_2" text="○ 알바 2등급 교육 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_location_2" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_location_2" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_location_3" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_location_3" class="prep-trait-icon prep-icon-Trait_MapPin" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="별빛 광장" class="prep-trait-name" /><ui:Label name="TraitRank_location_3" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_location_3" text="최종 지역인 별빛 광장 장사를 엽니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_location_3" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_location_3_location_2" text="○ 강변 축제 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_location_3_machine_3" text="○ 세 번째 기계 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_location_3_flavor_vanilla" text="○ 바닐라 맛 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_location_3" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_location_3" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_location_price" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_location_price" class="prep-trait-icon prep-icon-Trait_PriceTag" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="지역 단골" class="prep-trait-name" /><ui:Label name="TraitRank_location_price" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_location_price" text="새 지역에서 받는 금액이 단계마다 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_location_price" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_location_price_location_1" text="○ 시장 앞 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_location_price_sales" text="○ 가게 간판 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_location_price" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_location_price" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_sugar_saving" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_sugar_saving" class="prep-trait-icon prep-icon-Trait_Spoon" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="설탕 계량" class="prep-trait-name" /><ui:Label name="TraitRank_sugar_saving" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_sugar_saving" text="설탕 사용량이 추가로 줄어듭니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_sugar_saving" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_sugar_saving_stick_saving" text="○ 설탕 절약 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_sugar_saving_sugar_2" text="○ 고운 설탕 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_sugar_saving" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_sugar_saving" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_quality_focus" class="prep-trait-card hidden">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_quality_focus" class="prep-trait-icon prep-icon-Trait_Ribbon" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="장식 기술" class="prep-trait-name" /><ui:Label name="TraitRank_quality_focus" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_quality_focus" text="별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_quality_focus" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_quality_focus_stick_quality" text="○ 예쁜 말기 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_quality_focus_flavor_soda" text="○ 소다 맛 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_quality_focus" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_quality_focus" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_repeat_ads" class="prep-trait-card">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_repeat_ads" class="prep-trait-icon prep-icon-Trait_RepeatAds" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="입소문" class="prep-trait-name" /><ui:Label name="TraitRank_repeat_ads" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_repeat_ads" text="추가 홍보로 방문 간격을 더 줄입니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_repeat_ads" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_repeat_ads_ads" text="○ 동네 광고 →" class="prep-button prep-requirement" />
+                <ui:Button name="TraitRequirement_repeat_ads_location_1" text="○ 시장 앞 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_repeat_ads" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_repeat_ads" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+            <ui:VisualElement name="TraitCard_group_visit" class="prep-trait-card">
+              <ui:VisualElement class="prep-trait-header"><ui:VisualElement name="TraitIcon_group_visit" class="prep-trait-icon prep-icon-Trait_Group" picking-mode="Ignore" /><ui:VisualElement class="prep-trait-title-group"><ui:Label text="단체 손님" class="prep-trait-name" /><ui:Label name="TraitRank_group_visit" text="0 / 1" class="prep-trait-rank" /></ui:VisualElement></ui:VisualElement>
+              <ui:Label name="TraitDescription_group_visit" text="손님이 여럿 함께 찾아올 확률이 단계마다 오르고, 2단계부터는 세 명도 옵니다." class="prep-trait-description" />
+              <ui:Label name="TraitEffect_group_visit" text="현재 효과와 다음 단계 효과" class="prep-trait-effect" />
+              <ui:Label text="필요 특성 · 각각 1단계" class="prep-requirements-title" />
+              <ui:VisualElement class="prep-requirements">
+                <ui:Button name="TraitRequirement_group_visit_ads" text="○ 동네 광고 →" class="prep-button prep-requirement" />
+              </ui:VisualElement>
+              <ui:Label name="TraitAvailability_group_visit" text="가게의 새로운 가능성을 열어 보세요." class="prep-trait-availability" />
+              <ui:Button name="UpgradeNode_group_visit" text="해금" class="prep-button prep-primary prep-trait-purchase" />
+            </ui:VisualElement>
+          </ui:VisualElement>
+        </ui:ScrollView>
+        <ui:Label text="○ 필요한 특성    ✓ 해금 완료    ·    필요 특성을 누르면 해당 카드로 이동해요." class="prep-legend" />
+      </ui:VisualElement>
+      <ui:VisualElement name="EquipmentPage" class="prep-page hidden">
+        <ui:VisualElement class="prep-page-heading"><ui:Label text="기계와 레시피" class="prep-section-title" /><ui:Label name="EquipmentSummary" text="기계 1 / 3 · 알바 0 / 0" class="prep-muted" /></ui:VisualElement>
+        <ui:ScrollView class="prep-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
+          <ui:VisualElement class="prep-machine-row">
+            <ui:VisualElement name="MachineCard_0" class="prep-machine-card">
+              <ui:Label text="MACHINE / 01" class="prep-machine-number" />
+              <ui:VisualElement name="PreparationMachineArt_0" class="prep-machine-art prep-machine-art-0" picking-mode="Ignore" />
+              <ui:Label name="PreparationMachineName_0" text="1번 솜사탕 기계" class="prep-machine-name" />
+              <ui:Label name="PreparationMachineState_0" text="TIER 1" class="prep-machine-state" />
+              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_0" text="직접 운전" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_0" text="알바 배치" class="prep-button prep-machine-action" /></ui:VisualElement>
+              <ui:VisualElement class="prep-recipe-area">
+                <ui:VisualElement name="WorkerRecipe_0" class="hidden">
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label" /><ui:Button name="RecipeFlavor_0" text="딸기" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label" /><ui:Button name="RecipeSize_0" text="기본" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="PreparationRecipeHint_0" text="알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요." class="prep-recipe-hint" />
+              </ui:VisualElement>
+              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label" /><ui:Label name="RecipeGrade_0" text="1등급 · 자동" class="prep-grade" /></ui:VisualElement>
+              <ui:Label name="PreparationSizeLimit_0" text="" class="prep-size-limit" />
+            </ui:VisualElement>
+            <ui:VisualElement name="MachineCard_1" class="prep-machine-card">
+              <ui:Label text="MACHINE / 02" class="prep-machine-number" />
+              <ui:VisualElement name="PreparationMachineArt_1" class="prep-machine-art prep-machine-art-1" picking-mode="Ignore" />
+              <ui:Label name="PreparationMachineName_1" text="2번 솜사탕 기계" class="prep-machine-name" />
+              <ui:Label name="PreparationMachineState_1" text="TIER 2" class="prep-machine-state" />
+              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_1" text="직접 운전" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_1" text="알바 배치" class="prep-button prep-machine-action" /></ui:VisualElement>
+              <ui:VisualElement class="prep-recipe-area">
+                <ui:VisualElement name="WorkerRecipe_1" class="hidden">
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label" /><ui:Button name="RecipeFlavor_1" text="딸기" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label" /><ui:Button name="RecipeSize_1" text="기본" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="PreparationRecipeHint_1" text="알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요." class="prep-recipe-hint" />
+              </ui:VisualElement>
+              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label" /><ui:Label name="RecipeGrade_1" text="1등급 · 자동" class="prep-grade" /></ui:VisualElement>
+              <ui:Label name="PreparationSizeLimit_1" text="" class="prep-size-limit" />
+            </ui:VisualElement>
+            <ui:VisualElement name="MachineCard_2" class="prep-machine-card">
+              <ui:Label text="MACHINE / 03" class="prep-machine-number" />
+              <ui:VisualElement name="PreparationMachineArt_2" class="prep-machine-art prep-machine-art-2" picking-mode="Ignore" />
+              <ui:Label name="PreparationMachineName_2" text="3번 솜사탕 기계" class="prep-machine-name" />
+              <ui:Label name="PreparationMachineState_2" text="TIER 3" class="prep-machine-state" />
+              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_2" text="직접 운전" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_2" text="알바 배치" class="prep-button prep-machine-action" /></ui:VisualElement>
+              <ui:VisualElement class="prep-recipe-area">
+                <ui:VisualElement name="WorkerRecipe_2" class="hidden">
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label" /><ui:Button name="RecipeFlavor_2" text="딸기" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label" /><ui:Button name="RecipeSize_2" text="기본" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="PreparationRecipeHint_2" text="알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요." class="prep-recipe-hint" />
+              </ui:VisualElement>
+              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label" /><ui:Label name="RecipeGrade_2" text="1등급 · 자동" class="prep-grade" /></ui:VisualElement>
+              <ui:Label name="PreparationSizeLimit_2" text="" class="prep-size-limit" />
+            </ui:VisualElement>
+          </ui:VisualElement>
+          <ui:VisualElement class="prep-cart-card">
+            <ui:VisualElement class="prep-cart-header">
+              <ui:Label text="나의 차량" class="prep-cart-title" />
+              <ui:VisualElement class="prep-cart-actions"><ui:Button name="SelectCart_1" text="다운힐 쿠페" class="prep-button prep-cart-choice prep-selected" /><ui:Button name="SelectCart_0" text="클래식 카트" class="prep-button prep-cart-choice" /></ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="PreparationCartHint" text="직접 운전할 차량을 골라 보세요." class="prep-cart-hint" />
+          </ui:VisualElement>
+        </ui:ScrollView>
+      </ui:VisualElement>
+      <ui:VisualElement name="LocationsPage" class="prep-page hidden">
+        <ui:VisualElement class="prep-page-heading"><ui:Label text="오늘의 장사" class="prep-section-title" /><ui:Label name="PreparationLocationIndex" text="01 / 04" class="prep-muted" /></ui:VisualElement>
+        <ui:ScrollView class="prep-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
+          <ui:VisualElement class="prep-location-hero">
+            <ui:VisualElement name="LocationScenery" class="prep-location-art" picking-mode="Ignore" />
+            <ui:VisualElement class="prep-location-copy">
+              <ui:Label text="TODAY'S DESTINATION" class="prep-eyebrow" />
+              <ui:Label name="PreparationLocationName" text="동네 골목" class="prep-location-name" />
+              <ui:Label name="PreparationLocationDetail" text="처음 만나는 손님들과 작은 가게를 시작해요." class="prep-location-detail" />
+              <ui:Button name="SelectLocation" text="선택한 장소" class="prep-button prep-location-select prep-selected" />
+            </ui:VisualElement>
+          </ui:VisualElement>
+          <ui:VisualElement class="prep-location-cards">
+            <ui:Button name="PreviewLocation_0" class="prep-button prep-location-card prep-selected"><ui:Label text="동네 골목" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_0" text="선택됨" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_1" class="prep-button prep-location-card"><ui:Label text="시장 앞" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_1" text="잠김" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_2" class="prep-button prep-location-card"><ui:Label text="강변 축제" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_2" text="잠김" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_3" class="prep-button prep-location-card"><ui:Label text="별빛 광장" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_3" text="잠김" class="prep-location-state" /></ui:Button>
+          </ui:VisualElement>
+          <ui:VisualElement class="prep-location-footer">
+            <ui:Button name="PreviousLocation" text="‹" class="prep-button prep-location-arrow" /><ui:Button name="NextLocation" text="›" class="prep-button prep-location-arrow" />
+            <ui:Label text="READY WHEN YOU ARE" class="prep-location-ready" /><ui:Button name="BeginBusiness" text="영업 시작" class="prep-button prep-primary prep-business-start" />
+          </ui:VisualElement>
+        </ui:ScrollView>
+      </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="prep-side">
+      <ui:Label text="SUGAR &amp; COMPANY" class="prep-eyebrow" /><ui:Label text="작은 가게, 커다란 꿈" class="prep-side-title" />
+      <ui:VisualElement name="CompanionPortrait" class="prep-portrait" picking-mode="Ignore" />
+      <ui:Label text="M I N A / 가게 친구" class="prep-companion-name" /><ui:Label name="PreparationSpeech" text="작은 한 걸음부터 시작해 볼까요?" class="prep-speech" />
+      <ui:Button name="OpenUpgradeGraph" text="01    성장 지도" class="prep-button prep-nav-button prep-selected" />
+      <ui:Button name="OpenEquipment" text="02    기계와 레시피" class="prep-button prep-nav-button" />
+      <ui:Button name="OpenLocations" text="03    오늘의 장사" class="prep-button prep-nav-button" />
+      <ui:VisualElement class="prep-side-footer"><ui:Label text="한 바퀴씩, 우리만의 가게로." class="prep-footer-caption" /></ui:VisualElement>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

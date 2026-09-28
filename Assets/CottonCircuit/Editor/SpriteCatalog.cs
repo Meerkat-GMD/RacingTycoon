@@ -36,6 +36,12 @@ namespace CottonCircuit.Editor
             a.Storefront = Load("Shop", "Storefront"); a.Trash = Load("Shop", "Trash");
             a.HeartEmote = Load("Shop", "Emote_Heart"); a.AngryEmote = Load("Shop", "Emote_Angry");
             a.MinaPortrait = Load("Characters", "Mina_Portrait");
+            a.TitleBackground = Load("Title", "TitleBackground");
+            a.IntroScenes = new[] {
+                Load("Intro", "Intro_01_Dream"), Load("Intro", "Intro_02_Stopped"),
+                Load("Intro", "Intro_03_Delivery"), Load("Intro", "Intro_04_Machine_v2"),
+                Load("Intro", "Intro_05_RaceAgain")
+            };
             a.LocationPrep = new Sprite[4]; a.LocationStreet = new Sprite[4];
             for (int location = 0; location < 4; location++)
             {

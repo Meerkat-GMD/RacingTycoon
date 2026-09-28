@@ -22,6 +22,8 @@ namespace CottonCircuit
         public int LifetimeRevenue;
         public BusinessState Business;
         public ProgressionState Progression;
+        public TutorialStep TutorialStep;
+        public bool GrowthHintShown;
         public int StockCapacity { get { return Progression == null ? 6 + Math.Max(0, Math.Min(2, ShelfLevel)) * 3 : CottonCircuit.Progression.Capacity(this); } }
         public int ShelfCost { get { return Progression != null ? 0 : ShelfLevel == 0 ? 160 : ShelfLevel == 1 ? 300 : 0; } }
         public int Capacity { get { return 220 + Levels[1] * 80; } }
@@ -81,7 +83,7 @@ namespace CottonCircuit
         }
         public bool Discard(string productId)
         {
-            if (string.IsNullOrEmpty(productId) || Inventory == null) return false;
+            if (Tutorial.Active(this) || string.IsNullOrEmpty(productId) || Inventory == null) return false;
             int index = Inventory.FindIndex(product => product != null && product.Id == productId);
             if (index < 0) return false;
             Inventory.RemoveAt(index);

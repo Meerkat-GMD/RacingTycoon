@@ -142,9 +142,11 @@ namespace CottonCircuit
 
         public bool Pour(int flavor, double grams = PourAmount)
         {
-            if (!Finite(grams) || grams <= 1e-7) return false;
+            if (HasWorker(SelectedMachine) || !Finite(grams) || grams <= 1e-7) return false;
+            if (Tutorial.Active(economy) && (flavor != 0 || economy.TutorialStep != TutorialStep.PourSugar &&
+                economy.TutorialStep != TutorialStep.Drive)) return false;
             grams = Math.Min(PourAmount, grams);
-            if (economy.Progression != null) { if (!IsOpen) return false; SyncActive(); bool poured = PourMachine(SelectedMachine, flavor, grams); LoadActive(); return poured; }
+            if (economy.Progression != null) { if (!IsOpen) return false; SyncActive(); bool poured = PourMachine(SelectedMachine, flavor, grams); LoadActive(); Tutorial.Refresh(economy); return poured; }
             if (!IsOpen || flavor < 0 || flavor > 2 || (State.BatchMeters > 0 && State.BatchFlavor != flavor)) return false;
             if (State.SugarFlavor != flavor)
             {
@@ -159,7 +161,7 @@ namespace CottonCircuit
 
         public bool EmptySugar()
         {
-            if (!IsOpen || State.SugarGrams <= 0) return false;
+            if (Tutorial.Active(economy) || HasWorker(SelectedMachine) || !IsOpen || State.SugarGrams <= 0) return false;
             State.SugarGrams = 0;
             State.SugarFlavor = -1;
             return true;
@@ -207,7 +209,9 @@ namespace CottonCircuit
 
         public Product Extract()
         {
-            if (!IsOpen || State.BatchMeters <= 0 || economy.Inventory.Count >= economy.StockCapacity) return null;
+            if (HasWorker(SelectedMachine) || !IsOpen || State.BatchMeters <= 0 || economy.Inventory.Count >= economy.StockCapacity) return null;
+            if (Tutorial.Active(economy) && (economy.TutorialStep != TutorialStep.Extract ||
+                State.BatchFlavor != 0 || State.BatchMeters + 1e-7 < MetersForSize(0))) return null;
             var product = Preview(State.BatchMeters, State.BatchFlavor);
             if (product == null) return null;
             product.Id = string.IsNullOrEmpty(State.BatchProductId) ? Guid.NewGuid().ToString("N") : State.BatchProductId;
@@ -221,12 +225,13 @@ namespace CottonCircuit
             State.BatchFlavor = -1;
             State.BatchQuality = 50;
             State.BatchSugarGrade = 1;
+            if (Tutorial.Active(economy)) economy.TutorialStep = TutorialStep.Deliver;
             return product;
         }
 
         public bool ResumeProduct(string productId)
         {
-            if (!IsOpen || string.IsNullOrEmpty(productId)) return false;
+            if (Tutorial.Active(economy) || HasWorker(SelectedMachine) || !IsOpen || string.IsNullOrEmpty(productId)) return false;
             int index = economy.Inventory.FindIndex(product => product != null && product.Id == productId);
             if (index < 0) return false;
             var selected = economy.Inventory[index];
@@ -270,6 +275,8 @@ namespace CottonCircuit
             var candy = economy.Inventory[index];
             int size = SizeOf(candy);
             if (size < 0) return DeliveryResult.Rejected;
+            if (Tutorial.Active(economy) && (economy.TutorialStep != TutorialStep.Deliver || customer.Slot != 0 ||
+                candy.FlavorIndex != customer.Flavor || size != customer.Size)) return DeliveryResult.Rejected;
             economy.Inventory.RemoveAt(index);
             if (candy.FlavorIndex != customer.Flavor || size != customer.Size)
             {
@@ -288,6 +295,7 @@ namespace CottonCircuit
             State.DaySold++;
             customer.Happy = true;
             customer.ReactionRemaining = ReactionDuration;
+            if (Tutorial.Active(economy)) economy.TutorialStep = TutorialStep.Success;
             return DeliveryResult.Sold;
         }
 

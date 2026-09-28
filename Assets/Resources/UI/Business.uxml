@@ -1,0 +1,104 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:Style src="Shared.uss" />
+  <ui:Style src="Business.uss" />
+  <ui:VisualElement name="businessScreen" class="business-screen" picking-mode="Ignore">
+    <ui:VisualElement class="biz-race" picking-mode="Ignore">
+      <ui:VisualElement class="biz-race-header">
+        <ui:VisualElement class="biz-title-row">
+          <ui:Label text="솜사탕 서킷" class="biz-title" />
+          <ui:Label name="businessDay" text="DAY 01" class="biz-day" />
+        </ui:VisualElement>
+        <ui:VisualElement name="businessMachines" class="biz-machine-row">
+          <ui:Button focusable="false" name="businessMachine0" text="M01 · 직접 운전" class="biz-button biz-machine" />
+          <ui:Button focusable="false" name="businessMachine1" text="M02 · 잠김" class="biz-button biz-machine" />
+          <ui:Button focusable="false" name="businessMachine2" text="M03 · 잠김" class="biz-button biz-machine" />
+          <ui:Label name="businessGrade" text="설탕 1등급" class="biz-grade" />
+          <ui:VisualElement name="businessTutorialSlot" class="biz-tutorial-slot" picking-mode="Ignore" />
+        </ui:VisualElement>
+      </ui:VisualElement>
+      <ui:VisualElement name="raceSurface" class="biz-race-surface" picking-mode="Ignore">
+        <ui:VisualElement class="biz-production-row" picking-mode="Ignore">
+          <ui:VisualElement class="biz-minimap-card" picking-mode="Ignore"><ui:Label name="businessMinimapTitle" text="SUGARWAY / LIVE" class="biz-minimap-title" /><ui:Image name="businessMinimap" class="biz-minimap" picking-mode="Ignore" /></ui:VisualElement>
+          <ui:VisualElement name="businessProduction" class="biz-production-card">
+            <ui:Label name="businessSugar" text="설탕 0 / 100 g" class="biz-sugar-title" />
+            <ui:ProgressBar name="businessSugarMeter" class="biz-meter" low-value="0" high-value="100" />
+            <ui:VisualElement class="biz-batch-row">
+              <ui:VisualElement name="businessBatchArt" class="biz-art biz-batch-art" picking-mode="Ignore" />
+              <ui:VisualElement class="biz-batch-detail">
+                <ui:Label name="businessBatchStage" text="미완성" class="biz-stage" />
+                <ui:Label name="businessBatchName" text="생산 준비" class="biz-batch-name" />
+                <ui:Label name="businessBatchStars" class="biz-stars" />
+              </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="businessNextSize" text="완성까지 1.00 바퀴" class="biz-next" />
+            <ui:ProgressBar name="businessGrowthMeter" class="biz-meter pink" low-value="0" high-value="100" />
+          </ui:VisualElement>
+          <ui:VisualElement class="biz-actions">
+            <ui:Button focusable="false" name="businessExtract" text="꺼내기  F" class="biz-button primary" />
+            <ui:Button focusable="false" name="businessEmptySugar" text="설탕 비우기" class="biz-button" />
+          </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label name="businessRaceEvent" class="biz-race-event hidden" picking-mode="Ignore" />
+        <ui:Label name="businessDropMessage" class="biz-drop-message hidden" picking-mode="Ignore" />
+        <ui:VisualElement class="biz-driving-footer" picking-mode="Ignore">
+          <ui:VisualElement class="biz-speed-card" picking-mode="Ignore">
+            <ui:Label name="businessSpeedYield" text="속도를 올려요" class="biz-yield" />
+            <ui:Label name="businessSpeed" text="0 km/h" class="biz-speed" />
+          </ui:VisualElement>
+          <ui:VisualElement name="businessBoostCard" class="biz-boost-card" picking-mode="Ignore">
+            <ui:Label name="businessBoost" text="BOOSTER  0 / 2" class="biz-boost-title" />
+            <ui:ProgressBar name="businessBoostMeter" class="biz-meter" low-value="0" high-value="100" />
+          </ui:VisualElement>
+        </ui:VisualElement>
+      </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement class="biz-shop">
+      <ui:VisualElement class="biz-shop-header">
+        <ui:VisualElement class="biz-shop-heading"><ui:Label text="우리 솜사탕 가게" class="biz-shop-title" /><ui:Label name="businessDayCaption" text="OPEN · 오늘도 달콤하게" class="biz-shop-caption" /></ui:VisualElement>
+        <ui:VisualElement class="biz-clock-card"><ui:Label text="남은 영업시간" class="biz-clock-caption" /><ui:Label name="businessClock" text="05:00" class="biz-clock" /></ui:VisualElement>
+        <ui:Label name="businessWallet" text="0 C" class="biz-wallet" />
+      </ui:VisualElement>
+      <ui:VisualElement name="businessStreet" class="biz-street">
+        <ui:VisualElement name="businessStreetArt" class="biz-street-backdrop" picking-mode="Ignore" />
+        <ui:VisualElement class="biz-street-foreground" picking-mode="Ignore">
+          <ui:VisualElement class="biz-storefront" picking-mode="Ignore"><ui:VisualElement name="businessStoreArt" class="biz-art biz-storefront-art" picking-mode="Ignore" /><ui:Label text="솜사탕" class="biz-store-sign" /><ui:Label text="COTTON SHOP" class="biz-store-caption" /></ui:VisualElement>
+          <ui:VisualElement name="customer0" class="biz-customer"><ui:VisualElement name="customerOrder0" class="biz-order" picking-mode="Ignore"><ui:VisualElement name="customerOrderArt0" class="biz-art biz-order-art" picking-mode="Ignore" /><ui:Label name="customerOrderText0" class="biz-order-title" /><ui:ProgressBar name="customerPatience0" class="biz-meter" low-value="0" high-value="100" /></ui:VisualElement><ui:VisualElement name="customerArt0" class="biz-art biz-customer-art" picking-mode="Ignore" /></ui:VisualElement>
+          <ui:VisualElement name="customer1" class="biz-customer"><ui:VisualElement name="customerOrder1" class="biz-order" picking-mode="Ignore"><ui:VisualElement name="customerOrderArt1" class="biz-art biz-order-art" picking-mode="Ignore" /><ui:Label name="customerOrderText1" class="biz-order-title" /><ui:ProgressBar name="customerPatience1" class="biz-meter" low-value="0" high-value="100" /></ui:VisualElement><ui:VisualElement name="customerArt1" class="biz-art biz-customer-art" picking-mode="Ignore" /></ui:VisualElement>
+          <ui:VisualElement name="customer2" class="biz-customer"><ui:VisualElement name="customerOrder2" class="biz-order" picking-mode="Ignore"><ui:VisualElement name="customerOrderArt2" class="biz-art biz-order-art" picking-mode="Ignore" /><ui:Label name="customerOrderText2" class="biz-order-title" /><ui:ProgressBar name="customerPatience2" class="biz-meter" low-value="0" high-value="100" /></ui:VisualElement><ui:VisualElement name="customerArt2" class="biz-art biz-customer-art" picking-mode="Ignore" /></ui:VisualElement>
+        </ui:VisualElement>
+      </ui:VisualElement>
+      <ui:VisualElement name="businessShelf" class="biz-shelf">
+        <ui:VisualElement class="biz-shelf-header"><ui:Label name="businessShelfCount" text="내 진열대 0 / 6" class="biz-shelf-title" /></ui:VisualElement>
+        <ui:VisualElement class="biz-shelf-body">
+          <ui:VisualElement name="businessStockGrid" class="biz-stock-grid rack-six" picking-mode="Ignore">
+            <ui:VisualElement name="businessRackArt" class="biz-rack-art" picking-mode="Ignore" />
+            <ui:Label name="businessRackEmpty" text="완성한 솜사탕을 여기에 꽂아요" class="biz-rack-empty" picking-mode="Ignore" />
+            <ui:VisualElement name="stock0" class="biz-stock"><ui:VisualElement name="stockArt0" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade0" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock1" class="biz-stock"><ui:VisualElement name="stockArt1" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade1" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock2" class="biz-stock"><ui:VisualElement name="stockArt2" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade2" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock3" class="biz-stock"><ui:VisualElement name="stockArt3" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade3" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock4" class="biz-stock"><ui:VisualElement name="stockArt4" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade4" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock5" class="biz-stock"><ui:VisualElement name="stockArt5" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade5" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock6" class="biz-stock"><ui:VisualElement name="stockArt6" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade6" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock7" class="biz-stock"><ui:VisualElement name="stockArt7" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade7" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock8" class="biz-stock"><ui:VisualElement name="stockArt8" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade8" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock9" class="biz-stock"><ui:VisualElement name="stockArt9" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade9" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock10" class="biz-stock"><ui:VisualElement name="stockArt10" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade10" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+            <ui:VisualElement name="stock11" class="biz-stock"><ui:VisualElement name="stockArt11" class="biz-art biz-stock-art" picking-mode="Ignore" /><ui:Label name="stockGrade11" class="biz-stock-grade" picking-mode="Ignore" /></ui:VisualElement>
+          </ui:VisualElement>
+          <ui:VisualElement name="businessTrash" class="biz-trash"><ui:VisualElement name="businessTrashArt" class="biz-art biz-trash-art" picking-mode="Ignore" /><ui:Label text="버리기" class="biz-trash-caption" /></ui:VisualElement>
+        </ui:VisualElement>
+      </ui:VisualElement>
+      <ui:Label text="맛별 설탕" class="biz-sugar-header" />
+      <ui:VisualElement class="biz-sugar-row">
+        <ui:VisualElement name="sugar0" class="biz-sugar"><ui:VisualElement name="sugarArt0" class="biz-art biz-sugar-art" picking-mode="Ignore" /><ui:VisualElement class="biz-sugar-info" picking-mode="Ignore"><ui:Label text="딸기" class="biz-sugar-name" /><ui:Label text="설탕" class="biz-sugar-kind" /><ui:Label name="sugarCost0" text="무료" class="biz-sugar-cost" /></ui:VisualElement></ui:VisualElement>
+        <ui:VisualElement name="sugar1" class="biz-sugar soda"><ui:VisualElement name="sugarArt1" class="biz-art biz-sugar-art" picking-mode="Ignore" /><ui:VisualElement class="biz-sugar-info" picking-mode="Ignore"><ui:Label text="소다" class="biz-sugar-name" /><ui:Label text="설탕" class="biz-sugar-kind" /><ui:Label name="sugarCost1" text="잠김" class="biz-sugar-cost" /></ui:VisualElement></ui:VisualElement>
+        <ui:VisualElement name="sugar2" class="biz-sugar vanilla"><ui:VisualElement name="sugarArt2" class="biz-art biz-sugar-art" picking-mode="Ignore" /><ui:VisualElement class="biz-sugar-info" picking-mode="Ignore"><ui:Label text="바닐라" class="biz-sugar-name" /><ui:Label text="설탕" class="biz-sugar-kind" /><ui:Label name="sugarCost2" text="잠김" class="biz-sugar-cost" /></ui:VisualElement></ui:VisualElement>
+      </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="businessDragGhost" class="biz-drag-ghost hidden" picking-mode="Ignore"><ui:VisualElement name="businessDragArt" class="biz-art biz-drag-ghost-art" picking-mode="Ignore" /><ui:Label name="businessDragCaption" class="biz-drag-caption" picking-mode="Ignore" /></ui:VisualElement>
+    <ui:VisualElement name="businessResults" class="biz-results hidden">
+      <ui:VisualElement class="biz-receipt"><ui:Label text="COTTON CIRCUIT" class="biz-receipt-eyebrow" /><ui:Label name="businessResultTitle" text="DAY 01 영업 마감" class="biz-receipt-title" /><ui:Label name="businessResultCaption" class="biz-receipt-caption" /><ui:Label name="businessResultStats" class="biz-receipt-stats" /><ui:Button focusable="false" name="businessNextDay" text="가게 정비하기" class="biz-button" /></ui:VisualElement>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>
