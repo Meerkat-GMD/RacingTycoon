@@ -45,6 +45,7 @@ namespace CottonCircuit
         public void ShowTitle(string saveDirectory)
         {
             if (Session != null || titleScreen) return;
+            Localization.UseDirectory(saveDirectory);
             if (World) World.gameObject.SetActive(false);
             if (!titleScreen)
             {
@@ -80,6 +81,7 @@ namespace CottonCircuit
         {
             if (titleScreen) { titleScreen.Close(); titleScreen = null; }
             CloseTutorialUI();
+            Localization.UseDirectory(saveDirectory);
             if (World) World.gameObject.SetActive(true);
             if (UI) UI.CancelShiftDrag();
             Notice = null; noticeTimer = 0;

@@ -34,12 +34,9 @@ namespace CottonCircuit
             confirmation = ToolkitUI.Q<VisualElement>(root, "TitleConfirmation");
             error = ToolkitUI.Q<Label>(root, "TitleError");
             bool hasSave = store.HasSave;
-            primary.text = hasSave ? "이어하기" : "게임 시작";
             ToolkitUI.Show(newGame, hasSave);
             ToolkitUI.Show(confirmation, false);
-            ToolkitUI.Q<Label>(root, "TitleSavedNote").text = hasSave
-                ? "지난번의 달콤한 여정을 이어가세요."
-                : "첫 번째 솜사탕 가게를 열어볼까요?";
+            RefreshText();
             primary.clicked += () => Enter(false);
             newGame.clicked += OpenConfirmation;
             quit.clicked += Quit;
@@ -51,6 +48,14 @@ namespace CottonCircuit
                 if (root.focusController.focusedElement == null) (confirming ? cancel : primary).Focus();
             });
             root.schedule.Execute(() => primary.Focus());
+            Localization.Changed += RefreshText;
+        }
+
+        void RefreshText()
+        {
+            bool hasSave = store.HasSave;
+            primary.text = Strings.Get(hasSave ? "title.continue" : "title.start");
+            ToolkitUI.Q<Label>(document.rootVisualElement, "TitleSavedNote").text = Strings.Get(hasSave ? "title.note.saved" : "title.note.fresh");
         }
 
         void Navigate(NavigationMoveEvent evt)
@@ -138,8 +143,11 @@ namespace CottonCircuit
         public void Close()
         {
             if (intro) { intro.Close(); intro = null; }
+            Localization.Changed -= RefreshText;
             gameObject.SetActive(false);
             Destroy(gameObject);
         }
+
+        void OnDestroy() { Localization.Changed -= RefreshText; }
     }
 }

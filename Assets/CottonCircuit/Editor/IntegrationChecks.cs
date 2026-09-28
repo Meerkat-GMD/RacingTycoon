@@ -248,6 +248,8 @@ namespace CottonCircuit.Editor
         }
         public static void Run()
         {
+            Strings.Load(System.IO.File.ReadAllText("Assets/Resources/Localization/strings.tsv"));
+            Strings.Set(Language.Korean);
             count = 0;
             SugarShakeInspectorChecks.Run(Check);
             if (!UnityEngine.Object.FindAnyObjectByType<GameController>())

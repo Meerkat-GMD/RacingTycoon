@@ -3,3 +3,18 @@ language.self	한국어	English
 common.close	닫기	Close
 common.on	켜짐	On
 common.off	꺼짐	Off
+title.eyebrow	C O T T O N   C I R C U I T	S W E E T   R A C I N G   S H O P
+title.word.first	솜사탕	Cotton
+title.word.second	서킷	Circuit
+title.tagline	달리고, 만들고, 나만의 달콤한 가게.	Race, spin, and run your own sweet shop.
+title.start	게임 시작	Start game
+title.continue	이어하기	Continue
+title.new	새 게임	New game
+title.quit	게임 종료	Quit
+title.note.fresh	첫 번째 솜사탕 가게를 열어볼까요?	Ready to open your first cotton candy shop?
+title.note.saved	지난번의 달콤한 여정을 이어가세요.	Pick up your sweet journey where you left off.
+title.footer	↑ ↓  메뉴 선택     Enter  선택	↑ ↓  Move     Enter  Select
+title.confirm.heading	새로운 가게를 열까요?	Open a new shop?
+title.confirm.copy	현재 진행 상황은 보관하고\n첫날부터 새롭게 시작합니다.	Your current progress is kept aside\nand you start again from day one.
+title.confirm.cancel	돌아가기	Back
+title.confirm.accept	새로 시작	Start over

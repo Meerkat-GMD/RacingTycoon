@@ -63,6 +63,7 @@ namespace CottonCircuit.Tests
             Directory.CreateDirectory(output);
             File.WriteAllText(Path.Combine(output, "result.txt"), (failed ? "FAILED" : "PASSED") +
                 "\nCase: " + scenario + "\nChecks: " + checks + "\nResolution: " + Screen.width + "x" + Screen.height +
+                "\nLanguage: " + Strings.Code(Strings.Current) +
                 "\nSave: " + saveDirectory + (string.IsNullOrEmpty(failure) ? "" : "\n" + failure));
             Debug.Log("COTTON_UITK_RUNTIME_" + (failed ? "FAILED" : "PASSED") + " " + checks);
             Application.Quit(failed ? 1 : 0);
@@ -84,8 +85,9 @@ namespace CottonCircuit.Tests
             game.ShowTitle(saveDirectory);
             yield return Settle();
             CheckScreenBounds("TitleScreen");
+            CheckTitleText();
             Check(game.Audio.Music == MusicCue.Title, "title plays the title theme");
-            Check(Element<Button>("TitlePrimaryButton").text == "게임 시작", "fresh title exposes game start");
+            Check(Element<Button>("TitlePrimaryButton").text == Strings.Get("title.start"), "fresh title exposes game start");
             Check(!Visible(Find("TitleNewGameButton")), "fresh title does not show redundant new game");
             CheckNoGeneratedUI();
             yield return Capture("01-title.png");
@@ -260,7 +262,7 @@ namespace CottonCircuit.Tests
             Check(game.Audio.Muted == wasMuted, "pause mute toggles back to its original state");
             yield return Capture("pause.png");
             yield return Click("PauseTitleButton");
-            Check(game.Session == null && Element<Button>("TitlePrimaryButton").text == "이어하기", "pause return saves and opens the saved title");
+            Check(game.Session == null && Element<Button>("TitlePrimaryButton").text == Strings.Get("title.continue"), "pause return saves and opens the saved title");
             Check(game.Audio.Music == MusicCue.Title, "returning to the title restores the title theme");
             var saved = new SaveStore(saveDirectory).Load();
             Check(saved.Coins == coins && saved.TutorialStep == TutorialStep.Drive, "returning to title retains money and tutorial progress");
@@ -916,6 +918,13 @@ namespace CottonCircuit.Tests
             foreach (string name in new[] { "TutorialGuideGraphic", "TitleScreenShade", "UpgradeTreeGraphic", "ShopOrderBubble" })
                 Check(typeof(GameUI).Assembly.GetType("CottonCircuit." + name) == null, "old procedural UI type is removed: " + name);
             Check(FindObjectsByType<UIDocument>(FindObjectsSortMode.None).Length > 0, "runtime UI is backed by UIDocument");
+        }
+
+        void CheckTitleText()
+        {
+            var words = Element<VisualElement>("TitleMenu").Query<Label>(className: "title-word").ToList();
+            Check(words.Count == 2 && words[0].text == Strings.Get("title.word.first") && words[1].text == Strings.Get("title.word.second"),
+                "title words come from the table through LocalizedText in " + Strings.Code(Strings.Current));
         }
 
         void CheckScreenBounds(string name)

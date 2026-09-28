@@ -1,9 +1,10 @@
 param(
     [string]$BuildFolder = 'Builds\UIToolkit',
     [string]$OutputFolder = 'Logs\UIToolkitSmoke',
-    [ValidateSet('full', 'legacy', 'rack', 'hud', 'music')][string]$Case = 'full',
+    [ValidateSet('full', 'legacy', 'rack', 'hud', 'music', 'settings')][string]$Case = 'full',
     [int]$Width = 1600,
-    [int]$Height = 900
+    [int]$Height = 900,
+    [ValidateSet('ko', 'en')][string]$Language = 'ko'
 )
 $ErrorActionPreference = 'Stop'
 $toolkitRoot = Split-Path -Parent $PSScriptRoot
@@ -18,7 +19,7 @@ New-Item -ItemType Directory -Path $toolkitOutput -Force | Out-Null
 $toolkitResult = Join-Path $toolkitOutput 'result.txt'
 if (Test-Path -LiteralPath $toolkitResult) { Remove-Item -LiteralPath $toolkitResult }
 $toolkitArguments = @(
-    '--uitk-smoke', "--uitk-case=$Case", "--uitk-width=$Width", "--uitk-height=$Height",
+    '--uitk-smoke', "--uitk-case=$Case", "--uitk-width=$Width", "--uitk-height=$Height", "--language=$Language",
     ('"--smoke-dir=' + $toolkitOutput + '"'), '-screen-fullscreen', '0',
     '-screen-width', ($Width + 16).ToString(), '-screen-height', $Height.ToString(),
     '-logFile', ('"' + $toolkitOutput + '\player.log"')
