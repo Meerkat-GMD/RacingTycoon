@@ -68,6 +68,8 @@
 .biz-shelf-body { flex-direction: row; flex-grow: 1; }
 .biz-stock-grid { flex-grow: 1; min-height: 240px; }
 .biz-rack-art { position: absolute; left: 14px; top: 26px; width: 448px; height: 224px; background-image: url("project://database/Assets/CottonCircuit/UI/Art/CottonCandyFanStand.png"); background-size: contain; background-repeat: no-repeat; }
+.biz-stock-grid.rack-six .biz-rack-art { background-image: url("project://database/Assets/CottonCircuit/UI/Art/CottonCandyFanStand6.png"); }
+.biz-stock-grid.rack-nine .biz-rack-art { background-image: url("project://database/Assets/CottonCircuit/UI/Art/CottonCandyFanStand9.png"); }
 .biz-rack-empty { position: absolute; left: 36px; right: 36px; top: 4px; font-size: 12px; color: #9a9490; -unity-text-align: middle-center; }
 .biz-stock { position: absolute; width: 68px; height: 90px; border-radius: 24px; border-width: 2px; border-color: transparent; padding: 0; background-color: transparent; }
 .biz-stock.occupied:hover, .biz-stock.selected { border-color: #b7d7cf; background-color: rgba(225,241,234,.38); }

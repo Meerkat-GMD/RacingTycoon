@@ -283,7 +283,7 @@ namespace CottonCircuit.Tests
                 "clicking a trait that cannot be bought neither buys it nor plays a click");
             economy.Coins = 10000;
             game.UI.Refresh();
-            foreach (string node in new[] { "sugar_2", "machine_2", "worker_1", "worker_grade_2" })
+            foreach (string node in new[] { "sugar_2", "machine_2", "worker_1", "worker_grade_2", "shelf" })
             {
                 yield return Click("OpenUpgradeGraph");
                 yield return Click("TraitTab_" + UpgradeTreeLayout.Tabs[UpgradeTreeLayout.TabOf(node)].Id);
@@ -316,6 +316,7 @@ namespace CottonCircuit.Tests
             yield return Click("BeginBusiness");
             Check(game.InBusiness && economy.Day == 2 && !game.GrowthHintVisible, "preparation starts day two without repeating guidance");
             yield return Settle();
+            CheckShelfDisplay(9);
             Check(game.Audio.Music == MusicCue.Machine1, "business opens on the first machine song");
             double beforeMeters = game.Machine(0).BatchMeters;
             game.Tick(0, 0, false, 5);
@@ -554,9 +555,11 @@ namespace CottonCircuit.Tests
                 "rack fixture opens an isolated business day with manual production");
             economy.Inventory.Clear();
             economy.ShelfLevel = 0;
+            game.World.ShowInventory(economy);
             game.UI.Refresh();
             yield return Settle();
             CheckNoGeneratedUI();
+            CheckShelfDisplay(6);
             var rackArt = Element<VisualElement>("businessRackArt");
             var emptyLabel = Element<Label>("businessRackEmpty");
             Check(Visible(rackArt) && rackArt.pickingMode == PickingMode.Ignore && emptyLabel.pickingMode == PickingMode.Ignore,
@@ -577,10 +580,12 @@ namespace CottonCircuit.Tests
                 int capacity = 6 + level * 3;
                 for (int i = 0; i < capacity; i++)
                     AddRackProduct(i % 3, level == 2 ? 2 : i / 3, (i % 3) * 50);
+                game.World.ShowInventory(economy);
                 game.UI.Refresh();
                 yield return Settle();
                 Check(!Visible(emptyLabel), "occupied rack hides its empty hint at capacity " + capacity);
                 CheckRackProducts(capacity);
+                CheckShelfDisplay(capacity);
                 yield return Capture("rack-" + capacityNames[level] + ".png");
             }
 
@@ -700,6 +705,19 @@ namespace CottonCircuit.Tests
                     Check(source.pickingMode == PickingMode.Ignore && !Visible(Element<VisualElement>("stockArt" + i)),
                         source.name + " leaves an empty, non-interactive clip");
             }
+        }
+
+        // The rack art and the shop's 3D racks both follow the owned slots: 6 on one rack, then 3 more per rack.
+        void CheckShelfDisplay(int capacity)
+        {
+            int racks = 0;
+            foreach (var rack in game.World.DisplayRacks) if (rack.gameObject.activeSelf) racks++;
+            Check(game.Session.Economy.StockCapacity == capacity && racks == 1 + (capacity - 6) / 3,
+                "shop shows " + racks + " display racks for capacity " + capacity);
+            var image = Element<VisualElement>("businessRackArt").resolvedStyle.backgroundImage;
+            string art = image.texture ? image.texture.name : image.sprite ? image.sprite.name : "";
+            string expected = capacity == 12 ? "CottonCandyFanStand" : "CottonCandyFanStand" + capacity;
+            Check(art == expected, "rack art " + art + " shows one clip per slot at capacity " + capacity);
         }
 
         IEnumerator StartRackDrag(VisualElement source)

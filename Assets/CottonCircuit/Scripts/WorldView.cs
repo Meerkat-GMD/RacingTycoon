@@ -274,7 +274,9 @@ namespace CottonCircuit
         {
             foreach (var item in displayed) Destroy(item);
             displayed.Clear();
-            if (DisplayRacks != null) for (int i = 0; i < DisplayRacks.Length; i++) DisplayRacks[i].gameObject.SetActive(i <= economy.ShelfLevel);
+            // The first rack holds 6 and each expansion adds a rack of 3, in both the legacy and growth modes.
+            int racks = 1 + Mathf.Max(0, economy.StockCapacity - 6) / 3;
+            if (DisplayRacks != null) for (int i = 0; i < DisplayRacks.Length; i++) DisplayRacks[i].gameObject.SetActive(i < racks);
             for (int i = 0; i < economy.Inventory.Count; i++)
             {
                 int rack = i < 6 ? 0 : 1 + (i - 6) / 3, slot = i < 6 ? i : (i - 6) % 3;

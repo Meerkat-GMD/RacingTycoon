@@ -6,4 +6,4 @@
 
 Existing game illustrations remain in `Assets/CottonCircuit/Sprites` and are reused by the new documents.
 
-Project-generated artwork: `Art/CottonCandyFanStand.png` was created with the built-in image generation tool for the vendor-style rack. Source and prompt are recorded in [Art/CottonCandyFanStand.md](Art/CottonCandyFanStand.md). It is not part of the Kenney pack.
+Project-generated artwork: `Art/CottonCandyFanStand.png` was created with the built-in image generation tool for the vendor-style rack. Source and prompt are recorded in [Art/CottonCandyFanStand.md](Art/CottonCandyFanStand.md). The 6-clip and 9-clip stands `Art/CottonCandyFanStand6.png` and `Art/CottonCandyFanStand9.png` are derived from it by `Tools/fan-stand-variants.py`. None of them is part of the Kenney pack.

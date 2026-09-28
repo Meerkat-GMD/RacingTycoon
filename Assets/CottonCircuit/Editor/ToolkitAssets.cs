@@ -20,18 +20,22 @@ namespace CottonCircuit.Editor
 
         public static void Ensure()
         {
-            const string rackPath = "Assets/CottonCircuit/UI/Art/CottonCandyFanStand.png";
-            AssetDatabase.ImportAsset(rackPath, ImportAssetOptions.ForceSynchronousImport);
-            var rackImporter = AssetImporter.GetAtPath(rackPath) as TextureImporter;
-            if (rackImporter != null && (rackImporter.mipmapEnabled || !rackImporter.alphaIsTransparency ||
-                rackImporter.textureCompression != TextureImporterCompression.Uncompressed))
+            // One fan stand per shelf capacity: 12 clips is the source, 6 and 9 are derived by Tools/fan-stand-variants.py.
+            foreach (string clips in new[] { "", "6", "9" })
             {
-                rackImporter.mipmapEnabled = false;
-                rackImporter.alphaIsTransparency = true;
-                rackImporter.textureCompression = TextureImporterCompression.Uncompressed;
-                rackImporter.filterMode = FilterMode.Bilinear;
-                rackImporter.maxTextureSize = 2048;
-                rackImporter.SaveAndReimport();
+                string rackPath = "Assets/CottonCircuit/UI/Art/CottonCandyFanStand" + clips + ".png";
+                AssetDatabase.ImportAsset(rackPath, ImportAssetOptions.ForceSynchronousImport);
+                var rackImporter = AssetImporter.GetAtPath(rackPath) as TextureImporter;
+                if (rackImporter != null && (rackImporter.mipmapEnabled || !rackImporter.alphaIsTransparency ||
+                    rackImporter.textureCompression != TextureImporterCompression.Uncompressed))
+                {
+                    rackImporter.mipmapEnabled = false;
+                    rackImporter.alphaIsTransparency = true;
+                    rackImporter.textureCompression = TextureImporterCompression.Uncompressed;
+                    rackImporter.filterMode = FilterMode.Bilinear;
+                    rackImporter.maxTextureSize = 2048;
+                    rackImporter.SaveAndReimport();
+                }
             }
             // This source is a static wght=400 instance. Import it before inspecting
             // generated data so a former variable-font Thin face cannot be reused.
