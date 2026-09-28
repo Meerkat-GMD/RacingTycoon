@@ -77,7 +77,7 @@ namespace CottonCircuit
                     game.PurchaseNode(item.Id);
                     if (Progression.Level(game.Session.Economy, item.Id) == before) return;
                     HideTraitDetails();
-                    toolkitPreparationSpeech = item.Name + ", 준비됐어요!";
+                    toolkitPreparationSpeech = Strings.Format("prep.speech.bought", item.Name);
                     toolkitPreparationSpeechUntil = Time.unscaledTime + 5;
                     toolkitHighlightedTrait = item.Id;
                     InvalidatePreparation();
@@ -98,7 +98,7 @@ namespace CottonCircuit
                     var chip = PreparationElement<Button>("TraitRequirement_" + item.Id + "_" + parent);
                     chip.clicked += () => SelectPreparationTraitTab(UpgradeTreeLayout.TabOf(parent), parent);
                     chip.RegisterCallback<PointerEnterEvent>(_ =>
-                        ShowTraitDetails(chip, null, "필요 특성  ·  " + UpgradeTreeLayout.Tabs[UpgradeTreeLayout.TabOf(parent)].Name, RequirementDetailsBody(parent)));
+                        ShowTraitDetails(chip, null, Strings.Format("prep.trait.required.tab", UpgradeTreeLayout.Tabs[UpgradeTreeLayout.TabOf(parent)].Name), RequirementDetailsBody(parent)));
                     chip.RegisterCallback<PointerLeaveEvent>(_ => HideTraitDetails());
                     preparationRequirements.Add(new PreparationRequirementBinding { Parent = parent, Chip = chip });
                 }
@@ -153,7 +153,7 @@ namespace CottonCircuit
             // A hidden page or disabled screen never sends the pointer-leave that would close the details.
             if (toolkitPreparationPage != 0 || !toolkitPreparation.enabledSelf) HideTraitDetails();
             PreparationElement<Label>("PreparationWallet").text = economy.Coins.ToString("N0") + " C";
-            PreparationElement<Label>("PreparationDay").text = "DAY " + economy.Day.ToString("00") + "  /  영업 준비";
+            PreparationElement<Label>("PreparationDay").text = Strings.Format("prep.day", economy.Day.ToString("00"));
             string[] pageNames = { "UpgradeGraphPage", "EquipmentPage", "LocationsPage" };
             string[] navigation = { "OpenUpgradeGraph", "OpenEquipment", "OpenLocations" };
             for (int i = 0; i < pageNames.Length; i++)
@@ -170,10 +170,10 @@ namespace CottonCircuit
                 RefreshPreparationLocations(economy);
             }
             PreparationElement<Label>("PreparationSpeech").text = Time.unscaledTime < toolkitPreparationSpeechUntil
-                ? toolkitPreparationSpeech : toolkitPreparationPage == 1 ? "함께 만들면, 더 달콤해져요."
+                ? toolkitPreparationSpeech : toolkitPreparationPage == 1 ? Strings.Get("prep.speech.equipment")
                 : toolkitPreparationPage == 2 ? Progression.HasLocation(economy, toolkitLocationPreview)
-                    ? "오늘은 이곳에서 만나 봐요." : "언젠가 이 거리도 우리 무대로!"
-                : economy.Progression.Purchases.Count == 0 ? "작은 한 걸음부터 시작해 볼까요?" : "우리 가게가 조금씩 자라고 있어요.";
+                    ? Strings.Get("prep.speech.location.available") : Strings.Get("prep.speech.location.locked")
+                : economy.Progression.Purchases.Count == 0 ? Strings.Get("prep.speech.start") : Strings.Get("prep.speech.growing");
             return true;
         }
 
@@ -208,7 +208,7 @@ namespace CottonCircuit
                 PreparationElement<Button>("TraitTab_" + tab).EnableInClassList("prep-selected", toolkitTraitTab == i);
                 Show(PreparationElement<VisualElement>("TraitGraph_" + tab), toolkitTraitTab == i);
             }
-            PreparationElement<Label>("PreparationTraitCount").text = bought + " / " + total + " 해금";
+            PreparationElement<Label>("PreparationTraitCount").text = Strings.Format("prep.trait.count", bought, total);
         }
 
         void RefreshPreparationEdges(Economy economy)
@@ -251,31 +251,31 @@ namespace CottonCircuit
             var economy = game.Session.Economy;
             int level = Progression.Level(economy, node.Id), cost = Progression.Cost(economy, node.Id);
             bool complete = level >= node.MaxLevel;
-            string value = level + " / " + node.MaxLevel + " 단계\n" + node.Description;
+            string value = Strings.Format("prep.trait.level", level, node.MaxLevel) + "\n" + node.Description;
             string effect = Progression.EffectSummary(economy, node.Id);
             if (effect != node.Description) value += "\n" + effect;
-            value += complete ? "\n모든 단계 완료" : "\n비용  " + cost.ToString("N0") + " C";
+            value += "\n" + (complete ? Strings.Get("prep.trait.complete") : Strings.Format("prep.trait.cost", cost.ToString("N0")));
             if (node.Parents.Length > 0)
             {
-                value += "\n필요 특성  ·  각각 1단계";
+                value += "\n" + Strings.Get("prep.trait.required.each");
                 foreach (string parent in node.Parents)
                     value += "\n" + (Progression.Level(economy, parent) > 0 ? "✓ " : "○ ") + Progression.Find(parent).Name;
             }
-            if (!complete && economy.Coins < cost) value += "\n" + (cost - economy.Coins).ToString("N0") + " C 부족";
+            if (!complete && economy.Coins < cost) value += "\n" + Strings.Format("prep.trait.short", (cost - economy.Coins).ToString("N0"));
             return value;
         }
 
         string RequirementDetailsBody(string id)
         {
             bool met = Progression.Level(game.Session.Economy, id) > 0;
-            return Progression.Find(id).Name + (met ? "  ✓ 완료" : "  1단계 필요") + "\n클릭하면 해당 특성으로 이동합니다.";
+            return Progression.Find(id).Name + (met ? Strings.Get("prep.trait.req.done") : Strings.Get("prep.trait.req.needed")) + "\n" + Strings.Get("prep.trait.req.hint");
         }
 
         void RefreshPreparationEquipment(Economy economy)
         {
             int owned = Progression.OwnedMachines(economy), workers = Progression.WorkerCount(economy), assigned = 0;
             for (int i = 0; i < 3; i++) if (game.Machine(i)?.WorkerAssigned == true) assigned++;
-            PreparationElement<Label>("EquipmentSummary").text = "기계 " + owned + " / 3  ·  알바 " + assigned + " / " + workers;
+            PreparationElement<Label>("EquipmentSummary").text = Strings.Format("prep.equipment.summary", owned, assigned, workers);
             for (int i = 0; i < 3; i++)
             {
                 bool unlocked = i < owned, selected = economy.Progression.SelectedMachine == i;
@@ -285,32 +285,32 @@ namespace CottonCircuit
                 card.EnableInClassList("prep-machine-locked", !unlocked);
                 card.EnableInClassList("prep-machine-selected", selected);
                 PreparationElement<Label>("PreparationMachineName_" + i).text = Progression.MachineName(i);
-                PreparationElement<Label>("PreparationMachineState_" + i).text = !unlocked ? "성장 지도에서 해금" : "TIER " + Progression.MachineTier(i) +
-                    (worker ? "  ·  알바 배치" : selected ? "  ·  직접 운전" : "  ·  보유");
+                PreparationElement<Label>("PreparationMachineState_" + i).text = !unlocked ? Strings.Get("prep.machine.state.locked") : "TIER " + Progression.MachineTier(i) +
+                    "  ·  " + (worker ? Strings.Get("prep.worker.assign") : selected ? Strings.Get("business.machine.manual") : Strings.Get("prep.machine.state.suffix.owned"));
                 var select = PreparationElement<Button>("SelectMachine_" + i);
-                select.text = worker ? "기계 보기" : selected ? "선택한 기계" : "직접 운전";
+                select.text = worker ? Strings.Get("prep.machine.view") : selected ? Strings.Get("prep.machine.selected") : Strings.Get("business.machine.manual");
                 select.SetEnabled(unlocked);
                 var assignment = PreparationElement<Button>("AssignWorker_" + i);
-                assignment.text = worker ? "알바 배치 해제" : "알바 배치";
+                assignment.text = worker ? Strings.Get("prep.worker.unassign") : Strings.Get("prep.worker.assign");
                 assignment.EnableInClassList("prep-worker-assigned", worker);
                 assignment.SetEnabled(unlocked && (worker || assigned < workers && Progression.WorkerGrade(economy) >= Progression.MachineTier(i)));
-                assignment.tooltip = worker ? "알바가 운전과 제작을 맡아요. 배치를 해제하면 직접 운전할 수 있어요."
-                    : workers == 0 ? "성장 지도에서 먼저 알바를 고용하세요."
-                    : Progression.WorkerGrade(economy) < Progression.MachineTier(i) ? "이 기계에는 " + Progression.MachineTier(i) + "등급 알바가 필요해요."
-                    : assigned >= workers ? "다른 기계의 배치를 해제하거나 알바를 추가로 고용하세요." : "이 기계의 운전과 반복 생산을 알바에게 맡겨요.";
+                assignment.tooltip = worker ? Strings.Get("prep.worker.tooltip.assigned")
+                    : workers == 0 ? Strings.Get("prep.worker.tooltip.none")
+                    : Progression.WorkerGrade(economy) < Progression.MachineTier(i) ? Strings.Format("prep.worker.tooltip.grade", Progression.MachineTier(i))
+                    : assigned >= workers ? Strings.Get("prep.worker.tooltip.full") : Strings.Get("prep.worker.tooltip.available");
                 Show(PreparationElement<VisualElement>("WorkerRecipe_" + i), worker);
                 Show(PreparationElement<Label>("PreparationRecipeHint_" + i), !worker);
-                PreparationElement<Label>("PreparationRecipeHint_" + i).text = !unlocked ? "기계를 해금하면 더 많은 맛과 크기를 만들 수 있어요."
-                    : "알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요.";
+                PreparationElement<Label>("PreparationRecipeHint_" + i).text = !unlocked ? Strings.Get("prep.recipe.hint.locked")
+                    : Strings.Get("prep.recipe.hint.worker");
                 var flavor = PreparationElement<Button>("RecipeFlavor_" + i);
-                flavor.text = machine == null ? "딸기" : Palette.FlavorName(machine.RecipeFlavor);
+                flavor.text = machine == null ? Strings.Get("flavor.0") : Palette.FlavorName(machine.RecipeFlavor);
                 int flavors = 0;
                 for (int f = 0; f < 3; f++) if (unlocked && game.Shift.CanMakeFlavor(i, f)) flavors++;
                 flavor.SetEnabled(worker && flavors > 1);
                 var size = PreparationElement<Button>("RecipeSize_" + i);
-                size.text = Progression.MaxSugarGrade(economy) == 1 ? "기본" : PreparationSizeName(machine == null ? 0 : machine.RecipeSize);
+                size.text = Progression.MaxSugarGrade(economy) == 1 ? Strings.Get("prep.size.basic") : Progression.SizeName(machine == null ? 0 : machine.RecipeSize);
                 size.SetEnabled(worker && game.Shift.MaxSize(i) > 0);
-                PreparationElement<Label>("RecipeGrade_" + i).text = (unlocked ? game.Shift.SugarGrade(i) : 1) + "등급 · 자동";
+                PreparationElement<Label>("RecipeGrade_" + i).text = Strings.Format("prep.recipe.grade", unlocked ? game.Shift.SugarGrade(i) : 1);
                 PreparationElement<Label>("PreparationSizeLimit_" + i).text = unlocked ? game.Shift.SizeLimitNote(i) : "";
             }
             for (int i = 0; i < 2; i++)
@@ -320,8 +320,8 @@ namespace CottonCircuit
                 choice.EnableInClassList("prep-selected", economy.Progression.CartStyle == i);
             }
             PreparationElement<Label>("PreparationCartHint").text = Progression.HasCartStyle(economy, 0)
-                ? "다운힐 쿠페는 가속 유지와 감속, 클래식 카트는 드리프트와 부스터로 달려요."
-                : "다운힐 쿠페는 처음부터 사용할 수 있어요. 성장 지도의 차량 탭에서 클래식 카트를 해금해 보세요.";
+                ? Strings.Get("prep.cart.hint.unlocked")
+                : Strings.Get("prep.cart.hint.locked");
         }
 
         void RefreshPreparationLocations(Economy economy)
@@ -332,14 +332,14 @@ namespace CottonCircuit
             PreparationElement<Label>("PreparationLocationDetail").text = Progression.LocationDescription(toolkitLocationPreview);
             SetArt(PreparationElement<VisualElement>("LocationScenery"), game.World.Assets.LocationPrep[toolkitLocationPreview]);
             var select = PreparationElement<Button>("SelectLocation");
-            select.text = !available ? "아직 잠겨 있어요" : chosen ? "선택한 장소" : "이곳에서 장사";
+            select.text = !available ? Strings.Get("prep.location.locked") : chosen ? Strings.Get("prep.location.selected") : Strings.Get("prep.location.choose");
             select.SetEnabled(available && !chosen);
             PreparationElement<Button>("BeginBusiness").SetEnabled(available && chosen);
             for (int i = 0; i < 4; i++)
             {
                 PreparationElement<Button>("PreviewLocation_" + i).EnableInClassList("prep-selected", toolkitLocationPreview == i);
-                PreparationElement<Label>("PreparationLocationState_" + i).text = !Progression.HasLocation(economy, i) ? "잠김"
-                    : economy.Progression.SelectedLocation == i ? "선택됨" : "영업 가능";
+                PreparationElement<Label>("PreparationLocationState_" + i).text = !Progression.HasLocation(economy, i) ? Strings.Get("business.machine.locked")
+                    : economy.Progression.SelectedLocation == i ? Strings.Get("prep.location.state.selected") : Strings.Get("prep.location.state.available");
             }
         }
 
@@ -356,7 +356,6 @@ namespace CottonCircuit
         void InvalidatePreparation() { toolkitPreparationFingerprint = int.MinValue; RefreshPreparation(); }
         T PreparationElement<T>(string name) where T : VisualElement
             => toolkitPreparation.Q<T>(name) ?? throw new InvalidOperationException("Preparation.uxml is missing " + name);
-        static string PreparationSizeName(int size) => size == 0 ? "소" : size == 1 ? "중" : "대";
         int PreparationDataFingerprint(Economy economy)
         {
             unchecked

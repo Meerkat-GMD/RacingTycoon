@@ -274,3 +274,85 @@ save.unreadable	저장 파일을 읽지 못했어요. 원본을 보관하고 새
 save.invalid	저장 데이터가 올바르지 않아 저장하지 못했어요.	Couldn't save — the data wasn't valid.
 save.write	저장하지 못했어요. 저장 폴더의 공간과 접근 권한을 확인해주세요.	Couldn't save. Check the save folder's space and permissions.
 save.archive	기존 저장 파일을 보관하지 못했어요.	Couldn't archive the existing save file.
+prep.speech.bought	{0}, 준비됐어요!	{0}, ready to go!
+prep.trait.required.tab	필요 특성  ·  {0}	Required perk  ·  {0}
+prep.day	DAY {0}  /  영업 준비	DAY {0}  /  Prep
+prep.speech.equipment	함께 만들면, 더 달콤해져요.	Together, it's even sweeter.
+prep.speech.location.available	오늘은 이곳에서 만나 봐요.	See you here today.
+prep.speech.location.locked	언젠가 이 거리도 우리 무대로!	Someday this street will be ours too!
+prep.speech.start	작은 한 걸음부터 시작해 볼까요?	Shall we start with a small step?
+prep.speech.growing	우리 가게가 조금씩 자라고 있어요.	Our shop is growing, little by little.
+prep.trait.count	{0} / {1} 해금	{0} / {1} unlocked
+prep.trait.level	{0} / {1} 단계	Level {0} / {1}
+prep.trait.complete	모든 단계 완료	All levels complete
+prep.trait.cost	비용  {0} C	Cost  {0} C
+prep.trait.required.each	필요 특성  ·  각각 1단계	Required perks  ·  1 level each
+prep.trait.short	{0} C 부족	{0} C short
+prep.trait.req.done	  ✓ 완료	  ✓ Done
+prep.trait.req.needed	  1단계 필요	  Needs level 1
+prep.trait.req.hint	클릭하면 해당 특성으로 이동합니다.	Click to jump to that perk.
+prep.equipment.summary	기계 {0} / 3  ·  알바 {1} / {2}	Machines {0} / 3  ·  Helpers {1} / {2}
+prep.machine.state.locked	성장 지도에서 해금	Unlock on the Growth Map
+prep.machine.state.suffix.owned	보유	Owned
+prep.machine.view	기계 보기	View machine
+prep.machine.selected	선택한 기계	Selected machine
+prep.worker.assign	알바 배치	Assign helper
+prep.worker.unassign	알바 배치 해제	Unassign helper
+prep.worker.tooltip.assigned	알바가 운전과 제작을 맡아요. 배치를 해제하면 직접 운전할 수 있어요.	Your helper drives and makes candy. Unassign to drive it yourself.
+prep.worker.tooltip.none	성장 지도에서 먼저 알바를 고용하세요.	Hire a helper on the Growth Map first.
+prep.worker.tooltip.grade	이 기계에는 {0}등급 알바가 필요해요.	This machine needs a Grade {0} helper.
+prep.worker.tooltip.full	다른 기계의 배치를 해제하거나 알바를 추가로 고용하세요.	Unassign another machine, or hire another helper.
+prep.worker.tooltip.available	이 기계의 운전과 반복 생산을 알바에게 맡겨요.	Let a helper drive and repeat production on this machine.
+prep.recipe.hint.locked	기계를 해금하면 더 많은 맛과 크기를 만들 수 있어요.	Unlock the machine to make more flavors and sizes.
+prep.recipe.hint.worker	알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요.	Assign a helper to set the flavor and size it repeats.
+prep.size.basic	기본	Basic
+prep.recipe.grade	{0}등급 · 자동	Grade {0} · Auto
+prep.cart.hint.unlocked	다운힐 쿠페는 가속 유지와 감속, 클래식 카트는 드리프트와 부스터로 달려요.	Downhill Coupe holds speed and brakes; Classic Kart drifts and boosts.
+prep.cart.hint.locked	다운힐 쿠페는 처음부터 사용할 수 있어요. 성장 지도의 차량 탭에서 클래식 카트를 해금해 보세요.	Downhill Coupe is ready from the start. Unlock Classic Kart on the Growth Map's Vehicles tab.
+prep.location.locked	아직 잠겨 있어요	Not unlocked yet
+prep.location.selected	선택한 장소	Selected place
+prep.location.choose	이곳에서 장사	Do business here
+prep.location.state.selected	선택됨	Selected
+prep.location.state.available	영업 가능	Available
+prep.title	내일의 달콤함	Tomorrow's Sweetness
+prep.growth.map	성장 지도	Growth Map
+prep.legend.required	○ 필요 특성	○ Required perk
+prep.legend.done	✓ 완료	✓ Done
+prep.equipment.title	기계와 레시피	Machines & Recipes
+prep.recipe.flavor.label	알바 맛	Helper flavor
+prep.recipe.size.label	알바 크기	Helper size
+prep.cart.title	나의 차량	My vehicle
+prep.cart.downhill	다운힐 쿠페	Downhill Coupe
+prep.location.title	오늘의 장사	Today's Business
+prep.side.title	작은 가게, 커다란 꿈	Small shop, big dreams
+prep.companion.name	M I N A / 가게 친구	M I N A / Shop friend
+prep.nav.graph	01    성장 지도	01    Growth Map
+prep.nav.equipment	02    기계와 레시피	02    Machines & Recipes
+prep.nav.locations	03    오늘의 장사	03    Today's Business
+prep.footer.caption	한 바퀴씩, 우리만의 가게로.	Lap by lap, building our own shop.
+legacy.stock.count	진열대  {0} / {1}	Shelf  {0} / {1}
+legacy.driving.full	진열대가 가득 찼어요	Shelf is full
+legacy.driving.manual	직접 운전 · 이번 바퀴 {0}	Manual drive · This lap {0}
+legacy.order.text	{0} · {1}g  /  {2}초	{0} · {1}g  /  {2}s
+legacy.stock.empty	빈 자리	Empty slot
+legacy.upgrade.0	카트 모터	Kart Motor
+legacy.upgrade.1	설탕통	Sugar Tank
+legacy.upgrade.2	가게 꾸미기	Shop Decor
+legacy.stock.apply	다음 생산에 설정 적용	Apply to next batch
+legacy.stock.make	재고 만들기	Make stock
+legacy.result.incomplete	완주하지 못했어요. 다시 도전해 주세요.	You didn't finish. Try again.
+legacy.result.complete	완성! {0}g\n품질 {1} · 진열대에 보관했어요.	Done! {0}g\nQuality {1} · Stored on the shelf.
+legacy.pause	도움말 · Esc	Help · Esc
+legacy.abort	주행 포기	Abort run
+legacy.orders.title	오늘의 주문	Today's Orders
+legacy.order.choose	주문 선택	Choose order
+legacy.order.make	만들기	Make
+legacy.order.serve	건네기	Serve
+legacy.discard	선택 재고 정리	Clear stock
+legacy.size.small	작은 60g	Small 60g
+legacy.size.large	큰 120g	Large 120g
+legacy.style.kart	카트	Kart
+legacy.style.downhill	다운힐	Downhill
+legacy.controls	W 가속 · A / D 조향 · S 제동 · Space 드리프트 · Shift 부스터 · R 복귀 · Esc 일시정지	W Accelerate · A / D Steer · S Brake · Space Drift · Shift Boost · R Back to track · Esc Pause
+legacy.result.title	주행 결과	Run Result
+legacy.return.shop	가게로 돌아가기	Back to the shop

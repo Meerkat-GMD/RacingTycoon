@@ -7,25 +7,25 @@
       <ui:VisualElement class="prep-header">
         <ui:VisualElement class="prep-header-titles">
           <ui:Label text="C O T T O N   C I R C U I T" class="prep-eyebrow" />
-          <ui:Label text="내일의 달콤함" class="prep-title" />
+          <ui:Label text="내일의 달콤함" class="prep-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.title" /></Bindings></ui:Label>
         </ui:VisualElement>
         <ui:VisualElement class="prep-wallet-group">
-          <ui:Label name="PreparationDay" text="DAY 01  /  영업 준비" class="prep-day" />
+          <ui:Label name="PreparationDay" text="DAY 01  /  Prep" class="prep-day" />
           <ui:Label name="PreparationWallet" text="80 C" class="prep-wallet" />
         </ui:VisualElement>
       </ui:VisualElement>
       <ui:VisualElement name="UpgradeGraphPage" class="prep-page prep-graph-paper">
         <ui:VisualElement class="prep-page-heading">
-          <ui:Label text="성장 지도" class="prep-section-title" />
-          <ui:Label name="PreparationTraitCount" text="0 / 6 해금" class="prep-muted" />
+          <ui:Label text="성장 지도" class="prep-section-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.growth.map" /></Bindings></ui:Label>
+          <ui:Label name="PreparationTraitCount" text="0 / 6 unlocked" class="prep-muted" />
         </ui:VisualElement>
         <ui:VisualElement class="prep-trait-tabs">
-          <ui:Button name="TraitTab_business" text="가게 운영" class="prep-button prep-trait-tab prep-selected" />
-          <ui:Button name="TraitTab_production" text="솜사탕 제작" class="prep-button prep-trait-tab" />
-          <ui:Button name="TraitTab_machines" text="기계와 맛" class="prep-button prep-trait-tab" />
-          <ui:Button name="TraitTab_staff" text="알바" class="prep-button prep-trait-tab" />
-          <ui:Button name="TraitTab_sales" text="장소와 판매" class="prep-button prep-trait-tab" />
-          <ui:Button name="TraitTab_kart" text="차량" class="prep-button prep-trait-tab" />
+          <ui:Button name="TraitTab_business" text="가게 운영" class="prep-button prep-trait-tab prep-selected"><Bindings><CottonCircuit.LocalizedText property="text" key="tab.business" /></Bindings></ui:Button>
+          <ui:Button name="TraitTab_production" text="솜사탕 제작" class="prep-button prep-trait-tab"><Bindings><CottonCircuit.LocalizedText property="text" key="tab.production" /></Bindings></ui:Button>
+          <ui:Button name="TraitTab_machines" text="기계와 맛" class="prep-button prep-trait-tab"><Bindings><CottonCircuit.LocalizedText property="text" key="tab.machines" /></Bindings></ui:Button>
+          <ui:Button name="TraitTab_staff" text="알바" class="prep-button prep-trait-tab"><Bindings><CottonCircuit.LocalizedText property="text" key="tab.staff" /></Bindings></ui:Button>
+          <ui:Button name="TraitTab_sales" text="장소와 판매" class="prep-button prep-trait-tab"><Bindings><CottonCircuit.LocalizedText property="text" key="tab.sales" /></Bindings></ui:Button>
+          <ui:Button name="TraitTab_kart" text="차량" class="prep-button prep-trait-tab"><Bindings><CottonCircuit.LocalizedText property="text" key="tab.kart" /></Bindings></ui:Button>
         </ui:VisualElement>
         <ui:VisualElement name="TraitGraphArea" class="trait-graph-area">
           <ui:VisualElement name="TraitGraph_business" class="trait-graph">
@@ -44,7 +44,7 @@
                   <ui:Label name="TraitRank_hours" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="영업시간" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="영업시간" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.hours.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_patience" class="trait-node trait-cat-business">
               <ui:Button name="UpgradeNode_patience" class="trait-node-button">
@@ -53,7 +53,7 @@
                   <ui:Label name="TraitRank_patience" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="손님 기다림" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="손님 기다림" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.patience.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_shelf" class="trait-node trait-cat-business">
               <ui:Button name="UpgradeNode_shelf" class="trait-node-button">
@@ -62,7 +62,7 @@
                   <ui:Label name="TraitRank_shelf" text="0/2" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="진열대 확장" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="진열대 확장" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.shelf.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_ads" class="trait-node trait-cat-business">
               <ui:Button name="UpgradeNode_ads" class="trait-node-button">
@@ -71,7 +71,7 @@
                   <ui:Label name="TraitRank_ads" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="동네 광고" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="동네 광고" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.ads.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_group_visit" class="trait-node trait-cat-business">
               <ui:Button name="UpgradeNode_group_visit" class="trait-node-button">
@@ -80,7 +80,7 @@
                   <ui:Label name="TraitRank_group_visit" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="단체 손님" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="단체 손님" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.group_visit.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_repeat_ads" class="trait-node trait-cat-business">
               <ui:Button name="UpgradeNode_repeat_ads" class="trait-node-button">
@@ -89,9 +89,9 @@
                   <ui:Label name="TraitRank_repeat_ads" text="0/2" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="입소문" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="입소문" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.repeat_ads.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_repeat_ads_location_1" text="○ 시장 앞  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_repeat_ads_location_1" text="○ Market Square  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
           </ui:VisualElement>
@@ -127,7 +127,7 @@
                   <ui:Label name="TraitRank_stick_speed" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="젓가락 회전" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="젓가락 회전" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.stick_speed.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_sugar_2" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_sugar_2" class="trait-node-button">
@@ -136,7 +136,7 @@
                   <ui:Label name="TraitRank_sugar_2" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="고운 설탕" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="고운 설탕" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.sugar_2.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_stick_quality" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_stick_quality" class="trait-node-button">
@@ -145,7 +145,7 @@
                   <ui:Label name="TraitRank_stick_quality" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="예쁜 말기" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="예쁜 말기" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.stick_quality.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_stick_saving" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_stick_saving" class="trait-node-button">
@@ -154,7 +154,7 @@
                   <ui:Label name="TraitRank_stick_saving" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="설탕 절약" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="설탕 절약" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.stick_saving.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_sugar_3" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_sugar_3" class="trait-node-button">
@@ -163,7 +163,7 @@
                   <ui:Label name="TraitRank_sugar_3" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="특급 설탕" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="특급 설탕" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.sugar_3.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_quality_focus" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_quality_focus" class="trait-node-button">
@@ -172,7 +172,7 @@
                   <ui:Label name="TraitRank_quality_focus" text="0/2" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="장식 기술" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="장식 기술" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.quality_focus.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_sugar_saving" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_sugar_saving" class="trait-node-button">
@@ -181,7 +181,7 @@
                   <ui:Label name="TraitRank_sugar_saving" text="0/2" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="설탕 계량" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="설탕 계량" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.sugar_saving.name" /></Bindings></ui:Label>
             </ui:VisualElement>
           </ui:VisualElement>
           <ui:VisualElement name="TraitGraph_machines" class="trait-graph hidden">
@@ -200,9 +200,9 @@
                   <ui:Label name="TraitRank_machine_2" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="두 번째 기계" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="두 번째 기계" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.machine_2.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_machine_2_sugar_2" text="○ 고운 설탕  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_machine_2_sugar_2" text="○ Fine Sugar  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_machine_3" class="trait-node trait-cat-equipment">
@@ -212,9 +212,9 @@
                   <ui:Label name="TraitRank_machine_3" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="세 번째 기계" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="세 번째 기계" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.machine_3.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_machine_3_stick_speed" text="○ 젓가락 회전  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_machine_3_stick_speed" text="○ Stick Spin  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_flavor_vanilla" class="trait-node trait-cat-production">
@@ -224,9 +224,9 @@
                   <ui:Label name="TraitRank_flavor_vanilla" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="바닐라 맛" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="바닐라 맛" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.flavor_vanilla.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_flavor_vanilla_sugar_3" text="○ 특급 설탕  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_flavor_vanilla_sugar_3" text="○ Premium Sugar  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
           </ui:VisualElement>
@@ -254,9 +254,9 @@
                   <ui:Label name="TraitRank_worker_1" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="첫 번째 알바" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="첫 번째 알바" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.worker_1.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_worker_1_machine_2" text="○ 두 번째 기계  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_worker_1_machine_2" text="○ Second Machine  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_worker_speed" class="trait-node trait-cat-staff">
@@ -266,7 +266,7 @@
                   <ui:Label name="TraitRank_worker_speed" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="알바 손놀림" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="알바 손놀림" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.worker_speed.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_worker_grade_2" class="trait-node trait-cat-staff">
               <ui:Button name="UpgradeNode_worker_grade_2" class="trait-node-button">
@@ -275,9 +275,9 @@
                   <ui:Label name="TraitRank_worker_grade_2" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="알바 2등급 교육" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="알바 2등급 교육" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.worker_grade_2.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_worker_grade_2_machine_2" text="○ 두 번째 기계  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_worker_grade_2_machine_2" text="○ Second Machine  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_worker_2" class="trait-node trait-cat-staff">
@@ -287,9 +287,9 @@
                   <ui:Label name="TraitRank_worker_2" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="두 번째 알바" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="두 번째 알바" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.worker_2.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_worker_2_machine_3" text="○ 세 번째 기계  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_worker_2_machine_3" text="○ Third Machine  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_worker_grade_3" class="trait-node trait-cat-staff">
@@ -299,9 +299,9 @@
                   <ui:Label name="TraitRank_worker_grade_3" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="알바 3등급 교육" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="알바 3등급 교육" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.worker_grade_3.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_worker_grade_3_machine_3" text="○ 세 번째 기계  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_worker_grade_3_machine_3" text="○ Third Machine  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
           </ui:VisualElement>
@@ -333,7 +333,7 @@
                   <ui:Label name="TraitRank_sales" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="가게 간판" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="가게 간판" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.sales.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_location_1" class="trait-node trait-cat-location">
               <ui:Button name="UpgradeNode_location_1" class="trait-node-button">
@@ -342,10 +342,10 @@
                   <ui:Label name="TraitRank_location_1" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="시장 앞" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="시장 앞" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.location_1.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_location_1_ads" text="○ 동네 광고  ↗" class="trait-chip" />
-                <ui:Button name="TraitRequirement_location_1_machine_2" text="○ 두 번째 기계  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_location_1_ads" text="○ Local Ads  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_location_1_machine_2" text="○ Second Machine  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_flavor_price" class="trait-node trait-cat-sales">
@@ -355,7 +355,7 @@
                   <ui:Label name="TraitRank_flavor_price" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="맛 홍보" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="맛 홍보" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.flavor_price.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_location_price" class="trait-node trait-cat-sales">
               <ui:Button name="UpgradeNode_location_price" class="trait-node-button">
@@ -364,7 +364,7 @@
                   <ui:Label name="TraitRank_location_price" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="지역 단골" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="지역 단골" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.location_price.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_location_2" class="trait-node trait-cat-location">
               <ui:Button name="UpgradeNode_location_2" class="trait-node-button">
@@ -373,9 +373,9 @@
                   <ui:Label name="TraitRank_location_2" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="강변 축제" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="강변 축제" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.location_2.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_location_2_worker_grade_2" text="○ 알바 2등급 교육  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_location_2_worker_grade_2" text="○ Grade 2 Training  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_location_3" class="trait-node trait-cat-location">
@@ -385,10 +385,10 @@
                   <ui:Label name="TraitRank_location_3" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="별빛 광장" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="별빛 광장" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.location_3.name" /></Bindings></ui:Label>
               <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_location_3_machine_3" text="○ 세 번째 기계  ↗" class="trait-chip" />
-                <ui:Button name="TraitRequirement_location_3_flavor_vanilla" text="○ 바닐라 맛  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_location_3_machine_3" text="○ Third Machine  ↗" class="trait-chip" />
+                <ui:Button name="TraitRequirement_location_3_flavor_vanilla" text="○ Vanilla Flavor  ↗" class="trait-chip" />
               </ui:VisualElement>
             </ui:VisualElement>
           </ui:VisualElement>
@@ -408,7 +408,7 @@
                   <ui:Label name="TraitRank_engine" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="차량 엔진" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="차량 엔진" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.engine.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_handling" class="trait-node trait-cat-equipment">
               <ui:Button name="UpgradeNode_handling" class="trait-node-button">
@@ -417,7 +417,7 @@
                   <ui:Label name="TraitRank_handling" text="0/3" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="차량 조향" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="차량 조향" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.handling.name" /></Bindings></ui:Label>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_coupe" class="trait-node trait-cat-equipment">
               <ui:Button name="UpgradeNode_coupe" class="trait-node-button">
@@ -426,7 +426,7 @@
                   <ui:Label name="TraitRank_coupe" text="0/1" class="trait-rank" picking-mode="Ignore" />
                 </ui:VisualElement>
               </ui:Button>
-              <ui:Label text="클래식 카트" class="trait-name" picking-mode="Ignore" />
+              <ui:Label text="클래식 카트" class="trait-name" picking-mode="Ignore"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.coupe.name" /></Bindings></ui:Label>
             </ui:VisualElement>
           </ui:VisualElement>
           <ui:VisualElement name="TraitDetails" class="trait-details hidden" picking-mode="Ignore">
@@ -435,105 +435,105 @@
           </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement class="prep-legend">
-          <ui:Label text="○ 필요 특성" class="prep-legend-item" />
-          <ui:Label text="✓ 완료" class="prep-legend-item" />
+          <ui:Label text="○ 필요 특성" class="prep-legend-item"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.legend.required" /></Bindings></ui:Label>
+          <ui:Label text="✓ 완료" class="prep-legend-item"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.legend.done" /></Bindings></ui:Label>
         </ui:VisualElement>
       </ui:VisualElement>
       <ui:VisualElement name="EquipmentPage" class="prep-page hidden">
-        <ui:VisualElement class="prep-page-heading"><ui:Label text="기계와 레시피" class="prep-section-title" /><ui:Label name="EquipmentSummary" text="기계 1 / 3 · 알바 0 / 0" class="prep-muted" /></ui:VisualElement>
+        <ui:VisualElement class="prep-page-heading"><ui:Label text="기계와 레시피" class="prep-section-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.equipment.title" /></Bindings></ui:Label><ui:Label name="EquipmentSummary" text="Machines 1 / 3  ·  Helpers 0 / 0" class="prep-muted" /></ui:VisualElement>
         <ui:ScrollView class="prep-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
           <ui:VisualElement class="prep-machine-row">
             <ui:VisualElement name="MachineCard_0" class="prep-machine-card">
               <ui:Label text="MACHINE / 01" class="prep-machine-number" />
               <ui:VisualElement name="PreparationMachineArt_0" class="prep-machine-art prep-machine-art-0" picking-mode="Ignore" />
-              <ui:Label name="PreparationMachineName_0" text="1번 솜사탕 기계" class="prep-machine-name" />
+              <ui:Label name="PreparationMachineName_0" text="Basic Machine" class="prep-machine-name" />
               <ui:Label name="PreparationMachineState_0" text="TIER 1" class="prep-machine-state" />
-              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_0" text="직접 운전" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_0" text="알바 배치" class="prep-button prep-machine-action" /></ui:VisualElement>
+              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_0" text="Manual drive" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_0" text="Assign helper" class="prep-button prep-machine-action" /></ui:VisualElement>
               <ui:VisualElement class="prep-recipe-area">
                 <ui:VisualElement name="WorkerRecipe_0" class="hidden">
-                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label" /><ui:Button name="RecipeFlavor_0" text="딸기" class="prep-button prep-recipe-action" /></ui:VisualElement>
-                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label" /><ui:Button name="RecipeSize_0" text="기본" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.recipe.flavor.label" /></Bindings></ui:Label><ui:Button name="RecipeFlavor_0" text="Strawberry" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.recipe.size.label" /></Bindings></ui:Label><ui:Button name="RecipeSize_0" text="Basic" class="prep-button prep-recipe-action" /></ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label name="PreparationRecipeHint_0" text="알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요." class="prep-recipe-hint" />
+                <ui:Label name="PreparationRecipeHint_0" text="Assign a helper to set the flavor and size it repeats." class="prep-recipe-hint" />
               </ui:VisualElement>
-              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label" /><ui:Label name="RecipeGrade_0" text="1등급 · 자동" class="prep-grade" /></ui:VisualElement>
+              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="business.sugar.kind" /></Bindings></ui:Label><ui:Label name="RecipeGrade_0" text="Grade 1 · Auto" class="prep-grade" /></ui:VisualElement>
               <ui:Label name="PreparationSizeLimit_0" text="" class="prep-size-limit" />
             </ui:VisualElement>
             <ui:VisualElement name="MachineCard_1" class="prep-machine-card">
               <ui:Label text="MACHINE / 02" class="prep-machine-number" />
               <ui:VisualElement name="PreparationMachineArt_1" class="prep-machine-art prep-machine-art-1" picking-mode="Ignore" />
-              <ui:Label name="PreparationMachineName_1" text="2번 솜사탕 기계" class="prep-machine-name" />
+              <ui:Label name="PreparationMachineName_1" text="Soda Machine" class="prep-machine-name" />
               <ui:Label name="PreparationMachineState_1" text="TIER 2" class="prep-machine-state" />
-              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_1" text="직접 운전" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_1" text="알바 배치" class="prep-button prep-machine-action" /></ui:VisualElement>
+              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_1" text="Manual drive" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_1" text="Assign helper" class="prep-button prep-machine-action" /></ui:VisualElement>
               <ui:VisualElement class="prep-recipe-area">
                 <ui:VisualElement name="WorkerRecipe_1" class="hidden">
-                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label" /><ui:Button name="RecipeFlavor_1" text="딸기" class="prep-button prep-recipe-action" /></ui:VisualElement>
-                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label" /><ui:Button name="RecipeSize_1" text="기본" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.recipe.flavor.label" /></Bindings></ui:Label><ui:Button name="RecipeFlavor_1" text="Strawberry" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.recipe.size.label" /></Bindings></ui:Label><ui:Button name="RecipeSize_1" text="Basic" class="prep-button prep-recipe-action" /></ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label name="PreparationRecipeHint_1" text="알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요." class="prep-recipe-hint" />
+                <ui:Label name="PreparationRecipeHint_1" text="Assign a helper to set the flavor and size it repeats." class="prep-recipe-hint" />
               </ui:VisualElement>
-              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label" /><ui:Label name="RecipeGrade_1" text="1등급 · 자동" class="prep-grade" /></ui:VisualElement>
+              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="business.sugar.kind" /></Bindings></ui:Label><ui:Label name="RecipeGrade_1" text="Grade 1 · Auto" class="prep-grade" /></ui:VisualElement>
               <ui:Label name="PreparationSizeLimit_1" text="" class="prep-size-limit" />
             </ui:VisualElement>
             <ui:VisualElement name="MachineCard_2" class="prep-machine-card">
               <ui:Label text="MACHINE / 03" class="prep-machine-number" />
               <ui:VisualElement name="PreparationMachineArt_2" class="prep-machine-art prep-machine-art-2" picking-mode="Ignore" />
-              <ui:Label name="PreparationMachineName_2" text="3번 솜사탕 기계" class="prep-machine-name" />
+              <ui:Label name="PreparationMachineName_2" text="Deluxe Machine" class="prep-machine-name" />
               <ui:Label name="PreparationMachineState_2" text="TIER 3" class="prep-machine-state" />
-              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_2" text="직접 운전" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_2" text="알바 배치" class="prep-button prep-machine-action" /></ui:VisualElement>
+              <ui:VisualElement class="prep-machine-actions"><ui:Button name="SelectMachine_2" text="Manual drive" class="prep-button prep-machine-action" /><ui:Button name="AssignWorker_2" text="Assign helper" class="prep-button prep-machine-action" /></ui:VisualElement>
               <ui:VisualElement class="prep-recipe-area">
                 <ui:VisualElement name="WorkerRecipe_2" class="hidden">
-                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label" /><ui:Button name="RecipeFlavor_2" text="딸기" class="prep-button prep-recipe-action" /></ui:VisualElement>
-                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label" /><ui:Button name="RecipeSize_2" text="기본" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 맛" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.recipe.flavor.label" /></Bindings></ui:Label><ui:Button name="RecipeFlavor_2" text="Strawberry" class="prep-button prep-recipe-action" /></ui:VisualElement>
+                  <ui:VisualElement class="prep-recipe-row"><ui:Label text="알바 크기" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.recipe.size.label" /></Bindings></ui:Label><ui:Button name="RecipeSize_2" text="Basic" class="prep-button prep-recipe-action" /></ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label name="PreparationRecipeHint_2" text="알바를 배치하면 반복해서 만들 맛과 크기를 정할 수 있어요." class="prep-recipe-hint" />
+                <ui:Label name="PreparationRecipeHint_2" text="Assign a helper to set the flavor and size it repeats." class="prep-recipe-hint" />
               </ui:VisualElement>
-              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label" /><ui:Label name="RecipeGrade_2" text="1등급 · 자동" class="prep-grade" /></ui:VisualElement>
+              <ui:VisualElement class="prep-grade-row"><ui:Label text="설탕" class="prep-recipe-label"><Bindings><CottonCircuit.LocalizedText property="text" key="business.sugar.kind" /></Bindings></ui:Label><ui:Label name="RecipeGrade_2" text="Grade 1 · Auto" class="prep-grade" /></ui:VisualElement>
               <ui:Label name="PreparationSizeLimit_2" text="" class="prep-size-limit" />
             </ui:VisualElement>
           </ui:VisualElement>
           <ui:VisualElement class="prep-cart-card">
             <ui:VisualElement class="prep-cart-header">
-              <ui:Label text="나의 차량" class="prep-cart-title" />
-              <ui:VisualElement class="prep-cart-actions"><ui:Button name="SelectCart_1" text="다운힐 쿠페" class="prep-button prep-cart-choice prep-selected" /><ui:Button name="SelectCart_0" text="클래식 카트" class="prep-button prep-cart-choice" /></ui:VisualElement>
+              <ui:Label text="나의 차량" class="prep-cart-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.cart.title" /></Bindings></ui:Label>
+              <ui:VisualElement class="prep-cart-actions"><ui:Button name="SelectCart_1" text="다운힐 쿠페" class="prep-button prep-cart-choice prep-selected"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.cart.downhill" /></Bindings></ui:Button><ui:Button name="SelectCart_0" text="클래식 카트" class="prep-button prep-cart-choice"><Bindings><CottonCircuit.LocalizedText property="text" key="trait.coupe.name" /></Bindings></ui:Button></ui:VisualElement>
             </ui:VisualElement>
-            <ui:Label name="PreparationCartHint" text="직접 운전할 차량을 골라 보세요." class="prep-cart-hint" />
+            <ui:Label name="PreparationCartHint" text="Choose the vehicle you'll drive yourself." class="prep-cart-hint" />
           </ui:VisualElement>
         </ui:ScrollView>
       </ui:VisualElement>
       <ui:VisualElement name="LocationsPage" class="prep-page hidden">
-        <ui:VisualElement class="prep-page-heading"><ui:Label text="오늘의 장사" class="prep-section-title" /><ui:Label name="PreparationLocationIndex" text="01 / 04" class="prep-muted" /></ui:VisualElement>
+        <ui:VisualElement class="prep-page-heading"><ui:Label text="오늘의 장사" class="prep-section-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.location.title" /></Bindings></ui:Label><ui:Label name="PreparationLocationIndex" text="01 / 04" class="prep-muted" /></ui:VisualElement>
         <ui:ScrollView class="prep-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
           <ui:VisualElement class="prep-location-hero">
             <ui:VisualElement name="LocationScenery" class="prep-location-art" picking-mode="Ignore" />
             <ui:VisualElement class="prep-location-copy">
               <ui:Label text="TODAY'S DESTINATION" class="prep-eyebrow" />
-              <ui:Label name="PreparationLocationName" text="동네 골목" class="prep-location-name" />
-              <ui:Label name="PreparationLocationDetail" text="처음 만나는 손님들과 작은 가게를 시작해요." class="prep-location-detail" />
-              <ui:Button name="SelectLocation" text="선택한 장소" class="prep-button prep-location-select prep-selected" />
+              <ui:Label name="PreparationLocationName" text="Back Alley" class="prep-location-name" />
+              <ui:Label name="PreparationLocationDetail" text="A quiet street to start your business" class="prep-location-detail" />
+              <ui:Button name="SelectLocation" text="Selected place" class="prep-button prep-location-select prep-selected" />
             </ui:VisualElement>
           </ui:VisualElement>
           <ui:VisualElement class="prep-location-cards">
-            <ui:Button name="PreviewLocation_0" class="prep-button prep-location-card prep-selected"><ui:Label text="동네 골목" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_0" text="선택됨" class="prep-location-state" /></ui:Button>
-            <ui:Button name="PreviewLocation_1" class="prep-button prep-location-card"><ui:Label text="시장 앞" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_1" text="잠김" class="prep-location-state" /></ui:Button>
-            <ui:Button name="PreviewLocation_2" class="prep-button prep-location-card"><ui:Label text="강변 축제" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_2" text="잠김" class="prep-location-state" /></ui:Button>
-            <ui:Button name="PreviewLocation_3" class="prep-button prep-location-card"><ui:Label text="별빛 광장" class="prep-location-card-name" /><ui:Label name="PreparationLocationState_3" text="잠김" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_0" class="prep-button prep-location-card prep-selected"><ui:Label text="동네 골목" class="prep-location-card-name"><Bindings><CottonCircuit.LocalizedText property="text" key="location.0.name" /></Bindings></ui:Label><ui:Label name="PreparationLocationState_0" text="Selected" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_1" class="prep-button prep-location-card"><ui:Label text="시장 앞" class="prep-location-card-name"><Bindings><CottonCircuit.LocalizedText property="text" key="location.1.name" /></Bindings></ui:Label><ui:Label name="PreparationLocationState_1" text="Locked" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_2" class="prep-button prep-location-card"><ui:Label text="강변 축제" class="prep-location-card-name"><Bindings><CottonCircuit.LocalizedText property="text" key="location.2.name" /></Bindings></ui:Label><ui:Label name="PreparationLocationState_2" text="Locked" class="prep-location-state" /></ui:Button>
+            <ui:Button name="PreviewLocation_3" class="prep-button prep-location-card"><ui:Label text="별빛 광장" class="prep-location-card-name"><Bindings><CottonCircuit.LocalizedText property="text" key="location.3.name" /></Bindings></ui:Label><ui:Label name="PreparationLocationState_3" text="Locked" class="prep-location-state" /></ui:Button>
           </ui:VisualElement>
           <ui:VisualElement class="prep-location-footer">
             <ui:Button name="PreviousLocation" text="‹" class="prep-button prep-location-arrow" /><ui:Button name="NextLocation" text="›" class="prep-button prep-location-arrow" />
-            <ui:Label text="READY WHEN YOU ARE" class="prep-location-ready" /><ui:Button name="BeginBusiness" text="영업 시작" class="prep-button prep-primary prep-business-start" />
+            <ui:Label text="READY WHEN YOU ARE" class="prep-location-ready" /><ui:Button name="BeginBusiness" text="영업 시작" class="prep-button prep-primary prep-business-start"><Bindings><CottonCircuit.LocalizedText property="text" key="tutorial.complete" /></Bindings></ui:Button>
           </ui:VisualElement>
         </ui:ScrollView>
       </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement class="prep-side">
-      <ui:Label text="SUGAR &amp; COMPANY" class="prep-eyebrow" /><ui:Label text="작은 가게, 커다란 꿈" class="prep-side-title" />
+      <ui:Label text="SUGAR &amp; COMPANY" class="prep-eyebrow" /><ui:Label text="작은 가게, 커다란 꿈" class="prep-side-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.side.title" /></Bindings></ui:Label>
       <ui:VisualElement name="CompanionPortrait" class="prep-portrait" picking-mode="Ignore" />
-      <ui:Label text="M I N A / 가게 친구" class="prep-companion-name" /><ui:Label name="PreparationSpeech" text="작은 한 걸음부터 시작해 볼까요?" class="prep-speech" />
-      <ui:Button name="OpenUpgradeGraph" text="01    성장 지도" class="prep-button prep-nav-button prep-selected" />
-      <ui:Button name="OpenEquipment" text="02    기계와 레시피" class="prep-button prep-nav-button" />
-      <ui:Button name="OpenLocations" text="03    오늘의 장사" class="prep-button prep-nav-button" />
-      <ui:VisualElement class="prep-side-footer"><ui:Label text="한 바퀴씩, 우리만의 가게로." class="prep-footer-caption" /></ui:VisualElement>
+      <ui:Label text="M I N A / 가게 친구" class="prep-companion-name"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.companion.name" /></Bindings></ui:Label><ui:Label name="PreparationSpeech" text="Shall we start with a small step?" class="prep-speech" />
+      <ui:Button name="OpenUpgradeGraph" text="01    성장 지도" class="prep-button prep-nav-button prep-selected"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.nav.graph" /></Bindings></ui:Button>
+      <ui:Button name="OpenEquipment" text="02    기계와 레시피" class="prep-button prep-nav-button"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.nav.equipment" /></Bindings></ui:Button>
+      <ui:Button name="OpenLocations" text="03    오늘의 장사" class="prep-button prep-nav-button"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.nav.locations" /></Bindings></ui:Button>
+      <ui:VisualElement class="prep-side-footer"><ui:Label text="한 바퀴씩, 우리만의 가게로." class="prep-footer-caption"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.footer.caption" /></Bindings></ui:Label></ui:VisualElement>
     </ui:VisualElement>
   </ui:VisualElement>
 </ui:UXML>

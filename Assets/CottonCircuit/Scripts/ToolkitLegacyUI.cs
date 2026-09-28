@@ -49,10 +49,10 @@ namespace CottonCircuit
             bool allowed = !session.Paused && game.Store.CanSave && (game.ContinuousMode || session.Mode == GameMode.Shop);
             SetText("legacyDay", "DAY " + economy.Day.ToString("00"));
             SetText("legacyCoins", economy.Coins.ToString("N0") + " C");
-            SetText("legacyStockCount", "진열대  " + economy.Inventory.Count + " / " + economy.StockCapacity);
+            SetText("legacyStockCount", Strings.Format("legacy.stock.count", economy.Inventory.Count, economy.StockCapacity));
             SetText("legacySpeed", Mathf.RoundToInt(game.World.Kart.Speed * 3.6f) + " km/h");
             SetText("legacyRecipe", Palette.FlavorName(game.RunFlavor) + "  " + game.RunTargetGrams + "g");
-            SetText("legacyDrivingStatus", session.ProductionWaiting ? "진열대가 가득 찼어요" : "직접 운전 · 이번 바퀴 " + game.RunProgress.ToString("P0"));
+            SetText("legacyDrivingStatus", session.ProductionWaiting ? Strings.Get("legacy.driving.full") : Strings.Format("legacy.driving.manual", game.RunProgress.ToString("P0")));
             Q<ProgressBar>("legacyProgress").value = (float)(game.RunProgress * 100);
             Show(Q<VisualElement>("legacyDriveHud"), game.RaceVisible);
             Show(Q<Button>("legacyAbort"), !game.ContinuousMode && session.Mode == GameMode.Racing);
@@ -62,7 +62,7 @@ namespace CottonCircuit
                 Show(Q<VisualElement>("legacyOrder" + i), order != null);
                 if (order != null)
                 {
-                    SetText("legacyOrderText" + i, Palette.FlavorName(order.Flavor) + " · " + CandyRecipe.TargetGrams(order.Size) + "g  /  " + Math.Ceiling(order.Remaining) + "초");
+                    SetText("legacyOrderText" + i, Strings.Format("legacy.order.text", Palette.FlavorName(order.Flavor), CandyRecipe.TargetGrams(order.Size), Math.Ceiling(order.Remaining)));
                     Q<ProgressBar>("legacyPatience" + i).value = (float)(100 * order.Remaining / CustomerOrder.Patience);
                 }
                 Q<Button>("legacyChooseOrder" + i).SetEnabled(allowed);
@@ -81,24 +81,24 @@ namespace CottonCircuit
                 slot.SetEnabled(allowed && product != null);
                 slot.EnableInClassList("selected", product != null && game.SelectedProductId == product.Id);
                 SetArt(Q<VisualElement>("legacyStockArt" + i), product == null ? null : UiArt.BaggedCandy(Math.Max(0, CandyRecipe.FlavorOf(product)), Math.Max(0, CandyRecipe.SizeOf(product))));
-                SetText("legacyStockText" + i, product == null ? "빈 자리" : Palette.FlavorName(CandyRecipe.FlavorOf(product)) + " " + product.Grams + "g");
+                SetText("legacyStockText" + i, product == null ? Strings.Get("legacy.stock.empty") : Palette.FlavorName(CandyRecipe.FlavorOf(product)) + " " + product.Grams + "g");
             }
-            string[] names = { "카트 모터", "설탕통", "가게 꾸미기" };
             for (int i = 0; i < 3; i++)
             {
                 Q<Button>("legacyFlavor" + i).SetEnabled(allowed);
                 Q<Button>("legacyFlavor" + i).EnableInClassList("accent", game.PreparedFlavor == i);
                 var upgrade = Q<Button>("legacyUpgrade" + i);
-                upgrade.text = names[i] + " Lv." + economy.Levels[i] + "  " + economy.UpgradeCost(i) + " C";
+                upgrade.text = Strings.Get("legacy.upgrade." + i) + " Lv." + economy.Levels[i] + "  " + economy.UpgradeCost(i) + " C";
                 upgrade.SetEnabled(allowed && economy.Coins >= economy.UpgradeCost(i));
             }
-            Q<Button>("legacyShelf").text = "진열대 확장  " + economy.ShelfCost + " C";
+            Q<Button>("legacyShelf").text = Strings.Get("trait.shelf.name") + "  " + economy.ShelfCost + " C";
             Q<Button>("legacyShelf").SetEnabled(allowed && economy.ShelfLevel < 2 && economy.Coins >= economy.ShelfCost);
             Q<Button>("legacyDiscard").SetEnabled(allowed && game.SelectedProduct != null);
             Q<Button>("legacyMakeStock").SetEnabled(allowed && economy.Inventory.Count < economy.StockCapacity);
-            Q<Button>("legacyMakeStock").text = game.ContinuousMode ? "다음 생산에 설정 적용" : "재고 만들기";
+            Q<Button>("legacyMakeStock").text = game.ContinuousMode ? Strings.Get("legacy.stock.apply") : Strings.Get("legacy.stock.make");
             Show(Q<VisualElement>("legacyResult"), session.Mode == GameMode.Results);
-            SetText("legacyResultText", session.Result == null ? "완주하지 못했어요. 다시 도전해 주세요." : "완성! " + session.Result.Grams + "g\n품질 " + session.Result.Quality + " · 진열대에 보관했어요.");
+            SetText("legacyResultText", session.Result == null ? Strings.Get("legacy.result.incomplete")
+                : Strings.Format("legacy.result.complete", session.Result.Grams, session.Result.Quality));
         }
     }
 }
