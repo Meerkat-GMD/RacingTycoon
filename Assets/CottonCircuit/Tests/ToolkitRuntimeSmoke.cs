@@ -484,6 +484,18 @@ namespace CottonCircuit.Tests
             yield return new WaitForSecondsRealtime(1.6f);
             var third = decks[Private<int>(player, "active")];
             Check(third.isPlaying && third.clip == song.Clip, "a stopped song restarts instead of leaving the business silent");
+            SettingsStore.Apply(s => s.MusicVolume = 0);
+            yield return new WaitForSecondsRealtime(.2f);
+            Check(Array.TrueForAll(decks, d => d.volume == 0), "music volume 0 silences the music decks");
+            SettingsStore.Apply(s => s.MusicVolume = 1);
+            yield return new WaitForSecondsRealtime(1.2f);
+            Check(Array.Exists(decks, d => d.volume > 0), "music volume 1 restores the music");
+            SettingsStore.Apply(s => s.Muted = true);
+            yield return new WaitForSecondsRealtime(.2f);
+            Check(game.Audio.Muted && Array.TrueForAll(decks, d => d.volume == 0), "mute silences music");
+            SettingsStore.Apply(s => s.Muted = false);
+            Check(File.Exists(Path.Combine(SettingsStore.DirectoryPath, "settings.json")), "settings are written to the isolated folder");
+            Check(SettingsStore.DirectoryPath.StartsWith(saveDirectory), "settings are written inside the isolated save folder, never the player's real settings");
         }
 
         static T Private<T>(object owner, string name) =>

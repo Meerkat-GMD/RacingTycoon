@@ -11,6 +11,7 @@ namespace CottonCircuit
         // Buttons with this class play their own action sound instead of the click.
         public const string QuietClick = "quiet-click";
         public static event Action ButtonPressed;
+        public static void PlayClick() => ButtonPressed?.Invoke();
 
         public static UIDocument Open(GameObject owner, string screenName, int order)
         {

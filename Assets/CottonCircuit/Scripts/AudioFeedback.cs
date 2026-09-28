@@ -15,7 +15,9 @@ namespace CottonCircuit
         readonly Dictionary<Sound, float> lastTimes = new Dictionary<Sound, float>();
         readonly List<KeyValuePair<float, Sound>> queued = new List<KeyValuePair<float, Sound>>();
         readonly Dictionary<Sound, int> counts = new Dictionary<Sound, int>();
-        public bool Muted { get; private set; }
+        public bool Muted => SettingsStore.Current.Muted;
+        public float MusicVolume => SettingsStore.Current.MusicVolume;
+        public float EffectsVolume => SettingsStore.Current.EffectsVolume;
         public MusicCue Music => music.Current;
         // How often a sound was actually heard; the development smoke check reads it.
         public int Played(Sound id) => counts.TryGetValue(id, out int count) ? count : 0;
@@ -30,9 +32,17 @@ namespace CottonCircuit
             music = new MusicPlayer(gameObject);
         }
 
-        void OnEnable() { ToolkitUI.ButtonPressed += Click; }
-        void OnDisable() { ToolkitUI.ButtonPressed -= Click; }
+        void OnEnable() { ToolkitUI.ButtonPressed += Click; SettingsStore.Changed += ApplySettings; }
+        void OnDisable() { ToolkitUI.ButtonPressed -= Click; SettingsStore.Changed -= ApplySettings; }
         void Click() { Play(Sound.UiClick); }
+
+        void ApplySettings()
+        {
+            if (!Muted || engine == null) return;
+            foreach (var source in pool) source.Stop();
+            queued.Clear();
+            engine.volume = skid.volume = wind.volume = hum.volume = 0;
+        }
 
         void LateUpdate()
         {
@@ -41,7 +51,7 @@ namespace CottonCircuit
                 if (queued[i].Key <= now) { var sound = queued[i].Value; queued.RemoveAt(i); Play(sound); }
             var scene = game.MusicScene;
             bool paused = game.Session != null && game.Session.Paused;
-            float level = Muted ? 0 : MusicLevel * (paused ? PausedMusic : 1);
+            float level = Muted ? 0 : MusicLevel * MusicVolume * (paused ? PausedMusic : 1);
             music.Update(Sounds, MusicChoice.Cue(scene), level, MusicChoice.Hurry(scene) ? MusicChoice.HurryPitch : 1, Time.unscaledDeltaTime);
         }
 
@@ -74,7 +84,7 @@ namespace CottonCircuit
         void Emit(AudioClip clip, float volume, float pitch)
         {
             var source = pool[next]; next = (next + 1) % pool.Length;
-            source.clip = clip; source.volume = volume; source.pitch = pitch; source.Play();
+            source.clip = clip; source.volume = volume * EffectsVolume; source.pitch = pitch; source.Play();
         }
 
         public void UpdateDriving(KartController kart, bool active)
@@ -83,22 +93,13 @@ namespace CottonCircuit
             bool audible = active && !Muted;
             bool downhill = kart.DriveModel.Style == DrivingStyle.Downhill;
             float speed = Mathf.Clamp01(kart.Speed / (downhill ? 45 : 32));
-            engine.volume = audible ? Mathf.Lerp(.25f, 1f, speed) * Sounds.EngineVolume : 0;
+            engine.volume = audible ? Mathf.Lerp(.25f, 1f, speed) * Sounds.EngineVolume * EffectsVolume : 0;
             engine.pitch = .8f + speed * .8f;
-            hum.volume = audible ? Sounds.MachineHumVolume : 0;
-            skid.volume = audible && kart.Drifting && kart.Speed > 5 ? .13f : 0;
+            hum.volume = audible ? Sounds.MachineHumVolume * EffectsVolume : 0;
+            skid.volume = audible && kart.Drifting && kart.Speed > 5 ? .13f * EffectsVolume : 0;
             skid.pitch = 1 + kart.Speed / 40;
-            wind.volume = audible ? Mathf.Clamp01((kart.Speed - 12) / (downhill ? 43 : 28)) * (kart.Boosting ? .18f : downhill ? .15f : .09f) : 0;
+            wind.volume = audible ? Mathf.Clamp01((kart.Speed - 12) / (downhill ? 43 : 28)) * (kart.Boosting ? .18f : downhill ? .15f : .09f) * EffectsVolume : 0;
             wind.pitch = .7f + kart.Speed / 60;
-        }
-
-        public void Toggle()
-        {
-            Muted = !Muted;
-            if (!Muted) return;
-            foreach (var source in pool) source.Stop();
-            queued.Clear();
-            engine.volume = skid.volume = wind.volume = hum.volume = 0;
         }
 
         AudioSource Loop(AudioClip clip)

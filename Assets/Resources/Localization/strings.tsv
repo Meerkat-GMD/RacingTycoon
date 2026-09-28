@@ -356,3 +356,5 @@ legacy.style.downhill	다운힐	Downhill
 legacy.controls	W 가속 · A / D 조향 · S 제동 · Space 드리프트 · Shift 부스터 · R 복귀 · Esc 일시정지	W Accelerate · A / D Steer · S Brake · Space Drift · Shift Boost · R Back to track · Esc Pause
 legacy.result.title	주행 결과	Run Result
 legacy.return.shop	가게로 돌아가기	Back to the shop
+pause.sound.on	소리 켜짐	Sound on
+pause.sound.off	소리 꺼짐	Sound off

@@ -337,7 +337,6 @@ namespace CottonCircuit
             }
             World.Kart.SetEffects(!Session.Paused && Session.Mode == GameMode.Racing); Audio.UpdateDriving(World.Kart, !Session.Paused && Session.Mode == GameMode.Racing); UI.Refresh();
         }
-        public void ToggleMute() { Audio.Toggle(); UI.Refresh(); }
         public void ResetSave()
         {
             if ((!ContinuousMode && Session.Mode != GameMode.Shop) || !Store.ArchiveAndReset()) return;
