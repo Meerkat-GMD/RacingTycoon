@@ -228,8 +228,8 @@ drag.drop.tutorial	설탕을 넣었어요. 직접 달려보세요!	Sugar added. 
 drag.drop.cost	재료비가 부족해요	Not enough coins
 drag.drop.shake	봉지를 위아래로 흔들어 설탕을 넣어요	Shake the bag up and down to add sugar
 drag.drop.bring	주행 화면으로 가져와 흔들어 주세요	Bring it to the track and shake
-notice.recover.legacy	코스에 복귀했어요. 결승선까지 한 바퀴 완주하세요.	Back on track. Finish one lap to the line.
-notice.recover.shift	코스에 복귀했어요. 복귀 이동은 생산 거리에 포함되지 않아요.	Back on track. The jump back doesn't count toward production.
+notice.recover.legacy	코스에 복귀했어요. 결승선까지 한 바퀴 완주하세요.	Back to the track. Finish one lap to the line.
+notice.recover.shift	코스에 복귀했어요. 복귀 이동은 생산 거리에 포함되지 않아요.	Back to the track. The jump back doesn't count toward production.
 notice.order.missed	기다리던 손님이 떠났어요. 만든 솜사탕은 재고에 남아요.	The waiting customer left. The candy you made stays in stock.
 notice.drift.kart	드리프트 성공! 부스터 {0}/2 · 가속이 끝나면 Shift로 사용	Nice drift! Boost {0}/2 · Press Shift after the rush
 notice.drift.coupe	드리프트 성공! 엑셀을 유지해 속도를 더 올리세요.	Nice drift! Keep the throttle down to build more speed.
