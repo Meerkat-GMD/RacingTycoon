@@ -23,16 +23,21 @@ namespace CottonCircuit
             document.sortingOrder = order;
             document.visualTreeAsset = tree;
             document.rootVisualElement.pickingMode = PickingMode.Ignore;
-            document.rootVisualElement.RegisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
+            // Buttons click on press: the release is delivered only to the button that captured the
+            // pointer, and its action may close this document before any later event arrives.
+            document.rootVisualElement.RegisterCallback<PointerDownEvent>(OnPointerDown, TrickleDown.TrickleDown);
             document.rootVisualElement.RegisterCallback<NavigationSubmitEvent>(OnSubmit, TrickleDown.TrickleDown);
             return document;
         }
 
-        static void OnClick(ClickEvent evt) => Pressed(evt.target as VisualElement);
-        static void OnSubmit(NavigationSubmitEvent evt) => Pressed(evt.target as VisualElement);
-        static void Pressed(VisualElement target)
+        static void OnPointerDown(PointerDownEvent evt)
         {
-            var button = target as Button ?? target?.GetFirstAncestorOfType<Button>();
+            if (evt.button == 0) Pressed(ButtonOf(evt.target as VisualElement));
+        }
+        static void OnSubmit(NavigationSubmitEvent evt) => Pressed(ButtonOf(evt.target as VisualElement));
+        static Button ButtonOf(VisualElement target) => target as Button ?? target?.GetFirstAncestorOfType<Button>();
+        static void Pressed(Button button)
+        {
             if (button != null && button.enabledInHierarchy && !button.ClassListContains(QuietClick)) ButtonPressed?.Invoke();
         }
 

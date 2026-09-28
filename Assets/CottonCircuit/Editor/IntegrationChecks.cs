@@ -263,7 +263,7 @@ namespace CottonCircuit.Editor
             foreach (var song in bank.Music)
             {
                 var importer = (AudioImporter)AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(song.Clip));
-                Check(importer.defaultSampleSettings.loadType == AudioClipLoadType.Streaming, song.Cue + " music streams from disk");
+                Check(importer.defaultSampleSettings.loadType == AudioClipLoadType.CompressedInMemory, song.Cue + " music seeks exactly from memory");
                 Check(song.LoopEnd == 0 || song.LoopEnd < song.Clip.length && song.LoopStart < song.LoopEnd, song.Cue + " loop window lies inside the song");
             }
             Check(game.World.Kart && game.World.CentralCandy && game.World.Customer && game.World.SugarThread, "world gameplay references");

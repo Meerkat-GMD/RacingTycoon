@@ -19,7 +19,8 @@ namespace CottonCircuit.Editor
             return clip;
         }
 
-        static SoundEntry Effect(Sound id, string file, float volume, float minInterval = .04f, float jitter = 0) =>
+        // One-off action sounds have no repeat limit; only sounds that can fire in bursts are throttled.
+        static SoundEntry Effect(Sound id, string file, float volume, float minInterval = 0, float jitter = 0) =>
             new SoundEntry { Id = id, Clip = Load("Sfx/" + file), Volume = volume, MinInterval = minInterval, PitchJitter = jitter };
 
         static MusicEntry Song(MusicCue cue, string file, float volume, float loopStart = 0, float loopEnd = 0) =>

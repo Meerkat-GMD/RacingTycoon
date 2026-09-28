@@ -49,7 +49,7 @@
 **Interfaces:**
 - Produces: the file names below; Task 3's `SoundCatalog` loads exactly these paths.
 
-- [ ] **Step 1: Copy and convert**
+- [x] **Step 1: Copy and convert**
 
 Run in Git Bash from the repository root:
 
@@ -91,7 +91,7 @@ ls "$DST/Music" "$DST/Sfx" | wc -l
 
 Expected: `27` lines (7 music, 18 effects and 2 headers).
 
-- [ ] **Step 2: Prove the conversion kept every sample**
+- [x] **Step 2: Prove the conversion kept every sample**
 
 Seamless loops must keep their exact length. Run with the analysis venv:
 
@@ -112,7 +112,7 @@ EOF
 
 Expected: three `OK` lines. If a loop reports `LENGTH CHANGED`, copy that WAV unchanged under the same base name with `.wav` and use `.wav` in Task 3.
 
-- [ ] **Step 3: Write `Assets/CottonCircuit/Audio/THIRD-PARTY.md`**
+- [x] **Step 3: Write `Assets/CottonCircuit/Audio/THIRD-PARTY.md`**
 
 ```markdown
 # Audio sources
@@ -137,7 +137,7 @@ Music was converted to Ogg Vorbis (quality 7) only; no clip was otherwise edited
 | Sfx/TutorialPopup.wav, DeliverFail.wav, Purchase.wav, EngineLoop.wav, MachineHum.wav | User's CCMusics folder (`ui_*`, `engine_generator_loop_01`, `background_air_vent_vacumm_hum_motor_loop_02`) | Unconfirmed | Confirm source before release |
 ```
 
-- [ ] **Step 4: Import in Unity to create `.meta` files**
+- [x] **Step 4: Import in Unity to create `.meta` files**
 
 The project must not be open in the Unity editor (`Temp/UnityLockfile` absent).
 
@@ -148,7 +148,7 @@ ls Assets/CottonCircuit/Audio/Music/*.meta | wc -l
 
 Expected: exit code 0 and `7`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Assets/CottonCircuit/Audio Assets/CottonCircuit/Audio.meta
@@ -167,7 +167,7 @@ git commit -m "Import the chosen music and effects with their sources"
 **Interfaces:**
 - Produces: `enum MusicCue { None, Title, Story, Tutorial, Preparation, Machine1, Machine2, Machine3 }`, `struct MusicScene`, `MusicChoice.Cue(MusicScene)`, `MusicChoice.Hurry(MusicScene)`, `MusicChoice.HurryPitch`, `MusicChoice.WrapDue(double time, double loopEnd)`, `MusicChoice.Remembers(MusicCue)`, `ShopShift.DayRunning`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Insert before `Console.WriteLine("RESULT: ...` in `Tools/Tests/CoreTests.cs`:
 
@@ -182,12 +182,12 @@ Insert before `Console.WriteLine("RESULT: ...` in `Tools/Tests/CoreTests.cs`:
         Test("pause does not end the business day", () => { var e = new Economy(); var shift = new ShopShift(e); Check(shift.IsOpen && shift.DayRunning, "open day"); shift.Paused = true; Check(!shift.IsOpen && shift.DayRunning, "paused day still running"); });
 ```
 
-- [ ] **Step 2: Run the core tests and see them fail to compile**
+- [x] **Step 2: Run the core tests and see them fail to compile**
 
 Run: `powershell -File Tools/test-core.ps1`
 Expected: mcs error `The name 'MusicChoice' does not exist` (and `MusicScene`).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Create `Assets/CottonCircuit/Scripts/Core/MusicChoice.cs`:
 
@@ -249,12 +249,12 @@ In `Assets/CottonCircuit/Scripts/Core/ShopShift.cs` replace lines 100-101:
             (economy.Progression == null || economy.Progression.Phase == BusinessPhase.Operating); } }
 ```
 
-- [ ] **Step 4: Run the core tests**
+- [x] **Step 4: Run the core tests**
 
 Run: `powershell -File Tools/test-core.ps1`
 Expected: all three result lines end with `0 failed`, including the eight new `PASS` lines.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add Assets/CottonCircuit/Scripts/Core/MusicChoice.cs Assets/CottonCircuit/Scripts/Core/ShopShift.cs Tools/Tests/CoreTests.cs
@@ -275,7 +275,7 @@ git commit -m "Choose music from the screen state in core rules"
 - Consumes: `MusicCue` (Task 2), files from Task 1.
 - Produces: `enum Sound { UiClick, TutorialPopup, SugarShake, CandyDrop, CandyExtract, DeliverSuccess, StarBonus, Coins, DeliverFail, Trash, Purchase, ClosingBell, ClosingJingle, EngineStart, EngineStop, WallHit }`, `SoundBank.TryGet(Sound, out SoundEntry)`, `SoundBank.TryGet(MusicCue, out MusicEntry)`, `SoundBank.EngineLoop/MachineHum/EngineVolume/MachineHumVolume`, `AudioFeedback.Sounds` field (declared in Task 4; this task adds a temporary declaration only if Task 4 is not yet done — do Task 3 and Task 4 back to back and compile once).
 
-- [ ] **Step 1: Create `Assets/CottonCircuit/Scripts/SoundBank.cs`**
+- [x] **Step 1: Create `Assets/CottonCircuit/Scripts/SoundBank.cs`**
 
 ```csharp
 using System;
@@ -330,7 +330,7 @@ namespace CottonCircuit
 }
 ```
 
-- [ ] **Step 2: Create `Assets/CottonCircuit/Editor/AudioImportRules.cs`**
+- [x] **Step 2: Create `Assets/CottonCircuit/Editor/AudioImportRules.cs`**
 
 ```csharp
 using UnityEditor;
@@ -357,7 +357,7 @@ namespace CottonCircuit.Editor
 }
 ```
 
-- [ ] **Step 3: Create `Assets/CottonCircuit/Editor/SoundCatalog.cs`**
+- [x] **Step 3: Create `Assets/CottonCircuit/Editor/SoundCatalog.cs`**
 
 Volumes: music is normalized toward -20 LUFS from the measured loudness (Title -17.6, Story -22.9, Tutorial -13.7, Preparation -18.1, Flowey -16.4, Secret Stage -10.8, Time Trial -9.9); `AudioFeedback` then applies a 0.7 music level. Loop windows are whole bars measured from the beat grid (Secret Stage 103.35 BPM, 48 bars; Time Trial 90.0 BPM, 44 bars) and end before the authored endings at 114.5 s and 119.0 s.
 
@@ -429,7 +429,7 @@ namespace CottonCircuit.Editor
 }
 ```
 
-- [ ] **Step 4: Wire the bank in `ProjectBuilder.CreateScene`**
+- [x] **Step 4: Wire the bank in `ProjectBuilder.CreateScene`**
 
 In `Assets/CottonCircuit/Editor/ProjectBuilder.cs` replace line 52:
 
@@ -444,7 +444,7 @@ with:
             controller.UI = gameObject.AddComponent<GameUI>();
 ```
 
-- [ ] **Step 5: Check the bank in `IntegrationChecks`**
+- [x] **Step 5: Check the bank in `IntegrationChecks`**
 
 In `Assets/CottonCircuit/Editor/IntegrationChecks.cs` after line 256 (`Check(game && game.World && game.UI && game.Audio, "wired playable scene");`) add:
 
@@ -463,7 +463,7 @@ In `Assets/CottonCircuit/Editor/IntegrationChecks.cs` after line 256 (`Check(gam
             }
 ```
 
-- [ ] **Step 6: Continue with Task 4 before compiling** (Task 3 references `AudioFeedback.Sounds`, declared in Task 4). Commit both together at the end of Task 4.
+- [x] **Step 6: Continue with Task 4 before compiling** (Task 3 references `AudioFeedback.Sounds`, declared in Task 4). Commit both together at the end of Task 4.
 
 ---
 
@@ -478,7 +478,7 @@ In `Assets/CottonCircuit/Editor/IntegrationChecks.cs` after line 256 (`Check(gam
 - Consumes: `MusicChoice`, `MusicScene`, `SoundBank`, `Sound`, `ShopShift.DayRunning`.
 - Produces: `AudioFeedback.Play(Sound)`, `AudioFeedback.PlaySale(bool starBonus)`, `AudioFeedback.PlayClosing()`, `AudioFeedback.PlayBoost(int)`, `AudioFeedback.UpdateDriving(KartController, bool)`, `AudioFeedback.Toggle()`, `AudioFeedback.Muted`, `AudioFeedback.Played(Sound)` (`int`, times actually played), `AudioFeedback.Music` (`MusicCue`), `GameController.MusicScene`, `ToolkitUI.ButtonPressed` (`event Action`), `ToolkitUI.QuietClick` (`"quiet-click"`).
 
-- [ ] **Step 1: Create `Assets/CottonCircuit/Scripts/MusicPlayer.cs`**
+- [x] **Step 1: Create `Assets/CottonCircuit/Scripts/MusicPlayer.cs`**
 
 ```csharp
 using System.Collections.Generic;
@@ -552,7 +552,7 @@ namespace CottonCircuit
 }
 ```
 
-- [ ] **Step 2: Rewrite `Assets/CottonCircuit/Scripts/AudioFeedback.cs`**
+- [x] **Step 2: Rewrite `Assets/CottonCircuit/Scripts/AudioFeedback.cs`**
 
 ```csharp
 using System.Collections.Generic;
@@ -692,7 +692,7 @@ namespace CottonCircuit
 }
 ```
 
-- [ ] **Step 3: Expose the screen state**
+- [x] **Step 3: Expose the screen state**
 
 In `Assets/CottonCircuit/Scripts/TitleScreenUI.cs` after the field `bool entering, confirming;` add:
 
@@ -716,7 +716,7 @@ In `Assets/CottonCircuit/Scripts/GameController.cs` after line 29 (`public Produ
         };
 ```
 
-- [ ] **Step 4: Raise a click event for authored buttons**
+- [x] **Step 4: Raise a click event for authored buttons**
 
 In `Assets/CottonCircuit/Scripts/ToolkitUI.cs` add inside the class, before `Open`:
 
@@ -745,7 +745,7 @@ and add these methods to the class:
         }
 ```
 
-- [ ] **Step 5: Compile through the core tests and a Unity import**
+- [x] **Step 5: Compile through the core tests and a Unity import**
 
 The old `Audio.Play(int)` calls still exist, so Unity will not compile yet. Do Task 5 Step 1-3 now, then run the build in Task 5.
 
@@ -759,7 +759,7 @@ The old `Audio.Play(int)` calls still exist, so Unity will not compile yet. Do T
 **Interfaces:**
 - Consumes: `AudioFeedback.Play/PlaySale/PlayClosing`, `Sound`, `ToolkitUI.QuietClick`.
 
-- [ ] **Step 1: Replace the numbered calls**
+- [x] **Step 1: Replace the numbered calls**
 
 `GameController.cs`:
 - In `Step`, change `int boosts = World.Kart.DriveModel.BoostCount;` to `int boosts = World.Kart.DriveModel.BoostCount, hits = World.Kart.DriveModel.WallHits;` and after `if (World.Kart.DriveModel.BoostCount > boosts) Audio.PlayBoost(World.Kart.DriveModel.BoostTier);` add `if (World.Kart.DriveModel.WallHits > hits) Audio.Play(Sound.WallHit);`
@@ -810,7 +810,7 @@ with
 - `PurchaseNode`: `Audio.Play(1); Save(); UI.Refresh();` → `Audio.Play(Sound.Purchase); Save(); UI.Refresh();`
 - `BeginBusiness`: after `if (!PreparationActions || !Shift.BeginBusiness()) return;` add `Audio.Play(Sound.EngineStart);`
 
-- [ ] **Step 2: Drag, sugar and tutorial sounds**
+- [x] **Step 2: Drag, sugar and tutorial sounds**
 
 `ToolkitDragController.cs` (`GameUI` partial):
 - In `BeginBusinessDrag`, before `MoveBusinessDrag(pointerId, position); return true;` add `if (!sugar) game.Audio.Play(Sound.CandyDrop);`
@@ -833,17 +833,17 @@ with
             <ui:Button focusable="false" name="businessExtract" text="꺼내기  F" class="biz-button primary quiet-click" />
 ```
 
-- [ ] **Step 3: Confirm no numbered call remains**
+- [x] **Step 3: Confirm no numbered call remains**
 
 Run: `grep -rn "Audio.Play([0-9]" Assets/CottonCircuit/Scripts`
 Expected: no output.
 
-- [ ] **Step 4: Build the development player (compiles, rebuilds the scene, runs IntegrationChecks)**
+- [x] **Step 4: Build the development player (compiles, rebuilds the scene, runs IntegrationChecks)**
 
 Run: `powershell -File Tools/build.ps1 -BuildFolder Builds/UIToolkit`
 Expected: `Build ready: ...\Builds\UIToolkit\CottonCircuit.exe`; `Logs/build.log` contains the new `COTTON_CHECK_PASS sound bank has ...` lines and no `COTTON_CHECK_FAILED`.
 
-- [ ] **Step 5: Commit Tasks 3-5**
+- [x] **Step 5: Commit Tasks 3-5**
 
 ```bash
 git add Assets/CottonCircuit/Scripts Assets/CottonCircuit/Editor Assets/CottonCircuit/Data/SoundBank.asset Assets/CottonCircuit/Data/SoundBank.asset.meta Assets/CottonCircuit/Scenes Assets/Resources/UI/Business.uxml
@@ -858,7 +858,7 @@ git commit -m "Play the chosen music per screen and machine with real effects"
 - Modify: `Assets/CottonCircuit/Tests/ToolkitRuntimeSmoke.cs`
 - Create: `docs/audio-verification.md`
 
-- [ ] **Step 1: Add audio assertions to the existing flow**
+- [x] **Step 1: Add audio assertions to the existing flow**
 
 Checks compare `game.Audio.Played(...)` before and after an action, because one action can trigger several sounds (a sale is followed by the success bubble).
 
@@ -904,7 +904,7 @@ In `PreparationAndWorkers()`:
 - After `Check(game.InBusiness && economy.Day == 2 && !game.GrowthHintVisible, ...)` add `yield return Settle(); Check(game.Audio.Music == MusicCue.Machine1, "business opens on the first machine song");`
 - After `yield return Click("businessMachine1");` add `Check(game.Audio.Music == MusicCue.Machine2, "switching to the soda machine switches its song");`
 
-- [ ] **Step 2: Rebuild and run every smoke case and core test**
+- [x] **Step 2: Rebuild and run every smoke case and core test**
 
 ```bash
 powershell -File Tools/test-core.ps1
@@ -917,13 +917,24 @@ powershell -File Tools/verify-uitk.ps1 -Case hud
 
 Expected: core `0 failed`; each smoke `PASSED` with no runtime error logs.
 
-- [ ] **Step 3: Write `docs/audio-verification.md`**
+- [x] **Step 3: Write `docs/audio-verification.md`**
 
 Record: the command outputs above (pass counts), the chosen files per cue and event, the loop windows, and what still needs a human ear (loop wraps of Secret Stage!/Time Trial, relative loudness, engine pitch feel). Link `Assets/CottonCircuit/Audio/THIRD-PARTY.md` and list the unconfirmed licenses.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add Assets/CottonCircuit/Tests/ToolkitRuntimeSmoke.cs docs/audio-verification.md docs/superpowers/plans/2026-09-28-game-audio.md
 git commit -m "Check music and effects in the runtime smoke flow"
 ```
+
+## Review follow-up (2026-09-28)
+
+An independent read-only review of the branch found no crash or missing wiring and five issues, all confirmed against the code and fixed:
+
+- [x] Clicks were lost on buttons whose action closes or disables their document (이어하기, 건너뛰기, 새 게임), because `ClickEvent` arrives after the action. A trickle-down `PointerUpEvent` was tried first and never reached the document root: the release goes only to the button that captured the pointer. `ToolkitUI` now clicks on press (trickle-down `PointerDownEvent`, left button, enabled button); keyboard submit is unchanged.
+- [x] The loop restart was frame-polled on a streamed clip and a long hitch could stop a song for good. `MusicPlayer` now schedules the restart on the audio clock (`PlayScheduled` at `LoopEnd`) with a 0.15 s tail on the old deck, restarts at once if the end already passed or the deck stopped, and music imports as compressed-in-memory (`AudioImportRules` version 2) so `timeSamples` seeks are exact.
+- [x] A deck that was still fading could be cut. `MusicPlayer` uses three decks, takes the quietest free one, and fades a still-audible copy of the requested song back in instead of restarting it.
+- [x] Resuming from pause replayed the tutorial bubble sound. `TutorialOverlayUI` no longer updates the shown bubble while paused.
+- [x] One-off action sounds (purchase, extract, sale, coins, trash, closing) had a 0.04 s repeat limit that could hide a counted purchase at very high frame rates. Only burst sounds keep a limit now.
+- [x] A new `music` smoke case (`Tools/verify-uitk.ps1 -Case music`) moves the soda machine song 0.8 s before its loop end and checks the scheduled restart position, the old deck stopping, and recovery after the playing deck is stopped.

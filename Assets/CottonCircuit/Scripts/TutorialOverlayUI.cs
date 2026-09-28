@@ -52,9 +52,13 @@ namespace CottonCircuit
                 driveCoachDismissed = true;
             bool visible = game.Session != null && !game.Session.Paused && (game.TutorialActive || game.GrowthHintVisible);
             ToolkitUI.Show(view, visible);
-            string bubble = !visible ? null : game.GrowthHintVisible ? "growth" : step == TutorialStep.Success ? "success" : step.ToString();
-            if (bubble != null && bubble != shownBubble) game.Audio.Play(Sound.TutorialPopup);
-            shownBubble = bubble;
+            if (game.Session != null && !game.Session.Paused)
+            {
+                // Pausing hides the bubble; resuming shows the same one again without a new sound.
+                string bubble = !visible ? null : game.GrowthHintVisible ? "growth" : step == TutorialStep.Success ? "success" : step.ToString();
+                if (bubble != null && bubble != shownBubble) game.Audio.Play(Sound.TutorialPopup);
+                shownBubble = bubble;
+            }
             if (!visible)
             {
                 SetFocusTargets(null, null);
