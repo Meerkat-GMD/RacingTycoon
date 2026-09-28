@@ -42,6 +42,18 @@ namespace CottonCircuit
         int renderedSamples = -1, orderRevision;
         GameMode lastMode;
         TitleScreenUI titleScreen;
+        SettingsUI settingsUI;
+        public bool SettingsOpen => settingsUI && settingsUI.IsOpen;
+        public void OpenSettings(System.Action onClosed)
+        {
+            if (!settingsUI)
+            {
+                var host = new GameObject("Settings");
+                host.transform.SetParent(transform, false);
+                settingsUI = host.AddComponent<SettingsUI>();
+            }
+            settingsUI.Open(onClosed);
+        }
         public void ShowTitle(string saveDirectory)
         {
             if (Session != null || titleScreen) return;
@@ -119,7 +131,7 @@ namespace CottonCircuit
         void Update()
         {
             if (Session == null) return;
-            if (Input.GetKeyDown(KeyCode.Escape)) TogglePause();
+            if (Input.GetKeyDown(KeyCode.Escape) && !(settingsUI && settingsUI.HandlesEscape)) TogglePause();
             if (Session.Paused) { UI.Refresh(); return; }
             if (Shift != null && Input.GetMouseButtonDown(1)) EmptySugar();
             if (Shift != null && Input.GetKeyDown(KeyCode.F)) ExtractCandy();

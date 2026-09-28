@@ -1,0 +1,18 @@
+/* Shared card and button rules for Title, the settings window and (Task 10) the pause menu. */
+.menu-card { width: 500px; max-height: 100%; padding: 34px 40px; border-radius: 28px; background-color: rgba(255, 246, 231, 0.96); }
+.menu-eyebrow { color: #537f7e; font-size: 16px; -unity-font-style: bold; margin-bottom: 15px; }
+.menu-button {
+    min-height: 62px; margin: 0 0 12px 0; padding: 12px 24px;
+    background-color: #fffdf7; border-width: 2px; border-color: #e5dcd0; border-radius: 14px;
+    color: #29324d; font-size: 23px; -unity-font-style: bold; -unity-text-align: middle-left;
+}
+.menu-button-primary { background-color: #29324d; border-color: #29324d; color: #fff6e7; }
+.menu-button:hover, .menu-button:focus { border-color: #69bfc1; background-color: #dcefee; color: #29324d; }
+.menu-button:active { background-color: #bfdfde; }
+.menu-button:disabled { opacity: 0.45; }
+.menu-action-icon {
+    position: absolute; right: 24px; top: 20px; width: 20px; height: 20px;
+    background-image: url("project://database/Assets/CottonCircuit/UI/Art/ArrowRight.png");
+    background-size: contain; background-position: center; background-repeat: no-repeat;
+}
+.menu-button-primary:hover > .menu-action-icon, .menu-button-primary:focus > .menu-action-icon { -unity-background-image-tint-color: #29324d; }

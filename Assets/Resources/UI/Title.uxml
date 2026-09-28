@@ -1,11 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements">
     <ui:Style src="Shared.uss" />
+    <ui:Style src="Menu.uss" />
     <ui:Style src="Title.uss" />
     <ui:VisualElement name="TitleScreen" class="title-screen">
         <ui:VisualElement name="TitleBackground" class="title-background" picking-mode="Ignore" />
         <ui:VisualElement class="title-content" picking-mode="Ignore">
-            <ui:VisualElement name="TitleMenu" class="title-menu">
-                <ui:Label text="C O T T O N   C I R C U I T" class="title-eyebrow" picking-mode="Ignore">
+            <ui:VisualElement name="TitleMenu" class="menu-card">
+                <ui:Label text="C O T T O N   C I R C U I T" class="menu-eyebrow" picking-mode="Ignore">
                     <Bindings>
                         <CottonCircuit.LocalizedText property="text" key="title.eyebrow" />
                     </Bindings>
@@ -25,15 +26,20 @@
                         <CottonCircuit.LocalizedText property="text" key="title.tagline" />
                     </Bindings>
                 </ui:Label>
-                <ui:Button name="TitlePrimaryButton" text="Start game" class="title-button title-button-primary">
-                    <ui:VisualElement class="title-action-icon" picking-mode="Ignore" />
+                <ui:Button name="TitlePrimaryButton" text="Start game" class="menu-button menu-button-primary">
+                    <ui:VisualElement class="menu-action-icon" picking-mode="Ignore" />
                 </ui:Button>
-                <ui:Button name="TitleNewGameButton" text="새 게임" class="title-button">
+                <ui:Button name="TitleNewGameButton" text="새 게임" class="menu-button">
                     <Bindings>
                         <CottonCircuit.LocalizedText property="text" key="title.new" />
                     </Bindings>
                 </ui:Button>
-                <ui:Button name="TitleQuitButton" text="게임 종료" class="title-button">
+                <ui:Button name="TitleSettingsButton" text="설정" class="menu-button">
+                    <Bindings>
+                        <CottonCircuit.LocalizedText property="text" key="settings.open" />
+                    </Bindings>
+                </ui:Button>
+                <ui:Button name="TitleQuitButton" text="게임 종료" class="menu-button">
                     <Bindings>
                         <CottonCircuit.LocalizedText property="text" key="title.quit" />
                     </Bindings>
@@ -60,12 +66,12 @@
                     </Bindings>
                 </ui:Label>
                 <ui:VisualElement class="title-confirmation-actions">
-                    <ui:Button name="TitleCancelNewGameButton" text="돌아가기" class="title-button">
+                    <ui:Button name="TitleCancelNewGameButton" text="돌아가기" class="menu-button">
                         <Bindings>
                             <CottonCircuit.LocalizedText property="text" key="title.confirm.cancel" />
                         </Bindings>
                     </ui:Button>
-                    <ui:Button name="TitleConfirmNewGameButton" text="새로 시작" class="title-button title-button-primary">
+                    <ui:Button name="TitleConfirmNewGameButton" text="새로 시작" class="menu-button menu-button-primary">
                         <Bindings>
                             <CottonCircuit.LocalizedText property="text" key="title.confirm.accept" />
                         </Bindings>

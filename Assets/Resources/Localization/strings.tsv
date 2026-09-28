@@ -358,3 +358,15 @@ legacy.result.title	주행 결과	Run Result
 legacy.return.shop	가게로 돌아가기	Back to the shop
 pause.sound.on	소리 켜짐	Sound on
 pause.sound.off	소리 꺼짐	Sound off
+settings.open	설정	Settings
+settings.title	설정	Settings
+settings.sound	소리	Sound
+settings.music	배경음	Music
+settings.effects	효과음	Sound effects
+settings.mute	전체 음소거	Mute all
+settings.display	화면	Display
+settings.mode	화면 모드	Display mode
+settings.mode.windowed	창 모드	Windowed
+settings.mode.fullscreen	전체 화면	Fullscreen
+settings.resolution	해상도	Resolution
+settings.language	언어	Language

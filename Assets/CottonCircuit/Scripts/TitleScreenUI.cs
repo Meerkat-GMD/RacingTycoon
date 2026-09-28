@@ -11,7 +11,7 @@ namespace CottonCircuit
         string saveDirectory;
         UIDocument document;
         VisualElement screen, confirmation;
-        Button primary, newGame, quit, confirm, cancel;
+        Button primary, newGame, settings, quit, confirm, cancel;
         Label error;
         IntroStoryUI intro;
         bool entering, confirming;
@@ -28,6 +28,7 @@ namespace CottonCircuit
             screen = ToolkitUI.Q<VisualElement>(root, "TitleScreen");
             primary = ToolkitUI.Q<Button>(root, "TitlePrimaryButton");
             newGame = ToolkitUI.Q<Button>(root, "TitleNewGameButton");
+            settings = ToolkitUI.Q<Button>(root, "TitleSettingsButton");
             quit = ToolkitUI.Q<Button>(root, "TitleQuitButton");
             confirm = ToolkitUI.Q<Button>(root, "TitleConfirmNewGameButton");
             cancel = ToolkitUI.Q<Button>(root, "TitleCancelNewGameButton");
@@ -39,6 +40,7 @@ namespace CottonCircuit
             RefreshText();
             primary.clicked += () => Enter(false);
             newGame.clicked += OpenConfirmation;
+            settings.clicked += OpenSettings;
             quit.clicked += Quit;
             confirm.clicked += () => Enter(true);
             cancel.clicked += CancelConfirmation;
@@ -63,7 +65,7 @@ namespace CottonCircuit
             if (entering) return;
             int delta = evt.direction == NavigationMoveEvent.Direction.Up || evt.direction == NavigationMoveEvent.Direction.Left ? -1 : 1;
             var buttons = confirming ? new[] { cancel, confirm }
-                : store.HasSave ? new[] { primary, newGame, quit } : new[] { primary, quit };
+                : store.HasSave ? new[] { primary, newGame, settings, quit } : new[] { primary, settings, quit };
             int index = System.Array.IndexOf(buttons, document.rootVisualElement.focusController.focusedElement as Button);
             buttons[(index + delta + buttons.Length) % buttons.Length].Focus();
             evt.PreventDefault();
@@ -85,6 +87,7 @@ namespace CottonCircuit
             primary.SetEnabled(false);
             quit.SetEnabled(false);
             newGame.SetEnabled(false);
+            settings.SetEnabled(false);
             cancel.Focus();
         }
 
@@ -95,7 +98,14 @@ namespace CottonCircuit
             primary.SetEnabled(true);
             quit.SetEnabled(true);
             newGame.SetEnabled(true);
+            settings.SetEnabled(true);
             (store.HasSave ? newGame : primary).Focus();
+        }
+
+        void OpenSettings()
+        {
+            if (entering || confirming) return;
+            game.OpenSettings(() => settings.Focus());
         }
 
         void Enter(bool reset)

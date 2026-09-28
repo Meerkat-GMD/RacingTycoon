@@ -74,7 +74,7 @@ namespace CottonCircuit.Tests
         IEnumerator Scenario()
         {
             Check(game && game.Session == null, "runner starts before gameplay without touching the user's save");
-            Check(scenario == "full" || scenario == "legacy" || scenario == "rack" || scenario == "hud" || scenario == "music", "known UI Toolkit scenario");
+            Check(scenario == "full" || scenario == "legacy" || scenario == "rack" || scenario == "hud" || scenario == "music" || scenario == "settings", "known UI Toolkit scenario");
             Directory.CreateDirectory(saveDirectory);
             Screen.SetResolution(width, height, false);
             yield return new WaitForSecondsRealtime(.6f);
@@ -85,6 +85,7 @@ namespace CottonCircuit.Tests
             if (scenario == "rack") { yield return Rack(); yield break; }
             if (scenario == "hud") { yield return Hud(); yield break; }
             if (scenario == "music") { yield return MusicLoop(); yield break; }
+            if (scenario == "settings") { yield return SettingsFlow(); yield break; }
 
             game.ShowTitle(saveDirectory);
             yield return Settle();
@@ -496,6 +497,64 @@ namespace CottonCircuit.Tests
             SettingsStore.Apply(s => s.Muted = false);
             Check(File.Exists(Path.Combine(SettingsStore.DirectoryPath, "settings.json")), "settings are written to the isolated folder");
             Check(SettingsStore.DirectoryPath.StartsWith(saveDirectory), "settings are written inside the isolated save folder, never the player's real settings");
+        }
+
+        IEnumerator SettingsFlow()
+        {
+            game.ShowTitle(saveDirectory);
+            yield return Settle();
+            Language start = Strings.Current;
+            yield return Click("TitleSettingsButton");
+            Check(Visible(Find("SettingsScreen")) && game.SettingsOpen, "title opens the settings window");
+            CheckInsideViewport("SettingsCard");
+            Check(Element<Label>("SettingsLanguageValue").text == Strings.Get("language.self"), "language row shows the current language");
+            yield return Capture("settings-title.png");
+            yield return Click("SettingsLanguageNext");
+            yield return Settle();
+            Check(Strings.Current != start, "the language arrow switches the language");
+            Check(Element<Button>("TitlePrimaryButton").text == Strings.Get("title.start"), "title text follows the switch at once");
+            var words = Element<VisualElement>("TitleMenu").Query<Label>(className: "title-word").ToList();
+            Check(words[0].text == Strings.Get("title.word.first"), "bound title words follow the switch at once");
+            var saved = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Path.Combine(saveDirectory, "settings.json")));
+            Check(saved.Language == Strings.Code(Strings.Current), "the chosen language is saved in the isolated folder");
+            Element<Slider>("SettingsEffectsSlider").value = 40;
+            yield return Settle();
+            Check(Mathf.Approximately(SettingsStore.Current.EffectsVolume, .4f) && Element<Label>("SettingsEffectsValue").text == "40%", "effects slider stores and shows 40%");
+            yield return Click("SettingsMuteButton");
+            Check(SettingsStore.Current.Muted && game.Audio.Muted, "mute button mutes");
+            yield return Click("SettingsMuteButton");
+            Check(!SettingsStore.Current.Muted, "mute button unmutes");
+            SettingsStore.Use(saveDirectory);
+            Check(Mathf.Approximately(SettingsStore.Current.EffectsVolume, .4f) && SettingsStore.Current.Language == Strings.Code(Strings.Current), "settings reload from disk");
+            string corrupt = Path.Combine(saveDirectory, "corrupt-settings");
+            Directory.CreateDirectory(corrupt);
+            File.WriteAllText(Path.Combine(corrupt, "settings.json"), "{ not json");
+            SettingsStore.Use(corrupt);
+            Check(SettingsStore.Current.MusicVolume == 1 && SettingsStore.Current.EffectsVolume == 1 && !SettingsStore.Current.Muted, "corrupt settings fall back to defaults");
+            SettingsStore.Use(saveDirectory);
+            yield return Key(KeyCode.Escape);
+            Check(!game.SettingsOpen && Element<Button>("TitleSettingsButton").focusController.focusedElement == Find("TitleSettingsButton"), "Esc closes settings and returns focus to the title");
+            yield return Click("TitleSettingsButton");
+            yield return Click("SettingsLanguageNext");
+            Check(Strings.Current == start, "switching again restores the starting language");
+            yield return Click("SettingsCloseButton");
+            Check(!game.SettingsOpen, "close button closes settings");
+        }
+
+        IEnumerator Key(KeyCode key)
+        {
+            var target = Find("SettingsScreen");
+            using (var evt = KeyDownEvent.GetPooled('\0', key, EventModifiers.None)) { evt.target = target.focusController.focusedElement ?? target; target.panel.visualTree.SendEvent(evt); }
+            yield return Settle();
+        }
+
+        void CheckInsideViewport(string name)
+        {
+            var element = Element<VisualElement>(name);
+            var viewport = element.panel.visualTree.worldBound;
+            var bounds = element.worldBound;
+            Check(bounds.width > 100 && bounds.height > 100 && bounds.xMin >= viewport.xMin - .5f && bounds.yMin >= viewport.yMin - .5f &&
+                bounds.xMax <= viewport.xMax + .5f && bounds.yMax <= viewport.yMax + .5f, name + " lies inside the viewport: " + bounds + " in " + viewport);
         }
 
         static T Private<T>(object owner, string name) =>

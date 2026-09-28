@@ -1,0 +1,74 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Shared.uss" />
+    <ui:Style src="Menu.uss" />
+    <ui:Style src="Settings.uss" />
+    <ui:VisualElement name="SettingsScreen" class="settings-screen hidden">
+        <ui:VisualElement name="SettingsCard" class="settings-card">
+            <ui:Label text="설정" class="settings-title">
+                <Bindings><CottonCircuit.LocalizedText property="text" key="settings.title" /></Bindings>
+            </ui:Label>
+            <ui:Label text="소리" class="settings-heading">
+                <Bindings><CottonCircuit.LocalizedText property="text" key="settings.sound" /></Bindings>
+            </ui:Label>
+            <ui:VisualElement name="SettingsMusicRow" class="settings-row" focusable="true">
+                <ui:Label text="배경음" class="settings-label" picking-mode="Ignore">
+                    <Bindings><CottonCircuit.LocalizedText property="text" key="settings.music" /></Bindings>
+                </ui:Label>
+                <ui:Slider name="SettingsMusicSlider" low-value="0" high-value="100" value="100" focusable="false" class="settings-slider" />
+                <ui:Label name="SettingsMusicValue" text="100%" class="settings-value" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="SettingsEffectsRow" class="settings-row" focusable="true">
+                <ui:Label text="효과음" class="settings-label" picking-mode="Ignore">
+                    <Bindings><CottonCircuit.LocalizedText property="text" key="settings.effects" /></Bindings>
+                </ui:Label>
+                <ui:Slider name="SettingsEffectsSlider" low-value="0" high-value="100" value="100" focusable="false" class="settings-slider" />
+                <ui:Label name="SettingsEffectsValue" text="100%" class="settings-value" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="SettingsMuteRow" class="settings-row" focusable="true">
+                <ui:Label text="전체 음소거" class="settings-label" picking-mode="Ignore">
+                    <Bindings><CottonCircuit.LocalizedText property="text" key="settings.mute" /></Bindings>
+                </ui:Label>
+                <ui:Button name="SettingsMuteButton" text="Off" focusable="false" class="settings-toggle" />
+            </ui:VisualElement>
+            <ui:Label text="화면" class="settings-heading">
+                <Bindings><CottonCircuit.LocalizedText property="text" key="settings.display" /></Bindings>
+            </ui:Label>
+            <ui:VisualElement name="SettingsModeRow" class="settings-row" focusable="true">
+                <ui:Label text="화면 모드" class="settings-label" picking-mode="Ignore">
+                    <Bindings><CottonCircuit.LocalizedText property="text" key="settings.mode" /></Bindings>
+                </ui:Label>
+                <ui:VisualElement class="settings-choice">
+                    <ui:Button name="SettingsModePrev" focusable="false" class="settings-arrow settings-arrow-left" />
+                    <ui:Label name="SettingsModeValue" text="Windowed" class="settings-choice-value" picking-mode="Ignore" />
+                    <ui:Button name="SettingsModeNext" focusable="false" class="settings-arrow" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="SettingsResolutionRow" class="settings-row" focusable="true">
+                <ui:Label text="해상도" class="settings-label" picking-mode="Ignore">
+                    <Bindings><CottonCircuit.LocalizedText property="text" key="settings.resolution" /></Bindings>
+                </ui:Label>
+                <ui:VisualElement class="settings-choice">
+                    <ui:Button name="SettingsResolutionPrev" focusable="false" class="settings-arrow settings-arrow-left" />
+                    <ui:Label name="SettingsResolutionValue" text="1600 × 900" class="settings-choice-value" picking-mode="Ignore" />
+                    <ui:Button name="SettingsResolutionNext" focusable="false" class="settings-arrow" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label text="언어" class="settings-heading">
+                <Bindings><CottonCircuit.LocalizedText property="text" key="settings.language" /></Bindings>
+            </ui:Label>
+            <ui:VisualElement name="SettingsLanguageRow" class="settings-row" focusable="true">
+                <ui:Label text="언어" class="settings-label" picking-mode="Ignore">
+                    <Bindings><CottonCircuit.LocalizedText property="text" key="settings.language" /></Bindings>
+                </ui:Label>
+                <ui:VisualElement class="settings-choice">
+                    <ui:Button name="SettingsLanguagePrev" focusable="false" class="settings-arrow settings-arrow-left" />
+                    <ui:Label name="SettingsLanguageValue" text="English" class="settings-choice-value" picking-mode="Ignore" />
+                    <ui:Button name="SettingsLanguageNext" focusable="false" class="settings-arrow" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button name="SettingsCloseButton" text="닫기" class="menu-button menu-button-primary settings-close">
+                <Bindings><CottonCircuit.LocalizedText property="text" key="common.close" /></Bindings>
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

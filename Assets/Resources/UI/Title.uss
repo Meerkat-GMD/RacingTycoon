@@ -21,19 +21,6 @@
     justify-content: center;
     padding: 42px 72px;
 }
-.title-menu {
-    width: 500px;
-    max-height: 100%;
-    padding: 34px 40px;
-    border-radius: 28px;
-    background-color: rgba(255, 246, 231, 0.96);
-}
-.title-eyebrow {
-    color: #537f7e;
-    font-size: 16px;
-    -unity-font-style: bold;
-    margin-bottom: 15px;
-}
 .title-word {
     font-size: 82px;
     -unity-font-style: bold;
@@ -51,45 +38,6 @@
     white-space: normal;
     margin-top: 14px;
     margin-bottom: 28px;
-}
-.title-button {
-    min-height: 62px;
-    margin: 0 0 12px 0;
-    padding: 12px 24px;
-    background-color: #fffdf7;
-    border-width: 2px;
-    border-color: #e5dcd0;
-    border-radius: 14px;
-    color: #29324d;
-    font-size: 23px;
-    -unity-font-style: bold;
-    -unity-text-align: middle-left;
-}
-.title-button-primary {
-    background-color: #29324d;
-    border-color: #29324d;
-    color: #fff6e7;
-}
-.title-button:hover, .title-button:focus {
-    border-color: #69bfc1;
-    background-color: #dcefee;
-    color: #29324d;
-}
-.title-button:active { background-color: #bfdfde; }
-.title-button:disabled { opacity: 0.45; }
-.title-action-icon {
-    position: absolute;
-    right: 24px;
-    top: 20px;
-    width: 20px;
-    height: 20px;
-    background-image: url("project://database/Assets/CottonCircuit/UI/Art/ArrowRight.png");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-.title-button-primary:hover > .title-action-icon, .title-button-primary:focus > .title-action-icon {
-    -unity-background-image-tint-color: #29324d;
 }
 .title-saved-note {
     color: #777180;
@@ -142,10 +90,10 @@
     margin-bottom: 34px;
 }
 .title-confirmation-actions { flex-direction: row; }
-.title-confirmation-actions > .title-button {
+.title-confirmation-actions > .menu-button {
     flex-grow: 1;
     flex-basis: 0;
     margin-bottom: 0;
     -unity-text-align: middle-center;
 }
-.title-confirmation-actions > .title-button-primary { margin-left: 14px; }
+.title-confirmation-actions > .menu-button-primary { margin-left: 14px; }
