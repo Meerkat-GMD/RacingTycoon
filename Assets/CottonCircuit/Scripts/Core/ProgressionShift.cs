@@ -8,6 +8,34 @@ namespace CottonCircuit
         public double Duration { get { return economy.Progression == null ? DayDuration : Progression.DaySeconds(economy); } }
         public double PatienceLimit { get { return economy.Progression == null ? CustomerPatience : Progression.PatienceSeconds(economy); } }
         public double ArrivalInterval { get { return economy.Progression == null ? ArrivalDelay : Progression.ArrivalSeconds(economy); } }
+        public bool HasWorker(int index)
+        {
+            if (economy.Progression == null || State.Machines == null || index < 0 ||
+                index >= State.Machines.Count || index >= Progression.OwnedMachines(economy) ||
+                State.Machines[index] == null || !State.Machines[index].WorkerAssigned ||
+                Progression.WorkerGrade(economy) < Progression.MachineTier(index)) return false;
+            int available = Progression.WorkerCount(economy), assigned = 0;
+            if (available <= 0) return false;
+            for (int i = 0; i <= index; i++)
+                if (State.Machines[i] != null && State.Machines[i].WorkerAssigned &&
+                    Progression.WorkerGrade(economy) >= Progression.MachineTier(i)) assigned++;
+            return assigned <= available;
+        }
+        // Read-only: controller/UI calls cannot buy ingredients or change the selected machine copy.
+        public bool WorkerCanOperate(int index)
+        {
+            if (!IsOpen || Tutorial.Active(economy) || !HasWorker(index) || economy.Inventory.Count >= economy.StockCapacity) return false;
+            var machine = State.Machines[index];
+            if (machine.RecipeSize < 0 || machine.RecipeSize > 2) return false;
+            int flavor = machine.BatchMeters > 0 ? machine.BatchFlavor : machine.RecipeFlavor;
+            if (!CanMakeFlavor(index, flavor)) return false;
+            double target = MetersForSize(Math.Min(machine.RecipeSize, EffectiveMaxSize(index)));
+            if (machine.BatchMeters + 1e-7 >= target) return true;
+            if (machine.SugarGrams > 1e-9 && machine.SugarFlavor == flavor) return true;
+            double existing = machine.SugarFlavor == flavor ? machine.SugarGrams : 0;
+            double accepted = Math.Min(PourAmount, SugarCapacity - existing);
+            return accepted > 1e-7 && economy.Coins >= PourCost(index, flavor, accepted);
+        }
         void InitializeMachines(bool fresh)
         {
             if (State.Machines == null) State.Machines = new List<MachineProduction>();
@@ -65,7 +93,7 @@ namespace CottonCircuit
         }
         public bool SelectMachine(int index)
         {
-            if (economy.Progression == null || Paused || index < 0 || index >= Progression.OwnedMachines(economy) ||
+            if (Tutorial.Active(economy) || economy.Progression == null || Paused || index < 0 || index >= Progression.OwnedMachines(economy) ||
                 economy.Progression.Phase == BusinessPhase.Results) return false;
             SyncActive(); economy.Progression.SelectedMachine = index; LoadActive(); return true;
         }
@@ -145,10 +173,27 @@ namespace CottonCircuit
         void AdvanceProgression(double seconds, double meters, int wallHits)
         {
             if (!IsOpen || !Finite(seconds) || seconds <= 0) return;
+            if (Tutorial.Active(economy))
+            {
+                // Learning pauses the shop, while the real driving/production model still runs.
+                SyncActive();
+                if (economy.TutorialStep == TutorialStep.Drive)
+                {
+                    Grow(SelectedMachine, meters);
+                    var practice = State.Machines[SelectedMachine];
+                    practice.BatchQuality = AfterWallHits(practice.BatchMeters, practice.BatchQuality, wallHits);
+                }
+                LoadActive();
+                Tutorial.Refresh(economy);
+                return;
+            }
             double elapsed = Math.Min(seconds, State.RemainingSeconds); SyncActive();
-            Grow(SelectedMachine, meters * elapsed / seconds);
-            var driven = State.Machines[SelectedMachine];
-            driven.BatchQuality = AfterWallHits(driven.BatchMeters, driven.BatchQuality, wallHits);
+            if (!HasWorker(SelectedMachine))
+            {
+                Grow(SelectedMachine, meters * elapsed / seconds);
+                var driven = State.Machines[SelectedMachine];
+                driven.BatchQuality = AfterWallHits(driven.BatchMeters, driven.BatchQuality, wallHits);
+            }
             double remaining = elapsed;
             while (remaining > 1e-9)
             {
@@ -156,8 +201,7 @@ namespace CottonCircuit
                 for (int i = 0; i < Progression.OwnedMachines(economy); i++)
                 {
                     var m = State.Machines[i];
-                    if (i == SelectedMachine || !m.WorkerAssigned || Progression.WorkerGrade(economy) < Progression.MachineTier(i) ||
-                        economy.Inventory.Count >= economy.StockCapacity) continue;
+                    if (!WorkerCanOperate(i)) continue;
                     double target = MetersForSize(Math.Min(m.RecipeSize, EffectiveMaxSize(i)));
                     if (m.BatchMeters + 1e-7 < target)
                     {

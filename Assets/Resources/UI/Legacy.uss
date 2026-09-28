@@ -1,0 +1,24 @@
+.legacy-screen { flex-grow: 1; }
+.legacy-header { height: 90px; background-color: var(--paper); padding: 14px 24px; flex-direction: row; align-items: center; }
+.legacy-title { font-size: 28px; -unity-font-style: bold; margin-right: 34px; }
+.legacy-wallet { flex-grow: 1; -unity-text-align: middle-right; margin-right: 30px; font-size: 24px; }
+.legacy-sidebar { position: absolute; right: 0; top: 90px; bottom: 0; width: 640px; background-color: var(--paper); padding: 14px 22px; }
+.legacy-section { font-size: 18px; -unity-font-style: bold; margin-bottom: 9px; }
+.legacy-order { background-color: white; border-radius: 13px; padding: 10px 14px; margin-bottom: 8px; }
+.legacy-order > Label { margin-bottom: 5px; }
+.legacy-row { flex-direction: row; margin: 5px 0; }
+.legacy-row > Button { flex-grow: 1; width: 0; margin-right: 4px; min-height: 35px; padding: 4px; font-size: 15px; }
+.legacy-stock { flex-direction: row; flex-wrap: wrap; min-height: 96px; }
+.legacy-item { width: 91px; height: 90px; margin: 0 6px 6px 0; padding: 3px; font-size: 11px; }
+.legacy-item > .art { height: 52px; width: 80px; }
+.legacy-item.selected { background-color: #fae1e9; border-width: 2px; border-color: var(--pink); }
+.legacy-discard { min-height: 30px; height: 30px; font-size: 13px; padding: 0; margin: 0 0 7px 0; }
+.legacy-upgrades { flex-direction: row; flex-wrap: wrap; margin-top: 8px; }
+.legacy-upgrades > Button { width: 48%; margin: 3px; min-height: 35px; font-size: 13px; }
+.legacy-drive { position: absolute; left: 24px; top: 110px; width: 375px; padding: 18px 24px; background-color: rgba(255,246,231,0.96); border-radius: 18px; }
+.legacy-recipe { font-size: 21px; -unity-font-style: bold; margin-bottom: 12px; }
+.legacy-speed { font-size: 29px; -unity-font-style: bold; margin-top: 10px; }
+.legacy-controls { position: absolute; left: 24px; bottom: 20px; width: 912px; padding: 13px; background-color: var(--paper); border-radius: 13px; font-size: 14px; -unity-text-align: middle-center; }
+.legacy-result { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(26,32,49,0.6); }
+.legacy-result-card { width: 480px; padding: 36px; border-radius: 22px; background-color: var(--paper); }
+.legacy-result-card > Label { margin-bottom: 28px; }

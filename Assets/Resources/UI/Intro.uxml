@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Shared.uss" />
+    <ui:Style src="Intro.uss" />
+    <ui:VisualElement name="IntroScreen" class="intro-screen">
+        <ui:VisualElement name="IntroBackground" class="intro-background" picking-mode="Ignore" />
+        <ui:VisualElement name="IntroAdvanceArea" class="intro-advance-area" />
+        <ui:VisualElement name="IntroDialoguePanel" class="intro-dialogue-panel">
+            <ui:VisualElement class="intro-copy" picking-mode="Ignore">
+                <ui:Label name="IntroSpeaker" class="intro-speaker" picking-mode="Ignore" />
+                <ui:Label name="IntroDialogue" class="intro-dialogue" picking-mode="Ignore" />
+                <ui:Label text="클릭 · Space · Enter  다음 대사" class="intro-hint" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement class="intro-actions">
+                <ui:Label name="IntroPageCounter" class="intro-counter" picking-mode="Ignore" />
+                <ui:Button name="IntroNextButton" text="다음" class="intro-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Button name="IntroSkipButton" text="스킵" class="intro-button intro-skip" />
+    </ui:VisualElement>
+</ui:UXML>

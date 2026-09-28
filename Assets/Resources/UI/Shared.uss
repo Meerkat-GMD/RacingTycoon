@@ -1,0 +1,40 @@
+:root {
+    --paper: #fff6e7;
+    --ink: #29324d;
+    --muted: #807c8a;
+    --pink: #f48dab;
+    --mint: #7acdce;
+    --gold: #f9d27d;
+}
+* { -unity-font-definition: url("project://database/Assets/Resources/UI/NotoSansKR.asset"); }
+.hidden { display: none; }
+.screen-shell { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; }
+.composition { width: 1600px; height: 900px; flex-shrink: 0; color: var(--ink); font-size: 18px; }
+Label { white-space: normal; }
+Button {
+    min-height: 42px; margin: 0; padding: 8px 16px;
+    border-width: 0; border-radius: 12px;
+    background-color: #ffffff; color: var(--ink);
+    font-size: 17px; -unity-text-align: middle-center;
+}
+Button:hover { background-color: #eef8f7; }
+Button:active { background-color: #d4eeec; }
+Button:focus { border-width: 2px; border-color: var(--mint); }
+Button:disabled { opacity: 0.42; }
+.primary { background-color: var(--ink); color: white; -unity-font-style: bold; }
+.primary:hover { background-color: #404b70; }
+.accent { background-color: var(--mint); }
+.muted { color: var(--muted); }
+.art { -unity-background-scale-mode: scale-to-fit; }
+.tutorial-focus { border-width: 3px; border-color: #e7759b; border-radius: 16px; background-color: #fff0f5; }
+.unity-progress-bar { height: 9px; min-height: 9px; }
+.unity-progress-bar__container { flex-grow: 1; }
+.unity-progress-bar__background { flex-grow: 1; background-color: #e9e3db; border-radius: 5px; overflow: hidden; }
+.unity-progress-bar__progress { background-color: var(--mint); border-radius: 5px; height: 100%; }
+.unity-progress-bar__title-container { display: none; }
+.unity-scroll-view__content-container { flex-shrink: 0; }
+.unity-scroller--vertical { width: 10px; }
+.unity-scroller--horizontal { height: 10px; }
+.unity-scroller__low-button, .unity-scroller__high-button { display: none; }
+.unity-base-slider__tracker { background-color: #e9e3db; border-radius: 5px; }
+.unity-base-slider__dragger { background-color: #aacbc7; border-radius: 5px; min-width: 8px; min-height: 24px; }

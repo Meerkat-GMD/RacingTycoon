@@ -1,0 +1,140 @@
+/* Project-owned structural rules for the native controls used by these screens.
+   Import before Shared.uss so screen styles remain responsible for their colors.
+   Public class names and element relationships were checked against Unity's
+   ScrollView, Scroller, BaseSlider and ProgressBar C# reference implementations:
+   https://github.com/Unity-Technologies/UnityCsReference/tree/master/Modules/UIElements/Core/Controls
+   No built-in theme, icon, or visual asset is referenced here. */
+
+/* Authored screens use absolute edges; the UIDocument root must have a viewport. */
+.unity-ui-document__root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 0;
+    min-height: 0;
+}
+
+.unity-scroll-view {
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.unity-scroll-view__content-and-vertical-scroll-container {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    min-height: 0;
+}
+
+.unity-scroll-view__content-viewport {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.unity-scroll-view__content-container {
+    flex-shrink: 0;
+    min-width: 0;
+    min-height: 0;
+}
+
+.unity-scroll-view--vertical .unity-scroll-view__content-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.unity-scroll-view--horizontal .unity-scroll-view__content-viewport,
+.unity-scroll-view--vertical-horizontal .unity-scroll-view__content-viewport {
+    flex-direction: row;
+}
+
+.unity-scroller {
+    flex-shrink: 0;
+    align-self: stretch;
+    margin: 0;
+    padding: 0;
+}
+
+.unity-scroller--vertical { width: 10px; min-width: 10px; }
+.unity-scroller--horizontal { height: 10px; min-height: 10px; }
+
+.unity-scroller__slider {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.unity-scroller__low-button,
+.unity-scroller__high-button,
+.unity-scroller .unity-base-slider__label {
+    display: none;
+}
+
+.unity-base-slider__input,
+.unity-base-slider__drag-container {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    min-height: 0;
+    align-self: stretch;
+}
+
+.unity-base-slider__tracker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.unity-base-slider__dragger {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.unity-base-slider--vertical .unity-base-slider__dragger {
+    width: 100%;
+    min-height: 24px;
+}
+
+.unity-base-slider--horizontal .unity-base-slider__dragger {
+    height: 100%;
+    min-height: 0;
+    min-width: 24px;
+}
+
+.unity-base-slider__dragger-border { display: none; }
+
+.unity-progress-bar { flex-shrink: 0; }
+
+.unity-progress-bar__container,
+.unity-progress-bar__background {
+    flex-grow: 1;
+    min-width: 0;
+    min-height: 0;
+}
+
+.unity-progress-bar__background { overflow: hidden; }
+
+/* ProgressBar drives its fill's right offset itself; leave that edge unbound. */
+.unity-progress-bar__progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.unity-progress-bar__title-container { display: none; }

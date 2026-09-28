@@ -21,6 +21,7 @@ namespace CottonCircuit.Editor
         public static void CreateScene()
         {
             if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            ToolkitAssets.Ensure();
             double shakeWidth = ReadSceneSugarShakeWidth(ScenePath);
             // Create the scene before loading generated assets: NewScene unloads unreferenced meshes.
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -206,11 +207,19 @@ namespace CottonCircuit.Editor
             for (int i = 0; i < 9; i++)
                 Cube("Shop walkway", new Vector3(-53 + i * .6f, -.01f, 14.3f + i * .16f), new Vector3(.46f, .04f, 1.4f), materials["White"], shopRoot);
             shopRoot.position = new Vector3(-220, 0, 0);
+            // The floss leaves the kart nozzle thin and puffs up over the first 1.2 m segment (see WorldView.FlossDistance).
+            float taper = WorldView.FlossTaperFraction;
             var threadObject = new GameObject("Sugar thread from kart"); threadObject.transform.SetParent(root);
-            var thread = threadObject.AddComponent<LineRenderer>(); thread.useWorldSpace = true; thread.startWidth = .065f; thread.endWidth = .04f; thread.numCapVertices = 4;
+            world.SugarThread = SugarLine(threadObject, FlossMaterial(), new AnimationCurve(new Keyframe(0, .08f), new Keyframe(taper, .6f), new Keyframe(.25f, .55f), new Keyframe(1, .6f)));
+            world.SugarThread.textureMode = LineTextureMode.Tile;
             var lineMat = AssetDatabase.LoadAssetAtPath<Material>(Root + "/Materials/SugarThread.mat");
             if (!lineMat) { lineMat = new Material(Shader.Find("Sprites/Default")); AssetDatabase.CreateAsset(lineMat, Root + "/Materials/SugarThread.mat"); }
-            thread.sharedMaterial = lineMat; thread.enabled = false; world.SugarThread = thread;
+            world.SugarWisps = new LineRenderer[2];
+            for (int i = 0; i < world.SugarWisps.Length; i++)
+            {
+                var wisp = new GameObject("Sugar wisp " + (i + 1)); wisp.transform.SetParent(threadObject.transform);
+                world.SugarWisps[i] = SugarLine(wisp, lineMat, new AnimationCurve(new Keyframe(0, .012f), new Keyframe(taper, .03f), new Keyframe(1, .03f)));
+            }
             var preview = new GameObject("Cotton preview camera", typeof(Camera)).GetComponent<Camera>();
             preview.transform.SetPositionAndRotation(new Vector3(48, 40, 56), Quaternion.LookRotation(new Vector3(-48, -12, -56)));
             preview.orthographic = true; preview.orthographicSize = 27.2f; preview.clearFlags = CameraClearFlags.SolidColor; preview.backgroundColor = Palette.Cream;
@@ -220,6 +229,25 @@ namespace CottonCircuit.Editor
             if (!texture) { texture = new RenderTexture(256, 256, 16) { name = "Candy preview" }; AssetDatabase.CreateAsset(texture, previewPath); }
             preview.targetTexture = texture; world.CandyCamera = preview; world.CandyPreview = texture;
             var ground = Cube("Studio ground", new Vector3(0, -2, 0), new Vector3(1000, .1f, 1000), materials["Ground"], root);
+        }
+        static LineRenderer SugarLine(GameObject owner, Material material, AnimationCurve width)
+        {
+            var line = owner.AddComponent<LineRenderer>(); line.useWorldSpace = true; line.widthCurve = width;
+            line.shadowCastingMode = ShadowCastingMode.Off; line.receiveShadows = false;
+            line.sharedMaterial = material; line.enabled = false; return line;
+        }
+        static Material FlossMaterial()
+        {
+            const string texturePath = Root + "/Materials/SugarFloss.png", materialPath = Root + "/Materials/SugarFloss.mat";
+            File.WriteAllBytes(texturePath, SugarFlossTexture.EncodePng()); AssetDatabase.ImportAsset(texturePath);
+            var importer = (TextureImporter)AssetImporter.GetAtPath(texturePath);
+            // Red is a fibre mask rather than a colour, so it imports as linear data.
+            importer.sRGBTexture = false; importer.alphaIsTransparency = true; importer.mipmapEnabled = true; importer.textureCompression = TextureImporterCompression.Uncompressed;
+            importer.wrapModeU = TextureWrapMode.Repeat; importer.wrapModeV = TextureWrapMode.Clamp; importer.SaveAndReimport();
+            // The thread tiles its texture per world meter; one floss tile spans five meters.
+            var material = new Material(Shader.Find("CottonCircuit/SugarFloss")) { name = "SugarFloss", mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath), mainTextureScale = new Vector2(.2f, 1) };
+            ReplaceAsset(material, materialPath);
+            return AssetDatabase.LoadAssetAtPath<Material>(materialPath);
         }
         internal static GameObject Place(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent)
         {

@@ -7,6 +7,9 @@ namespace CottonCircuit
         public bool HasProgression => Session != null && Session.Economy.Progression != null && Shift != null;
         public bool InPreparation => HasProgression && Session.Economy.Progression.Phase == BusinessPhase.Preparation;
         public bool InBusiness => HasProgression && Session.Economy.Progression.Phase == BusinessPhase.Operating;
+        public bool SelectedMachineHasWorker => HasProgression && Shift.HasWorker(Shift.SelectedMachine);
+        public bool WorkerDriving => SelectedMachineHasWorker && !Session.Paused && Store.CanSave &&
+            Shift.WorkerCanOperate(Shift.SelectedMachine);
         bool PreparationActions => InPreparation && !Session.Paused && Store.CanSave;
         public MachineProduction Machine(int index) => HasProgression ? Shift.Machine(index) : null;
         public void PurchaseNode(string id)
@@ -30,6 +33,7 @@ namespace CottonCircuit
             Notice = null; noticeTimer = 0;
             UI.CancelShiftDrag(); World.Kart.Stop(); World.AnimationPaused = true; World.UpdateThread(false);
             Audio.UpdateDriving(World.Kart, false); SelectedProductId = SelectedOrderId = null;
+            GrowthHintVisible = Tutorial.TryConsumeGrowthHint(Session.Economy);
             Save(); UI.Refresh();
         }
         public void ChooseMachine(int index)
@@ -52,6 +56,7 @@ namespace CottonCircuit
             PreparedStyle = RunStyle = Session.Economy.Progression.CartStyle == 0 ? DrivingStyle.Kart : DrivingStyle.Downhill;
             World.Kart.SetStyle(RunStyle, World.Assets.DownhillCoupe);
             World.Kart.MaximumSpeed = Session.Economy.MaxSpeed;
+            if (!SelectedMachineHasWorker) World.Kart.Stop();
             World.Kart.ConfiguredFlavor = Shift.State.SugarFlavor;
             World.SetMode(GameMode.Racing); World.AnimationPaused = !Shift.IsOpen;
             World.UpdateThread(false);

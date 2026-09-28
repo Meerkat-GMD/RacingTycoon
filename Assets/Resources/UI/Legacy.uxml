@@ -1,0 +1,57 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Shared.uss" />
+    <ui:Style src="Legacy.uss" />
+    <ui:VisualElement name="legacyScreen" class="legacy-screen" picking-mode="Ignore">
+        <ui:VisualElement class="legacy-header">
+            <ui:Label text="솜사탕 서킷" class="legacy-title" />
+            <ui:Label name="legacyDay" />
+            <ui:Label name="legacyCoins" class="legacy-wallet" />
+            <ui:Button name="legacyPause" text="도움말 · Esc" />
+        </ui:VisualElement>
+        <ui:VisualElement name="legacyDriveHud" class="legacy-drive" picking-mode="Ignore">
+            <ui:Label name="legacyRecipe" class="legacy-recipe" />
+            <ui:ProgressBar name="legacyProgress" low-value="0" high-value="100" />
+            <ui:Label name="legacyDrivingStatus" class="muted" />
+            <ui:Label name="legacySpeed" class="legacy-speed" />
+            <ui:Button name="legacyAbort" text="주행 포기" />
+        </ui:VisualElement>
+        <ui:VisualElement class="legacy-sidebar">
+            <ui:Label text="오늘의 주문" class="legacy-section" />
+            <ui:VisualElement name="legacyOrder0" class="legacy-order">
+                <ui:Label name="legacyOrderText0" />
+                <ui:ProgressBar name="legacyPatience0" low-value="0" high-value="100" />
+                <ui:VisualElement class="legacy-row"><ui:Button name="legacyChooseOrder0" text="주문 선택" /><ui:Button name="legacyMakeOrder0" text="만들기" /><ui:Button name="legacyServe0" text="건네기" /></ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="legacyOrder1" class="legacy-order">
+                <ui:Label name="legacyOrderText1" />
+                <ui:ProgressBar name="legacyPatience1" low-value="0" high-value="100" />
+                <ui:VisualElement class="legacy-row"><ui:Button name="legacyChooseOrder1" text="주문 선택" /><ui:Button name="legacyMakeOrder1" text="만들기" /><ui:Button name="legacyServe1" text="건네기" /></ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="legacyStockCount" class="legacy-section" />
+            <ui:VisualElement class="legacy-stock">
+                <ui:Button name="legacyStock0" class="legacy-item"><ui:VisualElement name="legacyStockArt0" class="art" /><ui:Label name="legacyStockText0" /></ui:Button>
+                <ui:Button name="legacyStock1" class="legacy-item"><ui:VisualElement name="legacyStockArt1" class="art" /><ui:Label name="legacyStockText1" /></ui:Button>
+                <ui:Button name="legacyStock2" class="legacy-item"><ui:VisualElement name="legacyStockArt2" class="art" /><ui:Label name="legacyStockText2" /></ui:Button>
+                <ui:Button name="legacyStock3" class="legacy-item"><ui:VisualElement name="legacyStockArt3" class="art" /><ui:Label name="legacyStockText3" /></ui:Button>
+                <ui:Button name="legacyStock4" class="legacy-item"><ui:VisualElement name="legacyStockArt4" class="art" /><ui:Label name="legacyStockText4" /></ui:Button>
+                <ui:Button name="legacyStock5" class="legacy-item"><ui:VisualElement name="legacyStockArt5" class="art" /><ui:Label name="legacyStockText5" /></ui:Button>
+                <ui:Button name="legacyStock6" class="legacy-item"><ui:VisualElement name="legacyStockArt6" class="art" /><ui:Label name="legacyStockText6" /></ui:Button>
+                <ui:Button name="legacyStock7" class="legacy-item"><ui:VisualElement name="legacyStockArt7" class="art" /><ui:Label name="legacyStockText7" /></ui:Button>
+                <ui:Button name="legacyStock8" class="legacy-item"><ui:VisualElement name="legacyStockArt8" class="art" /><ui:Label name="legacyStockText8" /></ui:Button>
+                <ui:Button name="legacyStock9" class="legacy-item"><ui:VisualElement name="legacyStockArt9" class="art" /><ui:Label name="legacyStockText9" /></ui:Button>
+                <ui:Button name="legacyStock10" class="legacy-item"><ui:VisualElement name="legacyStockArt10" class="art" /><ui:Label name="legacyStockText10" /></ui:Button>
+                <ui:Button name="legacyStock11" class="legacy-item"><ui:VisualElement name="legacyStockArt11" class="art" /><ui:Label name="legacyStockText11" /></ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="legacyDiscard" text="선택 재고 정리" class="legacy-discard" />
+            <ui:VisualElement class="legacy-row"><ui:Button name="legacySize0" text="작은 60g" /><ui:Button name="legacySize1" text="큰 120g" /></ui:VisualElement>
+            <ui:VisualElement class="legacy-row"><ui:Button name="legacyFlavor0" text="딸기" /><ui:Button name="legacyFlavor1" text="소다" /><ui:Button name="legacyFlavor2" text="바닐라" /></ui:VisualElement>
+            <ui:VisualElement class="legacy-row"><ui:Button name="legacyStyle0" text="카트" /><ui:Button name="legacyStyle1" text="다운힐" /></ui:VisualElement>
+            <ui:Button name="legacyMakeStock" text="재고 만들기" class="primary" />
+            <ui:VisualElement class="legacy-upgrades"><ui:Button name="legacyUpgrade0" /><ui:Button name="legacyUpgrade1" /><ui:Button name="legacyUpgrade2" /><ui:Button name="legacyShelf" /></ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label text="W 가속 · A / D 조향 · S 제동 · Space 드리프트 · Shift 부스터 · R 복귀 · Esc 일시정지" class="legacy-controls" picking-mode="Ignore" />
+        <ui:VisualElement name="legacyResult" class="legacy-result hidden">
+            <ui:VisualElement class="legacy-result-card"><ui:Label text="주행 결과" class="legacy-title" /><ui:Label name="legacyResultText" /><ui:Button name="legacyReturnShop" text="가게로 돌아가기" class="primary" /></ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

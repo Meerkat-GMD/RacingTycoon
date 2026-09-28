@@ -187,7 +187,7 @@ namespace CottonCircuit
             Position += Velocity * dt;
             var road = Course.Project(Position, .8);
             double limit = road.HalfWidth - .8;
-            bool wall = Math.Abs(road.Lateral) > limit;
+            bool wall = !Course.Fits(Position, .8);
             if (wall)
             {
                 double side = Math.Sign(road.Lateral);

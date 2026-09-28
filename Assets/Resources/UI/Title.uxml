@@ -1,0 +1,33 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Shared.uss" />
+    <ui:Style src="Title.uss" />
+    <ui:VisualElement name="TitleScreen" class="title-screen">
+        <ui:VisualElement name="TitleBackground" class="title-background" picking-mode="Ignore" />
+        <ui:VisualElement class="title-content" picking-mode="Ignore">
+            <ui:VisualElement name="TitleMenu" class="title-menu">
+                <ui:Label text="C O T T O N   C I R C U I T" class="title-eyebrow" picking-mode="Ignore" />
+                <ui:Label text="솜사탕" class="title-word" picking-mode="Ignore" />
+                <ui:Label text="서킷" class="title-word title-word-accent" picking-mode="Ignore" />
+                <ui:Label text="달리고, 만들고, 나만의 달콤한 가게." class="title-tagline" picking-mode="Ignore" />
+                <ui:Button name="TitlePrimaryButton" text="게임 시작" class="title-button title-button-primary">
+                    <ui:VisualElement class="title-action-icon" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button name="TitleNewGameButton" text="새 게임" class="title-button" />
+                <ui:Button name="TitleQuitButton" text="게임 종료" class="title-button" />
+                <ui:Label name="TitleSavedNote" text="첫 번째 솜사탕 가게를 열어볼까요?" class="title-saved-note" picking-mode="Ignore" />
+                <ui:Label name="TitleError" class="title-error hidden" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Label text="↑ ↓  메뉴 선택     Enter  선택" class="title-footer" picking-mode="Ignore" />
+        <ui:VisualElement name="TitleConfirmation" class="title-confirmation hidden">
+            <ui:VisualElement class="title-confirmation-card">
+                <ui:Label text="새로운 가게를 열까요?" class="title-confirmation-heading" picking-mode="Ignore" />
+                <ui:Label text="현재 진행 상황은 보관하고&#10;첫날부터 새롭게 시작합니다." class="title-confirmation-copy" picking-mode="Ignore" />
+                <ui:VisualElement class="title-confirmation-actions">
+                    <ui:Button name="TitleCancelNewGameButton" text="돌아가기" class="title-button" />
+                    <ui:Button name="TitleConfirmNewGameButton" text="새로 시작" class="title-button title-button-primary" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

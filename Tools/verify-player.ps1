@@ -1,15 +1,6 @@
-param([string]$OutputFolder = 'Logs\Smoke', [string]$BuildFolder = 'Builds\Windows', [switch]$ShopShift)
+param([string]$OutputFolder = 'Logs\Smoke', [string]$BuildFolder = 'Builds\UIToolkit', [switch]$ShopShift)
 $ErrorActionPreference = 'Stop'
-$taskRoot = Split-Path -Parent $PSScriptRoot
-$taskOutput = [IO.Path]::GetFullPath((Join-Path $taskRoot $OutputFolder))
-New-Item -ItemType Directory -Path $taskOutput -Force | Out-Null
-$taskBuildFolder = Join-Path $taskRoot $BuildFolder
-$taskPlayer = Join-Path $taskBuildFolder 'CottonCircuit.exe'
-if (-not (Test-Path -LiteralPath $taskPlayer)) { throw 'Build the development player first with Tools/build.ps1.' }
-$taskReceiptPath = Join-Path $taskBuildFolder 'build-info.json'
-if ((Test-Path -LiteralPath $taskReceiptPath) -and (Get-Content -Raw -LiteralPath $taskReceiptPath | ConvertFrom-Json).configuration -eq 'Release') { throw 'The current player is a release build. Run Tools/build.ps1 without -Release, then verify again.' }
-$taskScenario = if ($ShopShift) { '--shop-shift-smoke' } else { '--smoke-test' }
-$taskProcess = Start-Process -FilePath $taskPlayer -ArgumentList @($taskScenario, ('"--smoke-dir=' + $taskOutput + '"'), '-screen-fullscreen', '0', '-logFile', ('"' + $taskOutput + '\player.log"')) -WorkingDirectory $taskRoot -WindowStyle Hidden -PassThru
-if (-not $taskProcess.WaitForExit(120000)) { Stop-Process -Id $taskProcess.Id; throw 'The verification player exceeded its two-minute time limit. See player.log.' }
-Get-Content -LiteralPath (Join-Path $taskOutput 'result.txt')
-exit $taskProcess.ExitCode
+$toolkitCase = if ($ShopShift) { 'full' } else { 'legacy' }
+Write-Warning "The old uGUI player suites are retired. Running the current UITK '$toolkitCase' flow; it does not reproduce the old scenario's full coverage or check count. Prefer Tools/verify-uitk.ps1 and retain the standalone rule tests."
+& (Join-Path $PSScriptRoot 'verify-uitk.ps1') -BuildFolder $BuildFolder -OutputFolder $OutputFolder -Case $toolkitCase
+exit $LASTEXITCODE

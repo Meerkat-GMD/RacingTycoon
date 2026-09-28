@@ -1,0 +1,142 @@
+.prep-screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    flex-direction: row;
+    padding: 28px;
+    background-color: #f8f4ea;
+    color: #263b42;
+}
+.prep-main { flex-grow: 1; min-width: 0; }
+.prep-header { flex-direction: row; align-items: center; margin-bottom: 22px; flex-shrink: 0; }
+.prep-header-titles { flex-grow: 1; }
+.prep-eyebrow { font-size: 12px; color: #75877f; letter-spacing: 2px; -unity-font-style: bold; margin-bottom: 9px; }
+.prep-title { font-size: 34px; -unity-font-style: bold; margin: 0; }
+.prep-wallet-group { align-items: flex-end; }
+.prep-day { font-size: 13px; color: #75877f; margin-bottom: 8px; }
+.prep-wallet { font-size: 29px; -unity-font-style: bold; }
+.prep-page { flex-grow: 1; min-height: 0; }
+.prep-page-heading { flex-direction: row; align-items: center; flex-shrink: 0; margin-bottom: 18px; }
+.prep-section-title { font-size: 26px; -unity-font-style: bold; flex-grow: 1; }
+.prep-muted { font-size: 14px; color: #75877f; white-space: normal; }
+.prep-screen .prep-button {
+    min-height: 40px;
+    margin: 0;
+    padding: 9px 14px;
+    border-width: 1px;
+    border-color: #e2ddd1;
+    border-radius: 10px;
+    background-color: #fffdf6;
+    color: #263b42;
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+.prep-screen .prep-button:hover { background-color: #edf3ec; border-color: #a4c5b5; }
+.prep-screen .prep-button:active { background-color: #d9e8dd; }
+.prep-screen .prep-button:disabled { background-color: #ebeae3; color: #8a938c; border-color: #dfdfd7; }
+.prep-screen .prep-selected { background-color: #b8d9cc; border-color: #86b7a4; }
+.prep-screen .prep-primary { background-color: #263b42; color: #fffcf5; border-color: #263b42; }
+.prep-screen .prep-primary:hover { background-color: #3a555b; color: #fffcf5; }
+.prep-side { width: 358px; flex-shrink: 0; margin-left: 26px; padding-left: 25px; border-left-width: 1px; border-left-color: #dedcd1; }
+.prep-side-title { font-size: 22px; -unity-font-style: bold; margin-bottom: 20px; }
+.prep-portrait { height: 322px; flex-shrink: 0; background-color: #fffdf6; border-radius: 16px; background-image: url("project://database/Assets/CottonCircuit/Sprites/Characters/Mina_Portrait.png"); -unity-background-scale-mode: scale-to-fit; }
+.prep-companion-name { margin-top: 18px; margin-bottom: 10px; font-size: 12px; color: #75877f; letter-spacing: 2px; }
+.prep-speech { font-size: 21px; -unity-font-style: bold; white-space: normal; min-height: 75px; margin-bottom: 17px; }
+.prep-screen .prep-nav-button { min-height: 52px; margin-bottom: 10px; -unity-text-align: middle-left; padding-left: 19px; }
+.prep-side-footer { flex-grow: 1; justify-content: flex-end; }
+.prep-footer-caption { font-size: 12px; color: #75877f; -unity-text-align: middle-center; }
+.prep-trait-tabs { flex-direction: row; flex-shrink: 0; margin-bottom: 12px; }
+.prep-screen .prep-trait-tab { flex-grow: 1; flex-basis: 0; min-width: 0; min-height: 43px; padding: 8px 6px; margin-right: 6px; font-size: 14px; }
+.prep-category-heading { flex-direction: row; align-items: center; margin: 5px 6px 9px; }
+.prep-category-title { font-size: 19px; -unity-font-style: bold; flex-grow: 1; }
+.prep-scroll { flex-grow: 1; min-height: 0; }
+.prep-scroll .unity-scroll-view__content-container { padding-right: 8px; }
+.prep-trait-grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
+.prep-trait-card { width: 47%; flex-grow: 1; min-width: 270px; max-width: 570px; margin: 8px; padding: 20px; background-color: #fffdf6; border-width: 2px; border-color: #e8e3d7; border-radius: 16px; }
+.prep-trait-card.prep-trait-complete { border-color: #b8d4c4; background-color: #f3f8ef; }
+.prep-trait-card.prep-trait-highlight { border-color: #cd9a37; background-color: #fff5d9; }
+.prep-trait-card.prep-trait-locked { background-color: #f0efe8; }
+.prep-trait-header { flex-direction: row; align-items: center; margin-bottom: 12px; }
+.prep-trait-icon { width: 62px; height: 62px; flex-shrink: 0; margin-right: 13px; -unity-background-scale-mode: scale-to-fit; }
+.prep-trait-title-group { flex-grow: 1; min-width: 0; }
+.prep-trait-name { font-size: 20px; -unity-font-style: bold; white-space: normal; }
+.prep-trait-rank { font-size: 13px; color: #75877f; margin-top: 4px; }
+.prep-trait-description { font-size: 15px; white-space: normal; min-height: 43px; margin-bottom: 9px; }
+.prep-trait-effect { font-size: 13px; color: #507166; white-space: normal; margin-bottom: 12px; }
+.prep-requirements-title { font-size: 11px; color: #75877f; margin-bottom: 6px; -unity-font-style: bold; }
+.prep-requirements { flex-direction: row; flex-wrap: wrap; margin-bottom: 10px; }
+.prep-screen .prep-requirement { font-size: 12px; min-height: 29px; padding: 5px 8px; margin-right: 5px; margin-bottom: 5px; border-radius: 7px; background-color: #f4e5d5; }
+.prep-screen .prep-requirement-met { background-color: #dcecdf; }
+.prep-trait-availability { font-size: 12px; color: #75877f; white-space: normal; margin-top: auto; margin-bottom: 11px; }
+.prep-screen .prep-trait-purchase { min-height: 40px; font-size: 15px; }
+.prep-legend { flex-shrink: 0; font-size: 12px; color: #75877f; margin: 13px 8px 0; white-space: normal; }
+.prep-machine-row { flex-direction: row; flex-shrink: 0; margin-bottom: 18px; }
+.prep-machine-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin-right: 12px; padding: 19px; background-color: #fffdf6; border-width: 2px; border-color: #e8e3d7; border-radius: 16px; }
+.prep-machine-card.prep-machine-selected { border-color: #91bba8; }
+.prep-machine-card.prep-machine-locked { background-color: #eeeee6; }
+.prep-machine-number { font-size: 11px; color: #75877f; letter-spacing: 1px; }
+.prep-machine-art { height: 130px; margin: 12px 0; -unity-background-scale-mode: scale-to-fit; }
+.prep-machine-art-0 { background-image: url("project://database/Assets/CottonCircuit/Sprites/Machines/Machine_0.png"); }
+.prep-machine-art-1 { background-image: url("project://database/Assets/CottonCircuit/Sprites/Machines/Machine_1.png"); }
+.prep-machine-art-2 { background-image: url("project://database/Assets/CottonCircuit/Sprites/Machines/Machine_2.png"); }
+.prep-machine-name { font-size: 20px; -unity-font-style: bold; -unity-text-align: middle-center; }
+.prep-machine-state { font-size: 12px; color: #75877f; -unity-text-align: middle-center; margin-top: 8px; margin-bottom: 16px; }
+.prep-machine-actions { flex-direction: row; margin-bottom: 16px; }
+.prep-screen .prep-machine-action { flex-grow: 1; flex-basis: 0; min-width: 0; font-size: 13px; padding: 8px 5px; margin-right: 5px; }
+.prep-screen .prep-worker-assigned { background-color: #efd0d5; border-color: #dfa6b0; }
+.prep-recipe-area { min-height: 95px; justify-content: center; }
+.prep-recipe-row { flex-direction: row; align-items: center; margin-bottom: 9px; }
+.prep-recipe-label { width: 62px; flex-shrink: 0; font-size: 13px; color: #75877f; }
+.prep-screen .prep-recipe-action { flex-grow: 1; min-height: 34px; font-size: 13px; padding: 5px 9px; }
+.prep-recipe-hint { white-space: normal; font-size: 13px; color: #75877f; }
+.prep-grade-row { flex-direction: row; align-items: center; border-top-width: 1px; border-top-color: #e8e3d7; padding-top: 13px; margin-top: 9px; }
+.prep-grade { flex-grow: 1; font-size: 13px; -unity-text-align: middle-right; }
+.prep-size-limit { font-size: 11px; color: #75877f; white-space: normal; min-height: 18px; margin-top: 8px; }
+.prep-cart-card { padding: 21px; border-radius: 16px; background-color: #fffdf6; margin-right: 12px; }
+.prep-cart-header { flex-direction: row; align-items: center; margin-bottom: 12px; }
+.prep-cart-title { font-size: 19px; -unity-font-style: bold; flex-grow: 1; }
+.prep-cart-actions { flex-direction: row; }
+.prep-screen .prep-cart-choice { width: 222px; min-height: 45px; margin-left: 12px; }
+.prep-cart-hint { font-size: 13px; color: #75877f; white-space: normal; }
+.prep-location-hero { flex-direction: row; padding: 16px; background-color: #fffdf6; border-radius: 16px; min-height: 368px; margin-bottom: 20px; }
+.prep-location-art { flex-grow: 3; flex-basis: 0; min-width: 0; -unity-background-scale-mode: scale-to-fit; background-image: url("project://database/Assets/CottonCircuit/Sprites/Locations/Location_0_Prep.png"); }
+.prep-location-copy { flex-grow: 2; flex-basis: 0; min-width: 0; justify-content: center; padding: 16px 18px 16px 27px; }
+.prep-location-name { font-size: 29px; -unity-font-style: bold; white-space: normal; margin: 15px 0; }
+.prep-location-detail { font-size: 16px; color: #75877f; white-space: normal; margin-bottom: 28px; }
+.prep-screen .prep-location-select { min-height: 50px; }
+.prep-location-cards { flex-direction: row; margin-bottom: 20px; }
+.prep-screen .prep-location-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin-right: 10px; min-height: 90px; align-items: flex-start; padding: 15px; }
+.prep-location-card-name { font-size: 17px; -unity-font-style: bold; }
+.prep-location-state { font-size: 12px; color: #75877f; margin-top: 8px; }
+.prep-location-footer { flex-direction: row; align-items: center; margin-top: 12px; }
+.prep-screen .prep-location-arrow { width: 58px; min-height: 43px; margin-right: 10px; font-size: 22px; }
+.prep-location-ready { flex-grow: 1; padding-left: 18px; font-size: 12px; color: #75877f; letter-spacing: 1px; }
+.prep-screen .prep-business-start { width: 310px; min-height: 65px; font-size: 22px; }
+
+.prep-icon-Trait_Ads { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Ads.png"); }
+.prep-icon-Trait_Engine { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Engine.png"); }
+.prep-icon-Trait_FlavorSoda { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_FlavorSoda.png"); }
+.prep-icon-Trait_FlavorVanilla { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_FlavorVanilla.png"); }
+.prep-icon-Trait_Glove { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Glove.png"); }
+.prep-icon-Trait_GradCap { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_GradCap.png"); }
+.prep-icon-Trait_Group { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Group.png"); }
+.prep-icon-Trait_Handling { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Handling.png"); }
+.prep-icon-Trait_Hours { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Hours.png"); }
+.prep-icon-Trait_Kart { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Kart.png"); }
+.prep-icon-Trait_Machine { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Machine.png"); }
+.prep-icon-Trait_MapPin { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_MapPin.png"); }
+.prep-icon-Trait_Patience { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Patience.png"); }
+.prep-icon-Trait_PriceTag { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_PriceTag.png"); }
+.prep-icon-Trait_RepeatAds { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_RepeatAds.png"); }
+.prep-icon-Trait_Ribbon { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Ribbon.png"); }
+.prep-icon-Trait_Sales { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Sales.png"); }
+.prep-icon-Trait_Shelf { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Shelf.png"); }
+.prep-icon-Trait_Spoon { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Spoon.png"); }
+.prep-icon-Trait_StickSpeed { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_StickSpeed.png"); }
+.prep-icon-Trait_Sugar2 { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Sugar2.png"); }
+.prep-icon-Trait_Sugar3 { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Sugar3.png"); }
+.prep-icon-Trait_Worker { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Worker.png"); }

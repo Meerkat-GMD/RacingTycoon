@@ -18,11 +18,14 @@ namespace CottonCircuit
         Vector3 ShopOffset => ShopRoot ? ShopRoot.position : Vector3.zero;
         Vector3 ShopFocus => new Vector3(-52, 1.2f, 10) + ShopOffset;
         public LineRenderer SugarThread;
+        public LineRenderer[] SugarWisps;
         public Light Sun;
         public bool AnimationPaused;
         public Camera CandyCamera;
         public RenderTexture CandyPreview;
         public Camera ShopCamera { get; private set; }
+        public RenderTexture MinimapTexture { get; private set; }
+        Camera minimapCamera;
         bool continuousMode;
         bool ChaseActive => continuousMode || mode == GameMode.Racing;
         bool ShopVisible => continuousMode || mode == GameMode.Shop;
@@ -33,6 +36,12 @@ namespace CottonCircuit
         Transform[] queue;
         readonly string[] queueIds = new string[2];
         readonly List<Transform> departing = new List<Transform>();
+        public const float FlossTaperFraction = .005f;
+        const int FlossPoints = 48, WispPoints = 128;
+        readonly Vector3[] flossPath = new Vector3[FlossPoints], wispPath = new Vector3[WispPoints];
+        Vector3 flossBow;
+        bool flossShown;
+        int flossFlavor = -2;
         public void SetContinuousMode(bool enabled)
         {
             continuousMode = enabled;
@@ -71,6 +80,19 @@ namespace CottonCircuit
         }
         public void Initialize()
         {
+            if (!minimapCamera)
+            {
+                MinimapTexture = new RenderTexture(384, 384, 16) { name = "Course overview", antiAliasing = 4 };
+                var overview = new GameObject("Course overview camera", typeof(Camera));
+                overview.transform.SetParent(transform, false);
+                minimapCamera = overview.GetComponent<Camera>();
+                minimapCamera.orthographic = true;
+                minimapCamera.targetTexture = MinimapTexture;
+                minimapCamera.clearFlags = CameraClearFlags.SolidColor;
+                minimapCamera.backgroundColor = Palette.Cream;
+                minimapCamera.nearClipPlane = .3f;
+                minimapCamera.farClipPlane = 500;
+            }
             focus = ShopFocus;
             size = 5.2f;
             UpdateViewport();
@@ -83,6 +105,19 @@ namespace CottonCircuit
         {
             if (CourseRoots != null) for (int i = 0; i < CourseRoots.Length; i++) CourseRoots[i].gameObject.SetActive(i == map);
             Kart.SetCourse(RaceCourse.ForMap(map)); SetCandyQuality(0);
+            if (minimapCamera)
+            {
+                var course = RaceCourse.ForMap(map);
+                var min = course.BoundsMin; var max = course.BoundsMax;
+                minimapCamera.transform.SetPositionAndRotation(new Vector3((float)(min.X + max.X) * .5f, 220,
+                    (float)(min.Z + max.Z) * .5f), Quaternion.Euler(90, 0, 0));
+                minimapCamera.orthographicSize = (float)System.Math.Max(max.X - min.X, max.Z - min.Z) * .5f + 12;
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (MinimapTexture) { MinimapTexture.Release(); Destroy(MinimapTexture); }
         }
         public void SetCandyQuality(int quality)
         {
@@ -126,7 +161,7 @@ namespace CottonCircuit
             float width = 1600 * scale, height = 900 * scale;
             if (continuousMode)
             {
-                // Match the centered 1600 x 900 composition used by CanvasScaler.Expand.
+                // Match the centered 1600 x 900 composition in Game.uxml and PanelSettings.
                 GameCamera.rect = DesignViewport(new Rect(0, 92, 960, 808), scale, width, height);
                 if (ShopCamera)
                 {
@@ -149,19 +184,60 @@ namespace CottonCircuit
         public void UpdateThread(bool active)
         {
             SugarThread.enabled = active;
-            if (!active) return;
+            foreach (var wisp in SugarWisps) wisp.enabled = active;
+            if (!active) { flossShown = false; return; }
+            if (flossFlavor != Kart.Flavor) TintFloss(Kart.Flavor);
             var start = Kart.transform.position + Vector3.up * 1.25f;
             var end = new Vector3(0, 25.6f, 0);
-            SugarThread.startColor = Palette.Flavor(Kart.Flavor);
-            SugarThread.endColor = Palette.Flavor(Kart.Flavor);
-            SugarThread.positionCount = 24;
-            for (int i = 0; i < 24; i++)
+            // At speed the floss bows back behind the kart and eases into each new bow, so turns swing it softly.
+            var bow = Vector3.up * 1.2f - Kart.transform.forward * Mathf.Clamp01(Kart.Speed / 26) * 2.5f;
+            flossBow = flossShown ? Vector3.Lerp(flossBow, bow, 1 - Mathf.Exp(-Time.deltaTime * 2.5f)) : bow;
+            flossShown = true;
+            Vector3 span = end - start, side = Vector3.Cross(span, Vector3.up).normalized, lift = Vector3.Cross(side, span).normalized;
+            float length = span.magnitude;
+            for (int i = 0; i < FlossPoints; i++) flossPath[i] = FlossPoint(start, span / length, side, lift, FlossDistance(i, FlossPoints, length), length);
+            SugarThread.positionCount = FlossPoints; SugarThread.SetPositions(flossPath);
+            for (int w = 0; w < SugarWisps.Length; w++)
             {
-                float t = i / 23f;
-                var p = Vector3.Lerp(start, end, t);
-                p.y += Mathf.Sin(t * Mathf.PI) * .8f;
-                SugarThread.SetPosition(i, p);
+                for (int i = 0; i < WispPoints; i++)
+                {
+                    // Each wisp coils around the floss once every 2.5 m and gathers into it at both ends.
+                    float d = FlossDistance(i, WispPoints, length), angle = d * 2.5f - Time.time * 7 + w * Mathf.PI;
+                    float radius = .18f * (1 - Mathf.Exp(-d / 2)) * (1 - d / length);
+                    wispPath[i] = FlossPoint(start, span / length, side, lift, d, length) + (side * Mathf.Cos(angle) + lift * Mathf.Sin(angle)) * radius;
+                }
+                SugarWisps[w].positionCount = WispPoints; SugarWisps[w].SetPositions(wispPath);
             }
+        }
+        // Vertex 0 sits in the nozzle and vertex 1 1.2 m out. The courses keep the thread shorter than
+        // 1.2 m / FlossTaperFraction, so width and alpha keys at that fraction always taper the floss
+        // across this first segment. Later vertices crowd toward the kart, where the camera sees the most.
+        static float FlossDistance(int index, int count, float length)
+        {
+            if (index == 0) return 0;
+            float s = (index - 1f) / (count - 2);
+            return 1.2f + (length - 1.2f) * s * (.15f + .85f * s);
+        }
+        // The point d meters along the floss from the kart nozzle toward the candy. The sway is 0 at the
+        // nozzle, peaks 10 m out where the chase camera sees the floss and returns to 0 at the candy, so
+        // both ends stay put while the bow and a ripple travelling toward the candy move the floss between.
+        Vector3 FlossPoint(Vector3 start, Vector3 direction, Vector3 side, Vector3 lift, float d, float length)
+        {
+            float near = d / 10, sway = near * Mathf.Exp(1 - near) * (1 - d / length), ripple = d * .8f - Time.time * 3;
+            return start + direction * d + (flossBow + side * (Mathf.Sin(ripple) * .3f) + lift * (Mathf.Cos(ripple) * .18f)) * sway;
+        }
+        void TintFloss(int flavor)
+        {
+            flossFlavor = flavor;
+            Color color = Palette.Flavor(flavor);
+            var floss = new Gradient();
+            floss.SetKeys(new[] { new GradientColorKey(Color.Lerp(color, Color.white, .2f), 0), new GradientColorKey(color, .03f) },
+                new[] { new GradientAlphaKey(0, 0), new GradientAlphaKey(1, FlossTaperFraction) });
+            SugarThread.colorGradient = floss;
+            var wisp = new Gradient();
+            wisp.SetKeys(new[] { new GradientColorKey(Color.Lerp(color, Color.white, .6f), 0), new GradientColorKey(Color.Lerp(color, Color.white, .4f), 1) },
+                new[] { new GradientAlphaKey(0, 0), new GradientAlphaKey(.85f, FlossTaperFraction) });
+            foreach (var line in SugarWisps) line.colorGradient = wisp;
         }
         public void UpdateOrders(Economy economy, float dt)
         {

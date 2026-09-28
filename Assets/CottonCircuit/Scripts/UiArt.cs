@@ -11,8 +11,7 @@ namespace CottonCircuit
         // Normalised pivots shared with the art (origin bottom-left): the loose
         // candy's stick base and the bagged candy's tie knot on the rack clip.
         public static readonly Vector2 CandyPivot = new Vector2(.5f, .06f), BagPivot = new Vector2(.5f, .14f);
-        // ShopArtGraphic.GrowthScale at one, one and a half and two laps: the
-        // distances at which the Small, Medium and Large sprites show at full size.
+        // Reference scale of the existing Small, Medium and Large sprite artwork.
         public static readonly float[] ReferenceGrowth = { .7597f, .845f, .917f };
 
         static readonly string[] Flavors = { "Strawberry", "Soda", "Vanilla" }, Sizes = { "Small", "Medium", "Large" };

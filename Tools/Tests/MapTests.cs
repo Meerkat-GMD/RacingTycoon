@@ -100,6 +100,91 @@ public static class MapTests
         Console.WriteLine("  " + style + ", motor " + motor + ", length " + drive.Course.Length.ToString("F1") + "m, lap " + drive.BestLapSeconds.ToString("F2") + "s, peak " + peak.ToString("F1") + "m/s");
     }
 
+    // Independent of RaceCourse.Project: distance from a point to a road centerline.
+    static double CenterlineDistance(RoadPoint[] points, bool closed, RoadPoint position)
+    {
+        double best = double.PositiveInfinity;
+        int count = closed ? points.Length : points.Length - 1;
+        for (int i = 0; i < count; i++)
+        {
+            RoadPoint a = points[i], delta = points[(i + 1) % points.Length] - a;
+            double span = delta.X * delta.X + delta.Z * delta.Z;
+            double t = Math.Max(0, Math.Min(1, ((position.X - a.X) * delta.X + (position.Z - a.Z) * delta.Z) / span));
+            best = Math.Min(best, Distance(position, a + delta * t));
+        }
+        return best;
+    }
+    // The main road near a junction as an open centerline, so probes skip the rest of the lap.
+    static RoadPoint[] NearbyMain(RaceCourse course, RoadPoint around, double range)
+    {
+        var points = course.MainPoints;
+        int count = points.Length, nearest = 0;
+        for (int i = 1; i < count; i++)
+            if (Distance(points[i], around) < Distance(points[nearest], around)) nearest = i;
+        int back = 0, ahead = 0;
+        while (back < count / 2 && Distance(points[(nearest - back - 1 + count) % count], around) <= range) back++;
+        while (ahead < count / 2 && Distance(points[(nearest + ahead + 1) % count], around) <= range) ahead++;
+        var nearby = new RoadPoint[back + ahead + 3];
+        for (int i = 0; i < nearby.Length; i++) nearby[i] = points[(nearest - back - 1 + i + count) % count];
+        return nearby;
+    }
+    // Positive inside the grass, negative on painted road.
+    static double GrassDepth(RoadPoint[] main, RoadPoint[] shortcut, RoadPoint point)
+    {
+        return Math.Min(CenterlineDistance(main, false, point) - RaceCourse.MainHalfWidth,
+            CenterlineDistance(shortcut, false, point) - RaceCourse.ShortcutHalfWidth);
+    }
+    // Grass reaches a round body through its rim; 256 rim samples lie 2cm apart,
+    // so the true deepest grass is at most 1cm deeper than the sampled value.
+    static double DeepestGrass(RoadPoint[] main, RoadPoint[] shortcut, RoadPoint center, double radius)
+    {
+        double deepest = GrassDepth(main, shortcut, center);
+        for (int i = 0; i < 256; i++)
+        {
+            double angle = Math.PI * 2 * i / 256;
+            deepest = Math.Max(deepest, GrassDepth(main, shortcut, center + new RoadPoint(Math.Sin(angle), Math.Cos(angle)) * radius));
+        }
+        return deepest;
+    }
+    // The shortcut ribbon overlaps the main ribbon at both ends and leaves a grass
+    // island between them. Around each island tip, a kart whose body is on painted
+    // road must drive freely, and a kart whose body overlaps the grass must be stopped.
+    // Bodies within 2cm of the grass either way are left to rounding.
+    static void VerifySeams(RaceCourse course)
+    {
+        int first = -1, last = -1;
+        for (int i = 0; i < course.ShortcutPoints.Length; i++)
+            if (CenterlineDistance(course.MainPoints, true, course.ShortcutPoints[i]) >
+                RaceCourse.MainHalfWidth + RaceCourse.ShortcutHalfWidth)
+            { if (first < 0) first = i; last = i; }
+        Check(first > 0 && last > first, "shortcut leaves no grass island");
+        int phantom = 0, leaks = 0, seam = 0;
+        string example = null;
+        foreach (int tip in new[] { first, last })
+        {
+            var main = NearbyMain(course, course.ShortcutPoints[tip], 40);
+            for (double x = -9; x <= 9; x += .3)
+                for (double z = -9; z <= 9; z += .3)
+                {
+                    var point = course.ShortcutPoints[tip] + new RoadPoint(x, z);
+                    double center = GrassDepth(main, course.ShortcutPoints, point);
+                    double grass = center >= .02 || center <= -.84 ? center : DeepestGrass(main, course.ShortcutPoints, point, .8);
+                    bool fits = course.Fits(point, .8);
+                    if (!fits && grass <= -.03)
+                    {
+                        phantom++;
+                        if (example == null) example = "(" + point.X.ToString("F1") + ", " + point.Z.ToString("F1") + ")";
+                    }
+                    if (fits && grass >= .02) leaks++;
+                    if (grass <= -.03 && CenterlineDistance(main, false, point) > RaceCourse.MainHalfWidth - .8 &&
+                        CenterlineDistance(course.ShortcutPoints, false, point) > RaceCourse.ShortcutHalfWidth - .8) seam++;
+                }
+        }
+        Check(phantom == 0, phantom + " kart positions on painted road hit an invisible wall, e.g. " + example);
+        Check(leaks == 0, leaks + " kart positions overlapping grass were not blocked");
+        Check(seam > 0, "no kart position straddles the seam between the two ribbons");
+    }
+
     // Mirrors ShiftController: forward meters scaled by speed, normalized to the shop lap.
     static double YieldPerLap(int map, DrivingStyle style, double engine)
     {
@@ -178,6 +263,8 @@ public static class MapTests
                 var center = course.Project(course.ShortcutPoints[course.ShortcutPoints.Length / 2]);
                 Check(center.IsShortcut, "shortcut has no independent drivable section");
             });
+            Test("map " + (map + 1) + " walls at the shortcut junctions follow the painted road",
+                () => VerifySeams(RaceCourse.ForMap(selected)));
             foreach (DrivingStyle style in new[] { DrivingStyle.Kart, DrivingStyle.Downhill })
             {
                 DrivingStyle selectedStyle = style;
