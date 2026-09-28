@@ -126,8 +126,6 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 7212686b13f06dc44bcf969da644bcda, type: 3}
   - Id: Trait_Machine
     Sprite: {fileID: 21300000, guid: 161ad6d8e81079e49be97549d8b5c300, type: 3}
-  - Id: Trait_FlavorSoda
-    Sprite: {fileID: 21300000, guid: d955c26e9ab9f9d429a66ca80645002f, type: 3}
   - Id: Trait_FlavorVanilla
     Sprite: {fileID: 21300000, guid: 82aa5c854a99c1442b695a9b3157e6d9, type: 3}
   - Id: Trait_Worker

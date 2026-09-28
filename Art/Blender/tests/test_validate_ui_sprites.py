@@ -65,8 +65,8 @@ class ValidatorTests(unittest.TestCase):
     def test_empty_tree_passes_unless_complete(self):
         report = v.validate(self.root)
         self.assertTrue(report['passed'])
-        self.assertEqual((report['present'], report['total']), (0, 66))
-        self.assertEqual(len(self.errors(complete=True)), 66)
+        self.assertEqual((report['present'], report['total']), (0, 65))
+        self.assertEqual(len(self.errors(complete=True)), 65)
 
     def test_good_icon_passes(self):
         self.write('Trait_Hours', subject((84, 84), (22, 22, 62, 62)))
@@ -183,8 +183,8 @@ class ValidatorTests(unittest.TestCase):
             self.assertEqual(v.main(['--root', str(self.root), '--report', str(report)]), 0)
             self.assertTrue(json.loads(report.read_text(encoding='utf-8'))['passed'])
             self.assertEqual(v.main(['--root', str(self.root), '--report', str(report), '--complete']), 1)
-        self.assertIn('UI_SPRITES_VALID 0/66', out.getvalue())
-        self.assertEqual(out.getvalue().count('PNG is missing'), 66)
+        self.assertIn('UI_SPRITES_VALID 0/65', out.getvalue())
+        self.assertEqual(out.getvalue().count('PNG is missing'), 65)
 
 
 if __name__ == '__main__':

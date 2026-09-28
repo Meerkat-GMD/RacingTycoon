@@ -79,7 +79,7 @@ public static class UpgradeTreeLayoutTests
                     Check(UpgradeTreeLayout.TabOf(p.Id) == t && object.ReferenceEquals(UpgradeTreeLayout.Find(p.Id), p), "lookup mismatch " + p.Id);
                 }
             }
-            Check(seen.Count == Progression.Nodes.Length && seen.Count == 31, "incomplete catalog");
+            Check(seen.Count == Progression.Nodes.Length && seen.Count == 30, "incomplete catalog");
             foreach (var n in Progression.Nodes) Check(seen.Contains(n.Id), "missing " + n.Id);
             Check(UpgradeTreeLayout.Find(null) == null && UpgradeTreeLayout.Find("missing") == null &&
                 UpgradeTreeLayout.TabOf("missing") == -1, "unknown node lookup");
@@ -97,7 +97,7 @@ public static class UpgradeTreeLayoutTests
                 }
                 Check(UpgradeTreeLayout.ExternalParentCount(child.Id) == externalCount, "chip count " + child.Id);
             }
-            Check(local + external == 37, "prerequisite catalog changed");
+            Check(local + external == 34, "prerequisite catalog changed");
             Console.WriteLine("  Prerequisites: " + local + " local arrows, " + external + " external chips");
         });
         for (int index = 0; index < UpgradeTreeLayout.Tabs.Length; index++)

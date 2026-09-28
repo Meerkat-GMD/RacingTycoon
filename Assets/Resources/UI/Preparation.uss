@@ -100,7 +100,6 @@
 
 .prep-icon-Trait_Ads { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Ads.png"); }
 .prep-icon-Trait_Engine { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Engine.png"); }
-.prep-icon-Trait_FlavorSoda { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_FlavorSoda.png"); }
 .prep-icon-Trait_FlavorVanilla { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_FlavorVanilla.png"); }
 .prep-icon-Trait_Glove { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_Glove.png"); }
 .prep-icon-Trait_GradCap { background-image: url("project://database/Assets/CottonCircuit/Sprites/Icons/Trait_GradCap.png"); }

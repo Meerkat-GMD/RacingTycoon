@@ -43,7 +43,7 @@ SIZES = ('Small', 'Medium', 'Large')
 TRAIT_ICONS = [
     'Trait_Hours', 'Trait_Patience', 'Trait_Ads', 'Trait_RepeatAds', 'Trait_Shelf', 'Trait_Sales',
     'Trait_PriceTag', 'Trait_Engine', 'Trait_Handling', 'Trait_Kart', 'Trait_StickSpeed', 'Trait_Spoon',
-    'Trait_Ribbon', 'Trait_Sugar2', 'Trait_Sugar3', 'Trait_Machine', 'Trait_FlavorSoda', 'Trait_FlavorVanilla',
+    'Trait_Ribbon', 'Trait_Sugar2', 'Trait_Sugar3', 'Trait_Machine', 'Trait_FlavorVanilla',
     'Trait_Worker', 'Trait_GradCap', 'Trait_Glove', 'Trait_MapPin', 'Trait_Group',
 ]
 

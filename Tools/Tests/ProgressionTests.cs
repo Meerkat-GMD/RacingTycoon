@@ -60,8 +60,8 @@ public static class ProgressionTests
                 e.Progression.SelectedLocation == 0 && e.Progression.SelectedMachine == 0 &&
                 Progression.DaySeconds(e) == 180 && Progression.Capacity(e) == 6 &&
                 Progression.MaxSugarGrade(e) == 1 && Progression.OwnedMachines(e) == 1 &&
-                Progression.WorkerCount(e) == 0 && Progression.HasFlavor(e, 0) &&
-                !Progression.HasFlavor(e, 1) && !Progression.HasLocation(e, 1), "starter incorrect");
+                Progression.WorkerCount(e) == 0 && Progression.HasFlavor(e, 0) && Progression.HasFlavor(e, 1) &&
+                !Progression.HasFlavor(e, 2) && !Progression.HasLocation(e, 1), "starter incorrect");
             Progression.Enable(e);
             Check(e.Progression.Purchases.Count == 0, "enable was not idempotent");
         });
@@ -110,13 +110,13 @@ public static class ProgressionTests
         });
         Test("capabilities follow purchased feature nodes", () => {
             var e = Fresh();
-            BuyPath(e, "flavor_soda"); BuyPath(e, "worker_grade_3"); BuyPath(e, "location_3");
+            BuyPath(e, "worker_grade_3"); BuyPath(e, "location_3");
             Check(Progression.HasFlavor(e, 1) && Progression.HasFlavor(e, 2) &&
                 Progression.MaxSugarGrade(e) == 3 && Progression.WorkerCount(e) >= 1 &&
                 Progression.WorkerGrade(e) == 3 && Progression.OwnedMachines(e) == 3 &&
                 Progression.HasLocation(e, 3), "capability grant missing");
             Check(Progression.FlavorMachineTier(0) == 1 &&
-                Progression.FlavorMachineTier(1) == 2 && Progression.FlavorMachineTier(2) == 3 &&
+                Progression.FlavorMachineTier(1) == 1 && Progression.FlavorMachineTier(2) == 3 &&
                 Progression.MachineTier(2) == 3 && Progression.MachineMap(2) == 2,
                 "machine requirement wrong");
         });
@@ -161,6 +161,17 @@ public static class ProgressionTests
                 Progression.EffectSummary(e, "stick_speed").Contains("100%") &&
                 Progression.EffectSummary(e, "stick_speed").Contains("112%"),
                 "numeric hover effect missing");
+        });
+        Test("soda is a starting flavor with no trait left to buy", () => {
+            Check(Progression.Find("flavor_soda") == null, "soda trait still listed");
+            foreach (UpgradeNode node in Progression.Nodes)
+                Check(Array.IndexOf(node.Parents, "flavor_soda") < 0, node.Id + " still requires the soda trait");
+            Check(string.Join(",", Progression.Find("flavor_price").Parents) == "sales" &&
+                string.Join(",", Progression.Find("quality_focus").Parents) == "stick_quality",
+                "soda children did not keep their remaining prerequisites");
+            var shift = new ShopShift(Fresh());
+            Check(shift.CanMakeFlavor(0, 0) && shift.CanMakeFlavor(0, 1) && !shift.CanMakeFlavor(0, 2),
+                "the basic machine must make strawberry and soda but not vanilla");
         });
         Test("catalog grants are reachable and graph has no cycles", () => {
             var e = Fresh(); var ids = new HashSet<string>();

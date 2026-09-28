@@ -67,7 +67,7 @@ public static class ProgressionSaveTests
             Buy(e, "engine", 2); Buy(e, "hours");
             var envelope = new SaveStore.Envelope { Version = 7, State = e };
             Check(Upgrade(envelope), "valid V7 default rejected");
-            Check(e.Progression.CartStyle == 1 && envelope.Version == 8, "default vehicle did not migrate");
+            Check(e.Progression.CartStyle == 1 && envelope.Version == 9, "default vehicle did not migrate");
             Check(e.Coins == 412 && e.Day == 4 && e.Progression.Phase == BusinessPhase.Preparation &&
                 e.Progression.Purchases.Count == 2 && Progression.Level(e, "engine") == 2 &&
                 Progression.Level(e, "hours") == 1 && Progression.Level(e, "coupe") == 0,
@@ -97,6 +97,57 @@ public static class ProgressionSaveTests
             Check(e.Progression.CartStyle == 0, "corrupt balance was normalized before rejection");
             e.Coins = 80; e.Progression.CartStyle = 2;
             Check(!Upgrade(new SaveStore.Envelope { Version = 7, State = e }), "invalid old style accepted");
+        });
+        Test("V8 soda trait owners get the price back and keep every other purchase", () => {
+            var e = Fresh(); e.Coins = 500;
+            Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "flavor_soda"); Buy(e, "sales"); Buy(e, "flavor_price", 2);
+            var envelope = new SaveStore.Envelope { Version = 8, State = e };
+            Check(Upgrade(envelope) && envelope.Version == 9, "valid V8 soda owner rejected");
+            Check(e.Coins == 810 && !e.Progression.Purchases.Exists(p => p.Id == "flavor_soda") &&
+                e.Progression.Purchases.Count == 4 && Progression.Level(e, "flavor_price") == 2 &&
+                Progression.Level(e, "machine_2") == 1, "soda refund or remaining purchases wrong");
+            Check(Upgrade(envelope) && e.Coins == 810, "reloading a V9 file refunded soda again");
+        });
+        Test("V8 files that broke the old soda rules are rejected before any refund", () => {
+            var promotion = Fresh(); Buy(promotion, "sales"); Buy(promotion, "flavor_price");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = promotion }), "V8 flavor promotion without soda accepted");
+            var decoration = Fresh(); Buy(decoration, "stick_speed"); Buy(decoration, "stick_quality"); Buy(decoration, "quality_focus");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = decoration }), "V8 decoration without soda accepted");
+            var noMachine = Fresh(); Buy(noMachine, "flavor_soda");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = noMachine }), "V8 soda without the second machine accepted");
+            Check(noMachine.Coins == 80 && noMachine.Progression.Purchases.Count == 1, "corrupt soda file was refunded before rejection");
+            var doubled = Fresh(); Buy(doubled, "sugar_2"); Buy(doubled, "machine_2"); Buy(doubled, "flavor_soda", 2);
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = doubled }), "V8 soda above its single rank accepted");
+        });
+        Test("the soda refund lands only after the old balance passes validation", () => {
+            var e = Fresh(); e.Coins = -300;
+            Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "flavor_soda");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = e }), "negative V8 balance accepted through the soda refund");
+            var v7 = Fresh(); v7.Coins = -300; v7.Progression.CartStyle = 0;
+            Buy(v7, "engine"); Buy(v7, "handling"); Buy(v7, "coupe"); Buy(v7, "sugar_2"); Buy(v7, "machine_2"); Buy(v7, "flavor_soda");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 7, State = v7 }), "negative V7 balance accepted through the soda refund");
+            var rich = Fresh(); rich.Coins = 999999900;
+            Buy(rich, "sugar_2"); Buy(rich, "machine_2"); Buy(rich, "flavor_soda");
+            Check(Upgrade(new SaveStore.Envelope { Version = 8, State = rich }) && rich.Coins == 1000000000,
+                "a refund near the coin cap must clamp instead of breaking the save");
+        });
+        Test("V8 files that used soda against the old rules are rejected", () => {
+            var recipe = Operating(); recipe.Business.Machines[0].RecipeFlavor = 1;
+            Check(SaveStore.Valid(recipe), "starting soda recipe must be valid under V9 rules");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = recipe }), "V8 soda recipe without the trait accepted");
+            var owner = Operating(); Buy(owner, "sugar_2"); Buy(owner, "machine_2"); Buy(owner, "flavor_soda");
+            owner.Business.Machines[0].RecipeFlavor = 1;
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = owner }), "V8 soda on the basic machine accepted");
+            var stock = Fresh();
+            var soda = ShopShift.Preview(ShopShift.MetersForSize(0), 1);
+            soda.Id = "old-soda"; soda.SugarGrade = 1;
+            stock.Inventory.Add(soda); stock.CompletedIds.Add(soda.Id);
+            Check(SaveStore.Valid(stock), "starting soda stock must be valid under V9 rules");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 8, State = stock }), "V8 soda stock without the trait accepted");
+        });
+        Test("V9 files cannot hold the removed soda trait", () => {
+            var e = Fresh(); Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "flavor_soda");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 9, State = e }), "V9 soda trait accepted");
         });
         Test("invalid phase is rejected", () => {
             var e = Fresh(); e.Progression.Phase = (BusinessPhase)99;
@@ -162,7 +213,7 @@ public static class ProgressionSaveTests
             e.Business.BatchMeters = 1; e.Business.BatchFlavor = 0; e.Business.BatchSugarGrade = 2;
             Check(!SaveStore.Valid(e), "higher-grade batch accepted on grade-one machine");
         });
-        Test("V7 stock must use unlocked flavor and achievable size", () => {
+        Test("stock must use an unlocked flavor and an achievable size", () => {
             var e = Fresh();
             var product = ShopShift.Preview(ShopShift.MetersForSize(1), 0);
             product.Id = "oversize"; product.SugarGrade = 1;
@@ -170,16 +221,21 @@ public static class ProgressionSaveTests
             Check(!SaveStore.Valid(e), "grade-one stock at medium size accepted");
             e.Inventory.Clear(); e.CompletedIds.Clear();
             var soda = ShopShift.Preview(ShopShift.MetersForSize(0), 1);
-            soda.Id = "locked-flavor"; soda.SugarGrade = 1;
+            soda.Id = "starting-soda"; soda.SugarGrade = 1;
             e.Inventory.Add(soda); e.CompletedIds.Add(soda.Id);
-            Check(!SaveStore.Valid(e), "locked soda stock accepted");
+            Check(SaveStore.Valid(e), "starting soda stock rejected");
+            e.Inventory.Clear(); e.CompletedIds.Clear();
+            var vanilla = ShopShift.Preview(ShopShift.MetersForSize(0), 2);
+            vanilla.Id = "locked-flavor"; vanilla.SugarGrade = 1;
+            e.Inventory.Add(vanilla); e.CompletedIds.Add(vanilla.Id);
+            Check(!SaveStore.Valid(e), "locked vanilla stock accepted");
         });
         Test("paid premium production survives an actual save and load", () => {
             string dir = Path.Combine(Path.GetTempPath(), "cc-save-" + Guid.NewGuid().ToString("N"));
             try
             {
                 var e = Fresh(); e.Coins = 1000;
-                Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "flavor_soda");
+                Buy(e, "sugar_2"); Buy(e, "machine_2");
                 var shift = new ShopShift(e);
                 shift.Machine(1).SugarGrade = 2;
                 Check(shift.SelectMachine(1) && shift.BeginBusiness(), "premium setup failed");
@@ -196,12 +252,12 @@ public static class ProgressionSaveTests
             }
             finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
         });
-        Test("V7 operating file resumes paid batches, stock, and remaining time on downhill", () => {
+        Test("V7 operating file resumes paid batches, stock, and remaining time on downhill with the soda refund", () => {
             string dir = Path.Combine(Path.GetTempPath(), "cc-v7-migration-" + Guid.NewGuid().ToString("N"));
             try
             {
                 var e = Fresh(); e.Coins = 1000; e.Day = 6;
-                Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "flavor_soda");
+                Buy(e, "sugar_2"); Buy(e, "machine_2");
                 var shift = new ShopShift(e);
                 shift.Machine(1).SugarGrade = 2;
                 Check(shift.SelectMachine(1) && shift.BeginBusiness() && shift.Pour(1), "old paid setup failed");
@@ -209,11 +265,10 @@ public static class ProgressionSaveTests
                 var product = ShopShift.Preview(10, 0);
                 product.Id = "v7-stock"; product.SugarGrade = 1;
                 e.Inventory.Add(product); e.CompletedIds.Add(product.Id);
-                e.Progression.CartStyle = 0;
-                string expectedAfterMigration;
-                e.Progression.CartStyle = 1;
-                expectedAfterMigration = UnityEngine.JsonUtility.ToJson(e);
-                e.Progression.CartStyle = 0;
+                // The old file owned the soda trait; migration removes it and refunds its 310 coin price.
+                e.Progression.CartStyle = 1; e.Coins += 310;
+                string expectedAfterMigration = UnityEngine.JsonUtility.ToJson(e);
+                e.Progression.CartStyle = 0; e.Coins -= 310; Buy(e, "flavor_soda");
                 Directory.CreateDirectory(dir);
                 File.WriteAllText(Path.Combine(dir, "cotton-circuit.json"), UnityEngine.JsonUtility.ToJson(
                     new SaveStore.Envelope { Version = 7, State = e, HasProgression = true, HasBusiness = true }));
@@ -221,17 +276,17 @@ public static class ProgressionSaveTests
                 var restored = store.Load();
                 Check(store.CanSave && store.Error == null, "valid V7 operating file rejected");
                 Check(restored.Progression.CartStyle == 1 && restored.Progression.Phase == BusinessPhase.Operating &&
-                    restored.Business.RemainingSeconds == 174 && restored.Coins == 997 &&
+                    restored.Business.RemainingSeconds == 174 && restored.Coins == 1307 &&
                     restored.Business.DayMaterialCost == 3 && restored.Inventory.Count == 1 &&
                     restored.Inventory[0].Id == "v7-stock", "operating progress reset during migration");
                 Check(UnityEngine.JsonUtility.ToJson(restored) == expectedAfterMigration,
-                    "migration modified state beyond the vehicle style");
-                Check(store.Save(restored), "migrated state failed to save as V8");
+                    "migration modified state beyond the vehicle style and the soda refund");
+                Check(store.Save(restored), "migrated state failed to save as V9");
                 var stored = UnityEngine.JsonUtility.FromJson<SaveStore.Envelope>(
                     File.ReadAllText(Path.Combine(dir, "cotton-circuit.json")));
-                Check(stored.Version == 8, "migrated file was not upgraded to V8");
+                Check(stored.Version == 9, "migrated file was not upgraded to V9");
                 Check(UnityEngine.JsonUtility.ToJson(new SaveStore(dir).Load()) == expectedAfterMigration,
-                    "V8 second load changed resumed state");
+                    "V9 second load changed resumed state");
             }
             finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
         });

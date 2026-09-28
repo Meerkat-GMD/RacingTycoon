@@ -128,13 +128,11 @@
 #TraitNode_quality_focus { left: 67px; top: 379px; }
 #TraitNode_sugar_saving { left: 562px; top: 379px; }
 /* 기계와 맛 */
-#TraitEdge_machine_2_flavor_soda { left: 524px; top: 139.75px; width: 288.2px; rotate: 170.21deg; }
-#TraitEdge_machine_2_machine_3 { left: 524px; top: 139.75px; width: 202.03px; rotate: 14.04deg; }
-#TraitEdge_machine_3_flavor_vanilla { left: 720px; top: 323.75px; width: 53px; rotate: 90deg; }
+#TraitEdge_machine_2_machine_3 { left: 524px; top: 139.75px; width: 49px; rotate: 90deg; }
+#TraitEdge_machine_3_flavor_vanilla { left: 524px; top: 323.75px; width: 53px; rotate: 90deg; }
 #TraitNode_machine_2 { left: 436px; top: 7px; }
-#TraitNode_flavor_soda { left: 152px; top: 191px; }
-#TraitNode_machine_3 { left: 632px; top: 191px; }
-#TraitNode_flavor_vanilla { left: 632px; top: 379px; }
+#TraitNode_machine_3 { left: 436px; top: 191px; }
+#TraitNode_flavor_vanilla { left: 436px; top: 379px; }
 /* 알바 */
 #TraitEdge_worker_1_worker_speed { left: 524px; top: 139.75px; width: 327.68px; rotate: 171.4deg; }
 #TraitEdge_worker_1_worker_grade_2 { left: 524px; top: 139.75px; width: 49px; rotate: 90deg; }

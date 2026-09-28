@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using CottonCircuit;
 
@@ -99,6 +100,27 @@ class TutorialTests
             Check(!shift.Discard(candy.Id) && !e.Discard(candy.Id) && !shift.ResumeProduct(candy.Id),
                 "practice candy could be discarded or resumed");
             Check(e.Inventory.Count == 1 && !shift.Pour(0), "delivery step allowed another batch");
+        });
+        Test("soda stays locked until the guided sale ends", () => {
+            Economy e; var shift = Training(out e);
+            Check(!shift.CanMakeFlavor(0, 1) && shift.MachineMakesFlavor(0, 1) && !shift.MachineMakesFlavor(0, 2),
+                "the tutorial alone must lock soda, while the machine still cannot make vanilla");
+            Check(FinishSale(e, shift) && shift.CanMakeFlavor(0, 1), "soda did not open after the guided sale");
+            var skipped = Training(out e);
+            Check(skipped.SkipTutorial() && skipped.CanMakeFlavor(0, 1) && skipped.Pour(1) && e.Business.DayMaterialCost == 2,
+                "skipping the tutorial did not open paid soda sugar");
+        });
+        Test("the first ordinary day orders strawberry and soda but no vanilla", () => {
+            var e = Fresh(); var shift = new ShopShift(e);
+            Check(shift.BeginBusiness(), "ordinary first day could not open");
+            var flavors = new HashSet<int>();
+            for (int i = 0; i < 40 && shift.IsOpen; i++)
+            {
+                foreach (var customer in shift.State.Customers) flavors.Add(customer.Flavor);
+                shift.Advance(5, 0);
+            }
+            Check(flavors.Contains(0) && flavors.Contains(1) && !flavors.Contains(2),
+                "first-day orders used flavors " + string.Join(",", flavors));
         });
         Test("a wrong practice delivery leaves candy and customer intact", () => {
             Economy e; var shift = Training(out e); var candy = Make(shift);

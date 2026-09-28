@@ -9,7 +9,7 @@ public static class ProgressionBalance
     const double TickSeconds = 1;
     const double ActiveMetersPerSecond = 18;
     static readonly string[] Priority = {
-        "hours", "sales", "ads", "stick_speed", "sugar_2", "machine_2", "flavor_soda",
+        "hours", "sales", "ads", "stick_speed", "sugar_2", "machine_2",
         "worker_1", "worker_grade_2", "location_1", "shelf", "hours", "sales", "ads",
         "sugar_3", "machine_3", "worker_2", "worker_speed", "flavor_vanilla",
         "location_2", "location_3"

@@ -173,9 +173,6 @@
                 </ui:VisualElement>
               </ui:Button>
               <ui:Label text="장식 기술" class="trait-name" picking-mode="Ignore" />
-              <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_quality_focus_flavor_soda" text="○ 소다 맛  ↗" class="trait-chip" />
-              </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_sugar_saving" class="trait-node trait-cat-production">
               <ui:Button name="UpgradeNode_sugar_saving" class="trait-node-button">
@@ -188,10 +185,6 @@
             </ui:VisualElement>
           </ui:VisualElement>
           <ui:VisualElement name="TraitGraph_machines" class="trait-graph hidden">
-            <ui:VisualElement name="TraitEdge_machine_2_flavor_soda" class="trait-edge" picking-mode="Ignore">
-              <ui:VisualElement class="trait-edge-head trait-edge-head-left" picking-mode="Ignore" />
-              <ui:VisualElement class="trait-edge-head trait-edge-head-right" picking-mode="Ignore" />
-            </ui:VisualElement>
             <ui:VisualElement name="TraitEdge_machine_2_machine_3" class="trait-edge" picking-mode="Ignore">
               <ui:VisualElement class="trait-edge-head trait-edge-head-left" picking-mode="Ignore" />
               <ui:VisualElement class="trait-edge-head trait-edge-head-right" picking-mode="Ignore" />
@@ -211,15 +204,6 @@
               <ui:VisualElement class="trait-chips">
                 <ui:Button name="TraitRequirement_machine_2_sugar_2" text="○ 고운 설탕  ↗" class="trait-chip" />
               </ui:VisualElement>
-            </ui:VisualElement>
-            <ui:VisualElement name="TraitNode_flavor_soda" class="trait-node trait-cat-production">
-              <ui:Button name="UpgradeNode_flavor_soda" class="trait-node-button">
-                <ui:VisualElement class="trait-ring" picking-mode="Ignore">
-                  <ui:VisualElement class="trait-disc" picking-mode="Ignore"><ui:VisualElement name="TraitIcon_flavor_soda" class="trait-icon prep-icon-Trait_FlavorSoda" picking-mode="Ignore" /></ui:VisualElement>
-                  <ui:Label name="TraitRank_flavor_soda" text="0/1" class="trait-rank" picking-mode="Ignore" />
-                </ui:VisualElement>
-              </ui:Button>
-              <ui:Label text="소다 맛" class="trait-name" picking-mode="Ignore" />
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_machine_3" class="trait-node trait-cat-equipment">
               <ui:Button name="UpgradeNode_machine_3" class="trait-node-button">
@@ -372,9 +356,6 @@
                 </ui:VisualElement>
               </ui:Button>
               <ui:Label text="맛 홍보" class="trait-name" picking-mode="Ignore" />
-              <ui:VisualElement class="trait-chips">
-                <ui:Button name="TraitRequirement_flavor_price_flavor_soda" text="○ 소다 맛  ↗" class="trait-chip" />
-              </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="TraitNode_location_price" class="trait-node trait-cat-sales">
               <ui:Button name="UpgradeNode_location_price" class="trait-node-button">

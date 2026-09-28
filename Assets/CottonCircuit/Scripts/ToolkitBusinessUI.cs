@@ -118,7 +118,8 @@ namespace CottonCircuit
                 bool available = !progression || shift.CanMakeFlavor(shift.SelectedMachine, i);
                 businessSugarBags[i].SetEnabled(manual && available);
                 int cost = available && progression ? shift.PourCost(shift.SelectedMachine, i) : 0;
-                SetText("sugarCost" + i, !available ? "이 기계에서는 잠김" : worker ? "알바 담당" : cost > 0 ? cost + " C / 10g" : "무료");
+                SetText("sugarCost" + i, !available ? shift.MachineMakesFlavor(shift.SelectedMachine, i) ? "튜토리얼 중 잠김" : "이 기계에서는 잠김"
+                    : worker ? "알바 담당" : cost > 0 ? cost + " C / 10g" : "무료");
                 businessSugarBags[i].tooltip = "주행 화면으로 끌어 위아래로 흔들어 주세요.\n작게 흔들면 조금, 크게 흔들면 많이 들어가요.";
             }
             RefreshBusinessCustomers(allowed);

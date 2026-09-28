@@ -8,7 +8,7 @@ namespace CottonCircuit
     {
         [Serializable] public class Envelope
         {
-            public int Version = 8;
+            public int Version = 9;
             public Economy State;
             // Unity's inline class serialization replaces null with a default object.
             // Keep presence outside the inline data so legacy mode and customer gaps survive a reload.
@@ -265,7 +265,7 @@ namespace CottonCircuit
         }
         static bool RestoreOptionalState(Envelope envelope)
         {
-            if (envelope == null || envelope.State == null || envelope.Version < 1 || envelope.Version > 8) return false;
+            if (envelope == null || envelope.State == null || envelope.Version < 1 || envelope.Version > 9) return false;
             if (envelope.Version < 7 || !envelope.HasProgression)
             {
                 if (envelope.HasProgression || !AbsentProgressionPlaceholder(envelope.State.Progression)) return false;
@@ -344,7 +344,7 @@ namespace CottonCircuit
                 foreach (var order in state.Orders) order.Remaining *= CustomerOrder.Patience / 120;
             }
             else if (envelope.Version != 3 && envelope.Version != 4 && envelope.Version != 5 && envelope.Version != 6 &&
-                envelope.Version != 7 && envelope.Version != 8) return false;
+                envelope.Version != 7 && envelope.Version != 8 && envelope.Version != 9) return false;
             if (envelope.Version < 3)
                 foreach (var product in state.Inventory) product.Quality = 0;
             if (envelope.Version < 7)
@@ -365,6 +365,9 @@ namespace CottonCircuit
                     customer.PatienceRemaining = ShopShift.CustomerPatience;
                 }
             }
+            // Runs before the V7 check below, which validates against the current trait catalog.
+            bool sodaRefund = false;
+            if (envelope.Version < 9 && state.Progression != null && !RemoveSodaTrait(state, out sodaRefund)) return false;
             if (envelope.Version == 7 && state.Progression != null)
             {
                 // In V7, kart was free and downhill required the coupe node. Validate those
@@ -375,7 +378,34 @@ namespace CottonCircuit
                     state.Progression.CartStyle = 1;
             }
             if (!Valid(state)) return false;
-            envelope.Version = 8;
+            // The refund lands only after every check has seen the balance the old file stored.
+            if (sodaRefund) state.Coins = Math.Min(1000000000, state.Coins + 310);
+            envelope.Version = 9;
+            return true;
+        }
+        // V9 made soda a starting flavor and removed its trait. Before V9, soda needed that trait (one rank,
+        // bought after the second machine, required by two dependants) and a machine above the basic one.
+        // Files that broke those rules are rejected; otherwise the purchase is dropped for a refund of its price.
+        static bool RemoveSodaTrait(Economy e, out bool refund)
+        {
+            refund = false;
+            var purchases = e.Progression.Purchases;
+            if (purchases == null) return false;
+            var records = purchases.FindAll(purchase => purchase != null && purchase.Id == "flavor_soda");
+            bool owned = records.Count == 1 && records[0].Level == 1 && Progression.Level(e, "machine_2") > 0;
+            if (records.Count > 0 && !owned ||
+                !owned && (Progression.Level(e, "flavor_price") > 0 || Progression.Level(e, "quality_focus") > 0)) return false;
+            if (e.Business != null && e.Business.Machines != null)
+                for (int i = 0; i < e.Business.Machines.Count; i++)
+                {
+                    var machine = e.Business.Machines[i];
+                    bool soda = machine != null && (machine.RecipeFlavor == 1 || machine.SugarFlavor == 1 || machine.BatchFlavor == 1);
+                    if (soda && (!owned || i == 0)) return false;
+                }
+            if (!owned && e.Inventory != null && e.Inventory.Exists(product => product != null && product.DistanceBased && product.FlavorIndex == 1))
+                return false;
+            if (owned) purchases.Remove(records[0]);
+            refund = owned;
             return true;
         }
         static void MigrateLegacy(Economy e)

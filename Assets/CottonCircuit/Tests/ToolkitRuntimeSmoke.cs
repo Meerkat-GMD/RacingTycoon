@@ -141,6 +141,9 @@ namespace CottonCircuit.Tests
             Check((composition.worldBound.center - gameComposition.worldBound.center).sqrMagnitude < .1f,
                 "tutorial coaching stays aligned with the centered gameplay composition");
             Check(!game.EmptySugar() && game.ExtractCandy() == null, "tutorial rejects premature destructive production actions");
+            var sodaBag = Element<VisualElement>("sugar1");
+            Check(!sodaBag.enabledInHierarchy && Element<Label>("sugarCost1").text == "튜토리얼 중 잠김" &&
+                Element<Label>("sugarCost2").text == "이 기계에서는 잠김", "the starting soda bag waits for the strawberry tutorial to finish");
             CheckNoPlayerAuto();
             yield return SugarGuideBeforeGrab();
             yield return Capture("03-tutorial-sugar.png");
@@ -198,6 +201,8 @@ namespace CottonCircuit.Tests
             Check(Near(clock, state.RemainingSeconds) && Near(patience, game.Shift.CustomerAt(0).PatienceRemaining), "tutorial actions hold the business and customer clocks");
             yield return Click("TutorialCompleteButton");
             Check(!game.TutorialActive && game.TutorialStep == TutorialStep.Complete, "success action ends the tutorial");
+            Check(sodaBag.enabledInHierarchy && Element<Label>("sugarCost1").text == "2 C / 10g" &&
+                Element<Label>("sugarCost2").text == "이 기계에서는 잠김", "after the tutorial the basic machine offers paid soda while vanilla stays locked");
             Check(game.Audio.Music == MusicCue.Machine1, "the first machine song follows the tutorial");
             Check(new SaveStore(saveDirectory).Load().TutorialStep == TutorialStep.Complete, "tutorial completion is saved immediately");
             int bells = game.Audio.Played(Sound.ClosingBell);
@@ -278,7 +283,7 @@ namespace CottonCircuit.Tests
                 "clicking a trait that cannot be bought neither buys it nor plays a click");
             economy.Coins = 10000;
             game.UI.Refresh();
-            foreach (string node in new[] { "sugar_2", "machine_2", "flavor_soda", "worker_1", "worker_grade_2" })
+            foreach (string node in new[] { "sugar_2", "machine_2", "worker_1", "worker_grade_2" })
             {
                 yield return Click("OpenUpgradeGraph");
                 yield return Click("TraitTab_" + UpgradeTreeLayout.Tabs[UpgradeTreeLayout.TabOf(node)].Id);
@@ -290,8 +295,10 @@ namespace CottonCircuit.Tests
             }
             Check(Element<VisualElement>("TraitEdge_sugar_2_sugar_3").ClassListContains("trait-edge-unlocked"),
                 "arrows leaving a bought trait switch to the unlocked color");
-            var sodaChip = Element<Button>("TraitRequirement_quality_focus_flavor_soda");
-            Check(sodaChip.ClassListContains("trait-chip-met") && sodaChip.text.StartsWith("✓"), "a bought prerequisite marks its chip complete");
+            var machineChip = Element<Button>("TraitRequirement_worker_1_machine_2");
+            Check(machineChip.ClassListContains("trait-chip-met") && machineChip.text.StartsWith("✓"), "a bought prerequisite marks its chip complete");
+            Check(Find("TraitNode_flavor_soda") == null && Find("TraitRequirement_flavor_price_flavor_soda") == null &&
+                Find("TraitRequirement_quality_focus_flavor_soda") == null, "the growth map no longer offers the starting soda flavor");
             yield return Capture("07-preparation-traits.png");
             yield return Click("OpenEquipment");
             Check(Visible(Find("EquipmentPage")) && !game.Machine(0).WorkerAssigned, "equipment page shows the hired worker without silently assigning it");

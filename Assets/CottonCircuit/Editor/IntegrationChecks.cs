@@ -122,7 +122,7 @@ namespace CottonCircuit.Editor
                     importer.mipmapEnabled || !importer.alphaIsTransparency || importer.textureCompression != TextureImporterCompression.CompressedHQ)
                     badImports.Add(path);
             }
-            Check(found.Count == 66 && badImports.Count == 0, found.Count + " UI sprites import as single sprites without mipmaps, with alpha transparency and HQ compression" +
+            Check(found.Count == 65 && badImports.Count == 0, found.Count + " UI sprites import as single sprites without mipmaps, with alpha transparency and HQ compression" +
                 (badImports.Count == 0 ? "" : ": wrong settings " + string.Join(", ", badImports)));
             Check(!AssetDatabase.IsValidFolder("Assets/CottonCircuit/Resources") && !Directory.Exists("Assets/CottonCircuit/Resources"),
                 "Assets/CottonCircuit/Resources is gone; the Mina portrait comes from GameAssets.MinaPortrait");
@@ -167,8 +167,8 @@ namespace CottonCircuit.Editor
                 migrated.TotalTips == 0 && migrated.OrdersServed == 0 && migrated.MissedOrders == 0 &&
                 migrated.SatisfactionTotal == 0, "V1 save initializes order fields");
             Check(legacyStore.Save(migrated) &&
-                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(legacyDirectory, "cotton-circuit.json"))).Version == 8,
-                "migrated save writes V8");
+                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(legacyDirectory, "cotton-circuit.json"))).Version == 9,
+                "migrated save writes V9");
 
             var expanded = new Economy { Coins = 820, ShelfLevel = 1, OrderSerial = 12,
                 NextCustomerIn = 7.5, TotalTips = 42, MissedOrders = 4,
@@ -241,8 +241,8 @@ namespace CottonCircuit.Editor
             restored.Inventory[0].Quality = 75;
             Check(store.Save(restored) && new SaveStore(dir).Load().Inventory[0].Quality == 75,
                 "V3 preserves product quality");
-            Check(JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(dir, "cotton-circuit.json"))).Version == 8,
-                "V2 migration writes V8");
+            Check(JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(Path.Combine(dir, "cotton-circuit.json"))).Version == 9,
+                "V2 migration writes V9");
             restored.Inventory[0].Quality = 101; Check(!SaveStore.Valid(restored), "out of range quality rejected");
             restored.Inventory[0].Quality = -1; Check(!SaveStore.Valid(restored), "negative quality rejected");
         }

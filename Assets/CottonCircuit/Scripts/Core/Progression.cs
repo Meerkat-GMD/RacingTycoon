@@ -53,20 +53,19 @@ namespace CottonCircuit
             N("sugar_3", "특급 설탕", "3등급 설탕과 큰 크기를 해금합니다.", "production", "특", 1, 690, 1, 891, 561, "sugar_2"),
             N("machine_2", "두 번째 기계", "2등급 기계를 즉시 설치합니다.", "equipment", "기", 1, 360, 1, 647, 342, "sugar_2"),
             N("machine_3", "세 번째 기계", "3등급 기계를 즉시 설치합니다.", "equipment", "기", 1, 1100, 1, 691, 444, "machine_2", "stick_speed"),
-            N("flavor_soda", "소다 맛", "2등급 기계에서 소다 맛을 만듭니다.", "production", "소", 1, 310, 1, 670, 185, "machine_2"),
             N("flavor_vanilla", "바닐라 맛", "3등급 기계에서 바닐라 맛을 만듭니다.", "production", "바", 1, 980, 1, 749, 574, "machine_3", "sugar_3"),
             N("worker_1", "첫 번째 알바", "기계에 배치할 첫 알바를 고용합니다.", "staff", "알", 1, 420, 1, 577, 243, "machine_2"),
             N("worker_2", "두 번째 알바", "두 번째 알바를 고용합니다.", "staff", "알", 1, 930, 1, 734, 275, "worker_1", "machine_3"),
             N("worker_grade_2", "알바 2등급 교육", "알바가 2등급 기계를 다룰 수 있습니다.", "staff", "교", 1, 360, 1, 545, 384, "worker_1", "machine_2"),
             N("worker_grade_3", "알바 3등급 교육", "알바가 3등급 기계를 다룰 수 있습니다.", "staff", "교", 1, 880, 1, 577, 490, "worker_grade_2", "machine_3"),
             N("worker_speed", "알바 손놀림", "알바 제작 속도가 단계마다 15% 오릅니다.", "staff", "손", 3, 220, 2.0, 473, 155, "worker_1"),
-            N("flavor_price", "맛 홍보", "특별한 맛의 판매 가격이 단계마다 오릅니다.", "sales", "맛", 3, 230, 2.0, 561, 89, "flavor_soda", "sales"),
+            N("flavor_price", "맛 홍보", "특별한 맛의 판매 가격이 단계마다 오릅니다.", "sales", "맛", 3, 230, 2.0, 561, 89, "sales"),
             N("location_1", "시장 앞", "더 많은 손님이 찾는 시장 앞 장사를 엽니다.", "location", "장", 1, 620, 1, 462, 313, "ads", "machine_2"),
             N("location_2", "강변 축제", "단가가 높은 강변 축제 장사를 엽니다.", "location", "축", 1, 1300, 1, 467, 487, "location_1", "worker_grade_2"),
             N("location_3", "별빛 광장", "최종 지역인 별빛 광장 장사를 엽니다.", "location", "별", 1, 2700, 1, 609, 595, "location_2", "machine_3", "flavor_vanilla"),
             N("location_price", "지역 단골", "새 지역에서 받는 금액이 단계마다 오릅니다.", "sales", "단", 3, 280, 2.0, 372, 199, "location_1", "sales"),
             N("sugar_saving", "설탕 계량", "설탕 사용량이 추가로 줄어듭니다.", "production", "계", 2, 320, 2.1, 942, 456, "stick_saving", "sugar_2"),
-            N("quality_focus", "장식 기술", "별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.", "production", "꽃", 2, 340, 2.1, 794, 115, "stick_quality", "flavor_soda"),
+            N("quality_focus", "장식 기술", "별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.", "production", "꽃", 2, 340, 2.1, 794, 115, "stick_quality"),
             N("repeat_ads", "입소문", "추가 홍보로 방문 간격을 더 줄입니다.", "business", "입", 2, 390, 2.1, 375, 426, "ads", "location_1"),
             N("group_visit", "단체 손님", "손님이 여럿 함께 찾아올 확률이 단계마다 오르고, 2단계부터는 세 명도 옵니다.", "business", "무", 3, 180, 2.0, 250, 380, "ads")
         };
@@ -188,10 +187,10 @@ namespace CottonCircuit
         public static double SpeedMultiplier(Economy e) { return 1 + .08 * Level(e, "engine"); }
         public static double SteeringMultiplier(Economy e) { return 1 + .08 * Level(e, "handling"); }
         public static double WorkerMetersPerSecond(Economy e) { return ShopShift.LapMeters / 60.0 * (1 + .15 * Level(e, "worker_speed")); }
+        // Strawberry and soda are starting flavors; vanilla is the one flavor unlocked by a trait.
         public static bool HasFlavor(Economy e, int flavor)
         {
-            return flavor == 0 || flavor == 1 && Level(e, "flavor_soda") > 0 ||
-                flavor == 2 && Level(e, "flavor_vanilla") > 0;
+            return flavor == 0 || flavor == 1 || flavor == 2 && Level(e, "flavor_vanilla") > 0;
         }
         public static bool HasLocation(Economy e, int location)
         {
@@ -210,7 +209,7 @@ namespace CottonCircuit
         {
             return new[] { "처음 장사를 시작하는 조용한 거리", "손님이 꾸준히 모이는 시장", "빠른 손길이 필요한 축제장", "맛과 기술을 모두 시험하는 마지막 광장" }[Math.Max(0, Math.Min(3, index))];
         }
-        public static int FlavorMachineTier(int flavor) { return flavor >= 0 && flavor < 3 ? flavor + 1 : 0; }
+        public static int FlavorMachineTier(int flavor) { return flavor == 0 || flavor == 1 ? 1 : flavor == 2 ? 3 : 0; }
 
         public static string EffectSummary(Economy e, string id)
         {

@@ -57,7 +57,6 @@ ICONS = [
     ('Trait_Sugar2', 'sugar bag with 2 Gold stars', ('sugar_2',), 'production', (0, -0.003, 1.239), 1.648),
     ('Trait_Sugar3', 'sugar bag with 3 Gold stars', ('sugar_3',), 'production', (0, -0.003, 1.239), 1.648),
     ('Trait_Machine', 'cotton-candy machine', ('machine_2', 'machine_3'), 'equipment', (0.018, 0.039, 1.403), 3.018),
-    ('Trait_FlavorSoda', 'Soda cotton candy', ('flavor_soda',), 'production', (0.048, 0.014, 1.326), 2.488),
     ('Trait_FlavorVanilla', 'Vanilla cotton candy', ('flavor_vanilla',), 'production', (0.059, 0.012, 1.326), 2.488),
     ('Trait_Worker', 'worker with apron', ('worker_1', 'worker_2'), 'staff', (0.057, 0.004, 1.293), 1.783),
     ('Trait_GradCap', 'graduation cap', ('worker_grade_2', 'worker_grade_3'), 'staff', (-0.004, -0.015, 1.195), 2.044),
@@ -598,7 +597,7 @@ BUILDERS = {
     'Trait_Kart': kart, 'Trait_StickSpeed': stick_speed, 'Trait_Spoon': spoon,
     'Trait_Ribbon': ribbon_candy, 'Trait_Sugar2': lambda col, kit: sugar_bag(col, kit, 2),
     'Trait_Sugar3': lambda col, kit: sugar_bag(col, kit, 3), 'Trait_Machine': machine,
-    'Trait_FlavorSoda': flavor_candy('Soda', 17), 'Trait_FlavorVanilla': flavor_candy('Vanilla', 18),
+    'Trait_FlavorVanilla': flavor_candy('Vanilla', 18),
     'Trait_Worker': worker, 'Trait_GradCap': grad_cap, 'Trait_Glove': glove,
     'Trait_MapPin': map_pin, 'Trait_Group': customer_group,
 }

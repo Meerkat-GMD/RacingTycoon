@@ -208,14 +208,14 @@ public static class RecipeTests
                 economy.TotalTips == 12 && economy.TotalSold == 1 && economy.OrdersServed == 1 &&
                 economy.SatisfactionTotal == .5 && economy.MissedOrders == 1 && economy.NextCustomerIn == 7,
                 "V2 migration lost saved progress or retroactively awarded quality");
-            Check(envelope.Version == 8 && Upgrade(envelope) && economy.Orders[0].Remaining == 150,
+            Check(envelope.Version == 9 && Upgrade(envelope) && economy.Orders[0].Remaining == 150,
                 "migration scaled patience more than once");
         });
         Test("V1 stock migrates with original price and new orders remain empty", () => {
             var economy = new Economy { Coins = 421, Levels = new[] { 1, 0, 2 } };
             var candy = Candy(); candy.Quality = 100; economy.CompleteRun(candy);
             var envelope = new SaveStore.Envelope { Version = 1, State = economy };
-            Check(Upgrade(envelope) && envelope.Version == 8 && economy.Coins == 421 &&
+            Check(Upgrade(envelope) && envelope.Version == 9 && economy.Coins == 421 &&
                 economy.Inventory.Count == 1 && candy.Quality == 0 && economy.Price(candy) == 110 &&
                 economy.CompletedIds.Contains(candy.Id), "V1 stock value or progress changed");
             Check(economy.Orders.Count == 0 && economy.OrderSerial == 0 && economy.NextCustomerIn == 15,
@@ -225,7 +225,7 @@ public static class RecipeTests
             var economy = new Economy { OrderSerial = 1 };
             economy.Orders.Add(new CustomerOrder { Id = "order-1", Flavor = 0, Size = 0, Remaining = 121 });
             Check(!Upgrade(new SaveStore.Envelope { Version = 2, State = economy }), "invalid V2 patience accepted");
-            Check(!Upgrade(new SaveStore.Envelope { Version = 9, State = new Economy() }), "future save accepted");
+            Check(!Upgrade(new SaveStore.Envelope { Version = 10, State = new Economy() }), "future save accepted");
             Check(Upgrade(new SaveStore.Envelope { Version = 3, State = new Economy() }), "valid V3 rejected");
         });
         Console.WriteLine("RESULT: " + passed + " passed, " + failed + " failed");

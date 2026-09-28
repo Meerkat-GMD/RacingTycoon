@@ -6,12 +6,12 @@ import ui_sprite_spec as s
 class CatalogTests(unittest.TestCase):
     def test_count_and_unique_ids(self):
         ids = [e['id'] for e in s.CATALOG]
-        self.assertEqual(len(ids), 66)
-        self.assertEqual(len(set(ids)), 66)
+        self.assertEqual(len(ids), 65)
+        self.assertEqual(len(set(ids)), 65)
 
     def test_owner_counts(self):
         counts = {o: len(s.owned_by(o)) for o in ('customers', 'mina', 'items', 'shop', 'locations', 'machines', 'icons')}
-        self.assertEqual(counts, {'customers': 6, 'mina': 1, 'items': 21, 'shop': 4, 'locations': 8, 'machines': 3, 'icons': 23})
+        self.assertEqual(counts, {'customers': 6, 'mina': 1, 'items': 21, 'shop': 4, 'locations': 8, 'machines': 3, 'icons': 22})
 
     def test_canvas_rule(self):
         for e in s.CATALOG:
@@ -32,7 +32,7 @@ class CatalogTests(unittest.TestCase):
             self.assertEqual(e['shadow'], s.KIND_RULES[e['kind']]['shadow'], e['id'])
 
     def test_trait_icons(self):
-        self.assertEqual(len(s.TRAIT_ICONS), 23)
+        self.assertEqual(len(s.TRAIT_ICONS), 22)
         self.assertEqual(sorted(s.TRAIT_ICONS), sorted(e['id'] for e in s.owned_by('icons')))
 
     def test_palette(self):

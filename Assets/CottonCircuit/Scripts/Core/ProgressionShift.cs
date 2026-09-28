@@ -122,7 +122,13 @@ namespace CottonCircuit
             if (economy.Progression == null) return 2;
             return SugarGrade(index) - 1;
         }
+        // The guided first sale is strawberry only, so other flavors open when the tutorial ends.
         public bool CanMakeFlavor(int index, int flavor)
+        {
+            return MachineMakesFlavor(index, flavor) && (flavor == 0 || !Tutorial.Active(economy));
+        }
+        // Whether the owned machine and unlocked flavors allow it, before the tutorial's strawberry-only lock.
+        public bool MachineMakesFlavor(int index, int flavor)
         {
             return economy.Progression == null ? flavor >= 0 && flavor < 3 : index >= 0 && index < Progression.OwnedMachines(economy) &&
                 Progression.HasFlavor(economy, flavor) && Progression.FlavorMachineTier(flavor) <= Progression.MachineTier(index);

@@ -25,7 +25,7 @@ public static class TraitIconTests
         { "stick_quality", "Trait_Ribbon" }, { "quality_focus", "Trait_Ribbon" },
         { "sugar_2", "Trait_Sugar2" }, { "sugar_3", "Trait_Sugar3" },
         { "machine_2", "Trait_Machine" }, { "machine_3", "Trait_Machine" },
-        { "flavor_soda", "Trait_FlavorSoda" }, { "flavor_vanilla", "Trait_FlavorVanilla" },
+        { "flavor_vanilla", "Trait_FlavorVanilla" },
         { "worker_1", "Trait_Worker" }, { "worker_2", "Trait_Worker" },
         { "worker_grade_2", "Trait_GradCap" }, { "worker_grade_3", "Trait_GradCap" },
         { "worker_speed", "Trait_Glove" },
@@ -46,9 +46,9 @@ public static class TraitIconTests
             foreach (var node in Progression.Nodes)
                 Check(all.Contains(TraitIcons.For(node.Id)), node.Id + " -> " + TraitIcons.For(node.Id) + " not in All");
         });
-        Test("All lists 23 unique icon ids", () => {
-            Check(TraitIcons.All.Length == 23, "expected 23 icons, got " + TraitIcons.All.Length);
-            Check(new HashSet<string>(TraitIcons.All).Count == 23, "duplicate icon id in All");
+        Test("All lists 22 unique icon ids", () => {
+            Check(TraitIcons.All.Length == 22, "expected 22 icons, got " + TraitIcons.All.Length);
+            Check(new HashSet<string>(TraitIcons.All).Count == 22, "duplicate icon id in All");
             foreach (string id in TraitIcons.All) Check(!string.IsNullOrEmpty(id) && id.StartsWith("Trait_"), "bad icon id '" + id + "'");
         });
         Test("every icon in All is used by at least one node", () => {
@@ -56,9 +56,9 @@ public static class TraitIconTests
             foreach (var node in Progression.Nodes) used.Add(TraitIcons.For(node.Id));
             foreach (string id in TraitIcons.All) Check(used.Contains(id), "unused icon " + id);
         });
-        Test("mapping equals the spec table for all 31 traits", () => {
-            Check(SpecTable.GetLength(0) == 31, "spec table has 31 rows");
-            Check(Progression.Nodes.Length == 31, "progression has 31 nodes, got " + Progression.Nodes.Length);
+        Test("mapping equals the spec table for all 30 traits", () => {
+            Check(SpecTable.GetLength(0) == 30, "spec table has 30 rows");
+            Check(Progression.Nodes.Length == 30, "progression has 30 nodes, got " + Progression.Nodes.Length);
             var specIds = new HashSet<string>();
             for (int i = 0; i < SpecTable.GetLength(0); i++)
             {

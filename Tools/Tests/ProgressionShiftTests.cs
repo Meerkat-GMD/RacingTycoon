@@ -139,7 +139,7 @@ class ProgressionShiftTests
             Check(!s.BeginBusiness(), "cannot reopen active shift");
             Check(s.State.Customers[0].Flavor == 0 && s.State.Customers[0].Size == 0, "initial order strawberry standard");
             int coins = e.Coins; Check(s.Pour(0) && e.Coins == coins, "basic strawberry pour is free");
-            Check(!s.Pour(1), "locked flavor rejected");
+            Check(!s.Pour(2), "locked vanilla rejected");
             for (int i=0;i<10;i++) s.Pour(0);
             s.Advance(1, ShopShift.LapMeters * 1.5);
             Check(Math.Abs(s.State.BatchMeters - ShopShift.MetersForSize(0)) < .001, "grade one caps at standard");
