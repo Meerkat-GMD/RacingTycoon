@@ -510,19 +510,37 @@ namespace CottonCircuit.Tests
             CheckInsideViewport("SettingsCard");
             Check(Element<Label>("SettingsLanguageValue").text == Strings.Get("language.self"), "language row shows the current language");
             yield return Capture("settings-title.png");
+            float music = SettingsStore.Current.MusicVolume, effects = SettingsStore.Current.EffectsVolume;
+            yield return Move(NavigationMoveEvent.Direction.Next);
+            Check(SettingsFocus() == Find("SettingsEffectsRow") && SettingsStore.Current.MusicVolume == music, "Tab moves to the next settings row without changing a value");
+            yield return Move(NavigationMoveEvent.Direction.Previous);
+            Check(SettingsFocus() == Find("SettingsMusicRow") && SettingsStore.Current.EffectsVolume == effects, "Shift+Tab moves back a row without changing a value");
             yield return Click("SettingsLanguageNext");
             yield return Settle();
             Check(Strings.Current != start, "the language arrow switches the language");
+            CheckSettingsFocus("SettingsLanguageRow", "the language arrow");
             Check(Element<Button>("TitlePrimaryButton").text == Strings.Get("title.start"), "title text follows the switch at once");
             var words = Element<VisualElement>("TitleMenu").Query<Label>(className: "title-word").ToList();
             Check(words[0].text == Strings.Get("title.word.first"), "bound title words follow the switch at once");
-            var saved = JsonUtility.FromJson<GameSettings>(File.ReadAllText(Path.Combine(saveDirectory, "settings.json")));
-            Check(saved.Language == Strings.Code(Strings.Current), "the chosen language is saved in the isolated folder");
+            Check(ReadSettings().Language == Strings.Code(Strings.Current), "the chosen language is saved in the isolated folder");
             Element<Slider>("SettingsEffectsSlider").value = 40;
             yield return Settle();
             Check(Mathf.Approximately(SettingsStore.Current.EffectsVolume, .4f) && Element<Label>("SettingsEffectsValue").text == "40%", "effects slider stores and shows 40%");
+            Check(ReadSettings().EffectsVolume == effects, "a slider step applies at once without writing settings.json");
+            yield return PressSlider("SettingsMusicSlider", .3f);
+            float pressed = SettingsStore.Current.MusicVolume;
+            Check(pressed < music && Element<Label>("SettingsMusicValue").text == Mathf.RoundToInt(pressed * 100) + "%", "pressing the music track moves the slider to " + pressed);
+            var saved = ReadSettings();
+            Check(Mathf.Approximately(saved.MusicVolume, pressed) && Mathf.Approximately(saved.EffectsVolume, .4f), "letting go of a slider writes settings.json");
+            CheckSettingsFocus("SettingsMusicRow", "a slider press");
             yield return Click("SettingsMuteButton");
             Check(SettingsStore.Current.Muted && game.Audio.Muted, "mute button mutes");
+            CheckSettingsFocus("SettingsMuteRow", "the mute button");
+            var card = Element<VisualElement>("SettingsCard");
+            yield return Press(card, card.worldBound.min + new Vector2(20, 15));
+            CheckSettingsFocus("SettingsMuteRow", "a click on the card background");
+            yield return Press(Element<VisualElement>("SettingsScreen"), new Vector2(8, 8));
+            CheckSettingsFocus("SettingsMuteRow", "a click on the dimmed backdrop");
             yield return Click("SettingsMuteButton");
             Check(!SettingsStore.Current.Muted, "mute button unmutes");
             SettingsStore.Use(saveDirectory);
@@ -571,12 +589,51 @@ namespace CottonCircuit.Tests
             yield return new WaitForSecondsRealtime(.6f);
         }
 
+        // Like real input: keys go to the focused element, or to the panel root when nothing has focus.
         IEnumerator Key(KeyCode key)
         {
-            var target = Find("SettingsScreen");
-            using (var evt = KeyDownEvent.GetPooled('\0', key, EventModifiers.None)) { evt.target = target.focusController.focusedElement ?? target; target.panel.visualTree.SendEvent(evt); }
+            var panel = Find("SettingsScreen").panel;
+            using (var evt = KeyDownEvent.GetPooled('\0', key, EventModifiers.None))
+            {
+                evt.target = panel.focusController.focusedElement ?? panel.visualTree;
+                panel.visualTree.SendEvent(evt);
+            }
             yield return Settle();
         }
+
+        IEnumerator Move(NavigationMoveEvent.Direction direction)
+        {
+            var focused = SettingsFocus();
+            Check(focused != null, "a settings row has focus before moving " + direction);
+            using (var evt = NavigationMoveEvent.GetPooled(direction)) { evt.target = focused; focused.SendEvent(evt); }
+            yield return Settle();
+        }
+
+        // Presses and releases the pointer on an element that is not a button, like a player's click.
+        IEnumerator Press(VisualElement target, Vector2 point)
+        {
+            Pick(target, point);
+            Pointer(target, EventType.MouseDown, point);
+            yield return null;
+            Pointer(target, EventType.MouseUp, point);
+            yield return Settle();
+        }
+
+        IEnumerator PressSlider(string name, float fraction)
+        {
+            var track = Element<Slider>(name).Q<VisualElement>(className: "unity-base-slider__drag-container");
+            yield return Press(track, new Vector2(track.worldBound.xMin + track.worldBound.width * fraction, track.worldBound.center.y));
+        }
+
+        VisualElement SettingsFocus() => Find("SettingsScreen").focusController.focusedElement as VisualElement;
+
+        void CheckSettingsFocus(string row, string after)
+        {
+            var focused = SettingsFocus();
+            Check(focused != null && focused == Find(row), row + " has keyboard focus after " + after + " (focused: " + (focused?.name ?? "nothing") + ")");
+        }
+
+        GameSettings ReadSettings() => JsonUtility.FromJson<GameSettings>(File.ReadAllText(Path.Combine(saveDirectory, "settings.json")));
 
         void CheckInsideViewport(string name)
         {

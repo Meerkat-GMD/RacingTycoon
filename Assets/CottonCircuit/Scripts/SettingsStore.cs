@@ -11,20 +11,32 @@ namespace CottonCircuit
         public static GameSettings Current { get; private set; } = new GameSettings();
         public static string DirectoryPath { get; private set; }
         public static event Action Changed;
+        static bool unsaved;
 
         public static void Use(string directory)
         {
             DirectoryPath = directory;
             Current = Read(Path.Combine(directory, FileName));
+            unsaved = false;
             Changed?.Invoke();
         }
 
-        public static void Apply(Action<GameSettings> change)
+        /// <summary>Changes the settings and applies them at once. A slider drag passes persist: false for every step and calls Save when it ends.</summary>
+        public static void Apply(Action<GameSettings> change, bool persist = true)
         {
             change(Current);
             Current.Sanitize();
-            Write();
+            unsaved = true;
+            if (persist) Save();
             Changed?.Invoke();
+        }
+
+        /// <summary>Writes settings.json when an applied change has not been written yet.</summary>
+        public static void Save()
+        {
+            if (!unsaved) return;
+            unsaved = false;
+            Write();
         }
 
         static GameSettings Read(string path)

@@ -15,6 +15,7 @@ namespace CottonCircuit
         Label musicValue, effectsValue, modeValue, resolutionValue, languageValue;
         Button mute, close;
         VisualElement[] rows;
+        VisualElement lastRow;
         Action closed;
         int closedFrame = -1;
 
@@ -34,6 +35,7 @@ namespace CottonCircuit
         public void Close()
         {
             if (!IsOpen) return;
+            SettingsStore.Save();
             ToolkitUI.Show(screen, false);
             closedFrame = Time.frameCount;
             var callback = closed;
@@ -55,10 +57,13 @@ namespace CottonCircuit
             languageValue = Q<Label>("SettingsLanguageValue");
             mute = Q<Button>("SettingsMuteButton"); close = Q<Button>("SettingsCloseButton");
             rows = new[] { musicRow, effectsRow, muteRow, modeRow, resolutionRow, languageRow, (VisualElement)close };
+            lastRow = musicRow;
 
-            music.RegisterValueChangedCallback(evt => SettingsStore.Apply(s => s.MusicVolume = evt.newValue / 100f));
-            effects.RegisterValueChangedCallback(evt => SettingsStore.Apply(s => s.EffectsVolume = evt.newValue / 100f));
-            effects.RegisterCallback<PointerCaptureOutEvent>(evt => ToolkitUI.PlayClick());
+            // A drag applies every step at once so the music follows the handle; settings.json is written when the handle is let go.
+            music.RegisterValueChangedCallback(evt => SettingsStore.Apply(s => s.MusicVolume = evt.newValue / 100f, persist: false));
+            effects.RegisterValueChangedCallback(evt => SettingsStore.Apply(s => s.EffectsVolume = evt.newValue / 100f, persist: false));
+            music.RegisterCallback<PointerCaptureOutEvent>(evt => SettingsStore.Save());
+            effects.RegisterCallback<PointerCaptureOutEvent>(evt => { SettingsStore.Save(); ToolkitUI.PlayClick(); });
             mute.clicked += ToggleMute;
             Q<Button>("SettingsModePrev").clicked += ToggleMode;
             Q<Button>("SettingsModeNext").clicked += ToggleMode;
@@ -67,7 +72,16 @@ namespace CottonCircuit
             Q<Button>("SettingsLanguagePrev").clicked += ToggleLanguage;
             Q<Button>("SettingsLanguageNext").clicked += ToggleLanguage;
             close.clicked += Close;
-            foreach (var row in rows) row.RegisterCallback<PointerDownEvent>(evt => row.Focus());
+            // Arrows, the mute toggle and sliders are not focusable, so a press on them focuses their row instead.
+            foreach (var row in rows)
+            {
+                row.RegisterCallback<PointerDownEvent>(evt => row.Focus());
+                row.RegisterCallback<FocusEvent>(evt => lastRow = row);
+            }
+            // A click on the card or the backdrop clears focus, and the keys would no longer reach this window.
+            root.RegisterCallback<PointerUpEvent>(evt => {
+                if (IsOpen && root.focusController.focusedElement == null) lastRow.Focus();
+            });
             root.RegisterCallback<NavigationMoveEvent>(Navigate, TrickleDown.TrickleDown);
             root.RegisterCallback<NavigationSubmitEvent>(Submit, TrickleDown.TrickleDown);
             root.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
@@ -95,14 +109,17 @@ namespace CottonCircuit
         void Navigate(NavigationMoveEvent evt)
         {
             int index = Array.IndexOf(rows, document.rootVisualElement.focusController.focusedElement as VisualElement);
-            if (evt.direction == NavigationMoveEvent.Direction.Up || evt.direction == NavigationMoveEvent.Direction.Down)
+            // Tab and Shift+Tab move between rows like Down and Up; only Left and Right change a value.
+            var direction = evt.direction == NavigationMoveEvent.Direction.Next ? NavigationMoveEvent.Direction.Down
+                : evt.direction == NavigationMoveEvent.Direction.Previous ? NavigationMoveEvent.Direction.Up : evt.direction;
+            if (direction == NavigationMoveEvent.Direction.Up || direction == NavigationMoveEvent.Direction.Down)
             {
-                int delta = evt.direction == NavigationMoveEvent.Direction.Up ? -1 : 1;
+                int delta = direction == NavigationMoveEvent.Direction.Up ? -1 : 1;
                 rows[(Math.Max(0, index) + delta + rows.Length) % rows.Length].Focus();
             }
-            else if (index >= 0)
+            else if (index >= 0 && (direction == NavigationMoveEvent.Direction.Left || direction == NavigationMoveEvent.Direction.Right))
             {
-                int delta = evt.direction == NavigationMoveEvent.Direction.Left ? -1 : 1;
+                int delta = direction == NavigationMoveEvent.Direction.Left ? -1 : 1;
                 var row = rows[index];
                 if (row == musicRow) SettingsStore.Apply(s => s.MusicVolume = Step(s.MusicVolume, delta));
                 else if (row == effectsRow) { SettingsStore.Apply(s => s.EffectsVolume = Step(s.EffectsVolume, delta)); ToolkitUI.PlayClick(); }
