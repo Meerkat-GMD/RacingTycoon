@@ -16,7 +16,7 @@
           <ui:Button focusable="false" name="businessMachine0" text="M01 · Manual drive" class="biz-button biz-machine" />
           <ui:Button focusable="false" name="businessMachine1" text="M02 · Locked" class="biz-button biz-machine" />
           <ui:Button focusable="false" name="businessMachine2" text="M03 · Locked" class="biz-button biz-machine" />
-          <ui:Label name="businessGrade" text="Sugar grade 1" class="biz-grade" />
+          <ui:Label name="businessGrade" text="Grade 1 sugar" class="biz-grade" />
           <ui:VisualElement name="businessTutorialSlot" class="biz-tutorial-slot" picking-mode="Ignore" />
         </ui:VisualElement>
       </ui:VisualElement>

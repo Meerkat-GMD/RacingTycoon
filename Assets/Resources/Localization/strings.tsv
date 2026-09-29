@@ -40,7 +40,7 @@ trait.stick_speed.desc	달린 거리당 솜사탕 성장량이 단계마다 12% 
 trait.stick_saving.name	설탕 절약	Sugar Saving
 trait.stick_saving.desc	솜사탕 성장에 필요한 설탕이 단계마다 8% 줄어듭니다.	Sugar needed for growth drops 8% each level.
 trait.stick_quality.name	예쁜 말기	Neat Winding
-trait.stick_quality.desc	별 하나당 판매 보너스가 단계마다 0.6%p 오릅니다.	Bonus per star rises 0.6%p each level.
+trait.stick_quality.desc	별 하나당 판매 보너스가 단계마다 0.6%p 오릅니다.	Bonus per star rises 0.6 pts each level.
 trait.sugar_2.name	고운 설탕	Fine Sugar
 trait.sugar_2.desc	2등급 설탕과 중간 크기를 해금합니다.	Unlocks Grade 2 sugar and Medium size.
 trait.sugar_3.name	특급 설탕	Premium Sugar
@@ -74,7 +74,7 @@ trait.location_price.desc	새 지역에서 받는 금액이 단계마다 오릅�
 trait.sugar_saving.name	설탕 계량	Sugar Measuring
 trait.sugar_saving.desc	설탕 사용량이 추가로 줄어듭니다.	Sugar use drops further.
 trait.quality_focus.name	장식 기술	Decorating Skill
-trait.quality_focus.desc	별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.	Bonus per star rises another 0.5%p each level.
+trait.quality_focus.desc	별 하나당 판매 보너스가 단계마다 0.5%p 더 오릅니다.	Bonus per star rises another 0.5 pts each level.
 trait.repeat_ads.name	입소문	Word of Mouth
 trait.repeat_ads.desc	추가 홍보로 방문 간격을 더 줄입니다.	Extra promotion shortens the visit gap further.
 trait.group_visit.name	단체 손님	Group Visits
@@ -153,7 +153,7 @@ tutorial.step2.dialogue	W로 가속 · A / D로 조향해요.\n달리면 솜사�
 tutorial.step3.heading	03 / 04  솜사탕 꺼내기	03 / 04  Take out the candy
 tutorial.step3.dialogue	잘 만들어졌어요!\nF 또는 꺼내기 버튼을 눌러주세요.	It's ready!\nPress F or the Take out button.
 tutorial.step3.progress	완성된 솜사탕은 진열대에 놓여요.	The finished candy goes on your shelf.
-tutorial.step3.cue	F 키 또는 솜사탕 꺼내기	F key or Take out the candy
+tutorial.step3.cue	F 키 또는 솜사탕 꺼내기	Press F or Take out
 tutorial.step4.heading	04 / 04  첫 손님에게 판매	04 / 04  Sell to your first customer
 tutorial.step4.dialogue	진열대의 솜사탕을 끌어서\n딸기 주문 손님에게 건네주세요.	Drag the candy from your shelf\nto the customer who ordered strawberry.
 tutorial.step4.progress	솜사탕 → 손님 또는 주문 말풍선	Candy → customer or order bubble
@@ -168,7 +168,7 @@ business.machine.manual	직접 운전	Manual drive
 business.machine.idle	대기	Waiting
 business.machine.tooltip.assigned	배치한 알바가 운전과 제작을 맡아요.	Your assigned helper drives and makes candy.
 business.machine.tooltip.manual	이 기계는 직접 운전해요.	You drive this machine yourself.
-business.grade	설탕 {0}등급	Sugar grade {0}
+business.grade	설탕 {0}등급	Grade {0} sugar
 business.sugar.loaded	{0} 설탕  {1} / 100 g	{0} sugar  {1} / 100 g
 business.sugar.empty	설탕  0 / 100 g	Sugar  0 / 100 g
 business.unfinished	미완성	Unfinished
@@ -231,7 +231,7 @@ drag.drop.bring	주행 화면으로 가져와 흔들어 주세요	Bring it to th
 notice.recover.legacy	코스에 복귀했어요. 결승선까지 한 바퀴 완주하세요.	Back to the track. Finish one lap to the line.
 notice.recover.shift	코스에 복귀했어요. 복귀 이동은 생산 거리에 포함되지 않아요.	Back to the track. The jump back doesn't count toward production.
 notice.order.missed	기다리던 손님이 떠났어요. 만든 솜사탕은 재고에 남아요.	The waiting customer left. The candy you made stays in stock.
-notice.drift.kart	드리프트 성공! 부스터 {0}/2 · 가속이 끝나면 Shift로 사용	Nice drift! Boost {0}/2 · Press Shift after the rush
+notice.drift.kart	드리프트 성공! 부스터 {0}/2 · 가속이 끝나면 Shift로 사용	Nice drift! Boost {0}/2 · Press Shift when the rush ends
 notice.drift.coupe	드리프트 성공! 엑셀을 유지해 속도를 더 올리세요.	Nice drift! Keep the throttle down to build more speed.
 notice.lap.done.waiting	완주! 솜사탕 보관 · 기록 보상 +{0} 코인 · 진열대가 가득 차 생산을 기다려요.	Lap done! Candy stored · Reward +{0} coins · Shelf is full, production is waiting.
 notice.lap.done.next	완주! 솜사탕 보관 · 기록 보상 +{0} 코인 · 다음 솜사탕을 만들어요.	Lap done! Candy stored · Reward +{0} coins · Making the next candy.
