@@ -1131,13 +1131,9 @@ namespace CottonCircuit.Tests
         }
 
         // add element names here only with a reason in docs/localization-settings-verification.md
-        static readonly HashSet<string> OverflowExempt = new HashSet<string> {
-            "BusinessTitleEyebrow", "TraitDetailsBody",
-            "PreparationDay", "PreparationWallet", "PreparationTraitCount",
-            "PrepLegendRequired", "PrepLegendDone",
-            "PauseAccelerateLabel", "PauseBrakeLabel", "PauseSteerLabel", "PauseDriftLabel", "PauseBoostLabel", "PauseRecoverLabel",
-            "PauseSugarLabel", "PauseDeliverLabel", "PauseExtractLabel", "PauseEmptyLabel", "PauseEscapeLabel",
-        };
+        static readonly HashSet<string> OverflowExempt = new HashSet<string> { "BusinessTitleEyebrow" };
+        // Layout snaps boxes to the pixel grid, so text may need this much more room than its laid-out box.
+        const float FitTolerance = 1.5f;
 
         void CheckVisibleText(string capture)
         {
@@ -1150,9 +1146,11 @@ namespace CottonCircuit.Tests
                     if (Strings.Current == Language.English && ContainsHangul(text.text)) hangul.Add((text.name ?? text.GetType().Name) + "='" + text.text + "'");
                     var box = text.contentRect;
                     if (box.width < 1 || OverflowExempt.Contains(text.name)) return;
-                    bool wraps = text.resolvedStyle.whiteSpace == WhiteSpace.Normal;
-                    var size = text.MeasureTextSize(text.text, wraps ? box.width : 0, wraps ? VisualElement.MeasureMode.Exactly : VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined);
-                    if (size.x > box.width + 1.5f || size.y > box.height + 1.5f) overflow.Add((text.name ?? text.GetType().Name) + " '" + text.text + "' " + size + " in " + box.size);
+                    bool wraps = text.resolvedStyle.whiteSpace == WhiteSpace.Normal || text.resolvedStyle.whiteSpace == WhiteSpace.PreWrap;
+                    // A wrapping label is measured at its own width plus the tolerance (at exactly the laid-out width the
+                    // rounding can push a line that fits onto a second line), so only its height can overflow.
+                    var size = text.MeasureTextSize(text.text, wraps ? box.width + FitTolerance : 0, wraps ? VisualElement.MeasureMode.Exactly : VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined);
+                    if (size.y > box.height + FitTolerance || !wraps && size.x > box.width + FitTolerance) overflow.Add((text.name ?? text.GetType().Name) + " '" + text.text + "' " + size + " in " + box.size);
                 });
             Check(hangul.Count == 0, capture + " shows no Korean in English: " + string.Join(" | ", hangul));
             Check(overflow.Count == 0, capture + " has no clipped text: " + string.Join(" | ", overflow));
