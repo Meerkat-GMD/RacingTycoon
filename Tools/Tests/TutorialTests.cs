@@ -81,7 +81,7 @@ class TutorialTests
             Check(progress > 0 && e.TutorialStep == TutorialStep.Drive, "protected production did not advance");
             Check(shift.Extract() == null && shift.State.BatchMeters == progress && e.Inventory.Count == 0,
                 "early extract lost practice candy");
-            Check(shift.State.RemainingSeconds == 180 && shift.CustomerAt(0).PatienceRemaining == 90,
+            Check(shift.State.RemainingSeconds == 180 && shift.CustomerAt(0).PatienceRemaining == 60,
                 "production advanced nonproduction clocks");
             shift.Advance(1, ShopShift.LapMeters / 2);
             Check(e.TutorialStep == TutorialStep.Extract && ShopShift.SizeForDistance(shift.State.BatchMeters) == 0,

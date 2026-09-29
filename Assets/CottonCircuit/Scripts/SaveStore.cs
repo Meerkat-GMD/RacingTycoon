@@ -8,7 +8,7 @@ namespace CottonCircuit
     {
         [Serializable] public class Envelope
         {
-            public int Version = 9;
+            public int Version = 10;
             public Economy State;
             // Unity's inline class serialization replaces null with a default object.
             // Keep presence outside the inline data so legacy mode and customer gaps survive a reload.
@@ -265,7 +265,7 @@ namespace CottonCircuit
         }
         static bool RestoreOptionalState(Envelope envelope)
         {
-            if (envelope == null || envelope.State == null || envelope.Version < 1 || envelope.Version > 9) return false;
+            if (envelope == null || envelope.State == null || envelope.Version < 1 || envelope.Version > 10) return false;
             if (envelope.Version < 7 || !envelope.HasProgression)
             {
                 if (envelope.HasProgression || !AbsentProgressionPlaceholder(envelope.State.Progression)) return false;
@@ -344,7 +344,7 @@ namespace CottonCircuit
                 foreach (var order in state.Orders) order.Remaining *= CustomerOrder.Patience / 120;
             }
             else if (envelope.Version != 3 && envelope.Version != 4 && envelope.Version != 5 && envelope.Version != 6 &&
-                envelope.Version != 7 && envelope.Version != 8 && envelope.Version != 9) return false;
+                envelope.Version != 7 && envelope.Version != 8 && envelope.Version != 9 && envelope.Version != 10) return false;
             if (envelope.Version < 3)
                 foreach (var product in state.Inventory) product.Quality = 0;
             if (envelope.Version < 7)
@@ -365,6 +365,15 @@ namespace CottonCircuit
                     customer.PatienceRemaining = ShopShift.CustomerPatience;
                 }
             }
+            // V10 cut the base customer patience from 90 to 60 seconds. Runs before any check against the
+            // current limit and keeps each waiting share; data past the old limit is left to be rejected.
+            if (envelope.Version < 10 && state.Progression != null && state.Business != null && state.Business.Customers != null)
+            {
+                double limit = Progression.PatienceSeconds(state), oldLimit = 90 + 12 * Progression.Level(state, "patience");
+                foreach (var customer in state.Business.Customers)
+                    if (customer != null && customer.PatienceRemaining <= oldLimit)
+                        customer.PatienceRemaining = Math.Min(limit, customer.PatienceRemaining * limit / oldLimit);
+            }
             // Runs before the V7 check below, which validates against the current trait catalog.
             bool sodaRefund = false;
             if (envelope.Version < 9 && state.Progression != null && !RemoveSodaTrait(state, out sodaRefund)) return false;
@@ -380,7 +389,7 @@ namespace CottonCircuit
             if (!Valid(state)) return false;
             // The refund lands only after every check has seen the balance the old file stored.
             if (sodaRefund) state.Coins = Math.Min(1000000000, state.Coins + 310);
-            envelope.Version = 9;
+            envelope.Version = 10;
             return true;
         }
         // V9 made soda a starting flavor and removed its trait. Before V9, soda needed that trait (one rank,

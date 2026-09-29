@@ -122,6 +122,12 @@ public static class ProgressionTests
                 Progression.MachineTier(2) == 3 && Progression.MachineMap(2) == 2,
                 "machine requirement wrong");
         });
+        Test("customers wait 60 seconds plus 12 per patience rank", () => {
+            var e = Fresh();
+            Check(Progression.PatienceSeconds(e) == 60, "base patience is not 60 seconds");
+            BuyPath(e, "patience");
+            Check(Progression.PatienceSeconds(e) == 72, "a patience rank does not add 12 seconds");
+        });
         Test("stat purchases change production and customer economics", () => {
             var e = Fresh();
             double patience = Progression.PatienceSeconds(e), arrival = Progression.ArrivalSeconds(e);

@@ -19,7 +19,7 @@ namespace CottonCircuit.Tests
             Check(ref checks, store.Save(state), "mid-batch state saves");
             string path = Path.Combine(store.DirectoryPath, "cotton-circuit.json");
             var envelope = JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(path));
-            Check(ref checks, envelope.Version == 9, "new saves use V9 for driving selection, resumed candy and reactions");
+            Check(ref checks, envelope.Version == 10, "new saves use V10 for driving selection, resumed candy and reactions");
             var restoredStore = new SaveStore(store.DirectoryPath);
             var restored = restoredStore.Load();
             Check(ref checks, restoredStore.CanSave && restoredStore.Error == null && restored.Business != null,
@@ -368,7 +368,7 @@ namespace CottonCircuit.Tests
             Check(ref checks, again.Business != null && again.Inventory.Count == 2 && again.Coins == 517 &&
                 again.Inventory[0].DistanceMeters == RaceCourse.Shared.Length && ShopShift.SizeOf(again.Inventory[0]) == 0 &&
                 again.Inventory[1].DistanceMeters == RaceCourse.Shared.Length * 1.5 && ShopShift.SizeOf(again.Inventory[1]) == 1 &&
-                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(path)).Version == 9,
+                JsonUtility.FromJson<SaveStore.Envelope>(File.ReadAllText(path)).Version == 10,
                 "V" + version + " migration remains intact after a second reload");
         }
 

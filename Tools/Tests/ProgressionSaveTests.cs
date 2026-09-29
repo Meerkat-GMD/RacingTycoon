@@ -43,6 +43,19 @@ public static class ProgressionSaveTests
             Check(SaveStore.Valid(e), "fresh preparation rejected");
             Check(Upgrade(new SaveStore.Envelope { Version = 8, State = e }), "V8 envelope rejected");
         });
+        Test("V9 waiting customers keep their share of the shorter patience", () => {
+            // V9 allowed 90 seconds plus 12 per patience rank; V10 starts at 60.
+            var e = Operating(); Buy(e, "patience"); e.OrderSerial = 2;
+            e.Business.Customers.Add(new ShopCustomer { Id = "shop-1", Slot = 0, PatienceRemaining = 102 });
+            e.Business.Customers.Add(new ShopCustomer { Id = "shop-2", Slot = 1, PatienceRemaining = 51 });
+            var envelope = new SaveStore.Envelope { Version = 9, State = e };
+            Check(Upgrade(envelope) && envelope.Version == 10, "valid V9 waiting customers rejected");
+            Check(e.Business.Customers[0].PatienceRemaining == 72 &&
+                Math.Abs(e.Business.Customers[1].PatienceRemaining - 36) < 1e-9, "waiting share not preserved");
+            var corrupt = Operating(); corrupt.OrderSerial = 1;
+            corrupt.Business.Customers.Add(new ShopCustomer { Id = "shop-1", Slot = 0, PatienceRemaining = 90.5 });
+            Check(!Upgrade(new SaveStore.Envelope { Version = 9, State = corrupt }), "patience beyond the V9 limit accepted");
+        });
         Test("unknown, duplicate, and excessive purchases are rejected", () => {
             var e = Fresh(); Buy(e, "missing"); Check(!SaveStore.Valid(e), "unknown node accepted");
             e.Progression.Purchases.Clear(); Buy(e, "engine", 4); Check(!SaveStore.Valid(e), "excess rank accepted");
@@ -67,7 +80,7 @@ public static class ProgressionSaveTests
             Buy(e, "engine", 2); Buy(e, "hours");
             var envelope = new SaveStore.Envelope { Version = 7, State = e };
             Check(Upgrade(envelope), "valid V7 default rejected");
-            Check(e.Progression.CartStyle == 1 && envelope.Version == 9, "default vehicle did not migrate");
+            Check(e.Progression.CartStyle == 1 && envelope.Version == 10, "default vehicle did not migrate");
             Check(e.Coins == 412 && e.Day == 4 && e.Progression.Phase == BusinessPhase.Preparation &&
                 e.Progression.Purchases.Count == 2 && Progression.Level(e, "engine") == 2 &&
                 Progression.Level(e, "hours") == 1 && Progression.Level(e, "coupe") == 0,
@@ -102,7 +115,7 @@ public static class ProgressionSaveTests
             var e = Fresh(); e.Coins = 500;
             Buy(e, "sugar_2"); Buy(e, "machine_2"); Buy(e, "flavor_soda"); Buy(e, "sales"); Buy(e, "flavor_price", 2);
             var envelope = new SaveStore.Envelope { Version = 8, State = e };
-            Check(Upgrade(envelope) && envelope.Version == 9, "valid V8 soda owner rejected");
+            Check(Upgrade(envelope) && envelope.Version == 10, "valid V8 soda owner rejected");
             Check(e.Coins == 810 && !e.Progression.Purchases.Exists(p => p.Id == "flavor_soda") &&
                 e.Progression.Purchases.Count == 4 && Progression.Level(e, "flavor_price") == 2 &&
                 Progression.Level(e, "machine_2") == 1, "soda refund or remaining purchases wrong");
@@ -252,7 +265,7 @@ public static class ProgressionSaveTests
             }
             finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
         });
-        Test("V7 operating file resumes paid batches, stock, and remaining time on downhill with the soda refund", () => {
+        Test("V7 operating file resumes paid batches, stock, remaining time and waiting shares on downhill with the soda refund", () => {
             string dir = Path.Combine(Path.GetTempPath(), "cc-v7-migration-" + Guid.NewGuid().ToString("N"));
             try
             {
@@ -267,7 +280,11 @@ public static class ProgressionSaveTests
                 e.Inventory.Add(product); e.CompletedIds.Add(product.Id);
                 // The old file owned the soda trait; migration removes it and refunds its 310 coin price.
                 e.Progression.CartStyle = 1; e.Coins += 310;
+                // The old file measured waiting against 90 seconds; migration keeps the two-thirds share of 60.
+                Check(e.Business.Customers.Count > 0, "no waiting customer to migrate");
+                foreach (var customer in e.Business.Customers) customer.PatienceRemaining = 40;
                 string expectedAfterMigration = UnityEngine.JsonUtility.ToJson(e);
+                foreach (var customer in e.Business.Customers) customer.PatienceRemaining = 60;
                 e.Progression.CartStyle = 0; e.Coins -= 310; Buy(e, "flavor_soda");
                 Directory.CreateDirectory(dir);
                 File.WriteAllText(Path.Combine(dir, "cotton-circuit.json"), UnityEngine.JsonUtility.ToJson(
@@ -280,13 +297,13 @@ public static class ProgressionSaveTests
                     restored.Business.DayMaterialCost == 3 && restored.Inventory.Count == 1 &&
                     restored.Inventory[0].Id == "v7-stock", "operating progress reset during migration");
                 Check(UnityEngine.JsonUtility.ToJson(restored) == expectedAfterMigration,
-                    "migration modified state beyond the vehicle style and the soda refund");
-                Check(store.Save(restored), "migrated state failed to save as V9");
+                    "migration modified state beyond the vehicle style, patience share and the soda refund");
+                Check(store.Save(restored), "migrated state failed to save as V10");
                 var stored = UnityEngine.JsonUtility.FromJson<SaveStore.Envelope>(
                     File.ReadAllText(Path.Combine(dir, "cotton-circuit.json")));
-                Check(stored.Version == 9, "migrated file was not upgraded to V9");
+                Check(stored.Version == 10, "migrated file was not upgraded to V10");
                 Check(UnityEngine.JsonUtility.ToJson(new SaveStore(dir).Load()) == expectedAfterMigration,
-                    "V9 second load changed resumed state");
+                    "V10 second load changed resumed state");
             }
             finally { if (Directory.Exists(dir)) Directory.Delete(dir, true); }
         });

@@ -221,7 +221,7 @@ public static class ShopShiftTests
             Check(shift.Deliver(candy.Id, "stale-customer") == DeliveryResult.Rejected && e.Inventory.Count == 1,
                 "stale customer accepted the product");
             Check(shift.Deliver(candy.Id, customer.Id) == DeliveryResult.Sold, "matching delivery refused");
-            int paid = 30 + customer.Size * 30;
+            int paid = 45 + customer.Size * 45;
             Check(e.Coins == 80 + paid && e.TotalSold == 1 && e.LifetimeRevenue == paid && e.TotalTips == 0 &&
                 shift.State.DayRevenue == paid && shift.State.DaySold == 1 && shift.CustomerAt(0) == customer && customer.Happy, "sale accounting is incorrect");
             Check(shift.Deliver(candy.Id, customer.Id) == DeliveryResult.Rejected && e.Coins == 80 + paid,
@@ -341,17 +341,17 @@ public static class ShopShiftTests
         });
         Test("distance prices use A B C bases with star and shop level modifiers", () => {
             var e = new Economy();
-            int[] prices = { 30, 60, 90 };
+            int[] prices = { 45, 90, 135 };
             for (int i = 0; i < 3; i++)
             {
                 var p = ShopShift.Preview(LapMeters * (1 + i * .5), 0); p.Quality = 0;
                 Check(e.Price(p) == prices[i], "distance tier has wrong base price");
             }
-            // Small base 30 x shop level 1.25 = 37.5, then five percent per star.
+            // Small base 45 x shop level 1.25 = 56.25, then five percent per star.
             var candy = ShopShift.Preview(LapMeters, 2); candy.Quality = ShopShift.QualityForStars(3); e.Levels[2] = 1;
-            Check(e.Price(candy) == 43, "three stars and shop multiplier did not apply to tier base: " + e.Price(candy));
+            Check(e.Price(candy) == 65, "three stars and shop multiplier did not apply to tier base: " + e.Price(candy));
             candy.Quality = ShopShift.QualityForStars(2);
-            Check(e.Price(candy) == 41, "two stars did not add ten percent: " + e.Price(candy));
+            Check(e.Price(candy) == 62, "two stars did not add ten percent: " + e.Price(candy));
             var legacy = new Production(60); legacy.Advance(100, 10, 0); var old = legacy.Finish();
             e.Levels[2] = 0; Check(e.Price(old) == 73, "legacy product pricing changed");
         });

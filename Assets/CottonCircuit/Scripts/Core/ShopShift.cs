@@ -56,7 +56,7 @@ namespace CottonCircuit
         public const double ReactionDuration = 1.5;
         public const double AngryDuration = 1.5;
         public const int CustomerCapacity = 3;
-        public const int TierPrice = 30;
+        public const int TierPrice = 45;
         public const int MaximumPreviewSamples = 180;
         // Driven candy grows faster than speed: nothing sticks below the warm-up speed,
         // a clean lap at the base engine speed grows one lap of candy, and upgraded

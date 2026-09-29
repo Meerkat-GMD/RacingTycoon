@@ -146,7 +146,7 @@ namespace CottonCircuit
         }
 
         public static double DaySeconds(Economy e) { return 180 + 40 * Level(e, "hours"); }
-        public static double PatienceSeconds(Economy e) { return 90 + 12 * Level(e, "patience"); }
+        public static double PatienceSeconds(Economy e) { return 60 + 12 * Level(e, "patience"); }
         public static double ArrivalSeconds(Economy e) { return ArrivalSeconds(e, Level(e, "ads"), Level(e, "repeat_ads")); }
         static double ArrivalSeconds(Economy e, int ads, int repeatAds)
         {

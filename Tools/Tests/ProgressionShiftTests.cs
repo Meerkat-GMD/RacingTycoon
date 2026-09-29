@@ -268,6 +268,11 @@ class ProgressionShiftTests
             var bare = ShopShift.Preview(ShopShift.LapMeters, 0); bare.Quality = 0;
             Check(Math.Abs(e.Price(starred) - e.Price(bare) * 1.234) <= 1,
                 "three stars with every quality trait add 23.4 percent to the sale price");
+            for (int size = 0; size < 3; size++)
+            {
+                var plain = ShopShift.Preview(ShopShift.MetersForSize(size), 0); plain.Quality = 0;
+                Check(fresh.Price(plain) == 45 * (size + 1), "a starless strawberry candy sells for 45 coins per size tier");
+            }
             Console.WriteLine(passed+" passed, 0 failed"); return 0;
         } catch(Exception ex) { Console.Error.WriteLine(ex); return 1; }
     }
