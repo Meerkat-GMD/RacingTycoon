@@ -265,6 +265,7 @@ namespace CottonCircuit.Tests
             CheckInsideViewport("PauseMenu");
             CheckInsideViewport("PauseGuide");
             Check(Visible(Find("PauseBoostRow")) == (game.RunStyle == DrivingStyle.Kart), "boost row follows the vehicle");
+            Check(Visible(Find("PauseShopGroup")) && Visible(Find("PauseCommonGroup")), "business pause lists the shop controls and the General group");
             Check(Find("PauseMuteButton") == null, "mute moved to the settings window");
             yield return Capture("pause.png");
             yield return Click("PauseTitleButton");
@@ -452,6 +453,12 @@ namespace CottonCircuit.Tests
             CheckNoGeneratedUI();
             CheckNoPlayerAuto();
             yield return Capture("11-legacy-continuous.png");
+            game.TogglePause();
+            yield return Settle();
+            Check(Visible(Find("PauseCommonGroup")) && !Visible(Find("PauseShopGroup")), "legacy pause shows the General group without an empty Shop heading");
+            yield return Capture("11-legacy-pause.png");
+            game.TogglePause();
+            yield return Settle();
             game.Initialize(Path.Combine(saveDirectory, "legacy-session"), false, false, false);
             yield return Settle();
             Check(!game.ContinuousMode && game.Shift == null && game.Session.Mode == GameMode.Shop, "legacy session shop still initializes");

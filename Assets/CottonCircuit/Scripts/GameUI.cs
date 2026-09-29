@@ -72,10 +72,10 @@ namespace CottonCircuit
             Show(Q<VisualElement>("PauseDriveGroup"), !worker);
             Show(Q<VisualElement>("PauseWorkerGroup"), worker);
             Show(Q<VisualElement>("PauseBoostRow"), game.RunStyle == DrivingStyle.Kart);
-            Show(Q<VisualElement>("PauseSugarRow"), shift && !worker);
-            Show(Q<VisualElement>("PauseDeliverRow"), shift);
-            Show(Q<VisualElement>("PauseExtractRow"), shift && !worker);
-            Show(Q<VisualElement>("PauseEmptyRow"), shift && !worker);
+            Show(Q<VisualElement>("PauseShopGroup"), shift);
+            Show(Q<VisualElement>("PauseSugarRow"), !worker);
+            Show(Q<VisualElement>("PauseExtractRow"), !worker);
+            Show(Q<VisualElement>("PauseEmptyRow"), !worker);
         }
 
         void NavigatePause(NavigationMoveEvent evt)

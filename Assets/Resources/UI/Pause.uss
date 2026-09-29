@@ -7,11 +7,11 @@
 .pause-guide-title { font-size: 24px; -unity-font-style: bold; margin-bottom: 12px; }
 .pause-guide-columns { flex-direction: row; }
 .pause-guide-group { flex-grow: 1; flex-basis: 0; margin-right: 18px; }
+.pause-guide-section { margin-bottom: 14px; }
 .pause-guide-heading { font-size: 15px; color: #537f7e; -unity-font-style: bold; letter-spacing: 1px; margin-bottom: 6px; }
 .pause-guide-copy { font-size: 18px; white-space: normal; margin-bottom: 8px; }
 .pause-guide-muted { color: #626573; font-size: 16px; }
 .pause-row { flex-direction: row; align-items: center; min-height: 44px; }
-.pause-row-gap { margin-top: 10px; }
 .pause-keys { width: 88px; flex-direction: row; flex-shrink: 0; margin-right: 8px; }
 .pause-key { width: 40px; height: 40px; margin-right: 4px; background-size: contain; background-repeat: no-repeat; background-position: center; -unity-background-image-tint-color: #29324d; }
 .pause-row-label { font-size: 18px; white-space: normal; flex-shrink: 1; }
