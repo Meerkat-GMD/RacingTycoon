@@ -12,9 +12,8 @@
 .pause-guide-muted { color: #626573; font-size: 16px; }
 .pause-row { flex-direction: row; align-items: center; min-height: 44px; }
 .pause-row-gap { margin-top: 10px; }
-.pause-keys { flex-direction: row; width: 104px; flex-shrink: 0; }
+.pause-keys { flex-direction: row; flex-shrink: 0; margin-right: 8px; }
 .pause-key { width: 40px; height: 40px; margin-right: 4px; background-size: contain; background-repeat: no-repeat; background-position: center; -unity-background-image-tint-color: #29324d; }
-.pause-key-wide { width: 80px; }
 .pause-row-label { font-size: 18px; white-space: normal; flex-shrink: 1; }
 .key-w { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyW.png"); }
 .key-a { background-image: url("project://database/Assets/CottonCircuit/UI/Art/KeyA.png"); }
