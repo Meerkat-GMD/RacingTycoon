@@ -20,7 +20,12 @@ namespace CottonCircuit
             EffectsVolume = Clamp(EffectsVolume);
         }
 
-        static float Clamp(float value) => float.IsNaN(value) || float.IsInfinity(value) && value > 0 ? 1 : Math.Max(0, Math.Min(1, value));
+        // An unreadable volume (NaN) falls back to the default 100%; anything else, infinities too, is clamped to 0..1.
+        static float Clamp(float value)
+        {
+            if (float.IsNaN(value)) return 1;
+            return Math.Max(0, Math.Min(1, value));
+        }
     }
 
     public struct ScreenSize : IEquatable<ScreenSize>

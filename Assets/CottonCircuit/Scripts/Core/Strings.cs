@@ -22,8 +22,9 @@ namespace CottonCircuit
 
         public static Language Current { get; private set; } = Language.English;
         public static int Version { get; private set; }
-        public static ICollection<string> Keys => table.Keys;
         public static ICollection<string> Missing => missing;
+        /// <summary>Raised the first time a key is missing; the game logs it in development builds.</summary>
+        public static event Action<string> MissingKey;
 
         public static string TablePath(string baseDirectory)
         {
@@ -55,7 +56,7 @@ namespace CottonCircuit
         public static string Get(string key, Language language)
         {
             if (key != null && table.TryGetValue(key, out var values)) return values[(int)language];
-            if (key != null) missing.Add(key);
+            if (key != null && missing.Add(key)) MissingKey?.Invoke(key);
             return key ?? "";
         }
 
@@ -77,8 +78,19 @@ namespace CottonCircuit
             {
                 if (pair.Value[0].Trim().Length == 0 || pair.Value[1].Trim().Length == 0) problems.Add(pair.Key + " has an empty translation");
                 else if (Placeholders(pair.Value[0]) != Placeholders(pair.Value[1])) problems.Add(pair.Key + " uses different placeholders in ko and en");
+                for (int i = 0; i < pair.Value.Length; i++)
+                    if (!Formats(pair.Value[i])) problems.Add(pair.Key + " is not a valid format string in " + Code((Language)i));
             }
             return problems;
+        }
+
+        // A stray brace makes string.Format throw, so try it with as many arguments as the highest placeholder needs.
+        static bool Formats(string text)
+        {
+            int count = 0;
+            foreach (Match match in Placeholder.Matches(text)) count = Math.Max(count, int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture) + 1);
+            try { string.Format(CultureInfo.InvariantCulture, text, new object[count]); return true; }
+            catch (FormatException) { return false; }
         }
 
         static string Placeholders(string text)

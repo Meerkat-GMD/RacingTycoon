@@ -59,6 +59,22 @@ public static class LocalizationTests
             var problems = Strings.Validate();
             Check(problems.Count == 2, "expected 2 problems, got " + problems.Count + ": " + string.Join(" | ", problems));
         });
+        Test("validate reports values that string.Format rejects", () =>
+        {
+            Strings.Load("key\tko\ten\na.b\t{0}개\t{0} pcs {\nc.d\t{{0}} {0}\t{0} {{x}}\n");
+            var problems = Strings.Validate();
+            Check(problems.Count == 1 && problems[0] == "a.b is not a valid format string in en", "expected only the stray brace, got " + string.Join(" | ", problems));
+        });
+        Test("a missing key is announced once", () =>
+        {
+            Strings.Load(Sample);
+            var announced = new List<string>();
+            Action<string> listener = announced.Add;
+            Strings.MissingKey += listener;
+            try { Strings.Get("nope.key"); Strings.Get("nope.key"); Strings.Format("other.key"); }
+            finally { Strings.MissingKey -= listener; }
+            Check(announced.Count == 2 && announced[0] == "nope.key" && announced[1] == "other.key", "announced " + string.Join(", ", announced));
+        });
         Test("the shipped table loads and validates", () =>
         {
             Strings.Load(File.ReadAllText(Strings.TablePath(AppDomain.CurrentDomain.BaseDirectory)));
@@ -78,6 +94,8 @@ public static class LocalizationTests
             Check(s.MusicVolume == 1 && s.EffectsVolume == 1 && s.Language == "" && s.Version == GameSettings.CurrentVersion, "sanitize");
             s.MusicVolume = -2; s.Language = "ko"; s.Sanitize();
             Check(s.MusicVolume == 0 && s.Language == "ko", "keeps valid");
+            s.MusicVolume = float.PositiveInfinity; s.EffectsVolume = float.NegativeInfinity; s.Sanitize();
+            Check(s.MusicVolume == 1 && s.EffectsVolume == 0, "infinities clamp to the ends");
         });
         Test("screen sizes are distinct, fit the monitor, include the current size and sort", () =>
         {

@@ -16,6 +16,7 @@ namespace CottonCircuit
             var table = Resources.Load<TextAsset>("Localization/strings");
             if (table == null) throw new InvalidOperationException(
                 "Localization/strings.tsv did not import as a TextAsset; check Assets/CottonCircuit/Editor/LocalizationTableImport.cs.");
+            if (Debug.isDebugBuild) Strings.MissingKey += WarnMissing;
             Strings.Load(table.text);
             foreach (var argument in Environment.GetCommandLineArgs())
                 if (argument.StartsWith("--language=")) CommandLine = argument.Substring("--language=".Length);
@@ -38,6 +39,8 @@ namespace CottonCircuit
             Strings.Set(language);
             Changed?.Invoke();
         }
+
+        static void WarnMissing(string key) => Debug.LogWarning("Missing localization key: " + key);
 
         static void Resolve(bool force)
         {
