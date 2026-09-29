@@ -6,7 +6,7 @@
     <ui:VisualElement class="prep-main">
       <ui:VisualElement class="prep-header">
         <ui:VisualElement class="prep-header-titles">
-          <ui:Label text="C O T T O N   C I R C U I T" class="prep-eyebrow" />
+          <ui:Label text="C O T T O N   C I R C U I T" class="prep-eyebrow" />
           <ui:Label text="내일의 달콤함" class="prep-title"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.title" /></Bindings></ui:Label>
         </ui:VisualElement>
         <ui:VisualElement class="prep-wallet-group">
@@ -435,8 +435,8 @@
           </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement class="prep-legend">
-          <ui:Label text="○ 필요 특성" class="prep-legend-item"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.legend.required" /></Bindings></ui:Label>
-          <ui:Label text="✓ 완료" class="prep-legend-item"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.legend.done" /></Bindings></ui:Label>
+          <ui:Label name="PrepLegendRequired" text="○ 필요 특성" class="prep-legend-item"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.legend.required" /></Bindings></ui:Label>
+          <ui:Label name="PrepLegendDone" text="✓ 완료" class="prep-legend-item"><Bindings><CottonCircuit.LocalizedText property="text" key="prep.legend.done" /></Bindings></ui:Label>
         </ui:VisualElement>
       </ui:VisualElement>
       <ui:VisualElement name="EquipmentPage" class="prep-page hidden">

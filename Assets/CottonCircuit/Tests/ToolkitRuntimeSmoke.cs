@@ -217,6 +217,8 @@ namespace CottonCircuit.Tests
             yield return CloseDay();
             Check(game.Audio.Music == MusicCue.None && game.Audio.Played(Sound.ClosingBell) == bells + 1, "closing rings once and settlement is quiet");
             Check(!game.GrowthHintVisible, "growth hint waits until preparation after settlement");
+            Check(Visible(Find("businessResults")), "the closing receipt is on screen before the player moves on");
+            yield return Capture("06-closing-receipt.png");
             yield return Click("businessNextDay");
             Check(game.InPreparation && game.GrowthHintVisible, "first settlement opens the one-time growth hint");
             Check(Element<Label>("TutorialModalDialogue").text == Strings.Get("tutorial.growth.hint"), "growth hint uses the exact approved sentence");
@@ -1042,10 +1044,46 @@ namespace CottonCircuit.Tests
                 name + " is centered inside the live panel viewport");
         }
 
+        // add element names here only with a reason in docs/localization-settings-verification.md
+        static readonly HashSet<string> OverflowExempt = new HashSet<string> {
+            "BusinessTitleEyebrow", "TraitDetailsBody",
+            "PreparationDay", "PreparationWallet", "PreparationTraitCount",
+            "PrepLegendRequired", "PrepLegendDone",
+            "PauseAccelerateLabel", "PauseBrakeLabel", "PauseSteerLabel", "PauseDriftLabel", "PauseBoostLabel", "PauseRecoverLabel",
+            "PauseSugarLabel", "PauseDeliverLabel", "PauseExtractLabel", "PauseEmptyLabel", "PauseEscapeLabel",
+        };
+
+        void CheckVisibleText(string capture)
+        {
+            var hangul = new List<string>();
+            var overflow = new List<string>();
+            foreach (var document in FindObjectsByType<UIDocument>(FindObjectsSortMode.None))
+                document.rootVisualElement.Query<TextElement>().ForEach(text =>
+                {
+                    if (!Visible(text) || string.IsNullOrEmpty(text.text)) return;
+                    if (Strings.Current == Language.English && ContainsHangul(text.text)) hangul.Add((text.name ?? text.GetType().Name) + "='" + text.text + "'");
+                    var box = text.contentRect;
+                    if (box.width < 1 || OverflowExempt.Contains(text.name)) return;
+                    bool wraps = text.resolvedStyle.whiteSpace == WhiteSpace.Normal;
+                    var size = text.MeasureTextSize(text.text, wraps ? box.width : 0, wraps ? VisualElement.MeasureMode.Exactly : VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined);
+                    if (size.x > box.width + 1.5f || size.y > box.height + 1.5f) overflow.Add((text.name ?? text.GetType().Name) + " '" + text.text + "' " + size + " in " + box.size);
+                });
+            Check(hangul.Count == 0, capture + " shows no Korean in English: " + string.Join(" | ", hangul));
+            Check(overflow.Count == 0, capture + " has no clipped text: " + string.Join(" | ", overflow));
+            Check(Strings.Missing.Count == 0, "no missing translation keys: " + string.Join(", ", Strings.Missing));
+        }
+
+        static bool ContainsHangul(string text)
+        {
+            foreach (char c in text) if (c >= '가' && c <= '힣') return true;
+            return false;
+        }
+
         IEnumerator Capture(string name)
         {
             yield return new WaitForSecondsRealtime(.25f);
             yield return new WaitForEndOfFrame();
+            CheckVisibleText(name);
             var texture = ScreenCapture.CaptureScreenshotAsTexture();
             try
             {

@@ -4,7 +4,7 @@ common.close	닫기	Close
 common.on	켜짐	On
 common.off	꺼짐	Off
 common.ok	확인	OK
-title.eyebrow	C O T T O N   C I R C U I T	S W E E T   R A C I N G   S H O P
+title.eyebrow	C O T T O N   C I R C U I T	S W E E T   R A C I N G   S H O P
 title.word.first	솜사탕	Cotton
 title.word.second	서킷	Circuit
 title.tagline	달리고, 만들고, 나만의 달콤한 가게.	Race, spin, and run your own sweet shop.
@@ -14,7 +14,7 @@ title.new	새 게임	New game
 title.quit	게임 종료	Quit
 title.note.fresh	첫 번째 솜사탕 가게를 열어볼까요?	Ready to open your first cotton candy shop?
 title.note.saved	지난번의 달콤한 여정을 이어가세요.	Pick up your sweet journey where you left off.
-title.footer	↑ ↓  메뉴 선택     Enter  선택	↑ ↓  Move     Enter  Select
+title.footer	↑ ↓  메뉴 선택     Enter  선택	↑ ↓  Move     Enter  Select
 title.confirm.heading	새로운 가게를 열까요?	Open a new shop?
 title.confirm.copy	현재 진행 상황은 보관하고\n첫날부터 새롭게 시작합니다.	Your current progress is kept aside\nand you start again from day one.
 title.confirm.cancel	돌아가기	Back
@@ -134,7 +134,7 @@ intro.start	가게 시작	Open the shop
 intro.hint	클릭 · Space · Enter  다음 대사	Click · Space · Enter  Next line
 intro.skip	스킵	Skip
 tutorial.companion	미나 · 첫 솜사탕 만들기	Mina · Your first cotton candy
-tutorial.guide.pick	① 여기를 꾹 누르세요	① Press and hold here
+tutorial.guide.pick	① 여기를 꾹 누르세요	① Press and hold
 tutorial.guide.trail	② 누른 채 주행 화면으로 끌기	② Drag to the track
 tutorial.guide.shake	③ 여기서 위아래로 흔들기	③ Shake up and down
 tutorial.skip	튜토리얼 스킵	Skip tutorial
@@ -371,7 +371,7 @@ pause.recover	코스 복귀	Back to track
 pause.helper	알바가 운전과 제작을 맡고 있어요.	A helper is driving and making candy.
 pause.helper.hint	다른 기계는 상단 버튼으로 선택하고, 알바 배치는 영업 준비 화면에서 바꿀 수 있어요.	Pick other machines with the top buttons. Change helpers in Prep.
 pause.shop	가게	Shop
-pause.sugar	설탕 봉지를 주행 화면으로 끌어 흔들기	Drag a sugar bag to the track and shake
+pause.sugar	설탕 봉지를 주행 화면으로\n끌어 흔들기	Drag a sugar bag to the track and shake
 pause.deliver	솜사탕을 손님에게 건네기	Drag candy to a customer
 pause.extract	꺼내기	Take out
 pause.empty	설탕 비우기	Empty sugar

@@ -5,7 +5,7 @@
     <ui:VisualElement class="biz-race" picking-mode="Ignore">
       <ui:VisualElement class="biz-race-header">
         <ui:VisualElement class="biz-title-row">
-          <ui:Label text="Cotton Circuit" class="biz-title">
+          <ui:Label name="BusinessTitleEyebrow" text="Cotton Circuit" class="biz-title">
             <Bindings>
               <CottonCircuit.LocalizedText property="text" key="business.title" />
             </Bindings>
