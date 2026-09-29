@@ -3,7 +3,7 @@
     <ui:Style src="Legacy.uss" />
     <ui:VisualElement name="legacyScreen" class="legacy-screen" picking-mode="Ignore">
         <ui:VisualElement class="legacy-header">
-            <ui:Label name="BusinessTitleEyebrow" text="솜사탕 서킷" class="legacy-title"><Bindings><CottonCircuit.LocalizedText property="text" key="business.title" /></Bindings></ui:Label>
+            <ui:Label name="LegacyTitle" text="솜사탕 서킷" class="legacy-title"><Bindings><CottonCircuit.LocalizedText property="text" key="business.title" /></Bindings></ui:Label>
             <ui:Label name="legacyDay" />
             <ui:Label name="legacyCoins" class="legacy-wallet" />
             <ui:Button name="legacyPause" text="도움말 · Esc"><Bindings><CottonCircuit.LocalizedText property="text" key="legacy.pause" /></Bindings></ui:Button>

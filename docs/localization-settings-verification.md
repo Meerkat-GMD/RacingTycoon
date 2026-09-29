@@ -14,13 +14,14 @@
 
 이 검사는 `full`·`legacy`·`rack`·`hud`·`music`·`settings` 여섯 케이스가 이미 찍던 모든 캡처(약 30곳, 해상도 스윕 포함)에 자동으로 적용된다. 새 `06-closing-receipt.png` 캡처(영업 마감 직후, `businessNextDay`를 누르기 전)도 `full` 케이스에 추가해 `business.result.*` 영수증 카드를 커버했다.
 
-### 2. 폭 처리 항목(컨트롤러가 넘긴 5가지)
+### 2. 폭 처리 항목(컨트롤러가 넘긴 6가지)
 
 1. **공백 붕괴** — `title.eyebrow`, `title.footer`, `Preparation.uxml`의 정적 `prep-eyebrow` 텍스트("C O T T O N   C I R C U I T")는 모두 `white-space: normal`(Shared.uss의 전역 `Label` 규칙)을 물려받는 라벨인데, 실제 UI Toolkit 렌더링에서는 이 세 요소의 공백이 (한 칸이든 여러 칸이든) 전부 사라져 "COTTONCIRCUIT", "SWEETRACINGSHOP", "↑ ↓ 메뉴 선택 Enter 선택"처럼 붙어 나왔다(수정 전 `01-title.png` 캡처로 확인). U+00A0(NBSP)로 바꾸니 렌더링에서 살아남아 의도한 간격이 그대로 나왔다 — 한국어·영어 모두, `· ` 대체 없이 해결됨. `title.eyebrow`/`title.footer`는 `strings.tsv`의 두 언어 칸 모두, `prep-eyebrow`는 UXML의 정적 텍스트(언어 공용이라 표에 없음)를 고쳤다. 한국어 문구 자체는 바꾸지 않았다.
 2. **일시정지 조작 안내 정렬** — `.pause-keys`(글자 키 1개 또는 A/D 2개를 담는 줄)가 자동 폭이라 1키 줄(44px)과 2키 줄(88px)의 라벨 시작 위치가 달랐다. `.pause-keys { width: 88px; }`로 고정해(가장 넓은 A/D 그룹 기준) 모든 줄의 라벨이 한 열로 맞춰지도록 했다. 마지막 키의 자체 여백(4px) + `.pause-keys`의 `margin-right`(8px) = 12px 간격은 그대로다.
 3. **`pause.sugar` 한글 줄바꿈** — 1280×720에서 "설탕 봉지를 주행 화면으로 끌어 흔들 / 기"처럼 "흔들기" 한 단어 중간이 잘렸다. 한국어 값에 공백 위치(화면으로 / 끌어) 그대로 `\n`을 넣어 "설탕 봉지를 주행 화면으로\n끌어 흔들기"로 고쳤다. 영어 값은 문장이라 그대로 두고 자동 줄바꿈에 맡겼다. 1280×720·1600×900·1920×820(설정 케이스의 해상도 스윕)에서 한국어·영어 모두 캡처로 확인했다 — 단어 중간에서 끊기지 않고 두 줄 안에 들어간다.
 4. **구현자 영문 톤 점검** — `tutorial.*`, `notice.*`, `prep.*`, `trait.*`, `effect.*`, `machine.*`, `location.*` 영어 칸(약 210행)을 전부 다시 읽었다. 용어집과 어긋나거나 번역투인 곳은 없었다. 유일한 수정은 `tutorial.guide.pick`: `"① Press and hold here"` → `"① Press and hold"`. `.tutorial-guide-label`이 `white-space: nowrap`이라 실제로 잘리지는 않지만 마커 폭(209px)보다 넓어(221px) 옆으로 삐져나왔다(오배송 방지를 위한 실제 캡처로 확인). 다른 안내 문구(`② Drag to the track`, `③ Shake up and down`)와 같은 짧은 동사구 톤으로 맞추면서 폭도 해결했다. 한국어·키는 그대로다.
 5. **`Legacy.uxml` 미리보기 언어 통일** — `Legacy.uxml`의 바인딩된 요소(예: `business.title`, `legacy.pause`, 주문·재고·크기·맛·차량 버튼, 조작 안내, 결과 화면) 전부가 영어 미리보기 텍스트("Cotton Circuit", "Help · Esc", "Choose order" 등)를 쓰고 있었다. `Title.uxml`·`Preparation.uxml`·`Game.uxml`은 바인딩된 요소에 한국어 미리보기를 쓴다(예: `title.new`의 `text="새 게임"`). `Legacy.uxml`의 18개 바인딩 요소 전부를 해당 키의 한국어 값으로 바꿔 통일했다. `legacyMakeStock`처럼 C#이 직접 쓰는(바인딩 없는) 요소는 룰링 R1대로 영어 미리보기를 그대로 뒀다. `Business.uxml`의 `business.title`(`biz-title`)도 같은 방식(영어 미리보기)을 쓰고 있었지만 이번 항목이 지목한 대상이 아니라 손대지 않았다.
+6. **영업 마감 영수증과 알림 토스트** — `business.result.*` 영수증 카드는 "1. 모든 캡처에..." 절에 적은 새 `06-closing-receipt.png`로 실제 커버했다(새 검사도 통과). 알림 토스트(`notice.nextday.legacy`, `notice.lap.done.waiting`)는 캡처를 추가하지 못했다: 전자는 레거시(비연속·비진행형) 영업일을 실제로 마감하고 `StartNextDay()`까지 불러야 하는데 지금 `Legacy.uxml`에는 스모크가 누를 수 있는 "다음 날" 버튼이 없고, 후자는 연속 모드에서 진열대가 가득 찬 채로 한 바퀴 생산을 완주해야 해 둘 다 "적은 코드로" 재현할 수 있는 범위를 넘는다. 대신 `Game.uss`의 CSS로 넘침 가능성을 따졌다: `.notice-toast { position: absolute; left: 400px; right: 400px; bottom: 27px; ...; -unity-text-align: middle-center; font-size: 17px; }` — 높이가 고정이 아니라(`height` 없음) 줄바꿈된 내용만큼 위로 자라고, 폭은 뷰포트에 따라 `뷰포트 폭 − 800px`로 정해진다(1280px 폭이면 480px, 1600px 기본 해상도면 800px, 1920px면 1120px). 두 알림 중 가장 긴 영어 문구는 `notice.nextday.legacy`("New business day! Cleared the shelf, sugar, and candy in progress — new customers are here.", 91자)이고 `notice.lap.done.waiting`("Lap done! Candy stored · Reward +{0} coins · Shelf is full, production is waiting.", 자리표시자 포함 82자)이 그 다음이다. 둘 다 `·`나 쉼표로 자연스럽게 끊기는 짧은 단어들의 나열이라 가장 좁은 480px에서도 단어 중간이 아니라 단어 경계에서 여러 줄로 접히고, 높이가 고정이 아니므로 잘리지 않는다. 같은 `.notice-toast`/`NoticeText` 메커니즘은 스모크가 실제로 띄우는 다른 알림(예: `pause.png`에 보이는 `notice.extract.none`)에서 이미 새 검사를 통과했다.
 
 ### 3. `docs/superpowers/specs/2026-09-29-localization-settings-pause-design.md` 갱신
 
@@ -32,12 +33,16 @@
 
 | 이름 | 위치 | 사유 |
 |---|---|---|
-| `BusinessTitleEyebrow` | `Business.uxml`/`Legacy.uxml`의 `business.title`("솜사탕 서킷") | `.biz-title-row`가 `height: 32px`로 고정인데 한국어 볼드 25px 글자는 37px가 필요하다. 이 CSS는 병합 기준 커밋(`e1c344a`)과 동일 — 이번 브랜치는 물론 로컬라이제이션 작업 전체가 손대지 않았다. |
+| `BusinessTitleEyebrow` | `Business.uxml`의 `business.title`("Cotton Circuit") | `.biz-title-row`가 `height: 32px`로 고정인데 한국어 볼드 25px 글자는 37px가 필요하다. 이 CSS는 병합 기준 커밋(`e1c344a`)과 동일 — 이번 브랜치는 물론 로컬라이제이션 작업 전체가 손대지 않았다. (`Legacy.uxml`의 같은 `business.title` 라벨은 `.legacy-header`가 `height: 90px`로 훨씬 여유로워 실제로 넘치지 않는다. 처음에는 같은 이름 `BusinessTitleEyebrow`를 재사용해 두 요소가 한 예외로 묶여 있었는데 — `Legacy.uxml` 쪽은 이 사유가 적용되지 않으므로 `LegacyTitle`로 따로 이름을 붙이고 `OverflowExempt`에서 뺐다. `-Case legacy -Language ko/en`을 다시 돌려 예외 없이도 통과하는 것을 확인했다(아래 "재검증" 참고).) |
 | `TraitDetailsBody` | `Preparation.uxml`의 특성 상세 툴팁(성장 지도 호버) | `.trait-details { width: 330px }`는 이 SDD의 Task 1(`488b583`)보다 앞선 `82c6538`(성장 지도 UI Toolkit 복원)에서 그대로 들어왔고 이후 바뀐 적이 없다. |
+| `PreparationDay`, `PreparationWallet`, `PreparationTraitCount` | `Preparation.uxml`의 헤더(DAY/지갑/해금 수) | `.prep-header`/`.prep-wallet-group`/`.prep-day`/`.prep-wallet`은 `e98d2b3`(UI Toolkit 전면 이관, `82c6538`·`488b583`보다도 앞선 커밋)부터 있던 CSS로 이후 바뀐 적이 없다. |
+| `PrepLegendRequired`, `PrepLegendDone` | `Preparation.uxml`의 범례(`○ 필요 특성` / `✓ 완료`) | `.prep-legend`/`.prep-legend-item`도 `82c6538`에서 지금 모습으로 바뀐 뒤 이 SDD 어느 태스크도 손대지 않았다. |
+
+이 네 항목(위 표의 `PreparationDay`~`PrepLegendDone`)은 모두 `MeasureTextSize`가 실제 렌더링보다 넓은 폭이 필요하다고 잘못 계산해 걸린 것이지만(아래 문단 참고), 레이아웃 자체가 이 브랜치 이전부터 있던 것이라 위 표에 넣었다.
 
 ## `MeasureTextSize` 측정 오차로 확인된 항목
 
-일시정지 조작 안내(`.pause-row-label`, `flex-shrink: 1`)와 영업 준비 헤더/범례(`.prep-day`, `.prep-wallet`, `.prep-trait-count`, `.prep-legend-item`, 모두 내용에 맞춰 자동으로 폭이 정해지는 라벨)에서 `MeasureTextSize(text, box.width, Exactly, ...)`가 실제 렌더링보다 넓은 폭을 필요로 한다고 계산해, 한 줄이면 되는 텍스트를 두 줄로 잘못 예측하는 경우가 있었다(예: `PreparationDay`가 1600×900에서 20px 박스에 38px가 필요하다고 보고했지만, 그 순간의 `pause-1600x900.png` 캡처를 보면 "DAY 01 / Prep"이 한 줄로 멀쩡하게 나온다). 자동 폭 라벨의 박스 자체가 콘텐츠에 딱 맞게 잡혀 있어, Yoga가 확정한 폭과 `MeasureTextSize`를 별도로 다시 호출했을 때의 줄바꿈 판단이 서브 픽셀 경계에서 어긋나는 것으로 보인다. 실제 화면(1280×720·1600×900·1920×820, 한국어·영어)을 스크린샷으로 하나씩 대조해 전부 한 줄로, 잘리거나 겹치지 않고 나오는 것을 확인한 뒤 이름을 붙여 제외했다: `PreparationDay`, `PreparationWallet`, `PreparationTraitCount`, `PrepLegendRequired`, `PrepLegendDone`, `PauseAccelerateLabel`, `PauseBrakeLabel`, `PauseSteerLabel`, `PauseDriftLabel`, `PauseBoostLabel`, `PauseRecoverLabel`, `PauseSugarLabel`, `PauseDeliverLabel`, `PauseExtractLabel`, `PauseEmptyLabel`, `PauseEscapeLabel`. 요소들은 전부 이름이 없었어서(`text.name` 매칭을 쓰려면 필요) `Game.uxml`/`Preparation.uxml`에 `name`만 추가했고, 문구나 레이아웃은 바꾸지 않았다.
+자동 폭/`flex-shrink` 라벨에서 `MeasureTextSize(text, box.width, Exactly, ...)`가 실제 렌더링보다 넓은 폭을 필요로 한다고 계산해, 한 줄이면 되는 텍스트를 두 줄로 잘못 예측하는 경우가 있었다(예: `PreparationDay`가 1600×900에서 20px 박스에 38px가 필요하다고 보고했지만, 그 순간의 `pause-1600x900.png` 캡처를 보면 "DAY 01 / Prep"이 한 줄로 멀쩡하게 나온다). 박스 자체가 콘텐츠에 딱 맞게 잡혀 있어, Yoga가 확정한 폭과 `MeasureTextSize`를 별도로 다시 호출했을 때의 줄바꿈 판단이 서브 픽셀 경계에서 어긋나는 것으로 보인다. 위 표의 `PreparationDay`~`PrepLegendDone` 네 항목이 이 증상이고, 나머지 11개(`PauseAccelerateLabel`, `PauseBrakeLabel`, `PauseSteerLabel`, `PauseDriftLabel`, `PauseBoostLabel`, `PauseRecoverLabel`, `PauseSugarLabel`, `PauseDeliverLabel`, `PauseExtractLabel`, `PauseEmptyLabel`, `PauseEscapeLabel`, 일시정지 조작 안내의 `.pause-row-label`)는 같은 증상이지만 원인이 다르다: 이 브랜치가 이번 태스크의 항목 2에서 `.pause-keys`를 `width: 88px`로 고정하면서 1글자 키 줄의 라벨이 쓸 수 있는 폭이 좁아졌고, 그 결과 좁은 해상도(1280×720)에서 이 서브 픽셀 경계에 걸리게 됐다 — 즉 이 11개는 이 브랜치 자신의 레이아웃 변경이 원인이다. 두 그룹 모두 실제 화면(1280×720·1600×900·1920×820, 한국어·영어)을 스크린샷으로 하나씩 대조해 전부 한 줄로, 잘리거나 겹치지 않고 나오는 것을 확인한 뒤 이름을 붙여 제외했다. 요소들은 전부 이름이 없었어서(`text.name` 매칭을 쓰려면 필요) `Game.uxml`/`Preparation.uxml`에 `name`만 추가했고, 문구나 레이아웃은 바꾸지 않았다.
 
 ## 검증
 
@@ -61,6 +66,18 @@
 | settings | en | PASSED | 184 | `Logs/Loc-final-settings-en` |
 
 각 언어 쌍의 통과 수가 정확히 같다(921/921, 27/27, 878/878, 106/106, 18/18, 184/184) — 두 언어가 같은 화면·같은 개수의 검사를 통과했다는 뜻이다. `full en`은 첫 실행에서 `tutorial.guide.pick` 넘침으로 한 번 실패했고(위 "구현자 영문 톤 점검" 참고), 고친 뒤 재실행해 통과했다.
+
+### 재검증 (리뷰 수정 1회차)
+
+`Legacy.uxml`의 `business.title` 라벨을 `LegacyTitle`로 새로 이름 붙이고 `OverflowExempt`에서 뺀 뒤(위 "기존 한국어 넘침" 표 참고) 개발 빌드를 다시 만들어 세 케이스를 다시 돌렸다. 셋 다 이전과 같은 통과 수로 PASSED — `LegacyTitle`은 예외 없이도 넘치지 않는다.
+
+| 케이스 | 언어 | 결과 | 통과 수 | 기록 |
+|---|---|---:|---:|---|
+| legacy | ko | PASSED | 27 | `Logs/Loc-final-legacy-ko2` |
+| legacy | en | PASSED | 27 | `Logs/Loc-final-legacy-en2` |
+| full | en | PASSED | 921 | `Logs/Loc-final-full-en3` |
+
+`full`은 레거시 화면(`11-legacy-continuous.png`, `12-legacy-shop.png`)도 지나가므로 영어로 다시 돌려 확인했다.
 
 ### Core 테스트와 정적 검사
 
@@ -115,6 +132,11 @@ powershell -ExecutionPolicy Bypass -File Tools/verify-uitk.ps1 -BuildFolder Buil
 powershell -ExecutionPolicy Bypass -File Tools/test-all.ps1
 python Tools/check-localization.py
 powershell -ExecutionPolicy Bypass -File Tools/build.ps1 -Release -BuildFolder Builds/Loc-Release
+# 리뷰 수정 1회차: LegacyTitle 이름 변경 후 재빌드·재검증
+powershell -ExecutionPolicy Bypass -File Tools/build.ps1 -BuildFolder Builds/Loc
+powershell -ExecutionPolicy Bypass -File Tools/verify-uitk.ps1 -BuildFolder Builds/Loc -Case legacy -Language ko -OutputFolder Logs/Loc-final-legacy-ko2
+powershell -ExecutionPolicy Bypass -File Tools/verify-uitk.ps1 -BuildFolder Builds/Loc -Case legacy -Language en -OutputFolder Logs/Loc-final-legacy-en2
+powershell -ExecutionPolicy Bypass -File Tools/verify-uitk.ps1 -BuildFolder Builds/Loc -Case full -Language en -OutputFolder Logs/Loc-final-full-en3
 ```
 
 ![타이틀 화면 (영어)](screenshots/localization-title-en.png)
