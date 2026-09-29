@@ -1694,7 +1694,7 @@ sha256sum Art/UI/kenney_input-prompts_1.5.zip
 python -c "import zipfile;z=zipfile.ZipFile('Art/UI/kenney_input-prompts_1.5.zip');print('\n'.join(n for n in z.namelist() if 'keyboard_f' in n or 'mouse_right' in n or 'License' in n))"
 ```
 
-Find which archive entries are byte-identical to the existing `Assets/CottonCircuit/UI/Art/KeyF.png` and `MouseRight.png` (compare SHA-256). Use that same folder/variant for every new glyph: `keyboard_w`, `keyboard_a`, `keyboard_s`, `keyboard_d`, `keyboard_space`, `keyboard_shift`, `keyboard_r`, `keyboard_escape`, and the left-mouse glyph (`mouse_left` in the same variant as `mouse_right`). Copy them to `Assets/CottonCircuit/UI/Art/` as `KeyW.png`, `KeyA.png`, `KeyS.png`, `KeyD.png`, `KeySpace.png`, `KeyShift.png`, `KeyR.png`, `KeyEscape.png`, `MouseLeft.png`. Copy the pack's license to `Art/UI/KenneyInputPrompts/License.txt`. Do not commit the zip (the other Kenney zips are not tracked either); keep it in `Art/UI/` locally.
+Find which archive entries are byte-identical to the existing `Assets/CottonCircuit/UI/Art/KeyF.png` and `MouseRight.png` (compare SHA-256). Use that same folder/variant for every new glyph: `keyboard_w`, `keyboard_a`, `keyboard_s`, `keyboard_d`, `keyboard_space`, `keyboard_shift`, `keyboard_r`, `keyboard_escape`, and the left-mouse glyph (`mouse_left` in the same variant as `mouse_right`). Copy them to `Assets/CottonCircuit/UI/Art/` as `KeyW.png`, `KeyA.png`, `KeyS.png`, `KeyD.png`, `KeySpace.png`, `KeyShift.png`, `KeyR.png`, `KeyEscape.png`, `MouseLeft.png`. Copy the pack's license to `Art/UI/KenneyInputPrompts/License.txt`. Commit the zip in `Art/UI/` next to the other Kenney archives (`kenney_ui-pack.zip` and `kenney_cursor-pack.zip` are tracked there).
 
 Add to `THIRD-PARTY.md` (after the Cursor Pack bullet):
 
@@ -1887,7 +1887,7 @@ Build → `Build ready` (integration checks pass).
 - [ ] **Step 8: Commit**
 
 ```bash
-git add Assets/CottonCircuit/UI Art/UI/KenneyInputPrompts Assets/Resources Assets/CottonCircuit/Scripts Assets/CottonCircuit/Editor/IntegrationChecks.cs Assets/CottonCircuit/Tests/ToolkitRuntimeSmoke.cs
+git add Assets/CottonCircuit/UI Art/UI/KenneyInputPrompts Art/UI/kenney_input-prompts_1.5.zip Assets/Resources Assets/CottonCircuit/Scripts Assets/CottonCircuit/Editor/IntegrationChecks.cs Assets/CottonCircuit/Tests/ToolkitRuntimeSmoke.cs
 git commit -m "Renew the pause screen with a menu card, a key guide and settings"
 ```
 
