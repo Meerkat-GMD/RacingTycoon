@@ -180,12 +180,16 @@
 - `GameSettings`: 기본값, 범위 제한, 알 수 없는 언어 코드 정리.
 - 한국어 문구를 확인하던 기존 Core 테스트(`ProgressionShiftTests`, `TraitIconTests`)는 표를 읽고 한국어로 설정한 뒤 같은 결과를 확인하도록 고친다. 모든 Core 테스트 스크립트가 통과해야 한다.
 
-### 에디터 통합 검사 (`Editor/IntegrationChecks.cs`)
+### 정적 검사 (`python Tools/check-localization.py`, Unity 없이 실행)
+
+Hangul/키 정적 검사는 `Editor/IntegrationChecks.cs`가 아니라 Unity를 띄우지 않는 `Tools/check-localization.py`로 한다. 빌드 없이 몇 초 안에 끝나 매 커밋마다 돌릴 수 있다.
 
 - UXML의 모든 `LocalizedText` 키가 표에 있다.
 - `Assets/CottonCircuit/Scripts`의 `Strings.Get`/`Strings.Format` 문자열 리터럴 키가 모두 표에 있다.
 - 실행 코드(`Assets/CottonCircuit/Scripts`, Inspector 속성과 주석 제외)와 UXML `text` 속성 중 `LocalizedText`가 없는 요소에 한글이 남아 있지 않다.
-- 새 키캡 스프라이트의 가져오기 설정.
+- 표 자체의 무결성(중복 키, 빈 칸, 자리표시자 불일치)도 함께 본다.
+
+새 키캡 스프라이트의 가져오기 설정 확인은 `Editor/IntegrationChecks.cs`(개발 빌드, `Tools/build.ps1`)에 남는다.
 
 ### 실행 스모크 검사 (`Tools/verify-uitk.ps1`, 개발 빌드)
 
@@ -198,7 +202,7 @@
   - 음소거 전환
   - `settings.json`이 격리 폴더에 저장되고, 새 `SettingsStore`로 다시 읽으면 같은 값
   - 손상된 `settings.json`은 기본값으로 처리
-- 문구 넘침: 영어 캡처 흐름에서 보이는 `Label`과 `Button`의 글자 폭(`MeasureTextSize`)이 요소 내용 폭을 넘지 않는지 확인한다. 줄바꿈이 허용된 라벨은 높이를 기준으로 본다.
+- 문구 넘침과 한글 누출: `Capture(name)`이 스크린샷을 찍기 직전에 `CheckVisibleText(name)`을 불러, 모든 케이스·모든 언어의 모든 캡처에서 화면에 보이는 모든 `TextElement`를 검사한다. 영어일 때 한글이 남아 있으면 실패, `MeasureTextSize`로 잰 글자 크기가 요소 내용 폭(줄바꿈 라벨은 높이)을 넘으면 실패, `Strings.Missing`에 키가 남아 있으면 실패. 이 branch가 손대지 않은 요소의 기존 한국어 넘침은 `OverflowExempt`에 이름과 사유를 남기고 제외한다.
 - 해상도: 일시정지와 설정창을 1280×720, 1600×900, 1280×960, 1920×820에서 캡처해 화면 안에 들어오는지(`CheckScreenBounds`) 확인한다.
 - 모든 저장은 실행마다 새로 만든 테스트 폴더를 쓴다.
 
