@@ -362,6 +362,7 @@ namespace CottonCircuit
             {
                 int hash = economy.Coins * 397 + economy.Progression.SelectedMachine * 31 + economy.Progression.CartStyle * 7 +
                     economy.Progression.SelectedLocation * 3 + toolkitLocationPreview * 17 + toolkitTraitTab * 53;
+                hash = hash * 31 + Strings.Version;   // a language switch rewrites every code-assigned label
                 foreach (var purchase in economy.Progression.Purchases) hash = hash * 31 + purchase.Id.GetHashCode() + purchase.Level;
                 for (int i = 0; i < 3; i++)
                 {

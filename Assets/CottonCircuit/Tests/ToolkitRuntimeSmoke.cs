@@ -565,6 +565,15 @@ namespace CottonCircuit.Tests
             yield return Click("PauseSettingsButton");
             Check(game.SettingsOpen && game.Session.Paused, "pause opens settings and stays paused");
             yield return Capture("settings-pause.png");
+            Check(game.InPreparation, "the pause settings leg runs over the preparation screen");
+            yield return Click("SettingsLanguageNext");
+            Check(Strings.Current != start, "the language switches over the preparation screen");
+            CheckPausedScreensFollowLanguage();
+            CheckSettingsFocus("SettingsLanguageRow", "the language arrow over the pause menu");
+            yield return Capture("settings-pause-switched.png");
+            yield return Click("SettingsLanguageNext");
+            Check(Strings.Current == start, "the language switches back over the preparation screen");
+            CheckPausedScreensFollowLanguage();
             yield return Key(KeyCode.Escape);
             Check(!game.SettingsOpen && game.Session.Paused && Element<Button>("PauseSettingsButton").focusController.focusedElement == Find("PauseSettingsButton"), "Esc closes settings back to the pause menu");
             // Capture() asserts the captured texture matches the runner's launch resolution
@@ -634,6 +643,19 @@ namespace CottonCircuit.Tests
         }
 
         GameSettings ReadSettings() => JsonUtility.FromJson<GameSettings>(File.ReadAllText(Path.Combine(saveDirectory, "settings.json")));
+
+        // Preparation labels that code fills and the bound pause title both follow a live language switch.
+        void CheckPausedScreensFollowLanguage()
+        {
+            var economy = game.Session.Economy;
+            int tab = Array.FindIndex(UpgradeTreeLayout.Tabs, t => Element<Button>("TraitTab_" + t.Id).ClassListContains("prep-selected")), bought = 0, total = 0;
+            foreach (var node in Progression.Nodes)
+                if (UpgradeTreeLayout.TabOf(node.Id) == tab) { total++; if (Progression.Level(economy, node.Id) > 0) bought++; }
+            string language = " (" + Strings.Code(Strings.Current) + ")";
+            Check(tab >= 0 && Element<Label>("PreparationTraitCount").text == Strings.Format("prep.trait.count", bought, total), "the preparation trait count follows the language" + language);
+            Check(Element<Label>("PreparationMachineName_0").text == Progression.MachineName(0), "preparation machine names follow the language" + language);
+            Check(Element<VisualElement>("PauseMenu").Q<Label>(className: "pause-title").text == Strings.Get("pause.title"), "the bound pause title follows the language" + language);
+        }
 
         void CheckInsideViewport(string name)
         {
