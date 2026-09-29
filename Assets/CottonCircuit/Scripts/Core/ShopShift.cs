@@ -82,8 +82,9 @@ namespace CottonCircuit
             return new string('★', stars) + new string('☆', MaxStars - stars);
         }
 
-        // Each new wall contact knocks one star off the candy on the stick,
-        // even while it is not growing; with no candy there is nothing to lose.
+        // Each counted wall hit knocks one star off the candy on the stick, even while
+        // it is not growing; with no candy there is nothing to lose. ArcadeDrive counts
+        // the next hit only after the kart speeds back up, so one scrape costs one star.
         static int AfterWallHits(double batchMeters, int quality, int wallHits)
         {
             return batchMeters > 0 && wallHits > 0 ? QualityForStars(Stars(quality) - wallHits) : quality;

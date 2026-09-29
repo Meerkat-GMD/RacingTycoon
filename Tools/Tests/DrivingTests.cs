@@ -240,6 +240,67 @@ public static class DrivingTests
             Check(Math.Abs(TurnAngle(d.Heading - heading)) > .4,
                 "stopped kart cannot steer away from wall");
         });
+        Test("scraping along a curved wall counts one hit", () => {
+            // Pinned to the outside of a bend, the kart alternates between frames that
+            // press into the wall and frames that only slide along it.
+            var d = new ArcadeDrive(RaceCourse.ForMap(1)) { Style = DrivingStyle.Downhill, MaximumSpeed = 30 };
+            int afterHit = 0;
+            for (int i = 0; i < 600 && afterHit < 30; i++)
+            {
+                var target = d.Course.Sample(d.Sample.Progress + 18).Position;
+                double desired = Math.Atan2(target.X - d.Position.X, target.Z - d.Position.Z);
+                d.Step(1, Math.Max(-1, Math.Min(1, TurnAngle(desired - d.Heading) * .8)), false, false, 1 / 60.0);
+                if (d.WallHits > 0) afterHit++;
+            }
+            Check(afterHit == 30, "scrape fixture missed the wall");
+            Check(d.WallHits == 1, "one scrape counted " + d.WallHits + " hits");
+        });
+        Test("a slow bump after a hit is free until the kart speeds back up", () => {
+            var d = new ArcadeDrive(RaceCourse.Shared);
+            d.Step(1, 0, false, false, 1);
+            for (int i = 0; i < 150 && d.WallHits == 0; i++) d.Step(1, 1, false, false, .02);
+            Check(d.WallHits == 1, "setup missed wall");
+            d.Recover();
+            bool touched = false;
+            for (int i = 0; i < 600 && !touched; i++)
+            {
+                d.Step(d.Speed < 8 ? 1 : 0, 1, d.Speed > 9, false, .02);
+                touched = Math.Abs(d.Sample.Lateral) >= d.Sample.HalfWidth - .81;
+            }
+            Check(touched && d.Speed < .75 * d.MaximumSpeed, "slow bump fixture missed the wall");
+            Check(d.WallHits == 1, "a bump below the recovery speed counted another hit");
+            d.Recover();
+            d.Step(1, 0, false, false, 1);
+            for (int i = 0; i < 150 && d.WallHits == 1; i++) d.Step(1, 1, false, false, .02);
+            Check(d.WallHits == 2, "a hit after speeding back up did not count");
+        });
+        Test("repeat wall hits count only after the kart speeds back up", () => {
+            int repeats = 0;
+            foreach (DrivingStyle style in new[] { DrivingStyle.Kart, DrivingStyle.Downhill })
+            for (int map = 0; map < RaceCourse.MapCount; map++)
+            {
+                var d = new ArcadeDrive(RaceCourse.ForMap(map)) { Style = style, MaximumSpeed = 30 };
+                double fastest = 0, afterHit = 0;
+                int hits = 0;
+                for (int i = 0; i < 60 * 60; i++)
+                {
+                    // A careless driver aims far ahead and clips the outside of corners.
+                    var target = d.Course.Sample(d.Sample.Progress + 18).Position;
+                    double desired = Math.Atan2(target.X - d.Position.X, target.Z - d.Position.Z);
+                    d.Step(1, Math.Max(-1, Math.Min(1, TurnAngle(desired - d.Heading) * .8)), false, false, 1 / 60.0);
+                    if (d.WallHits > hits)
+                    {
+                        double recovery = Math.Max(.75 * 30, afterHit + .15 * 30);
+                        Check(hits == 0 || fastest >= recovery, style + " map " + map + " counted hit " + d.WallHits +
+                            " after reaching only " + fastest.ToString("F1") + " of " + recovery.ToString("F1"));
+                        if (hits > 0) repeats++;
+                        hits = d.WallHits; afterHit = d.Speed; fastest = 0;
+                    }
+                    else fastest = Math.Max(fastest, d.Speed);
+                }
+            }
+            Check(repeats > 0, "fixture never hit a wall twice");
+        });
         Test("course follower earns a lap but reverse oscillation never pays twice", () => {
             var d = new ArcadeDrive(RaceCourse.Shared);
             Follow(d, 65);

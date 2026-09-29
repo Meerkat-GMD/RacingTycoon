@@ -44,6 +44,10 @@ namespace CottonCircuit
         public double LastBoostedRewardDistance { get; private set; }
         public CourseSample Sample { get; private set; }
 
+        // After a counted wall hit, further contacts are free until the kart speeds back
+        // up to this speed, so one scrape or bounce costs a single star. Zero when armed.
+        const double WallRecoveryShare = .75, WallRecoveryMargin = .15;
+        double wallRecoverySpeed;
         double projectedProgress, furthestProgress;
         bool touchingWall;
 
@@ -65,7 +69,7 @@ namespace CottonCircuit
             DriftCharge = BoostRemaining = LastRewardDistance = LastBoostedRewardDistance = TotalProgress = 0;
             BoostCount = DriftCount = WallHits = Laps = 0;
             StoredBoosts = Style == DrivingStyle.Kart ? 1 : 0;
-            BestLapSeconds = LapSeconds = projectedProgress = furthestProgress = 0;
+            BestLapSeconds = LapSeconds = projectedProgress = furthestProgress = wallRecoverySpeed = 0;
             IsDrifting = touchingWall = false;
         }
 
@@ -200,7 +204,13 @@ namespace CottonCircuit
                 DriftCharge = 0;
                 IsDrifting = false;
                 boosted = false;
-                if (!touchingWall) WallHits++;
+                if (!touchingWall && wallRecoverySpeed == 0)
+                {
+                    WallHits++;
+                    // The kart must beat its post-hit speed too, or a fast downhill
+                    // scrape that stays above the share would count again at once.
+                    wallRecoverySpeed = Math.Max(WallRecoveryShare * speedLimit, Speed + WallRecoveryMargin * speedLimit);
+                }
             }
             if (completedSlide && !wall)
             {
@@ -208,6 +218,7 @@ namespace CottonCircuit
                 if (!downhill) StoredBoosts = Math.Min(2, StoredBoosts + 1);
             }
             touchingWall = wall;
+            if (Speed >= wallRecoverySpeed) wallRecoverySpeed = 0;
             Sample = Course.Project(Position, .8);
 
             double previousProgress = projectedProgress;
