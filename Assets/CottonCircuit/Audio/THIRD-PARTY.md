@@ -14,7 +14,7 @@ Music was converted to Ogg Vorbis (quality 7) only; no clip was otherwise edited
 | Music/Machine3_TimeTrial.ogg | "Time Trial", same album | CC BY-ND 4.0 | Music by Joe Chrisman |
 | Sfx/UiClick.ogg, Sfx/CandyDrop.ogg | Kenney Interface Sounds `click_001`, `drop_002` — https://kenney.nl/assets/interface-sounds | CC0 (`Licenses/Kenney-InterfaceSounds.txt`) | |
 | Sfx/Trash.ogg | Kenney Impact Sounds `impactSoft_medium_001` — https://kenney.nl/assets/impact-sounds | CC0 (`Licenses/Kenney-ImpactSounds.txt`) | |
-| Sfx/ClosingJingle.ogg | Kenney Music Jingles `jingles_PIZZI07` — https://kenney.nl/assets/music-jingles | CC0 (`Licenses/Kenney-MusicJingles.txt`) | |
+| Sfx/ProfitJingle.ogg, Sfx/LossJingle.ogg | Kenney Music Jingles `jingles_PIZZI10`, `jingles_PIZZI07` — https://kenney.nl/assets/music-jingles | CC0 (`Licenses/Kenney-MusicJingles.txt`) | |
 | Sfx/CandyExtract.ogg | Pixabay "pop" by soundreality (`soundreality-pop-423717.mp3`), leading silence removed | Pixabay Content License | Record the download page URL |
 | Sfx/SugarShake.ogg, Coins.ogg, DeliverSuccess.ogg, StarBonus.ogg, ClosingBell.ogg, EngineStart.ogg, EngineStop.ogg, WallHit.ogg | User's CCMusics folder; names match GameBurp "2000 Game Sound FX" | Unconfirmed | Confirm purchase and license before release |
 | Sfx/TutorialPopup.wav, DeliverFail.wav, Purchase.wav, EngineLoop.wav, MachineHum.wav | User's CCMusics folder (`ui_*`, `engine_generator_loop_01`, `background_air_vent_vacumm_hum_motor_loop_02`) | Unconfirmed | Confirm source before release |

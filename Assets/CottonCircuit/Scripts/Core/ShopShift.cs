@@ -22,6 +22,7 @@ namespace CottonCircuit
         public int DayWrong;
         public int DayMissed;
         public int DayTrashed;
+        public int DayProfit => DayRevenue - DayMaterialCost;
         public double NextCustomerIn;
         public List<ShopCustomer> Customers = new List<ShopCustomer>();
         // V4 save payload only. SaveStore migrates this field into Customers.

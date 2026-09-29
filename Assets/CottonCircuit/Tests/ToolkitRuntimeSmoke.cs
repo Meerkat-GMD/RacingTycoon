@@ -214,7 +214,7 @@ namespace CottonCircuit.Tests
             Check(game.Audio.Music == MusicCue.Machine1, "the first machine song follows the tutorial");
             Check(new SaveStore(saveDirectory).Load().TutorialStep == TutorialStep.Complete, "tutorial completion is saved immediately");
             int bells = game.Audio.Played(Sound.ClosingBell);
-            yield return CloseDay();
+            yield return CloseDay(false);
             Check(game.Audio.Music == MusicCue.None && game.Audio.Played(Sound.ClosingBell) == bells + 1, "closing rings once and settlement is quiet");
             Check(!game.GrowthHintVisible, "growth hint waits until preparation after settlement");
             Check(Visible(Find("businessResults")), "the closing receipt is on screen before the player moves on");
@@ -344,7 +344,8 @@ namespace CottonCircuit.Tests
             Check(Math.Abs(game.Machine(0).BatchMeters - beforeMeters - selectedGrowth) < .001, "offscreen worker produces at the same rate as when selected");
             yield return Capture("10-unstaffed-manual.png");
             CheckNoPlayerAuto();
-            yield return CloseDay();
+            Check(game.PourSugar(1), "the manual soda machine buys paid sugar");
+            yield return CloseDay(true);
             yield return Click("businessNextDay");
             Check(!game.GrowthHintVisible, "second settlement does not repeat the growth hint");
         }
@@ -1038,12 +1039,18 @@ namespace CottonCircuit.Tests
             }
         }
 
-        IEnumerator CloseDay()
+        IEnumerator CloseDay(bool loss)
         {
+            int profits = game.Audio.Played(Sound.ProfitJingle), losses = game.Audio.Played(Sound.LossJingle);
             game.World.Kart.Stop();
             for (int guard = 0; game.Shift.IsOpen && guard < 30; guard++) { game.Tick(0, 0, false, 60); yield return null; }
             yield return Settle();
             Check(game.Shift.State.Closed && game.Session.Economy.Progression.Phase == BusinessPhase.Results, "real business clock reaches settlement");
+            Check((game.Shift.State.DayProfit < 0) == loss,loss ? "the day closes at a loss" : "the day closes without a loss");
+            // The jingle follows the closing bell after a 0.8 s delay.
+            yield return new WaitForSecondsRealtime(1f);
+            Check(game.Audio.Played(Sound.ProfitJingle) == profits + (loss ? 0 : 1) && game.Audio.Played(Sound.LossJingle) == losses + (loss ? 1 : 0),
+                loss ? "a losing day ends on the loss jingle" : "a day without a loss ends on the cheerful jingle");
         }
 
         IEnumerator Click(string name)

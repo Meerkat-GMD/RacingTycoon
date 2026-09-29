@@ -138,7 +138,7 @@ namespace CottonCircuit
             SetText("businessResultTitle", Strings.Format("business.result.title", economy.Day.ToString("00")));
             SetText("businessResultCaption", progression ? Progression.LocationName(economy.Progression.SelectedLocation) : Strings.Get("business.result.caption.default"));
             SetText("businessResultStats", Strings.Format("business.result.stats", state.DaySold, state.DayRevenue.ToString("N0"),
-                state.DayMaterialCost.ToString("N0"), (state.DayRevenue - state.DayMaterialCost).ToString("N0"),
+                state.DayMaterialCost.ToString("N0"), state.DayProfit.ToString("N0"),
                 state.DayWrong, state.DayMissed, state.DayTrashed));
             Q<Button>("businessNextDay").text = Strings.Get(progression ? "business.nextday.progression" : "business.nextday.simple");
         }

@@ -15,7 +15,7 @@ Date: 2026-09-28. Branch `claude/game-audio`. Plan: `docs/superpowers/plans/2026
 | Business, 특급 기계 | Music `Machine3` | `Audio/Music/Machine3_TimeTrial.ogg` (loop 0.60–117.93 s) |
 | Last 30 s of an open day | Music pitch 1.06 | — |
 | Pause | Music at 40 % | — |
-| Closing | Bell, engine power-down, jingle after 0.8 s; music fades out | `ClosingBell`, `EngineStop`, `ClosingJingle` |
+| Closing | Bell, engine power-down, jingle after 0.8 s (the loss jingle only when revenue minus material cost is negative); music fades out | `ClosingBell`, `EngineStop`, `ProfitJingle` / `LossJingle` |
 | Any authored button, on press or keyboard submit | Click (not `quiet-click` buttons) | `UiClick` |
 | Tutorial bubble appears or changes | Pop-up | `TutorialPopup` |
 | Sugar poured by shaking | Shaker, pitch ±8 %, at most every 0.35 s | `SugarShake` |

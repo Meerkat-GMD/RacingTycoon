@@ -43,7 +43,9 @@ namespace CottonCircuit.Editor
                 Effect(Sound.Trash, "Trash.ogg", .7f),
                 Effect(Sound.Purchase, "Purchase.wav", .7f),
                 Effect(Sound.ClosingBell, "ClosingBell.ogg", .7f),
-                Effect(Sound.ClosingJingle, "ClosingJingle.ogg", .8f),
+                // The profit jingle is 1.6 LU louder than the loss jingle; the volumes even them out.
+                Effect(Sound.ProfitJingle, "ProfitJingle.ogg", .65f),
+                Effect(Sound.LossJingle, "LossJingle.ogg", .8f),
                 Effect(Sound.EngineStart, "EngineStart.ogg", .35f, .5f),
                 Effect(Sound.EngineStop, "EngineStop.ogg", .5f, .5f),
                 Effect(Sound.WallHit, "WallHit.ogg", .6f, .25f, .06f),

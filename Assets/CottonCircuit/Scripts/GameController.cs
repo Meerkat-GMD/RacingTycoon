@@ -315,7 +315,7 @@ namespace CottonCircuit
             if (lastMode == Session.Mode) return; lastMode = Session.Mode; World.SetMode(lastMode);
             if (lastMode == GameMode.Results)
             {
-                World.Kart.Stop(); World.UpdateThread(false); Audio.UpdateDriving(World.Kart, false); Audio.Play(Sound.ClosingJingle);
+                World.Kart.Stop(); World.UpdateThread(false); Audio.UpdateDriving(World.Kart, false); Audio.Play(Sound.ProfitJingle);
                 World.CentralCandy.Show(Session.Result?.Samples);
                 World.SetCandyQuality(Session.Result == null ? 0 : Session.Result.Quality);
                 Notify(Session.Result == null ? Strings.Get("notice.result.incomplete") : Strings.Format("notice.result.complete", Session.ResultBonus));

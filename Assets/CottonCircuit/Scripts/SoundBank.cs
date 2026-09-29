@@ -5,7 +5,7 @@ namespace CottonCircuit
     public enum Sound
     {
         UiClick, TutorialPopup, SugarShake, CandyDrop, CandyExtract, DeliverSuccess, StarBonus, Coins,
-        DeliverFail, Trash, Purchase, ClosingBell, ClosingJingle, EngineStart, EngineStop, WallHit
+        DeliverFail, Trash, Purchase, ClosingBell, LossJingle, EngineStart, EngineStop, WallHit, ProfitJingle
     }
 
     [Serializable] public struct SoundEntry

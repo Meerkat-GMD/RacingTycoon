@@ -73,10 +73,10 @@ namespace CottonCircuit
             PlayAfter(Sound.Coins, CoinDelay);
         }
 
-        public void PlayClosing()
+        public void PlayClosing(bool loss)
         {
             Play(Sound.ClosingBell); Play(Sound.EngineStop);
-            PlayAfter(Sound.ClosingJingle, JingleDelay);
+            PlayAfter(loss ? Sound.LossJingle : Sound.ProfitJingle, JingleDelay);
         }
 
         public void PlayBoost(int tier) { if (!Muted) Emit(tier == 2 ? superBoost : boost, BoostVolume, 1); }

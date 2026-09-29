@@ -94,7 +94,7 @@ namespace CottonCircuit
             Audio.UpdateDriving(World.Kart, active);
             if (!active)
             {
-                Audio.PlayClosing();
+                Audio.PlayClosing(Shift.State.DayProfit < 0);
                 World.Kart.Stop(); World.AnimationPaused = true; UI.CancelShiftDrag();
                 World.ShowInventory(Session.Economy);
                 Save(); Notify(Strings.Get("notice.shift.closing"));

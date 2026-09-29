@@ -73,6 +73,11 @@ MonoBehaviour:
     Volume: 0.7
     MinInterval: 0
     PitchJitter: 0
+  - Id: 16
+    Clip: {fileID: 8300000, guid: 0628241d46567cc4e932eacf17746b18, type: 3}
+    Volume: 0.65
+    MinInterval: 0
+    PitchJitter: 0
   - Id: 12
     Clip: {fileID: 8300000, guid: 495164aa61f42f44ea076397845903a2, type: 3}
     Volume: 0.8
