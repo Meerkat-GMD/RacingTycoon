@@ -112,13 +112,14 @@
 - 전체 음소거는 기존 `AudioFeedback.Muted`와 같은 동작이다. 설정창의 전환 결과를 `AudioFeedback`에 반영한다.
 - 화면 모드: 창 모드는 `FullScreenMode.Windowed`, 전체 화면은 `FullScreenMode.FullScreenWindow`.
 - 해상도 목록: `Screen.resolutions`에서 너비×높이가 겹치지 않게 추리고, 주 모니터의 해상도보다 큰 것을 뺀 뒤 작은 것부터 정렬한다. 현재 창 크기가 목록에 없으면 현재 크기를 목록에 넣는다. 선택하면 `Screen.SetResolution(너비, 높이, 현재 모드)`를 호출한다.
-- 키보드: ↑↓로 행 이동, ←→로 값 변경(슬라이더는 10%씩), Enter로 음소거 전환과 `닫기`, Esc로 닫기. 마우스로 모두 조작할 수 있다.
+- 키보드: ↑↓로 행 이동, ←→로 값 변경(슬라이더는 10%씩), Enter로 음소거 전환과 `닫기`, Esc로 닫기. Tab·Shift+Tab도 ↓·↑처럼 행만 옮긴다. 마우스로 모두 조작할 수 있고, 마우스로 누른 뒤에도 키보드 조작이 이어지도록 행 안의 조작을 누르면 그 행에, 카드 빈 곳이나 바깥을 누르면 마지막 행에 초점을 둔다.
 - 효과음 슬라이더를 움직이면 UI 클릭 소리로 새 음량을 들려준다.
 
 ### 저장
 
 - 파일: 저장 폴더(`GameController`가 쓰는 `Application.persistentDataPath` 또는 검사용 폴더)의 `settings.json`. 게임 저장 파일 `cotton-circuit.json`과 분리한다.
 - 내용: `Version`, `Language`(`""`, `"ko"`, `"en"`), `MusicVolume`, `EffectsVolume`(0~1), `Muted`.
+- 슬라이더를 끄는 동안에는 값을 바로 적용만 하고, 손을 뗄 때 파일에 쓴다. 키보드로 값을 바꾸거나 다른 항목을 바꾸면 바로 쓰고, 창을 닫을 때 아직 쓰지 않은 변경을 쓴다.
 - `새 게임`은 게임 저장 파일만 보관 처리하므로 설정은 유지된다.
 - 화면 모드와 해상도는 Unity 플레이어가 스스로 기억하므로 파일에 넣지 않는다.
 - 파일이 없거나 읽을 수 없거나 값이 범위를 벗어나면 기본값을 쓰고 오류 창은 띄우지 않는다(개발 빌드 로그에만 경고). 쓰기에 실패하면 이번 실행 동안만 적용하고 로그에 경고를 남긴다.
@@ -154,8 +155,9 @@
 | 공통 | `Esc` 일시정지 / 돌아가기 |
 
 - `Shift` 부스터 행은 `GameController.RunStyle == DrivingStyle.Kart`일 때만 보인다.
-- 선택한 기계에 알바가 있으면(`SelectedMachineHasWorker`) 주행 묶음을 숨기고 `알바가 운전과 제작을 맡고 있어요.`와 `다른 기계는 상단 버튼으로 선택하고, 알바 배치는 영업 준비 화면에서 바꿀 수 있어요.`를 보여 준다.
-- 이전 모드(`Shift == null`)에서는 가게 묶음의 설탕 봉지·꺼내기·설탕 비우기 행을 숨긴다.
+- 선택한 기계에 알바가 있으면(`SelectedMachineHasWorker`) 주행 묶음을 숨기고 `알바가 운전과 제작을 맡고 있어요.`와 `다른 기계는 상단 버튼으로 선택하고, 알바 배치는 영업 준비 화면에서 바꿀 수 있어요.`를 보여 준다. 가게 묶음에서도 알바가 맡는 설탕 봉지·꺼내기·설탕 비우기 행을 숨긴다.
+- 이전 모드(`Shift == null`)에서는 가게 묶음 전체를 숨긴다. 이전 모드에는 설탕 봉지·꺼내기·설탕 비우기·손님에게 끌어 건네기 조작이 없다.
+- `공통` 묶음(`Esc`)은 모든 모드에서 보인다. 가게 묶음 아래, 같은 라벨 열에 둔다.
 - 방향키(↑↓←→)는 W/S/A/D와 같은 동작이지만 행을 늘리지 않고 설명 문구에 함께 적지 않는다. 화면을 단순하게 두기 위해서다.
 
 ### 키캡 이미지
@@ -163,7 +165,7 @@
 - Kenney Input Prompts 1.5 (CC0), https://kenney.nl/assets/input-prompts, 압축 파일 `kenney_input-prompts_1.5.zip`(약 5.1 MB). 현재 HUD의 `KeyF.png`, `MouseRight.png`와 같은 팩·같은 변형을 쓴다.
 - 원본 압축 파일은 `Art/UI/`에 보관하고, 쓰는 PNG만 `Assets/CottonCircuit/UI/Art/`로 복사한다. 가져올 이미지: W, A, S, D, Space, Shift, R, Esc, 마우스 왼쪽 끌기(또는 마우스 왼쪽).
 - `Assets/CottonCircuit/UI/THIRD-PARTY.md`에 Input Prompts 항목(출처, 라이선스, 원본 경로, 압축 파일 URL, SHA-256, 내려받은 날짜)을 추가한다. 기존 `KeyF.png`, `MouseRight.png`도 이 항목에 적는다.
-- 스프라이트 가져오기 설정은 기존 UI 스프라이트와 같다(단일 스프라이트, 밉맵 없음, 알파 투명).
+- 가져오기 설정은 HUD의 기존 `KeyF.png`와 같다: 기본(Default) 텍스처, 밉맵 켜짐, 알파 투명(`alphaIsTransparency`). 새 이미지 아홉 개의 `.meta`는 guid만 빼면 `KeyF.png.meta`와 똑같다.
 
 ### 원칙
 
@@ -175,7 +177,7 @@
 ### Core 테스트 (`Tools/test-core.ps1` 방식, 새 `Tools/test-localization.ps1`)
 
 - 언어 결정: `systemKorean=true` → 한국어, `false` → 영어, 저장된 `"en"`이 한국어 OS보다 우선, 명령줄이 저장값보다 우선, 알 수 없는 코드는 무시.
-- 표 무결성: 머리글, 키 중복 없음, 모든 키에 `ko`와 `en`이 비어 있지 않음, 두 언어의 자리표시자 번호 집합이 같음, 이스케이프 해석.
+- 표 무결성: 머리글, 키 중복 없음, 모든 키에 `ko`와 `en`이 비어 있지 않음, 두 언어의 자리표시자 번호 집합이 같음, 모든 값이 `string.Format`에서 오류 없이 쓰임(짝이 맞지 않는 중괄호 없음), 이스케이프 해석.
 - `Format`과 누락 키 처리.
 - `GameSettings`: 기본값, 범위 제한, 알 수 없는 언어 코드 정리.
 - 한국어 문구를 확인하던 기존 Core 테스트(`ProgressionShiftTests`, `TraitIconTests`)는 표를 읽고 한국어로 설정한 뒤 같은 결과를 확인하도록 고친다. 모든 Core 테스트 스크립트가 통과해야 한다.
@@ -187,9 +189,9 @@ Hangul/키 정적 검사는 `Editor/IntegrationChecks.cs`가 아니라 Unity를 
 - UXML의 모든 `LocalizedText` 키가 표에 있다.
 - `Assets/CottonCircuit/Scripts`의 `Strings.Get`/`Strings.Format` 문자열 리터럴 키가 모두 표에 있다.
 - 실행 코드(`Assets/CottonCircuit/Scripts`, Inspector 속성과 주석 제외)와 UXML `text` 속성 중 `LocalizedText`가 없는 요소에 한글이 남아 있지 않다.
-- 표 자체의 무결성(중복 키, 빈 칸, 자리표시자 불일치)도 함께 본다.
+- 표 자체의 형식(머리글, 한 줄에 세 칸, 중복 키)도 함께 본다. 빈 칸, 자리표시자 불일치, 잘못된 형식 문자열은 Core 테스트(`Strings.Validate`)가 본다.
 
-새 키캡 스프라이트의 가져오기 설정 확인은 `Editor/IntegrationChecks.cs`(개발 빌드, `Tools/build.ps1`)에 남는다.
+새 키캡 이미지의 가져오기 설정은 자동으로 검사하지 않는다. `Editor/IntegrationChecks.cs`의 스프라이트 검사는 `Assets/CottonCircuit/Sprites/` 아래만 훑기 때문이다. 대신 새 이미지 아홉 개의 `.meta`가 guid 말고는 `KeyF.png.meta`와 같다는 것을 파일 비교로 확인했다.
 
 ### 실행 스모크 검사 (`Tools/verify-uitk.ps1`, 개발 빌드)
 
@@ -202,7 +204,7 @@ Hangul/키 정적 검사는 `Editor/IntegrationChecks.cs`가 아니라 Unity를 
   - 음소거 전환
   - `settings.json`이 격리 폴더에 저장되고, 새 `SettingsStore`로 다시 읽으면 같은 값
   - 손상된 `settings.json`은 기본값으로 처리
-- 문구 넘침과 한글 누출: `Capture(name)`이 스크린샷을 찍기 직전에 `CheckVisibleText(name)`을 불러, 모든 케이스·모든 언어의 모든 캡처에서 화면에 보이는 모든 `TextElement`를 검사한다. 영어일 때 한글이 남아 있으면 실패, `MeasureTextSize`로 잰 글자 크기가 요소 내용 폭(줄바꿈 라벨은 높이)을 넘으면 실패, `Strings.Missing`에 키가 남아 있으면 실패. 이 branch가 손대지 않은 요소의 기존 한국어 넘침은 `OverflowExempt`에 이름과 사유를 남기고 제외한다.
+- 문구 넘침과 한글 누출: `Capture(name)`이 스크린샷을 찍기 직전에 `CheckVisibleText(name)`을 불러, 모든 케이스·모든 언어의 모든 캡처에서 화면에 보이는 모든 `TextElement`를 검사한다. 영어일 때 한글이 남아 있으면 실패, `MeasureTextSize`로 잰 글자 크기가 요소 내용 폭(줄바꿈 라벨은 높이)을 넘으면 실패(레이아웃이 픽셀 단위로 반올림되므로 1.5px 여유를 둔다. 줄바꿈 라벨은 내용 폭 + 1.5px에서 잰 높이를 본다), `Strings.Missing`에 키가 남아 있으면 실패. 이 branch가 손대지 않은 요소의 기존 한국어 넘침은 `OverflowExempt`에 이름과 사유를 남기고 제외한다.
 - 해상도: 일시정지와 설정창을 1280×720, 1600×900, 1280×960, 1920×820에서 캡처해 화면 안에 들어오는지(`CheckScreenBounds`) 확인한다.
 - 모든 저장은 실행마다 새로 만든 테스트 폴더를 쓴다.
 
