@@ -86,7 +86,7 @@ tab.staff	알바	Helpers
 tab.sales	장소와 판매	Places & Sales
 tab.kart	차량	Vehicles
 machine.0	기본 기계	Basic Machine
-machine.1	소다 기계	Soda Machine
+machine.1	고급 기계	Advanced Machine
 machine.2	특급 기계	Deluxe Machine
 location.0.name	동네 골목	Back Alley
 location.0.desc	처음 장사를 시작하는 조용한 거리	A quiet street to start your business
@@ -149,7 +149,7 @@ tutorial.step1.progress	한 개 만들 설탕  {0} / {1} g	Sugar for one  {0} / 
 tutorial.step1.cue.start	① 누르기 → ② 끌기 → ③ 흔들기	① Press → ② Drag → ③ Shake
 tutorial.step1.cue.drag	잡은 채로 위아래로 흔들기	Keep holding, shake up and down
 tutorial.step2.heading	02 / 04  달리며 감기	02 / 04  Drive to spin
-tutorial.step2.dialogue	W로 가속 · A / D로 조향해요.\n달리면 솜사탕이 감겨요!	W to accelerate · A / D to steer.\nDriving spins the candy!
+tutorial.step2.dialogue	W로 가속 · A / D로 조향해요.\n코너에서는 Space를 누른 채 드리프트!\n달리면 솜사탕이 감겨요!	W to accelerate · A / D to steer.\nHold Space to drift through corners.\nDriving spins the candy!
 tutorial.step3.heading	03 / 04  솜사탕 꺼내기	03 / 04  Take out the candy
 tutorial.step3.dialogue	잘 만들어졌어요!\nF 또는 꺼내기 버튼을 눌러주세요.	It's ready!\nPress F or the Take out button.
 tutorial.step3.progress	완성된 솜사탕은 진열대에 놓여요.	The finished candy goes on your shelf.

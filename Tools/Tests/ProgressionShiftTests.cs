@@ -233,7 +233,7 @@ class ProgressionShiftTests
                 "unlocked grade applies automatically up to each machine's tier");
             Check(s.Machine(0).SugarGrade == 1 && s.Machine(1).SugarGrade == 2 && s.Machine(2).SugarGrade == 2,
                 "stored machine grades follow the automatic grade");
-            Check(s.SizeLimitNote(0) == "기본 기계는 소까지" && s.SizeLimitNote(1) == "소다 기계는 중까지" &&
+            Check(s.SizeLimitNote(0) == "기본 기계는 소까지" && s.SizeLimitNote(1) == "고급 기계는 중까지" &&
                 s.SizeLimitNote(2) == "중까지 · 특급 설탕이면 대", "size notes name the machine or sugar limit");
             Strings.Set(Language.English);
             Check(s.SizeLimitNote(0) == "Basic Machine: up to S", "english size note");

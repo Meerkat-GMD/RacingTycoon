@@ -161,6 +161,7 @@ namespace CottonCircuit.Tests
             Check(game.World.Kart.Speed < .01f && state.BatchMeters == 0, "filled unstaffed machine stays still without user input");
             yield return Settle();
             Check(Visible(Find("TutorialCoach")), "stationary driving instruction is visible");
+            yield return Capture("04-tutorial-drive.png");
             game.Tick(1, 0, false, 1.5f);
             yield return Settle();
             Check(state.BatchMeters > 0 && game.World.Kart.Speed > 0, "manual acceleration physically produces candy");

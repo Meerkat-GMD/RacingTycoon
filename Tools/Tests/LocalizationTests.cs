@@ -121,9 +121,9 @@ public static class LocalizationTests
         {
             Strings.Load(File.ReadAllText(Strings.TablePath(AppDomain.CurrentDomain.BaseDirectory)));
             Strings.Set(Language.Korean);
-            Check(Progression.Find("hours").Name == "영업시간" && Progression.MachineName(1) == "소다 기계" && RaceRecipe.Name(0) == "1번 · 슈가웨이", "korean");
+            Check(Progression.Find("hours").Name == "영업시간" && Progression.MachineName(1) == "고급 기계" && RaceRecipe.Name(0) == "1번 · 슈가웨이", "korean");
             Strings.Set(Language.English);
-            Check(Progression.Find("hours").Name == "Business Hours" && Progression.MachineName(1) == "Soda Machine" && RaceRecipe.Name(0) == "No.1 · Sugarway", "english");
+            Check(Progression.Find("hours").Name == "Business Hours" && Progression.MachineName(1) == "Advanced Machine" && RaceRecipe.Name(0) == "No.1 · Sugarway", "english");
         });
         Console.WriteLine(passed + " passed, " + failures + " failed");
         return failures == 0 ? 0 : 1;
